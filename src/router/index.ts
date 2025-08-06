@@ -7,8 +7,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: HomeView,
     meta: {
-      title: 'Inicio - Football Fantasy',
-      description: 'Página principal de Football Fantasy'
+      title: 'Home - Football Fantasy',
+      description: 'Football Fantasy main page'
     }
   },
   {
@@ -17,8 +17,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "about" */ '@/views/AboutView.vue'),
     meta: {
-      title: 'Acerca de - Football Fantasy',
-      description: 'Información sobre la aplicación Football Fantasy'
+      title: 'About - Football Fantasy',
+      description: 'Information about the Football Fantasy application'
     }
   },
   // Catch-all route for 404 pages
@@ -27,8 +27,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'not-found',
     component: () => import(/* webpackChunkName: "not-found" */ '@/views/NotFoundView.vue'),
     meta: {
-      title: 'Página no encontrada - Football Fantasy',
-      description: 'La página que buscas no existe'
+      title: 'Page Not Found - Football Fantasy',
+      description: 'The page you are looking for does not exist'
     }
   }
 ]

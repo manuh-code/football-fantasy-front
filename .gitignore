@@ -2,6 +2,10 @@
 node_modules
 /dist
 
+# Vite
+.vite
+dist-ssr
+*.local
 
 # local env files
 .env.local

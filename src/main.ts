@@ -7,7 +7,7 @@ import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import { iconList } from './icons'
 
 // Import global styles
-import './assets/styles/tailwind.scss'
+import './assets/styles/main.scss'
 
 // Add icons to Oh My Vue Icons
 addIcons(...iconList)

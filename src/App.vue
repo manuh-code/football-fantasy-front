@@ -103,14 +103,15 @@ html, body, #app {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800;
+  background: var(--color-bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600 rounded;
+  background: var(--color-border-hover);
+  border-radius: 4px;
   
   &:hover {
-    @apply bg-gray-500 dark:bg-gray-500;
+    background: var(--color-text-muted);
   }
 }
 </style>

@@ -20,7 +20,7 @@ import {
   HiSolidInformationCircle,
   HiSolidXCircle,
   HiSolidCheckCircle,
-  HiSolidExclamationTriangle,
+  HiSolidExclamationCircle,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -90,7 +90,7 @@ export const iconList = [
   HiSolidInformationCircle,
   HiSolidXCircle,
   HiSolidCheckCircle,
-  HiSolidExclamationTriangle,
+  HiSolidExclamationCircle,
   
   // Theme icons
   HiSolidSun,
@@ -150,7 +150,7 @@ export const iconNames = {
   info: 'hi-solid-information-circle',
   error: 'hi-solid-x-circle',
   success: 'hi-solid-check-circle',
-  warning: 'hi-solid-exclamation-triangle',
+  warning: 'hi-solid-exclamation-circle',
   
   // Theme
   sun: 'hi-solid-sun',
