@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+    <meta name="description" content="Football Fantasy - Tu aplicación de fantasy football">
+    <meta name="keywords" content="fantasy football, fútbol, estadísticas, deportes">
+    <meta name="author" content="Football Fantasy">
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#0ea5e9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
+    
+    <!-- iOS specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Football Fantasy">
+    
+    <!-- Icons -->
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="apple-touch-icon" href="<%= BASE_URL %>img/icons/apple-touch-icon.png">
+    <link rel="mask-icon" href="<%= BASE_URL %>img/icons/safari-pinned-tab.svg" color="#0ea5e9">
+    
+    <!-- PWA meta tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Football Fantasy">
+    
+    <!-- Microsoft specific -->
+    <meta name="msapplication-TileColor" content="#0ea5e9">
+    <meta name="msapplication-config" content="<%= BASE_URL %>browserconfig.xml">
+    
+    <!-- Preconnect to improve performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body class="antialiased">
+    <noscript>
+      <div style="
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh; 
+        padding: 2rem; 
+        text-align: center; 
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f8fafc;
+        color: #374151;
+      ">
+        <h1 style="font-size: 1.5rem; margin-bottom: 1rem;">JavaScript Requerido</h1>
+        <p style="margin-bottom: 1rem;">
+          Esta aplicación requiere JavaScript para funcionar correctamente.
+        </p>
+        <p>
+          Por favor, habilita JavaScript en tu navegador y recarga la página.
+        </p>
+      </div>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>

@@ -1,0 +1,121 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+// Import our custom variables and mixins
+@import './variables.scss';
+@import './mixins.scss';
+
+// Base styles
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  // Custom scrollbar
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-hover);
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--color-text-muted);
+    }
+  }
+  
+  // Focus styles
+  .focus-ring {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+}
+
+// Component layer for custom components
+@layer components {
+  // Custom button styles
+  .btn {
+    @include button-base;
+    @include button-size;
+    @include button-variant;
+  }
+  
+  .btn-sm {
+    @include button-size('sm');
+  }
+  
+  .btn-lg {
+    @include button-size('lg');
+  }
+  
+  .btn-secondary {
+    @include button-variant('secondary');
+  }
+  
+  .btn-outline {
+    @include button-variant('outline');
+  }
+  
+  .btn-ghost {
+    @include button-variant('ghost');
+  }
+  
+  // Custom card styles
+  .card {
+    @include card-base;
+  }
+  
+  .card-hover {
+    @include card-hover;
+  }
+  
+  // Custom input styles
+  .input {
+    @include input-base;
+  }
+  
+  // Loading states
+  .skeleton {
+    @include skeleton;
+  }
+  
+  // Glass effect
+  .glass {
+    @include glass-morphism;
+  }
+  
+  // Animation utilities
+  .animate-fade-in {
+    @include fade-in;
+  }
+  
+  .animate-slide-up {
+    @include slide-up;
+  }
+}
+
+// Utility layer for custom utilities
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
