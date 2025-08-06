@@ -8,18 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Laravel Cloud Dashboard inspired colors
+        // Professional emerald green palette
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          200: '#a7f3d0',
+          300: '#6ee7b7',
+          400: '#34d399',
+          500: '#059669',
+          600: '#047857',
+          700: '#065f46',
+          800: '#064e3b',
+          900: '#022c22',
         },
         gray: {
           50: '#f8fafc',

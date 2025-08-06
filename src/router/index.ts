@@ -21,6 +21,16 @@ const routes: Array<RouteRecordRaw> = [
       description: 'Information about the Football Fantasy application'
     }
   },
+  {
+    path: '/login',
+    name: 'login',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "login" */ '@/views/login/LoginView.vue'),
+    meta: {
+      title: 'Sign In - Football Fantasy',
+      description: 'Sign in to your Football Fantasy account'
+    }
+  },
   // Catch-all route for 404 pages
   {
     path: '/:pathMatch(.*)*',
@@ -34,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL || '/'),
   routes,
   // Smooth scrolling behavior
   scrollBehavior(to, from, savedPosition) {

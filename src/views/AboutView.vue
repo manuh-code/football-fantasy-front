@@ -65,7 +65,7 @@ const features = ref([
         <div class="flex justify-center">
           <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
             <div class="flex items-center space-x-4">
-              <VIcon name="hi-solid-star" class="w-8 h-8 text-yellow-500" />
+              <v-icon name="hi-solid-star" class="w-8 h-8 text-yellow-500" />
               <div class="text-left">
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">v1.0.0</p>
                 <p class="text-sm text-gray-600 dark:text-gray-400">Versión actual</p>
@@ -96,7 +96,7 @@ const features = ref([
           >
             <div class="flex items-start space-x-4">
               <div class="flex-shrink-0">
-                <VIcon :name="tech.icon" :class="`w-8 h-8 ${tech.color}`" />
+                <v-icon :name="tech.icon" :class="`w-8 h-8 ${tech.color}`" />
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -130,7 +130,7 @@ const features = ref([
             :key="feature"
             class="flex items-center space-x-3 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm"
           >
-            <VIcon name="hi-solid-check-circle" class="w-6 h-6 text-green-500 flex-shrink-0" />
+            <v-icon name="hi-solid-check-circle" class="w-6 h-6 text-green-500 flex-shrink-0" />
             <span class="text-gray-700 dark:text-gray-300">{{ feature }}</span>
           </div>
         </div>
@@ -148,11 +148,11 @@ const features = ref([
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <button class="btn bg-white text-primary-600 hover:bg-gray-100 px-6 py-3">
-            <VIcon name="hi-solid-mail" class="w-5 h-5 mr-2" />
+            <v-icon name="hi-solid-mail" class="w-5 h-5 mr-2" />
             Contactar Soporte
           </button>
           <button class="btn btn-outline border-white text-white hover:bg-white hover:text-primary-600 px-6 py-3">
-            <VIcon name="hi-solid-book-open" class="w-5 h-5 mr-2" />
+            <v-icon name="hi-solid-book-open" class="w-5 h-5 mr-2" />
             Ver Documentación
           </button>
         </div>

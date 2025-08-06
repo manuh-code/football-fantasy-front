@@ -21,7 +21,7 @@ function goBack() {
           404
         </div>
         <div class="w-24 h-24 mx-auto bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
-          <VIcon name="hi-solid-question-mark-circle" class="w-12 h-12 text-primary-600 dark:text-primary-400" />
+          <v-icon name="hi-solid-question-mark-circle" class="w-12 h-12 text-primary-600 dark:text-primary-400" />
         </div>
       </div>
 
@@ -41,7 +41,7 @@ function goBack() {
           @click="goHome"
           class="w-full btn bg-primary-600 hover:bg-primary-700 text-white py-3"
         >
-          <VIcon name="hi-solid-home" class="w-5 h-5 mr-2" />
+          <v-icon name="hi-solid-home" class="w-5 h-5 mr-2" />
           Ir al inicio
         </button>
         
@@ -49,7 +49,7 @@ function goBack() {
           @click="goBack"
           class="w-full btn btn-outline border-gray-300 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 py-3"
         >
-          <VIcon name="hi-solid-arrow-left" class="w-5 h-5 mr-2" />
+          <v-icon name="hi-solid-arrow-left" class="w-5 h-5 mr-2" />
           Volver atrás
         </button>
       </div>
@@ -61,11 +61,11 @@ function goBack() {
         </p>
         <div class="flex justify-center space-x-4">
           <button class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium">
-            <VIcon name="hi-solid-mail" class="w-4 h-4 inline mr-1" />
+            <v-icon name="hi-solid-mail" class="w-4 h-4 inline mr-1" />
             Soporte
           </button>
           <button class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium">
-            <VIcon name="hi-solid-chat-alt" class="w-4 h-4 inline mr-1" />
+            <v-icon name="hi-solid-chat-alt" class="w-4 h-4 inline mr-1" />
             Chat
           </button>
         </div>

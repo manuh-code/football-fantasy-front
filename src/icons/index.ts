@@ -70,6 +70,15 @@ import {
   HiSolidShare,
 } from 'oh-vue-icons/icons'
 
+// Login icons (Bootstrap Icons)
+import {
+  BiPersonFill,
+  BiLockFill,
+  BiGoogle,
+  BiEyeFill,
+  BiEyeSlashFill,
+} from 'oh-vue-icons/icons'
+
 // Export all icons in an array for easy registration
 export const iconList = [
   // Basic icons
@@ -128,6 +137,13 @@ export const iconList = [
   HiSolidHeart,
   HiSolidBookmark,
   HiSolidShare,
+  
+  // Login icons
+  BiPersonFill,
+  BiLockFill,
+  BiGoogle,
+  BiEyeFill,
+  BiEyeSlashFill,
 ]
 
 // Icon name mapping for easier usage

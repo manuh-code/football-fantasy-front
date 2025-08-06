@@ -11,11 +11,11 @@
   --color-border: #e2e8f0;
   --color-border-hover: #cbd5e1;
   
-  // Primary colors
-  --color-primary: #0ea5e9;
-  --color-primary-hover: #0284c7;
-  --color-primary-light: #bae6fd;
-  --color-primary-dark: #075985;
+  // Primary colors - Professional emerald green
+  --color-primary: #059669;
+  --color-primary-hover: #047857;
+  --color-primary-light: #d1fae5;
+  --color-primary-dark: #065f46;
   
   // Status colors
   --color-success: #22c55e;
@@ -49,11 +49,11 @@
   --color-border: #334155;
   --color-border-hover: #475569;
   
-  // Primary colors remain mostly the same in dark mode
-  --color-primary: #38bdf8;
-  --color-primary-hover: #0ea5e9;
-  --color-primary-light: #075985;
-  --color-primary-dark: #bae6fd;
+  // Primary colors - Professional emerald green (same as light mode)
+  --color-primary: #059669;
+  --color-primary-hover: #047857;
+  --color-primary-light: #065f46;
+  --color-primary-dark: #d1fae5;
   
   // Status colors adjusted for dark mode
   --color-success: #4ade80;

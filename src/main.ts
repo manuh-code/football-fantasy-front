@@ -15,7 +15,7 @@ addIcons(...iconList)
 const app = createApp(App)
 
 // Register global components
-app.component('VIcon', OhVueIcon)
+app.component('v-icon', OhVueIcon)
 
 // Use plugins
 app.use(pinia)

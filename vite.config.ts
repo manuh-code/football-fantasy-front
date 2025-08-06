@@ -11,9 +11,37 @@ export default defineConfig({
     legacy({
       targets: ['defaults', 'not IE 11']
     }),
+    // Plugin personalizado para manejar URLs mal formadas y anti-caché
+    {
+      name: 'handle-malformed-uri-and-no-cache',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // Headers anti-caché para todas las peticiones
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+          res.setHeader('Pragma', 'no-cache')
+          res.setHeader('Expires', '0')
+          res.setHeader('Surrogate-Control', 'no-store')
+          
+          try {
+            // Intentar decodificar la URL
+            if (req.url) {
+              decodeURIComponent(req.url)
+              console.log('✅ Valid URL:', req.url)
+            }
+            next()
+          } catch (error) {
+            // Si la URL está mal formada, redirigir a la página principal
+            console.warn('❌ Malformed URI detected:', req.url)
+            console.warn('Error:', error.message)
+            res.writeHead(302, { 'Location': '/' })
+            res.end()
+          }
+        })
+      }
+    },
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['fav-icon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
         name: 'Football Fantasy',
         short_name: 'FootballFantasy',
@@ -108,7 +136,20 @@ export default defineConfig({
     port: 8080,
     open: false,  // Deshabilitar apertura automática
     strictPort: false,
-    host: 'localhost'
+    host: 'localhost',
+    middlewareMode: false,
+    // Configuración adicional para manejar URLs mal formadas
+    cors: true,
+    fs: {
+      strict: false
+    },
+    // Desactivar caché completamente en desarrollo
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store'
+    }
   },
   preview: {
     port: 8080,
