@@ -10,46 +10,24 @@
             <!-- Form -->
             <form @submit.prevent="handleLogin" class="login-form">
                 <!-- Email Field -->
-                <FormInput
-                    v-model="form.email"
-                    label="Email"
-                    type="email"
-                    icon="bi-person-fill"
-                    placeholder="your@email.com"
-                    autocomplete="email"
-                    :error="errors.email"
-                />
+                <FormInput v-model="payload.email" label="Email" type="email" icon="bi-person-fill"
+                    placeholder="your@email.com" autocomplete="email" :error="errors.email" />
 
                 <!-- Password Field -->
-                <FormInput
-                    v-model="form.password"
-                    label="Password"
-                    type="password"
-                    icon="bi-lock-fill"
-                    placeholder="••••••••"
-                    :error="errors.password"
-                />
+                <FormInput v-model="payload.password" label="Password" type="password" icon="bi-lock-fill"
+                    placeholder="••••••••" :error="errors.password" />
 
                 <!-- Remember Me Checkbox -->
                 <div class="remember-me">
                     <label class="remember-label">
-                        <input 
-                            type="checkbox" 
-                            v-model="form.remember"
-                            class="remember-checkbox"
-                        />
+                        <input type="checkbox" v-model="payload.remember" class="remember-checkbox" />
                         <span class="remember-text">Remember me</span>
                     </label>
                 </div>
 
                 <!-- Login Button -->
-                <ButtonComponent
-                    type="submit"
-                    variant="primary"
-                    :disabled="!isFormValid"
-                    :loading="isLoginLoading"
-                    full-width
-                >
+                <ButtonComponent type="submit" variant="primary" :disabled="!isFormValid" :loading="isLoginLoading"
+                    full-width>
                     {{ isLoginLoading ? 'Signing in...' : 'Sign In' }}
                 </ButtonComponent>
             </form>
@@ -60,13 +38,8 @@
             </span>
 
             <!-- Google Button -->
-            <ButtonComponent
-                variant="google"
-                icon="bi-google"
-                :loading="isGoogleLoading"
-                full-width
-                @click="handleGoogleLogin"
-            >
+            <ButtonComponent variant="google" icon="bi-google" :loading="isGoogleLoading" full-width
+                @click="handleGoogleLogin">
                 {{ isGoogleLoading ? 'Connecting...' : 'Continue with Google' }}
             </ButtonComponent>
 
@@ -84,26 +57,20 @@
 
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, Ref } from 'vue'
 import { FormInput, ButtonComponent } from '@/components/ui'
 import { loginService } from '@/services/login/LoginService'
-import type { LoginPayload } from '@/services/login/LoginService'
-
-// Define interfaces
-interface LoginForm {
-    email: string
-    password: string
-    device_name: string
-    remember: boolean
-}
+import { LoginPayload } from '@/interfaces/login/LoginPayload'
 
 interface FormErrors {
     email: string
     password: string
 }
+const isLoginLoading: Ref<boolean> = ref(false);
+const isGoogleLoading: Ref<boolean> = ref(false);
 
 // Reactive states
-const form = ref<LoginForm>({
+const payload = ref<LoginPayload>({
     email: '',
     password: '',
     device_name: 'web',
@@ -114,9 +81,6 @@ const errors = ref<FormErrors>({
     email: '',
     password: ''
 })
-
-const isLoginLoading = ref(false)
-const isGoogleLoading = ref(false)
 
 // Method to validate email
 const validateEmail = (email: string): boolean => {
@@ -130,16 +94,16 @@ const validateForm = (): boolean => {
     let isValid = true
 
     // Validate email
-    if (!form.value.email) {
+    if (!payload.value.email) {
         errors.value.email = 'Email is required'
         isValid = false
-    } else if (!validateEmail(form.value.email)) {
+    } else if (!validateEmail(payload.value.email)) {
         errors.value.email = 'Please enter a valid email'
         isValid = false
     }
 
     // Validate password
-    if (!form.value.password) {
+    if (!payload.value.password) {
         errors.value.password = 'Password is required'
         isValid = false
     }
@@ -149,7 +113,7 @@ const validateForm = (): boolean => {
 
 // Computed to check if form is valid
 const isFormValid = computed(() => {
-    return form.value.email && form.value.password && validateEmail(form.value.email)
+    return payload.value.email && payload.value.password && validateEmail(payload.value.email)
 })
 
 // Handle form submission
@@ -159,38 +123,17 @@ const handleLogin = async () => {
     isLoginLoading.value = true
 
     try {
-        // Prepare payload for the login service
-        const payload: LoginPayload = {
-            email: form.value.email,
-            password: form.value.password,
-            device_name: form.value.device_name,
-            remember: form.value.remember
-        }
-
-        console.log('LoginComponent: Calling login service with:', { 
-            email: payload.email, 
-            device_name: payload.device_name,
-            remember: payload.remember 
-        })
 
         // Call the login service - useApi will handle toasts automatically
-        const result = await loginService.login(payload)
+        const result = await loginService.login(payload.value)
 
-        console.log('LoginComponent: Service result:', result)
-
-        if (result.success) {
-            console.log('LoginComponent: Login successful, token available')
-            
+        if (result.code === 200) {
             // Clear form after successful login
-            form.value.email = ''
-            form.value.password = ''
-            
+            payload.value.email = ''
+            payload.value.password = ''
+
             // TODO: Redirect to dashboard or appropriate route
         }
-
-    } catch (error) {
-        console.error('LoginComponent: Unexpected error:', error)
-        // useApi already handled the error toast
     } finally {
         isLoginLoading.value = false
     }
