@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { useThemeStore } from '@/store/theme'
 import { computed } from 'vue'
-import { useThemeStore } from '@/store'
 
-const themeStore = useThemeStore()
+
+const themeStore = useThemeStore();
 
 // Computed properties for theme icon
 const themeIcon = computed(() => {

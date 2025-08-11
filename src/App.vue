@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { useThemeStore } from '@/store'
+
 import MenuGlobal from '@/components/MenuGlobal.vue'
 import { ToastContainer } from '@/components/ui'
+import { useThemeStore } from './store/theme';
 
-const themeStore = useThemeStore()
+const themeStore = useThemeStore();
 
 onMounted(() => {
   // Initialize theme on app mount

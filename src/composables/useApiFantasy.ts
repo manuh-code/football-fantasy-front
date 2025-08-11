@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { computed } from 'vue'
 import { useToast } from '@/composables/useToast'
+import { useAuthStore } from '@/store/Auth/useAuthStore'
 
 
 export interface ApiError {
@@ -17,6 +18,7 @@ export interface ApiError {
 
 export function useApiFantasy() {
     // Reactive state
+    const authStore = useAuthStore();
 
     // Toast composable
     const toast = useToast();
@@ -53,6 +55,18 @@ export function useApiFantasy() {
             'Accept': 'application/json',
             'TimeZone': getTimezone(),
         }
+    });
+
+
+    // Add a request interceptor to include the token in the headers
+    apiFantasyInstance.interceptors.request.use((config) => {
+        const token = authStore.token;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            delete config.headers.Authorization;
+        }
+        return config;
     });
 
     // Response interceptor for error handling

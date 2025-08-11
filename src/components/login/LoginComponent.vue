@@ -58,6 +58,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { FormInput, ButtonComponent } from '@/components/ui'
 import { loginService } from '@/services/login/LoginService'
 import { LoginPayload } from '@/interfaces/login/LoginPayload'
@@ -66,6 +67,11 @@ interface FormErrors {
     email: string
     password: string
 }
+
+// Router
+const router = useRouter()
+const route = useRoute()
+
 const isLoginLoading: Ref<boolean> = ref(false);
 const isGoogleLoading: Ref<boolean> = ref(false);
 
@@ -118,21 +124,18 @@ const isFormValid = computed(() => {
 
 // Handle form submission
 const handleLogin = async () => {
-    if (!validateForm()) return
-
-    isLoginLoading.value = true
+    if (!validateForm()) return;
+    isLoginLoading.value = true;
 
     try {
+        const result = await loginService.login(payload.value);
+        if (result.token) {
+            payload.value.email = '';
+            payload.value.password = '';
 
-        // Call the login service - useApi will handle toasts automatically
-        const result = await loginService.login(payload.value)
-
-        if (result.code === 200) {
-            // Clear form after successful login
-            payload.value.email = ''
-            payload.value.password = ''
-
-            // TODO: Redirect to dashboard or appropriate route
+            // Redirect to dashboard or to the page user was trying to access
+            const redirectTo = route.query.redirect as string || '/dashboard'
+            await router.push(redirectTo)
         }
     } finally {
         isLoginLoading.value = false

@@ -31,6 +31,16 @@ const routes: Array<RouteRecordRaw> = [
       description: 'Sign in to your Football Fantasy account'
     }
   },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/DashboardView.vue'),
+    meta: {
+      title: 'Dashboard - Football Fantasy',
+      description: 'Football Fantasy dashboard with your team overview and statistics'
+    }
+  },
   // Catch-all route for 404 pages
   {
     path: '/:pathMatch(.*)*',
