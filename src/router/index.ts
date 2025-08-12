@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import { useAuthStore } from '@/store/auth/useAuthStore'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,7 +39,19 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/DashboardView.vue'),
     meta: {
       title: 'Dashboard - Football Fantasy',
-      description: 'Football Fantasy dashboard with your team overview and statistics'
+      description: 'Football Fantasy dashboard with your team overview and statistics',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "profile" */ '@/views/user/ProfileView.vue'),
+    meta: {
+      title: 'Profile - Football Fantasy',
+      description: 'View and manage your Football Fantasy profile information',
+      requiresAuth: true
     }
   },
   // Catch-all route for 404 pages
@@ -72,12 +85,16 @@ const router = createRouter({
 })
 
 // Global navigation guards
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+  const isAuthenticated = await authStore.isAuthenticated();
+  const needAuth = to.meta.requiresAuth;
+
   // Update document title
   if (to.meta?.title) {
     document.title = to.meta.title as string
   }
-  
+
   // Update meta description
   if (to.meta?.description) {
     const metaDescription = document.querySelector('meta[name="description"]')
@@ -85,8 +102,31 @@ router.beforeEach((to, from, next) => {
       metaDescription.setAttribute('content', to.meta.description as string)
     }
   }
-  
-  next()
+
+  // Handle root path redirection
+  if (to.path === "/") {
+    if (isAuthenticated) {
+      return next({ name: "dashboard" });
+    } else {
+      return next({ name: "login" });
+    }
+  }
+
+  // Check authentication for protected routes
+  if (needAuth && !isAuthenticated) {
+    return next({
+      name: "login",
+      query: { redirect: to.fullPath },
+    });
+  }
+
+  // If user is authenticated and trying to access login page, redirect to dashboard
+  if (to.name === 'login' && isAuthenticated) {
+    return next({ name: "dashboard" });
+  }
+
+  // Continue to the requested route
+  next();
 })
 
 export default router

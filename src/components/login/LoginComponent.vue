@@ -1,6 +1,6 @@
 <template>
     <div class="login-component">
-        <div class="login-container">
+        <div class="animate-page-enter login-container">
             <!-- Header -->
             <div class="login-header">
                 <h1 class="login-title">Sign In</h1>
@@ -10,12 +10,16 @@
             <!-- Form -->
             <form @submit.prevent="handleLogin" class="login-form">
                 <!-- Email Field -->
-                <FormInput v-model="payload.email" label="Email" type="email" icon="bi-person-fill"
-                    placeholder="your@email.com" autocomplete="email" :error="errors.email" />
+                <div>
+                    <FormInput v-model="payload.email" label="Email" type="email" icon="bi-person-fill"
+                        placeholder="your@email.com" autocomplete="email" :error="errors.email" />
+                </div>
 
                 <!-- Password Field -->
-                <FormInput v-model="payload.password" label="Password" type="password" icon="bi-lock-fill"
-                    placeholder="••••••••" :error="errors.password" />
+                <div>
+                    <FormInput v-model="payload.password" label="Password" type="password" icon="bi-lock-fill"
+                        placeholder="••••••••" :error="errors.password" />
+                </div>
 
                 <!-- Remember Me Checkbox -->
                 <div class="remember-me">
@@ -26,10 +30,12 @@
                 </div>
 
                 <!-- Login Button -->
-                <ButtonComponent type="submit" variant="primary" :disabled="!isFormValid" :loading="isLoginLoading"
-                    full-width>
-                    {{ isLoginLoading ? 'Signing in...' : 'Sign In' }}
-                </ButtonComponent>
+                <div>
+                    <ButtonComponent type="submit" variant="primary" :disabled="!isFormValid" :loading="isLoginLoading"
+                        full-width>
+                        {{ isLoginLoading ? 'Signing in...' : 'Sign In' }}
+                    </ButtonComponent>
+                </div>
             </form>
 
             <!-- Separator -->
@@ -38,13 +44,15 @@
             </span>
 
             <!-- Google Button -->
-            <ButtonComponent variant="google" icon="bi-google" :loading="isGoogleLoading" full-width
-                @click="handleGoogleLogin">
-                {{ isGoogleLoading ? 'Connecting...' : 'Continue with Google' }}
-            </ButtonComponent>
+            <div>
+                <ButtonComponent variant="google" icon="bi-google" :loading="isGoogleLoading" full-width
+                    @click="handleGoogleLogin">
+                    {{ isGoogleLoading ? 'Connecting...' : 'Continue with Google' }}
+                </ButtonComponent>
+            </div>
 
             <!-- Additional Links -->
-            <div class="login-footer">
+            <div class="animate-fade-in animate-delay-450 login-footer">
                 <a href="#" class="link">Forgot your password?</a>
                 <p class="text-muted">
                     Don't have an account?
@@ -57,11 +65,11 @@
 
 
 <script lang="ts" setup>
-import { ref, computed, Ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { ref, computed, Ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { FormInput, ButtonComponent } from '@/components/ui'
-import { loginService } from '@/services/login/LoginService'
-import { LoginPayload } from '@/interfaces/login/LoginPayload'
+import { useAuthStore } from '@/store/auth/useAuthStore';
+import { LoginPayload } from '@/interfaces/login/LoginPayload';
 
 interface FormErrors {
     email: string
@@ -71,6 +79,9 @@ interface FormErrors {
 // Router
 const router = useRouter()
 const route = useRoute()
+
+// Auth store
+const authStore = useAuthStore()
 
 const isLoginLoading: Ref<boolean> = ref(false);
 const isGoogleLoading: Ref<boolean> = ref(false);
@@ -128,7 +139,7 @@ const handleLogin = async () => {
     isLoginLoading.value = true;
 
     try {
-        const result = await loginService.login(payload.value);
+        const result = await authStore.login(payload.value);
         if (result.token) {
             payload.value.email = '';
             payload.value.password = '';
@@ -165,6 +176,7 @@ const handleGoogleLogin = async () => {
 
 
 <style lang="scss" scoped>
+/* Component styles with global animations from main.scss */
 .login-component {
     @apply min-h-screen flex items-center justify-center px-4 py-8;
 }

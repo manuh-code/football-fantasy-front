@@ -18,7 +18,7 @@ onMounted(() => {
     <!-- Global Menu -->
     <MenuGlobal />
 
-    <main class="flex-1">
+    <main class="flex-1 pt-14 sm:pt-16">
       <router-view />
     </main>
 

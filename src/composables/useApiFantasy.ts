@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios'
 import { computed } from 'vue'
 import { useToast } from '@/composables/useToast'
-import { useAuthStore } from '@/store/Auth/useAuthStore'
+import { useAuthStore } from '@/store/auth/useAuthStore'
+import { useValidationStore } from '@/store/validation/useValidationStore'
 
 
 export interface ApiError {
@@ -17,10 +18,6 @@ export interface ApiError {
 
 
 export function useApiFantasy() {
-    // Reactive state
-    const authStore = useAuthStore();
-
-    // Toast composable
     const toast = useToast();
 
     // Get API base URL from environment variables
@@ -60,10 +57,16 @@ export function useApiFantasy() {
 
     // Add a request interceptor to include the token in the headers
     apiFantasyInstance.interceptors.request.use((config) => {
-        const token = authStore.token;
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        } else {
+        try {   
+            const authStore = useAuthStore();
+            const token = authStore.getToken();
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            } else {
+                delete config.headers.Authorization;
+            }
+        } catch (error) {
+            // If there's an error parsing the auth data, just continue without token
             delete config.headers.Authorization;
         }
         return config;
@@ -97,6 +100,11 @@ export function useApiFantasy() {
                         break
                     }
                     case 422: {
+                        // Handle validation errors - store them in validation store
+                        const validationStore = useValidationStore();
+                        if (error.response.data?.errors) {
+                            validationStore.setValidatorError(error.response.data.errors);
+                        }
                         errorTitle = 'Validation Error'
                         errorMessage = error.response.data?.message || 'Validation error. Please check your data.'
                         break

@@ -2,7 +2,6 @@ import { useApiFantasy } from '@/composables/useApiFantasy'
 import { ApiResponse } from '@/interfaces/api/ApiResponse'
 import { LoginPayload } from '@/interfaces/login/LoginPayload'
 import { LoginResponse } from '@/interfaces/login/LoginResponse'
-import { useAuthStore } from '@/store/Auth/useAuthStore'
 import { AxiosError } from 'axios'
 
 export interface LoginResult {
@@ -15,7 +14,6 @@ export interface LoginResult {
 export class LoginService {
 
   private api;
-  private authStore = useAuthStore();
 
   constructor() {
     const { apiFantasyInstance } = useApiFantasy();
@@ -29,18 +27,29 @@ export class LoginService {
    */
   async login(payload: LoginPayload): Promise<LoginResponse> {
 
-    // Call the auth endpoint with success toast enabled
     const response = await this.api.post<ApiResponse<LoginResponse>>('auth', payload);
-
     // Process successful response
     if (response.data.code === 200) {
-      
-      this.authStore.setToken(response.data.data.token)
-
       return response.data.data;
     }
 
     throw new AxiosError('Login failed: Invalid response format');
+  }
+
+  async logout(): Promise<void> {
+    await this.api.post<ApiResponse<null>>('auth/logout');
+  }
+
+  async isAuthenticated(token: string | null): Promise<boolean> {
+    if (!token) {
+      return false;
+    }
+    const response = await this.api.get<ApiResponse<null>>('auth/validate', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data.code === 200;
   }
 }
 

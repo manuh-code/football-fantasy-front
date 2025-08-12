@@ -21,6 +21,13 @@ import {
   HiSolidXCircle,
   HiSolidCheckCircle,
   HiSolidExclamationCircle,
+  HiSolidUsers,
+  HiSolidFire,
+  HiSolidChartBar,
+  BiTrophyFill,
+  IoSettingsSharp,
+  IoPencilSharp,
+  MdCancel,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -100,6 +107,13 @@ export const iconList = [
   HiSolidXCircle,
   HiSolidCheckCircle,
   HiSolidExclamationCircle,
+  HiSolidUsers,
+  HiSolidFire,
+  HiSolidChartBar,
+  BiTrophyFill,
+  IoSettingsSharp,
+  IoPencilSharp,
+  MdCancel,
   
   // Theme icons
   HiSolidSun,
