@@ -86,6 +86,19 @@
                         </div>
                     </button>
 
+                    <!-- Fantasy Leagues -->
+                    <button @click="handleFantasyLeagues"
+                        class="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-50 dark:hover:bg-gray-700 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 focus:outline-none focus:bg-purple-50 dark:focus:bg-gray-700 group"
+                        role="menuitem">
+                        <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors duration-200">
+                            <v-icon name="bi-trophy-fill" class="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">Fantasy Leagues</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Manage your leagues</p>
+                        </div>
+                    </button>
+
                     <!-- Divider -->
                     <hr class="border-gray-200 dark:border-gray-600 my-2" />
 
@@ -128,6 +141,7 @@ const emit = defineEmits<{
     viewProfile: []
     changePassword: []
     favoriteTeam: []
+    fantasyLeagues: []
 }>()
 
 // Router and stores
@@ -162,6 +176,12 @@ function handleChangePassword() {
 function handleFavoriteTeam() {
     emit('favoriteTeam')
     router.push({ name: 'favorite-football-team' })
+    closeDropdown()
+}
+
+function handleFantasyLeagues() {
+    emit('fantasyLeagues')
+    router.push({ name: 'userFantasyLeague' })
     closeDropdown()
 }
 

@@ -124,7 +124,7 @@ import { catalogService } from '@/services'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
 import { ButtonComponent, SelectComponent } from '@/components/ui'
-import type { FootballTeamResponse } from '@/interfaces/Football/team/FootballTeamResponse'
+import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
 import { useUserStore } from '@/store'
 
 // Stores and composables

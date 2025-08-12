@@ -3,11 +3,15 @@ import { UserPayload } from "@/interfaces/user/userPayload";
 import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
 import userService from "@/services/user/UserService";
 import { defineStore } from "pinia";
-import { FootballTeamResponse } from "@/interfaces/Football/team/FootballTeamResponse";
+import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 
 export const useUserStore = defineStore("user", {
     state: () => {
-        return { userData: null as UserDataInterface | null };
+        return {
+            userData: null as UserDataInterface | null,
+            userFantasyLeagues: null as FantasyLeaguesResponse[] | null,
+        };
 
     },
     getters: {
@@ -19,11 +23,17 @@ export const useUserStore = defineStore("user", {
         },
         getFavoriteTeam(): FootballTeamResponse | null {
             return this.userData?.favoriteFootballTeam || null;
+        },
+        getUserFantasyLeagues(): FantasyLeaguesResponse[] | null {
+            return this.userFantasyLeagues;
         }
     },
     actions: {
         setUserData(userData: UserDataInterface | null): void {
             this.userData = userData;
+        },
+        setUserFantasyLeagues(leagues: FantasyLeaguesResponse[] | null): void {
+            this.userFantasyLeagues = leagues;
         },
         async setUserDataFromApi(): Promise<void> {
             const response = await userService.getUserData();
@@ -44,8 +54,12 @@ export const useUserStore = defineStore("user", {
         async updateFavoriteTeam(payload: { teamUuid: string }): Promise<void> {
             const response = await userService.updateFavoriteTeam(payload);
             this.setUserData(response);
+        },
+        async getUserFantasyLeaguesFromApi(): Promise<void> {
+            const response = await userService.getUserFantasyLeagues();
+            this.setUserFantasyLeagues(response);
         }
-        
+
     },
     persist: {
         storage: sessionStorage,

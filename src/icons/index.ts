@@ -39,6 +39,9 @@ import {
   HiSolidMail,
   HiSolidPhone,
   HiSolidIdentification,
+  HiSolidUserGroup,
+  HiSolidGlobeAlt,
+  HiSolidCalendar,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -141,6 +144,9 @@ export const iconList = [
   HiSolidMail,
   HiSolidPhone,
   HiSolidIdentification,
+  HiSolidUserGroup,
+  HiSolidGlobeAlt,
+  HiSolidCalendar,
 
   // Theme icons
   HiSolidSun,

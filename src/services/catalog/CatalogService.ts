@@ -1,6 +1,6 @@
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
-import { FootballTeamResponse } from "@/interfaces/Football/team/FootballTeamResponse";
+import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { AxiosError } from "axios";
 
 export class CatalogService {

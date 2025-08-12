@@ -49,7 +49,11 @@
           @logout="handleLogout"
           @view-profile="handleViewProfile"
           @change-password="handleChangePassword"
+          @favorite-team="handleFavoriteTeam"
+          @fantasy-leagues="handleFantasyLeagues"
         />
+         
+       
       </div>
     </div>
   </nav>
@@ -133,6 +137,14 @@ function handleViewProfile() {
 
 function handleChangePassword() {
   router.push({name: 'change-password'})
+}
+
+function handleFavoriteTeam() {
+  router.push({name: 'favorite-football-team'})
+}
+
+function handleFantasyLeagues() {
+  router.push({name: 'userFantasyLeague'})
 }
 
 async function handleLogout() {

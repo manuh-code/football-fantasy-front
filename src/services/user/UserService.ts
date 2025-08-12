@@ -5,6 +5,7 @@ import { UserPayload } from "@/interfaces/user/userPayload";
 import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
 import { FavoriteTeamPayload } from "@/interfaces/user/favoriteTeam/FavoriteTeamPayload";
 import { AxiosError } from "axios";
+import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 
 export class UserService {
     private api;
@@ -39,7 +40,7 @@ export class UserService {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        
+
         if (response.data.code === 200) {
             return response.data.data;
         }
@@ -60,6 +61,14 @@ export class UserService {
             return response.data.data;
         }
         throw new AxiosError('Failed to update favorite team');
+    }
+
+    async getUserFantasyLeagues(): Promise<FantasyLeaguesResponse[]> {
+        const response = await this.api.get<ApiResponse<FantasyLeaguesResponse[]>>('user/fantasy/leagues');
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to fetch user fantasy leagues');
     }
 }
 

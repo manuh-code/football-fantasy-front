@@ -76,6 +76,39 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: true
     }
   },
+  {
+    path: '/user-fantasy-leagues',
+    name: 'userFantasyLeague',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "user-fantasy-leagues" */ '@/views/user/fantasy/UserFantasyLeagueView.vue'),
+    meta: {
+      title: 'My Fantasy Leagues - Football Fantasy',
+      description: 'View and manage your fantasy football leagues',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/fantasy-league/create',
+    name: 'createFantasyLeague',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "create-fantasy-league" */ '@/views/fantasy/CreateFantasyLeagueView.vue'),
+    meta: {
+      title: 'Create Fantasy League - Football Fantasy',
+      description: 'Create a new fantasy football league',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/fantasy-league/join',
+    name: 'joinFantasyLeague',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "join-fantasy-league" */ '@/views/fantasy/JoinFantasyLeagueView.vue'),
+    meta: {
+      title: 'Join Fantasy League - Football Fantasy',
+      description: 'Join an existing fantasy football league',
+      requiresAuth: true
+    }
+  },
   // Catch-all route for 404 pages
   {
     path: '/:pathMatch(.*)*',

@@ -1,4 +1,4 @@
-import { FootballTeamResponse } from "../Football/team/FootballTeamResponse";
+import { FootballTeamResponse } from "../football/team/FootballTeamResponse";
 
 export interface UserDataInterface {
     uuid: string;
