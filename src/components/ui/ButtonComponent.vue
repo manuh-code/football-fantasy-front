@@ -22,6 +22,7 @@ interface Props {
     disabled?: boolean
     loading?: boolean
     fullWidth?: boolean
+    alwaysFullWidth?: boolean
     icon?: string
     text?: string
 }
@@ -32,7 +33,8 @@ const props = withDefaults(defineProps<Props>(), {
     type: 'button',
     disabled: false,
     loading: false,
-    fullWidth: false
+    fullWidth: false,
+    alwaysFullWidth: false
 })
 
 const emit = defineEmits<{
@@ -82,7 +84,11 @@ const buttonClasses = computed(() => {
     }
     
     // Full width
-    const widthClasses = props.fullWidth ? 'w-full sm:w-auto' : 'w-auto'
+    const widthClasses = props.alwaysFullWidth 
+        ? 'w-full' 
+        : props.fullWidth 
+            ? 'w-full sm:w-auto' 
+            : 'w-auto'
     
     // Disabled classes
     const disabledClasses = props.disabled || props.loading ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''

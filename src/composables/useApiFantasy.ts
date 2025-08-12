@@ -23,7 +23,6 @@ export function useApiFantasy() {
     const baseURL = computed(() => {
         const url = import.meta.env.VITE_API_URL
         if (!url) {
-            console.warn('VITE_API_URL not found in environment variables')
             return 'https://api.fantasymx.test/api/'
         }
         return url
@@ -34,7 +33,6 @@ export function useApiFantasy() {
         try {
             return Intl.DateTimeFormat().resolvedOptions().timeZone
         } catch (err) {
-            console.warn('Could not get timezone, using UTC as fallback')
             return 'UTC'
         }
     }
@@ -88,7 +86,6 @@ export function useApiFantasy() {
             // Handle common HTTP errors and show toasts
             if (error.response) {
                 apiError.response = error.response.data
-                console.log('API Error Response:', error.response.status)
 
                 let errorTitle = 'Error'
                 let errorMessage = 'An unexpected error occurred'

@@ -1,20 +1,21 @@
 /* eslint-disable no-console */
 
+/// <reference types="vite-plugin-pwa/client" />
 import { registerSW } from 'virtual:pwa-register'
 
 const updateSW = registerSW({
   onNeedRefresh() {
-    console.log('New content available, please refresh.')
+    // New content available, please refresh.
   },
   onOfflineReady() {
-    console.log('App ready to work offline.')
+    // App ready to work offline.
     
   },
-  onRegistered(r) {
-    console.log('SW Registered: ' + r)
+  onRegistered() {
+    // SW Registered
   },
-  onRegisterError(error) {
-    console.log('SW registration error', error)
+  onRegisterError() {
+    // SW registration error
   }
 })
 

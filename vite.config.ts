@@ -26,13 +26,10 @@ export default defineConfig({
             // Intentar decodificar la URL
             if (req.url) {
               decodeURIComponent(req.url)
-              console.log('✅ Valid URL:', req.url)
             }
             next()
           } catch (error) {
             // Si la URL está mal formada, redirigir a la página principal
-            console.warn('❌ Malformed URI detected:', req.url)
-            console.warn('Error:', error.message)
             res.writeHead(302, { 'Location': '/' })
             res.end()
           }

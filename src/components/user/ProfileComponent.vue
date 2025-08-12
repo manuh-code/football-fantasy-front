@@ -259,7 +259,7 @@ onMounted(async () => {
         try {
             await userStore.setUserDataFromApi()
         } catch (error) {
-            console.warn('Failed to fetch user data:', error)
+            // Failed to fetch user data
         }
     }
 })

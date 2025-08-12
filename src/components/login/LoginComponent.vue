@@ -37,7 +37,7 @@
                         size="md"
                         :disabled="!isFormValid" 
                         :loading="isLoginLoading"
-                        :full-width="true"
+                        :always-full-width="true"
                         :text="isLoginLoading ? 'Signing in...' : 'Sign In'"
                     />
                 </div>
@@ -55,7 +55,7 @@
                     size="md"
                     icon="bi-google" 
                     :loading="isGoogleLoading" 
-                    :full-width="true"
+                    :always-full-width="true"
                     :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
                     @click="handleGoogleLogin"
                 />
@@ -168,15 +168,14 @@ const handleGoogleLogin = async () => {
 
     try {
         // Google authentication logic would go here
-        console.log('Logging in with Google')
-
+        
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000))
 
         // TODO: Implement Google authentication logic
 
     } catch (error) {
-        console.error('Google login error:', error)
+        // Google login error
     } finally {
         isGoogleLoading.value = false
     }

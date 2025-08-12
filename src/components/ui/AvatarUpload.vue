@@ -180,7 +180,6 @@ const handleFileSelect = async (event: Event) => {
     await userStore.changeAvatar(file)
     toast.success('Avatar updated successfully!')
   } catch (error: unknown) {
-    console.error('Error uploading avatar:', error)
     const errorMessage = (error as ErrorResponse).response?.data?.message || 'Failed to upload avatar. Please try again.'
     validationStore.setFieldError('avatar', errorMessage)
     startErrorTimeout()

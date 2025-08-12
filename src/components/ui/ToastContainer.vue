@@ -18,9 +18,9 @@ import { watch } from 'vue'
 
 const { toasts, removeToast } = useToast()
 
-// Debug: Watch for toast changes
-watch(toasts, (newToasts) => {
-  console.log('ToastContainer: Toasts updated, count:', newToasts.length, 'toasts:', newToasts)
+// Watch for toast changes
+watch(toasts, () => {
+  // Toasts updated
 }, { immediate: true, deep: true })
 </script>
 

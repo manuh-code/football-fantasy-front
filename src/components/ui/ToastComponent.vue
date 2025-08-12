@@ -42,106 +42,152 @@ const emit = defineEmits<{
 const show = ref(false)
 
 onMounted(() => {
-  console.log('ToastComponent: Mounted with toast:', props.toast)
   // Small delay to trigger the animation
   setTimeout(() => {
     show.value = true
-    console.log('ToastComponent: Show animation triggered')
   }, 50)
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .toast {
-  @apply max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5;
+  max-width: 24rem;
+  width: 100%;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem;
+  pointer-events: auto;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   margin-bottom: 1rem;
   transform: translateX(100%);
   opacity: 0;
   transition: all 0.3s ease-in-out;
+}
 
-  &--show {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.toast--show {
+  transform: translateX(0);
+  opacity: 1;
+}
 
-  &--success {
-    @apply bg-green-50 ring-green-200;
-    
-    .toast__title {
-      @apply text-green-800;
-    }
-    
-    .toast__message {
-      @apply text-green-700;
-    }
-  }
+.toast--success {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
 
-  &--error {
-    @apply bg-red-50 ring-red-200;
-    
-    .toast__title {
-      @apply text-red-800;
-    }
-    
-    .toast__message {
-      @apply text-red-700;
-    }
-  }
+.toast--success .toast__title {
+  color: #166534;
+}
 
-  &--warning {
-    @apply bg-yellow-50 ring-yellow-200;
-    
-    .toast__title {
-      @apply text-yellow-800;
-    }
-    
-    .toast__message {
-      @apply text-yellow-700;
-    }
-  }
+.toast--success .toast__message {
+  color: #15803d;
+}
 
-  &--info {
-    @apply bg-blue-50 ring-blue-200;
-    
-    .toast__title {
-      @apply text-blue-800;
-    }
-    
-    .toast__message {
-      @apply text-blue-700;
-    }
-  }
+.toast--error {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.toast--error .toast__title {
+  color: #991b1b;
+}
+
+.toast--error .toast__message {
+  color: #dc2626;
+}
+
+.toast--warning {
+  background-color: #fffbeb;
+  border-color: #fed7aa;
+}
+
+.toast--warning .toast__title {
+  color: #92400e;
+}
+
+.toast--warning .toast__message {
+  color: #d97706;
+}
+
+.toast--info {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.toast--info .toast__title {
+  color: #1e40af;
+}
+
+.toast--info .toast__message {
+  color: #2563eb;
 }
 
 .toast__content {
-  @apply p-4;
+  padding: 1rem;
 }
 
 .toast__header {
-  @apply flex items-start justify-between;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .toast__title {
-  @apply text-sm font-medium;
+  font-size: 0.875rem;
+  font-weight: 500;
   margin: 0;
 }
 
 .toast__close {
-  @apply ml-4 -mx-1.5 -my-1.5 rounded-md p-1.5 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+  margin-left: 1rem;
+  margin-left: -0.375rem;
+  margin-top: -0.375rem;
+  margin-right: -0.375rem;
+  margin-bottom: -0.375rem;
+  border-radius: 0.375rem;
+  padding: 0.375rem;
+  color: #9ca3af;
   transition: colors 0.2s;
 }
 
+.toast__close:hover {
+  color: #6b7280;
+}
+
+.toast__close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #6366f1;
+  box-shadow: 0 0 0 2px #6366f1, 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
 .toast__message {
-  @apply mt-1 text-sm;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
   margin: 0.5rem 0 0 0;
 }
 
 .toast__actions {
-  @apply mt-3 flex space-x-2;
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .toast__action {
-  @apply bg-white rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+  background-color: white;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
   transition: all 0.2s;
+}
+
+.toast__action:hover {
+  background-color: #f9fafb;
+}
+
+.toast__action:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #6366f1;
+  box-shadow: 0 0 0 2px #6366f1, 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 </style>
