@@ -1,119 +1,234 @@
 <template>
-    <div class="animate-page-enter w-full max-w-4xl mx-auto">
-        <div
-            class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-            <!-- Header Section -->
-            <div
-                class="bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-700 dark:to-emerald-800 px-6 md:px-8 py-8 md:py-12 text-white">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-white/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <v-icon name="gi-soccer-ball" class="w-8 h-8 text-white" />
+    <div class="animate-page-enter grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Main Form -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <!-- Card Header -->
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                            <v-icon name="gi-soccer-ball" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Favorite Football Team</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Select your favorite football team to personalize your experience</p>
+                        </div>
                     </div>
-                    <h1 class="text-2xl md:text-3xl font-bold mb-2">
-                        Favorite Football Team
-                    </h1>
-                    <p class="text-emerald-100 text-base md:text-lg">
-                        Select your favorite football team to personalize your experience
-                    </p>
                 </div>
-            </div>
 
-            <!-- Form Section -->
-            <div class="p-6 md:p-8">
                 <!-- Current Favorite Team Section -->
-                <div v-if="hasExistingFavoriteTeam" class="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                <div v-if="hasExistingFavoriteTeam" class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <h3 class="text-lg font-semibold text-emerald-900 dark:text-emerald-100">Current Favorite Team</h3>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-white dark:bg-gray-600 rounded-lg flex items-center justify-center overflow-hidden border-2 border-emerald-200 dark:border-emerald-700">
-                            <img 
-                                v-if="currentFavoriteTeam?.image_path" 
-                                :src="currentFavoriteTeam.image_path" 
-                                :alt="currentFavoriteTeam.name"
-                                class="w-full h-full object-contain"
-                                @error="onImageError"
-                            />
-                            <v-icon v-else name="gi-soccer-ball" class="w-6 h-6 text-emerald-400" />
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-emerald-900 dark:text-emerald-100">{{ currentFavoriteTeam?.name }}</h4>
-                            <p class="text-emerald-700 dark:text-emerald-300 text-sm">{{ currentFavoriteTeam?.country?.name }}</p>
-                            <p v-if="currentFavoriteTeam?.founded" class="text-xs text-emerald-600 dark:text-emerald-400">
-                                Founded: {{ currentFavoriteTeam.founded }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <form @submit.prevent="handleSubmit" class="space-y-6">
-                    <!-- Team Selection -->
-                    <div>
-                        <SelectComponent v-model="selectedTeamId" :options="teamOptions" value-key="uuid"
-                            label-key="name" 
-                            :label="hasExistingFavoriteTeam ? 'Change Favorite Team' : 'Select Favorite Team'" 
-                            :placeholder="hasExistingFavoriteTeam ? 'Choose a different team' : 'Select your favorite team'" 
-                            required
-                            :disabled="isLoading"
-                            :error="hasFieldError('teamUuid') ? getFieldError('teamUuid').join(', ') : ''" />
-                    </div>
-
-                    <!-- Team Preview -->
-                    <div v-if="selectedTeam" class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Team Preview</h3>
+                    <div class="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4">
                         <div class="flex items-center space-x-4">
-                            <div
-                                class="w-16 h-16 bg-white dark:bg-gray-600 rounded-lg flex items-center justify-center overflow-hidden border-2 border-gray-200 dark:border-gray-500">
-                                <img v-if="selectedTeam.image_path" :src="selectedTeam.image_path"
-                                    :alt="selectedTeam.name" class="w-full h-full object-contain"
-                                    @error="onImageError" />
-                                <v-icon v-else name="gi-soccer-ball" class="w-8 h-8 text-gray-400" />
+                            <div class="w-14 h-14 bg-white dark:bg-gray-600 rounded-lg flex items-center justify-center overflow-hidden border-2 border-emerald-200 dark:border-emerald-700 shadow-sm">
+                                <img 
+                                    v-if="currentFavoriteTeam?.image_path"
+                                    :src="currentFavoriteTeam.image_path" 
+                                    :alt="currentFavoriteTeam.name"
+                                    class="w-full h-full object-contain"
+                                    @error="onImageError"
+                                />
+                                <v-icon v-else name="gi-soccer-ball" class="w-7 h-7 text-emerald-400" />
                             </div>
                             <div>
-                                <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ selectedTeam.name }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400">{{ selectedTeam.country?.name }}</p>
-                                <p v-if="selectedTeam.founded" class="text-sm text-gray-500 dark:text-gray-400">
-                                    Founded: {{ selectedTeam.founded }}
+                                <h4 class="text-lg font-bold text-emerald-900 dark:text-emerald-100">{{ currentFavoriteTeam?.name }}</h4>
+                                <p class="text-emerald-700 dark:text-emerald-300 text-sm">{{ currentFavoriteTeam?.country?.name }}</p>
+                                <p v-if="currentFavoriteTeam?.founded" class="text-xs text-emerald-600 dark:text-emerald-400">
+                                    Founded: {{ currentFavoriteTeam.founded }}
                                 </p>
                             </div>
                         </div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                                <v-icon name="hi-solid-heart" class="w-4 h-4" />
+                                <span class="text-sm font-medium">Favorite</span>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
-                        <ButtonComponent type="submit" variant="primary" :loading="isLoading"
-                            :disabled="isSubmitDisabled" class="w-full sm:w-auto">
-                            <v-icon name="hi-solid-heart" class="w-4 h-4 mr-2" />
-                            {{ hasExistingFavoriteTeam ? 'Update Favorite Team' : 'Save Favorite Team' }}
-                        </ButtonComponent>
-
-                        <ButtonComponent type="button" variant="secondary" @click="handleReset" :disabled="isLoading"
-                            class="w-full sm:w-auto">
-                            <v-icon name="hi-solid-refresh" class="w-4 h-4 mr-2" />
-                            Reset Selection
-                        </ButtonComponent>
-                    </div>
-                </form>
-
-                <!-- Loading State -->
-                <div v-if="isLoadingTeams" class="text-center py-8">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-                    <p class="text-gray-600 dark:text-gray-400">Loading football teams...</p>
                 </div>
 
-                <!-- Error State -->
-                <div v-if="errorMessage"
-                    class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mt-6">
-                    <div class="flex items-center">
-                        <v-icon name="hi-solid-exclamation-triangle"
-                            class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
-                        <p class="text-red-800 dark:text-red-200">{{ errorMessage }}</p>
+                <!-- Form -->
+                <form @submit.prevent="handleSubmit" class="p-6 space-y-5">
+                    <!-- Team Selection -->
+                    <div>
+                        <SelectComponent 
+                            v-model="selectedTeamId" 
+                            :options="teamOptions" 
+                            value-key="uuid"
+                            label-key="name" 
+                            :label="hasExistingFavoriteTeam ? 'Change Favorite Team *' : 'Select Favorite Team *'" 
+                            :placeholder="hasExistingFavoriteTeam ? 'Choose a different team' : 'Select your favorite team'" 
+                            :error="hasFieldError('teamUuid') ? getFieldError('teamUuid').join(', ') : ''"
+                            required
+                        />
+                    </div>
+
+                    <!-- Team Preview - Only show if different from current favorite -->
+                    <div v-if="selectedTeam && (!currentFavoriteTeam || selectedTeamId !== currentFavoriteTeam.uuid)" 
+                        class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700 transition-all duration-300">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <v-icon name="hi-solid-eye" class="w-4 h-4 text-white" />
+                            </div>
+                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100">New Team Preview</h3>
+                        </div>
+                        <div class="flex items-center justify-between bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 backdrop-blur-sm">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 bg-white dark:bg-gray-600 rounded-lg flex items-center justify-center overflow-hidden border-2 border-blue-200 dark:border-blue-700 shadow-sm">
+                                    <img 
+                                        v-if="selectedTeam.image_path"
+                                        :src="selectedTeam.image_path" 
+                                        :alt="selectedTeam.name"
+                                        class="w-full h-full object-contain"
+                                        @error="onImageError"
+                                    />
+                                    <v-icon v-else name="gi-soccer-ball" class="w-7 h-7 text-gray-400" />
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-blue-900 dark:text-blue-100">{{ selectedTeam.name }}</h4>
+                                    <p class="text-blue-700 dark:text-blue-300 text-sm">{{ selectedTeam.short_code }}</p>
+                                    <p v-if="selectedTeam.founded" class="text-xs text-blue-600 dark:text-blue-400">
+                                        Founded: {{ selectedTeam.founded }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                                    <v-icon name="hi-solid-arrow-right" class="w-4 h-4" />
+                                    <span class="text-sm font-medium">New Choice</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Same Team Selected Message -->
+                    <div v-else-if="selectedTeam && currentFavoriteTeam && selectedTeamId === currentFavoriteTeam.uuid" 
+                        class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
+                                <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                                <p class="text-amber-800 dark:text-amber-200 font-medium">This is already your favorite team</p>
+                                <p class="text-amber-700 dark:text-amber-300 text-sm">Select a different team to make changes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <ButtonComponent 
+                            type="button" 
+                            variant="cancel" 
+                            size="md"
+                            text="Reset"
+                            :full-width="true"
+                            :disabled="isLoading"
+                            @click="handleReset" 
+                        />
+                        <ButtonComponent 
+                            type="submit" 
+                            variant="primary" 
+                            size="md"
+                            :text="isLoading ? (hasExistingFavoriteTeam ? 'Updating Team...' : 'Setting Team...') : (hasExistingFavoriteTeam ? 'Update Favorite Team' : 'Set Favorite Team')"
+                            :loading="isLoading"
+                            :disabled="isSubmitDisabled"
+                            :full-width="true"
+                            icon="gi-soccer-ball"
+                        />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Team Info Sidebar -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <!-- Info Header -->
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                            <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Why Choose a Team?</h3>
+                    </div>
+                </div>
+
+                <!-- Info Content -->
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Personalized Experience</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Get news and updates about your favorite team</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Better Recommendations</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Receive tailored fantasy football suggestions</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Custom Dashboard</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">See your team's performance and stats</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Easy Changes</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">You can always change your favorite team later</p>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoadingTeams" class="animate-page-enter">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+            <p class="text-gray-600 dark:text-gray-400">Loading football teams...</p>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div v-if="errorMessage" class="animate-page-enter">
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6">
+            <div class="flex items-center">
+                <v-icon name="hi-solid-exclamation"
+                    class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+                <p class="text-red-800 dark:text-red-200">{{ errorMessage }}</p>
+            </div>
+            <ButtonComponent
+                variant="outline"
+                size="md"
+                text="Try Again"
+                class="mt-4"
+                @click="loadFootballTeams"
+            />
         </div>
     </div>
 </template>

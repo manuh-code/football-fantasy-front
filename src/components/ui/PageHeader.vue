@@ -1,28 +1,36 @@
 <template>
-  <div class="mb-6 md:mb-8">
-    <nav class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-      <router-link 
-        :to="breadcrumbTo" 
-        class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+  <div class="mb-4 md:mb-6">
+    <!-- Compact Navigation Bar -->
+    <div class="flex items-center justify-between mb-3">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+        <router-link 
+          :to="breadcrumbTo" 
+          class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
+        >
+          {{ breadcrumbText }}
+        </router-link>
+        <v-icon name="hi-solid-chevron-right" class="w-3 h-3 mx-1 text-gray-400" />
+        <span class="text-gray-700 dark:text-gray-300 font-medium">{{ currentPageText }}</span>
+      </nav>
+      
+      <!-- Back Button -->
+      <button
+        @click="handleGoBack"
+        class="inline-flex items-center gap-1.5 px-2 py-1 text-xs text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all duration-200"
       >
-        {{ breadcrumbText }}
-      </router-link>
-      <span class="mx-2">/</span>
-      <span class="text-gray-900 dark:text-white font-medium">{{ currentPageText }}</span>
-    </nav>
-    
-    <button
-      @click="handleGoBack"
-      class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200 mb-4"
-    >
-      <v-icon name="hi-solid-arrow-left" class="w-5 h-5" />
-      <span class="text-sm font-medium">{{ backText }}</span>
-    </button>
+        <v-icon name="hi-solid-arrow-left" class="w-3 h-3" />
+        <span class="font-medium">{{ backText }}</span>
+      </button>
+    </div>
 
-    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">{{ title }}</h1>
-    <p class="text-gray-600 dark:text-gray-400 text-base md:text-lg">
-      {{ description }}
-    </p>
+    <!-- Compact Title Section -->
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ title }}</h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        {{ description }}
+      </p>
+    </div>
   </div>
 </template>
 

@@ -55,7 +55,7 @@
             <div class="flex items-start justify-between mb-2 md:mb-3">
               <div class="flex items-center space-x-2">
                 <div class="w-7 h-7 md:w-8 md:h-8 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
-                  <v-icon name="hi-solid-exclamation-triangle" class="w-3.5 h-3.5 md:w-4 md:h-4 text-red-500 dark:text-red-400" />
+                  <v-icon name="hi-solid-exclamation" class="w-3.5 h-3.5 md:w-4 md:h-4 text-red-500 dark:text-red-400" />
                 </div>
                 <h4 class="text-xs md:text-sm font-semibold text-gray-900 dark:text-white">Upload Error</h4>
               </div>
