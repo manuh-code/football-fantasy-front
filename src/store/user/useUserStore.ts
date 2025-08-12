@@ -3,6 +3,7 @@ import { UserPayload } from "@/interfaces/user/userPayload";
 import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
 import userService from "@/services/user/UserService";
 import { defineStore } from "pinia";
+import { FootballTeamResponse } from "@/interfaces/Football/team/FootballTeamResponse";
 
 export const useUserStore = defineStore("user", {
     state: () => {
@@ -15,6 +16,9 @@ export const useUserStore = defineStore("user", {
         },
         getAvatarUrl(): string | null {
             return this.userData?.avatar || null;
+        },
+        getFavoriteTeam(): FootballTeamResponse | null {
+            return this.userData?.favoriteFootballTeam || null;
         }
     },
     actions: {
@@ -37,6 +41,10 @@ export const useUserStore = defineStore("user", {
             const response = await userService.changePassword(payload);
             this.setUserData(response);
         },
+        async updateFavoriteTeam(payload: { teamUuid: string }): Promise<void> {
+            const response = await userService.updateFavoriteTeam(payload);
+            this.setUserData(response);
+        }
         
     },
     persist: {

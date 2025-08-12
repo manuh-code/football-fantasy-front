@@ -73,6 +73,19 @@
                         </div>
                     </button>
 
+                    <!-- Favorite Football Team -->
+                    <button @click="handleFavoriteTeam"
+                        class="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-gray-700 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 focus:outline-none focus:bg-emerald-50 dark:focus:bg-gray-700 group"
+                        role="menuitem">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/50 transition-colors duration-200">
+                            <v-icon name="gi-soccer-ball" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">Favorite Football Team</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Select your team</p>
+                        </div>
+                    </button>
+
                     <!-- Divider -->
                     <hr class="border-gray-200 dark:border-gray-600 my-2" />
 
@@ -114,6 +127,7 @@ const emit = defineEmits<{
     logout: []
     viewProfile: []
     changePassword: []
+    favoriteTeam: []
 }>()
 
 // Router and stores
@@ -142,6 +156,12 @@ function handleViewProfile() {
 function handleChangePassword() {
     emit('changePassword')
     // Could navigate to change password page or open modal
+    closeDropdown()
+}
+
+function handleFavoriteTeam() {
+    emit('favoriteTeam')
+    router.push({ name: 'favorite-football-team' })
     closeDropdown()
 }
 

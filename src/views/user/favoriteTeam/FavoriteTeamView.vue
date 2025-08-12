@@ -3,30 +3,27 @@
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Page Header -->
       <PageHeader
-        title="Change Password"
-        description="Update your account password to keep your Football Fantasy account secure"
+        title="Favorite Football Team"
+        description="Select and manage your favorite football team to personalize your Football Fantasy experience"
         back-text="Back"
         breadcrumb-to="/profile"
         breadcrumb-text="Profile"
-        current-page-text="Change Password"
+        current-page-text="Favorite Team"
       />
 
-      <!-- Change Password Component -->
+      <!-- Favorite Team Component -->
       <div class="animate-page-enter">
-        <ChangePasswordComponent />
+        <FavoriteTeamComponent />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ChangePasswordComponent from '@/components/password/ChangePasswordComponent.vue'
+import FavoriteTeamComponent from '@/components/user/favoriteTeam/FavoriteTeamComponent.vue'
 import { PageHeader } from '@/components/ui'
-
-// Set page title
-document.title = 'Change Password - Football Fantasy'
 </script>
 
 <style scoped>
-/* Additional custom styles if needed */
+/* Page-specific styles if needed */
 </style>

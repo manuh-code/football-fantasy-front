@@ -65,6 +65,17 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: true
     }
   },
+  {
+    path: '/favorite-football-team',
+    name: 'favorite-football-team',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "favorite-team" */ '@/views/user/favoriteTeam/FavoriteTeamView.vue'),
+    meta: {
+      title: 'Favorite Football Team - Football Fantasy',
+      description: 'Select your favorite football team',
+      requiresAuth: true
+    }
+  },
   // Catch-all route for 404 pages
   {
     path: '/:pathMatch(.*)*',

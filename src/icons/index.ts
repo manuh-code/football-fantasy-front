@@ -97,6 +97,11 @@ import {
   BiEyeSlashFill,
 } from 'oh-vue-icons/icons'
 
+// Sports icons
+import {
+  GiSoccerBall,
+} from 'oh-vue-icons/icons'
+
 // Export all icons in an array for easy registration
 export const iconList = [
   // Basic icons
@@ -180,6 +185,9 @@ export const iconList = [
   BiGoogle,
   BiEyeFill,
   BiEyeSlashFill,
+
+  // Sports icons
+  GiSoccerBall,
 ]
 
 // Icon name mapping for easier usage
