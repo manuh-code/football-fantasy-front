@@ -1,5 +1,6 @@
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { UserPayload } from "@/interfaces/user/userPayload";
+import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
 import userService from "@/services/user/UserService";
 import { defineStore } from "pinia";
 
@@ -31,7 +32,12 @@ export const useUserStore = defineStore("user", {
         async changeAvatar(file: File): Promise<void> {
             const response = await userService.changeAvatar(file);
             this.setUserData(response);
-        }
+        },
+        async changePassword(payload: ChangePasswordPayload): Promise<void> {
+            const response = await userService.changePassword(payload);
+            this.setUserData(response);
+        },
+        
     },
     persist: {
         storage: sessionStorage,

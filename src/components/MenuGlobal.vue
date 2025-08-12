@@ -40,64 +40,16 @@
         </button>
 
         <!-- User Avatar Dropdown (when authenticated) -->
-        <div 
+        <DropdownMenuComponent
           v-if="isAuthenticatedRef"
-          class="relative"
-          ref="dropdownRef"
-        >
-          <button
-            @click="toggleDropdown"
-            @keydown="handleDropdownKeydown"
-            class="flex items-center gap-2 p-1 bg-transparent border border-gray-200 dark:border-gray-600 rounded-full hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="User menu"
-            :aria-expanded="isDropdownOpen"
-          >
-            <img
-              v-if="avatarUrl"
-              :src="avatarUrl"
-              :alt="userInitials"
-              class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
-            />
-            <div
-              v-else
-              class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-500 dark:bg-gray-600 text-white flex items-center justify-center text-xs sm:text-sm font-medium"
-            >
-              {{ userInitials }}
-            </div>
-            <v-icon 
-              name="hi-solid-chevron-down" 
-              class="w-3 h-3 sm:w-4 sm:h-4 text-gray-500 dark:text-gray-400 mr-1 transition-transform duration-200"
-              :class="{ 'rotate-180': isDropdownOpen }"
-            />
-          </button>
-
-          <!-- Dropdown Menu -->
-          <Transition name="dropdown">
-            <div
-              v-if="isDropdownOpen"
-              class="absolute right-0 top-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg min-w-40 sm:min-w-48 py-2 z-60"
-              role="menu"
-            >
-              <button
-                @click="handleViewProfile"
-                class="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 text-left text-sm sm:text-base text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700"
-                role="menuitem"
-              >
-                <v-icon name="hi-solid-user" class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                View profile
-              </button>
-              <hr class="border-gray-200 dark:border-gray-600 my-2" />
-              <button
-                @click="handleLogout"
-                class="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 text-left text-sm sm:text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 focus:outline-none focus:bg-red-50 dark:focus:bg-red-900/20"
-                role="menuitem"
-              >
-                <v-icon name="hi-solid-logout" class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                Logout
-              </button>
-            </div>
-          </Transition>
-        </div>
+          :avatar-url="avatarUrl"
+          :user-initials="userInitials"
+          :user-name="userName"
+          :user-email="userEmail"
+          @logout="handleLogout"
+          @view-profile="handleViewProfile"
+          @change-password="handleChangePassword"
+        />
       </div>
     </div>
   </nav>
@@ -107,17 +59,14 @@
 import { useThemeStore } from '@/store/theme'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
-import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { DropdownMenuComponent } from '@/components/ui'
 
 const themeStore = useThemeStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
-
-// Dropdown state
-const isDropdownOpen = ref(false)
-const dropdownRef = ref<HTMLElement>()
 
 // Computed properties for theme icon
 const themeIcon = computed(() => {
@@ -157,6 +106,19 @@ const userInitials = computed(() => {
   return 'U'
 })
 
+const userName = computed(() => {
+  const userData = userStore.getUserData
+  if (userData?.firstname && userData?.lastname) {
+    return `${userData.firstname} ${userData.lastname}`
+  }
+  return 'User'
+})
+
+const userEmail = computed(() => {
+  const userData = userStore.getUserData
+  return userData?.email || 'user@example.com'
+})
+
 function handleThemeToggle() {
   themeStore.toggleTheme()
 }
@@ -165,23 +127,17 @@ function handleLogin() {
   router.push({name: 'login'})
 }
 
-function toggleDropdown() {
-  isDropdownOpen.value = !isDropdownOpen.value
-}
-
-function closeDropdown() {
-  isDropdownOpen.value = false
-}
-
 function handleViewProfile() {
   router.push({name: 'profile'})
-  closeDropdown()
+}
+
+function handleChangePassword() {
+  router.push({name: 'change-password'})
 }
 
 async function handleLogout() {
-  await authStore.logout();
-  closeDropdown();
-  router.push('/');
+  await authStore.logout()
+  router.push('/')
 }
 
 function handleGoHome() {
@@ -195,55 +151,11 @@ function handleKeydown(event: KeyboardEvent) {
     handleThemeToggle()
   }
 }
-
-function handleDropdownKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    closeDropdown()
-  }
-}
-
-// Click outside to close dropdown
-function handleClickOutside(event: MouseEvent) {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-    closeDropdown()
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
 <style lang="scss" scoped>
-// Dropdown transition animations
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: all 0.2s ease-in-out;
-}
-
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-0.5rem) scale(0.95);
-}
-
-.dropdown-enter-to,
-.dropdown-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
 // Accessibility: Respect user's motion preferences
 @media (prefers-reduced-motion: reduce) {
-  .dropdown-enter-active,
-  .dropdown-leave-active {
-    transition: none;
-  }
-  
   // Disable all transforms and transitions for users who prefer reduced motion
   * {
     transition: none !important;

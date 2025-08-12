@@ -41,49 +41,49 @@
     <!-- Error Messages with smooth animation -->
     <Transition
       enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 scale-90 translate-x-2"
-      enter-to-class="opacity-100 scale-100 translate-x-0"
+      enter-from-class="opacity-0 scale-90 md:translate-x-2 translate-y-2"
+      enter-to-class="opacity-100 scale-100 md:translate-x-0 translate-y-0"
       leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 scale-100 translate-x-0"
-      leave-to-class="opacity-0 scale-90 translate-x-2"
+      leave-from-class="opacity-100 scale-100 md:translate-x-0 translate-y-0"
+      leave-to-class="opacity-0 scale-90 md:translate-x-2 translate-y-2"
     >
-      <div v-if="hasAvatarError" class="absolute top-0 left-full ml-4 z-50">
+      <div v-if="hasAvatarError" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 md:top-0 md:left-full md:ml-4 md:transform-none md:mt-0 z-50">
         <div class="relative">
           <!-- Main error card -->
-          <div class="bg-white dark:bg-gray-800 border border-red-200 dark:border-red-600 rounded-lg shadow-2xl backdrop-blur-md px-5 py-4 min-w-[280px] max-w-sm">
+          <div class="bg-white dark:bg-gray-800 border border-red-200 dark:border-red-600 rounded-lg shadow-2xl backdrop-blur-md px-4 md:px-5 py-3 md:py-4 min-w-[260px] md:min-w-[280px] max-w-[calc(100vw-2rem)] md:max-w-sm">
             <!-- Header with close button -->
-            <div class="flex items-start justify-between mb-3">
+            <div class="flex items-start justify-between mb-2 md:mb-3">
               <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
-                  <v-icon name="hi-solid-exclamation-triangle" class="w-4 h-4 text-red-500 dark:text-red-400" />
+                <div class="w-7 h-7 md:w-8 md:h-8 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
+                  <v-icon name="hi-solid-exclamation-triangle" class="w-3.5 h-3.5 md:w-4 md:h-4 text-red-500 dark:text-red-400" />
                 </div>
-                <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Upload Error</h4>
+                <h4 class="text-xs md:text-sm font-semibold text-gray-900 dark:text-white">Upload Error</h4>
               </div>
               <button 
                 @click="clearAvatarError"
-                class="w-6 h-6 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center justify-center transition-all duration-200"
+                class="w-5 h-5 md:w-6 md:h-6 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center justify-center transition-all duration-200"
                 aria-label="Close error message"
               >
-                <v-icon name="hi-solid-x-mark" class="w-4 h-4" />
+                <v-icon name="hi-solid-x-mark" class="w-3.5 h-3.5 md:w-4 md:h-4" />
               </button>
             </div>
 
             <!-- Error message -->
             <div class="space-y-1">
-              <p v-for="error in getAvatarErrors" :key="error" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p v-for="error in getAvatarErrors" :key="error" class="text-xs md:text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words">
                 {{ error }}
               </p>
             </div>
 
             <!-- Progress bar for auto-dismiss -->
-            <div class="mt-3 bg-gray-200 dark:bg-gray-700 h-1 rounded-full overflow-hidden">
+            <div class="mt-2 md:mt-3 bg-gray-200 dark:bg-gray-700 h-1 rounded-full overflow-hidden">
               <div class="h-full bg-red-400 dark:bg-red-500 rounded-full animate-[shrink_5s_linear_forwards] origin-left"></div>
             </div>
           </div>
           
-          <!-- Arrow pointing left (to the avatar) -->
-          <div class="absolute top-4 -left-2">
-            <div class="w-4 h-4 bg-white dark:bg-gray-800 border-l border-b border-red-200 dark:border-red-600 transform rotate-45"></div>
+          <!-- Arrow pointing up on mobile, left on desktop -->
+          <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 md:top-4 md:left-0 md:-translate-x-2 md:translate-y-0">
+            <div class="w-4 h-4 bg-white dark:bg-gray-800 border-red-200 dark:border-red-600 transform rotate-45 border-l border-t md:border-l md:border-b md:border-t-0"></div>
           </div>
         </div>
       </div>

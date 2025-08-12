@@ -5,9 +5,10 @@
         :disabled="disabled || loading"
         @click="handleClick"
     >
-        <v-icon v-if="icon && !loading" :name="icon" class="btn-icon" />
-        <span v-if="loading" class="loading-spinner"></span>
-        <slot>{{ text }}</slot>
+        <v-icon v-if="loading" name="pr-spinner" class="w-4 h-4" animation="spin"/>
+        <v-icon v-else-if="icon" :name="icon" class="w-4 h-4" />
+        <span v-if="text">{{ text }}</span>
+        <slot />
     </button>
 </template>
 
@@ -15,7 +16,7 @@
 import { computed, withDefaults, defineProps, defineEmits } from 'vue'
 
 interface Props {
-    variant?: 'primary' | 'secondary' | 'google' | 'outline' | 'ghost'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'cancel' | 'google'
     size?: 'sm' | 'md' | 'lg'
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
@@ -40,20 +41,53 @@ const emit = defineEmits<{
 
 // Computed properties
 const buttonClasses = computed(() => {
-    const classes = ['btn']
-    
-    // Variant classes
-    classes.push(`btn--${props.variant}`)
+    const baseClasses = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200'
     
     // Size classes
-    classes.push(`btn--${props.size}`)
-    
-    // Full width
-    if (props.fullWidth) {
-        classes.push('btn--full')
+    let sizeClasses = ''
+    switch (props.size) {
+        case 'sm':
+            sizeClasses = 'px-3 py-2 text-sm'
+            break
+        case 'lg':
+            sizeClasses = 'px-6 py-4 text-lg'
+            break
+        default:
+            sizeClasses = 'px-4 py-2 text-sm sm:px-6 sm:py-2'
     }
     
-    return classes
+    // Variant classes
+    let variantClasses = ''
+    switch (props.variant) {
+        case 'primary':
+            variantClasses = 'bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white focus:ring-emerald-500'
+            break
+        case 'secondary':
+            variantClasses = 'bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white focus:ring-gray-500'
+            break
+        case 'google':
+            variantClasses = 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500 shadow-sm hover:shadow-md transition-shadow'
+            break
+        case 'outline':
+            variantClasses = 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500'
+            break
+        case 'ghost':
+            variantClasses = 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-gray-500'
+            break
+        case 'cancel':
+            variantClasses = 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500'
+            break
+        default:
+            variantClasses = 'bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white focus:ring-emerald-500'
+    }
+    
+    // Full width
+    const widthClasses = props.fullWidth ? 'w-full sm:w-auto' : 'w-auto'
+    
+    // Disabled classes
+    const disabledClasses = props.disabled || props.loading ? 'disabled:cursor-not-allowed disabled:opacity-50' : ''
+    
+    return `${baseClasses} ${sizeClasses} ${variantClasses} ${widthClasses} ${disabledClasses}`
 })
 
 // Methods
@@ -64,98 +98,6 @@ const handleClick = (event: MouseEvent) => {
 }
 </script>
 
-<style lang="scss" scoped>
-.btn {
-    @apply px-4 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2;
-    border: none;
-    cursor: pointer;
-
-    &:disabled {
-        @apply opacity-60 cursor-not-allowed;
-    }
-
-    // Variants
-    &--primary {
-        background: var(--color-primary);
-        color: white;
-
-        &:hover:not(:disabled) {
-            background: var(--color-primary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-    }
-
-    &--secondary {
-        background: var(--color-secondary);
-        color: white;
-
-        &:hover:not(:disabled) {
-            background: var(--color-secondary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-    }
-
-    &--google {
-        @apply border;
-        background: var(--color-bg);
-        border-color: var(--color-border);
-        color: var(--color-text);
-
-        &:hover:not(:disabled) {
-            background: var(--color-bg-hover);
-            border-color: var(--color-border-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-    }
-
-    &--outline {
-        @apply border;
-        background: transparent;
-        border-color: var(--color-primary);
-        color: var(--color-primary);
-
-        &:hover:not(:disabled) {
-            background: var(--color-primary);
-            color: white;
-        }
-    }
-
-    &--ghost {
-        background: transparent;
-        color: var(--color-text);
-
-        &:hover:not(:disabled) {
-            background: var(--color-bg-hover);
-        }
-    }
-
-    // Sizes
-    &--sm {
-        @apply px-3 py-2 text-sm;
-    }
-
-    &--md {
-        @apply px-4 py-3;
-    }
-
-    &--lg {
-        @apply px-6 py-4 text-lg;
-    }
-
-    // Full width
-    &--full {
-        @apply w-full;
-    }
-}
-
-.btn-icon {
-    @apply w-5 h-5;
-}
-
-.loading-spinner {
-    @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
-}
+<style scoped>
+/* Component uses Tailwind CSS classes directly */
 </style>

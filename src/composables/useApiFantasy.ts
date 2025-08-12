@@ -16,7 +16,6 @@ export interface ApiError {
     }
 }
 
-
 export function useApiFantasy() {
     const toast = useToast();
 
@@ -57,7 +56,7 @@ export function useApiFantasy() {
 
     // Add a request interceptor to include the token in the headers
     apiFantasyInstance.interceptors.request.use((config) => {
-        try {   
+        try {
             const authStore = useAuthStore();
             const token = authStore.getToken();
             if (token) {
@@ -78,6 +77,7 @@ export function useApiFantasy() {
             return response;
         },
         (error) => {
+            const authStore = useAuthStore();
             const apiError: ApiError = {
                 message: error.message || 'An error occurred',
                 status: error.response?.status,
@@ -97,6 +97,7 @@ export function useApiFantasy() {
                     case 401: {
                         errorTitle = 'Authentication Failed'
                         errorMessage = error.response.data?.message || 'Authentication error. Please verify your credentials.'
+                        authStore.clearAuth();
                         break
                     }
                     case 422: {

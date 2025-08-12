@@ -28,6 +28,17 @@ import {
   IoSettingsSharp,
   IoPencilSharp,
   MdCancel,
+  HiSolidKey,
+  HiCamera,
+  HiSolidShieldCheck,
+  MdPassword,
+  PrSpinner,
+  HiSolidLockClosed,
+  BiKeyFill,
+  BiShieldCheck,
+  HiSolidMail,
+  HiSolidPhone,
+  HiSolidIdentification,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -114,26 +125,37 @@ export const iconList = [
   IoSettingsSharp,
   IoPencilSharp,
   MdCancel,
-  
+  HiSolidKey,
+  HiCamera,
+  HiSolidShieldCheck,
+  MdPassword,
+  PrSpinner,
+  HiSolidLockClosed,
+  BiKeyFill,
+  BiShieldCheck,
+  HiSolidMail,
+  HiSolidPhone,
+  HiSolidIdentification,
+
   // Theme icons
   HiSolidSun,
   HiSolidMoon,
   HiSolidDesktopComputer,
-  
+
   // Search and filter icons
   HiSolidSearch,
   HiSolidFilter,
   HiSolidAdjustments,
   HiSolidSortAscending,
   HiSolidSortDescending,
-  
+
   // Navigation icons
   HiSolidArrowLeft,
   HiSolidArrowRight,
   HiSolidArrowUp,
   HiSolidArrowDown,
   HiSolidExternalLink,
-  
+
   // Action icons
   HiSolidPencil,
   HiSolidTrash,
@@ -143,7 +165,7 @@ export const iconList = [
   HiSolidRefresh,
   HiSolidEye,
   HiSolidEyeOff,
-  
+
   // Status icons
   HiSolidClock,
   HiSolidBell,
@@ -151,7 +173,7 @@ export const iconList = [
   HiSolidHeart,
   HiSolidBookmark,
   HiSolidShare,
-  
+
   // Login icons
   BiPersonFill,
   BiLockFill,
@@ -181,26 +203,26 @@ export const iconNames = {
   error: 'hi-solid-x-circle',
   success: 'hi-solid-check-circle',
   warning: 'hi-solid-exclamation-circle',
-  
+
   // Theme
   sun: 'hi-solid-sun',
   moon: 'hi-solid-moon',
   computer: 'hi-solid-desktop-computer',
-  
+
   // Search and filter
   search: 'hi-solid-search',
   filter: 'hi-solid-filter',
   adjustments: 'hi-solid-adjustments',
   sortAsc: 'hi-solid-sort-ascending',
   sortDesc: 'hi-solid-sort-descending',
-  
+
   // Navigation
   arrowLeft: 'hi-solid-arrow-left',
   arrowRight: 'hi-solid-arrow-right',
   arrowUp: 'hi-solid-arrow-up',
   arrowDown: 'hi-solid-arrow-down',
   externalLink: 'hi-solid-external-link',
-  
+
   // Actions
   edit: 'hi-solid-pencil',
   delete: 'hi-solid-trash',
@@ -210,7 +232,7 @@ export const iconNames = {
   refresh: 'hi-solid-refresh',
   show: 'hi-solid-eye',
   hide: 'hi-solid-eye-off',
-  
+
   // Status
   clock: 'hi-solid-clock',
   bell: 'hi-solid-bell',

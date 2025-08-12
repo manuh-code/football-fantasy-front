@@ -31,24 +31,34 @@
 
                 <!-- Login Button -->
                 <div>
-                    <ButtonComponent type="submit" variant="primary" :disabled="!isFormValid" :loading="isLoginLoading"
-                        full-width>
-                        {{ isLoginLoading ? 'Signing in...' : 'Sign In' }}
-                    </ButtonComponent>
+                    <ButtonComponent 
+                        type="submit" 
+                        variant="primary" 
+                        size="md"
+                        :disabled="!isFormValid" 
+                        :loading="isLoginLoading"
+                        :full-width="true"
+                        :text="isLoginLoading ? 'Signing in...' : 'Sign In'"
+                    />
                 </div>
             </form>
 
             <!-- Separator -->
-            <span class="separator-text">
-                <slot>Or continue with</slot>
-            </span>
+            <div class="separator">
+                <span class="separator-text">Or continue with</span>
+            </div>
 
             <!-- Google Button -->
             <div>
-                <ButtonComponent variant="google" icon="bi-google" :loading="isGoogleLoading" full-width
-                    @click="handleGoogleLogin">
-                    {{ isGoogleLoading ? 'Connecting...' : 'Continue with Google' }}
-                </ButtonComponent>
+                <ButtonComponent 
+                    variant="google" 
+                    size="md"
+                    icon="bi-google" 
+                    :loading="isGoogleLoading" 
+                    :full-width="true"
+                    :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
+                    @click="handleGoogleLogin"
+                />
             </div>
 
             <!-- Additional Links -->
@@ -62,7 +72,6 @@
         </div>
     </div>
 </template>
-
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
@@ -175,14 +184,19 @@ const handleGoogleLogin = async () => {
 </script>
 
 
-<style lang="scss" scoped>
-/* Component styles with global animations from main.scss */
+<style scoped>
+/* Component styles converted to pure CSS with Tailwind-compatible classes */
 .login-component {
-    @apply min-h-screen flex items-center justify-center px-4 py-8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
 }
 
 .login-container {
-    @apply w-full max-w-md;
+    width: 100%;
+    max-width: 28rem;
     background: var(--color-bg);
     border-radius: 16px;
     padding: 2rem;
@@ -191,21 +205,26 @@ const handleGoogleLogin = async () => {
 }
 
 .login-header {
-    @apply text-center mb-8;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .login-title {
-    @apply text-2xl font-bold mb-2;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
     color: var(--color-text);
 }
 
 .login-subtitle {
-    @apply text-sm;
+    font-size: 0.875rem;
     color: var(--color-text-secondary);
 }
 
 .login-form {
-    @apply space-y-6;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .remember-me {
@@ -234,60 +253,68 @@ const handleGoogleLogin = async () => {
 }
 
 .login-footer {
-    @apply mt-8 text-center space-y-3;
+    margin-top: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .link {
-    @apply text-sm font-medium transition-colors duration-200;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
     color: var(--color-primary);
+    text-decoration: none;
+}
 
-    &:hover {
-        color: var(--color-primary-hover);
-    }
+.link:hover {
+    color: var(--color-primary-hover);
 }
 
 .text-muted {
-    @apply text-sm;
+    font-size: 0.875rem;
     color: var(--color-text-secondary);
+    margin: 0;
 }
 
 .separator {
-    @apply relative my-6;
+    position: relative;
+    margin: 1.5rem 0;
     display: flex;
     align-items: center;
     text-align: center;
+}
 
-    &::before {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--color-border);
-    }
-
-    &::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--color-border);
-    }
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
 }
 
 .separator-text {
-    @apply px-4 text-sm;
+    padding: 0 1rem;
+    font-size: 0.875rem;
     background: var(--color-bg);
     color: var(--color-text-secondary);
     white-space: nowrap;
 }
 
-// Responsive adjustments
+/* Responsive adjustments */
 @media (max-width: 640px) {
+    .login-component {
+        padding: 1rem;
+    }
+
     .login-container {
         margin: 1rem;
         padding: 1.5rem;
     }
 
     .login-title {
-        @apply text-xl;
+        font-size: 1.25rem;
     }
 }
 </style>

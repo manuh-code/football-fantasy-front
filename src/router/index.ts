@@ -54,6 +54,17 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: true
     }
   },
+  {
+    path: '/change-password',
+    name: 'change-password',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "change-password" */ '@/views/user/password/ChangePasswordView.vue'),
+    meta: {
+      title: 'Change Password - Football Fantasy',
+      description: 'Update your account password',
+      requiresAuth: true
+    }
+  },
   // Catch-all route for 404 pages
   {
     path: '/:pathMatch(.*)*',

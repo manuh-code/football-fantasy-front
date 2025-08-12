@@ -19,7 +19,9 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     clearAuth() {
+      const userStore = useUserStore();
       this.token = null;
+      userStore.setUserData(null);
     },
     setToken(token: string) {
       this.token = token;
@@ -38,10 +40,8 @@ export const useAuthStore = defineStore("auth", {
       return response;
     },
     async logout(): Promise<void> {
-      const userStore = useUserStore();
       await loginService.logout();
       this.clearAuth();
-      userStore.setUserData(null);
     }
 
   },

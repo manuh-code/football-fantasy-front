@@ -2,6 +2,7 @@ import { ApiResponse } from "@/composables";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { UserPayload } from "@/interfaces/user/userPayload";
+import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
 import { AxiosError } from "axios";
 
 export class UserService {
@@ -42,6 +43,14 @@ export class UserService {
             return response.data.data;
         }
         throw new AxiosError('Failed to update avatar');
+    }
+
+    async changePassword(payload: ChangePasswordPayload): Promise<UserDataInterface> {
+        const response = await this.api.put<ApiResponse<UserDataInterface>>('user/update/password', payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to change password');
     }
 }
 

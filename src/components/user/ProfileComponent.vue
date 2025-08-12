@@ -40,89 +40,119 @@
 
                 <form @submit.prevent="handleUpdateProfile" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <!-- First Name -->
-                    <div class="space-y-1">
-                        <label for="firstName" class="block text-sm font-medium text-gray-600 dark:text-gray-400">First
-                            Name</label>
-                        <input v-if="isEditing" id="firstName" v-model="editForm.firstName" type="text"
-                            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': hasFieldError('firstName') }"
-                            placeholder="Enter your first name" />
-                        <div v-else
-                            class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <p class="text-lg text-gray-900 dark:text-white font-medium">{{ userData.firstname }}</p>
-                        </div>
-                        <!-- Error messages -->
-                        <div v-if="hasFieldError('firstName')" class="text-red-600 dark:text-red-400 text-sm">
-                            <p v-for="error in getFieldError('firstName')" :key="error" class="mt-1">{{ error }}</p>
+                    <div>
+                        <FormInput 
+                            v-if="isEditing"
+                            id="firstName" 
+                            v-model="editForm.firstName" 
+                            label="First Name"
+                            type="text"
+                            icon="hi-solid-identification"
+                            placeholder="Enter your first name"
+                            :error="hasFieldError('firstName') ? getFieldError('firstName').join(', ') : ''"
+                        />
+                        <div v-else>
+                            <label for="firstName-display" class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">First Name</label>
+                            <div id="firstName-display" class="bg-transparent flex items-center gap-3">
+                                <v-icon name="hi-solid-identification" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                <div class="flex-1">
+                                    <p class="text-lg text-gray-900 dark:text-white font-medium py-1">{{ userData.firstname }}</p>
+                                    <div class="h-px bg-gray-200 dark:bg-gray-700 mt-2"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Last Name -->
-                    <div class="space-y-1">
-                        <label for="lastName" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Last
-                            Name</label>
-                        <input v-if="isEditing" id="lastName" v-model="editForm.lastName" type="text"
-                            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': hasFieldError('lastName') }"
-                            placeholder="Enter your last name" />
-                        <div v-else
-                            class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <p class="text-lg text-gray-900 dark:text-white font-medium">{{ userData.lastname }}</p>
-                        </div>
-                        <!-- Error messages -->
-                        <div v-if="hasFieldError('lastName')" class="text-red-600 dark:text-red-400 text-sm">
-                            <p v-for="error in getFieldError('lastName')" :key="error" class="mt-1">{{ error }}</p>
+                    <div>
+                        <FormInput 
+                            v-if="isEditing"
+                            id="lastName" 
+                            v-model="editForm.lastName" 
+                            label="Last Name"
+                            type="text"
+                            icon="hi-solid-identification"
+                            placeholder="Enter your last name"
+                            :error="hasFieldError('lastName') ? getFieldError('lastName').join(', ') : ''"
+                        />
+                        <div v-else>
+                            <label for="lastName-display" class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Last Name</label>
+                            <div id="lastName-display" class="bg-transparent flex items-center gap-3">
+                                <v-icon name="hi-solid-identification" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                <div class="flex-1">
+                                    <p class="text-lg text-gray-900 dark:text-white font-medium py-1">{{ userData.lastname }}</p>
+                                    <div class="h-px bg-gray-200 dark:bg-gray-700 mt-2"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Email -->
-                    <div class="space-y-1">
-                        <label for="email" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Email
-                            Address</label>
-                        <input v-if="isEditing" id="email" v-model="editForm.email" type="email"
-                            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': hasFieldError('email') }"
-                            placeholder="Enter your email" />
-                        <div v-else
-                            class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <p class="text-lg text-gray-900 dark:text-white font-medium break-all">{{ userData.email }}
-                            </p>
-                        </div>
-                        <!-- Error messages -->
-                        <div v-if="hasFieldError('email')" class="text-red-600 dark:text-red-400 text-sm">
-                            <p v-for="error in getFieldError('email')" :key="error" class="mt-1">{{ error }}</p>
+                    <div>
+                        <FormInput 
+                            v-if="isEditing"
+                            id="email" 
+                            v-model="editForm.email" 
+                            label="Email Address"
+                            type="email"
+                            icon="hi-solid-mail"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            :error="hasFieldError('email') ? getFieldError('email').join(', ') : ''"
+                        />
+                        <div v-else>
+                            <label for="email-display" class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Email Address</label>
+                            <div id="email-display" class="bg-transparent flex items-center gap-3">
+                                <v-icon name="hi-solid-mail" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                <div class="flex-1">
+                                    <p class="text-lg text-gray-900 dark:text-white font-medium py-1 break-all">{{ userData.email }}</p>
+                                    <div class="h-px bg-gray-200 dark:bg-gray-700 mt-2"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Phone -->
-                    <div class="space-y-1">
-                        <label for="phone" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Phone
-                            Number</label>
-                        <input v-if="isEditing" id="phone" v-model="editForm.phone" type="tel"
-                            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': hasFieldError('phone') }"
-                            placeholder="Enter your phone number" />
-                        <div v-else
-                            class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <p class="text-lg text-gray-900 dark:text-white font-medium">{{ userData.phone || 'Not provided' }}</p>
-                        </div>
-                        <!-- Error messages -->
-                        <div v-if="hasFieldError('phone')" class="text-red-600 dark:text-red-400 text-sm">
-                            <p v-for="error in getFieldError('phone')" :key="error" class="mt-1">{{ error }}</p>
+                    <div>
+                        <FormInput 
+                            v-if="isEditing"
+                            id="phone" 
+                            v-model="editForm.phone" 
+                            label="Phone Number"
+                            type="tel"
+                            icon="hi-solid-phone"
+                            placeholder="Enter your phone number"
+                            autocomplete="tel"
+                            :error="hasFieldError('phone') ? getFieldError('phone').join(', ') : ''"
+                        />
+                        <div v-else>
+                            <label for="phone-display" class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Phone Number</label>
+                            <div id="phone-display" class="bg-transparent flex items-center gap-3">
+                                <v-icon name="hi-solid-phone" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                <div class="flex-1">
+                                    <p class="text-lg text-gray-900 dark:text-white font-medium py-1">{{ userData.phone || 'Not provided' }}</p>
+                                    <div class="h-px bg-gray-200 dark:bg-gray-700 mt-2"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-
                     <!-- Save Button (only visible when editing) -->
                     <div v-if="isEditing" class="md:col-span-2 flex justify-end space-x-3 pt-4">
-                        <button type="button" @click="resetForm"
-                            class="px-6 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-white font-medium rounded-lg transition-colors duration-200">
-                            Reset
-                        </button>
-                        <button type="submit" :disabled="isLoading"
-                            class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                            {{ isLoading ? 'Updating...' : 'Update Profile' }}
-                        </button>
+                        <ButtonComponent
+                            variant="secondary"
+                            size="md"
+                            text="Reset"
+                            @click="resetForm"
+                        />
+                        <ButtonComponent
+                            type="submit"
+                            variant="primary"
+                            size="md"
+                            :text="isLoading ? 'Updating...' : 'Update Profile'"
+                            :loading="isLoading"
+                            :disabled="isLoading"
+                        />
                     </div>
                 </form>
             </div>
@@ -156,7 +186,7 @@ import { computed, onMounted, ref, reactive } from 'vue'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
-import { AvatarUpload } from '@/components/ui'
+import { AvatarUpload, ButtonComponent, FormInput } from '@/components/ui'
 import type { UserDataInterface } from '@/interfaces/user/userInterface'
 import type { UserPayload } from '@/interfaces/user/userPayload'
 

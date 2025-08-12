@@ -101,13 +101,17 @@ const toggleVisibility = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .form-group {
-    @apply space-y-2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .form-label {
-    @apply text-sm font-medium block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: block;
     color: var(--color-text);
 }
 
@@ -121,52 +125,59 @@ const toggleVisibility = () => {
     position: absolute;
     left: 0.75rem;
     z-index: 1;
-    @apply w-4 h-4;
+    width: 1rem;
+    height: 1rem;
     color: var(--color-text-secondary);
 }
 
 .form-input {
-    @apply w-full px-4 py-3 rounded-lg border transition-all duration-200;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
     background: var(--color-bg-secondary);
     border-color: var(--color-border);
     color: var(--color-text);
+}
 
-    &:focus {
-        outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
-    }
+.form-input:focus {
+    outline: none;
+    border-color: #059669; /* emerald-600 */
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
 
-    &::placeholder {
-        color: var(--color-text-muted);
-    }
+.form-input::placeholder {
+    color: var(--color-text-muted);
+}
 
-    &--error {
-        border-color: var(--color-danger);
+.form-input--error {
+    border-color: #dc2626; /* red-600 */
+}
 
-        &:focus {
-            border-color: var(--color-danger);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-    }
+.form-input--error:focus {
+    border-color: #dc2626; /* red-600 */
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
 
-    &--with-icon {
-        padding-left: 2.5rem;
-    }
+.form-input--with-icon {
+    padding-left: 2.5rem;
+}
 
-    &--with-icons {
-        padding-left: 2.5rem;
-        padding-right: 3rem;
-    }
+.form-input--with-icons {
+    padding-left: 2.5rem;
+    padding-right: 3rem;
+}
 
-    &:disabled {
-        @apply opacity-60 cursor-not-allowed;
-        background: var(--color-bg-muted);
-    }
+.form-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--color-bg-muted);
+}
 
-    &:read-only {
-        background: var(--color-bg-muted);
-    }
+.form-input:read-only {
+    background: var(--color-bg-muted);
 }
 
 .password-toggle-btn {
@@ -178,28 +189,29 @@ const toggleVisibility = () => {
     padding: 0.25rem;
     border-radius: 0.25rem;
     transition: all 0.15s ease-in-out;
+}
 
-    &:hover {
-        background: var(--color-bg-hover);
-    }
+.password-toggle-btn:hover {
+    background: var(--color-bg-hover);
+}
 
-    &:focus {
-        outline: none;
-        background: var(--color-bg-hover);
-    }
+.password-toggle-btn:focus {
+    outline: none;
+    background: var(--color-bg-hover);
 }
 
 .password-toggle-icon {
-    @apply w-4 h-4;
+    width: 1rem;
+    height: 1rem;
     color: var(--color-text-secondary);
+}
 
-    &:hover {
-        color: var(--color-text);
-    }
+.password-toggle-icon:hover {
+    color: var(--color-text);
 }
 
 .form-error {
-    @apply text-xs;
-    color: var(--color-danger);
+    font-size: 0.75rem;
+    color: #dc2626; /* red-600 */
 }
 </style>
