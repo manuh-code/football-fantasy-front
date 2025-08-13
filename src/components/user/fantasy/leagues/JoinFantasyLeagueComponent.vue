@@ -31,6 +31,10 @@
                         <p v-if="leagueType === 'all'" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                             Search is disabled when showing all leagues
                         </p>
+                        <p v-else-if="leagueType === 'public' || leagueType === 'private'" class="mt-2 text-sm text-blue-600 dark:text-blue-400">
+                            <v-icon name="hi-solid-information-circle" class="w-4 h-4 inline mr-1" />
+                            You can search with keywords or leave empty to show all {{ leagueType }} leagues
+                        </p>
                     </div>
 
                     <!-- League Type Filter -->
@@ -90,9 +94,9 @@
                             type="submit"
                             variant="primary"
                             size="md"
-                            :text="leagueType === 'all' ? 'Load All Leagues' : 'Search Leagues'"
+                            :text="leagueType === 'all' ? 'Load All Leagues' : (searchQuery.trim() ? 'Search Leagues' : `Show All ${leagueType === 'public' ? 'Public' : 'Private'} Leagues`)"
                             :loading="isLoading"
-                            :disabled="leagueType !== 'all' && !searchQuery.trim()"
+                            :disabled="false"
                             :full-width="true"
                             icon="hi-solid-search"
                         />
@@ -102,7 +106,7 @@
                             size="md"
                             text="Clear"
                             :full-width="true"
-                            :disabled="isLoading || (!searchQuery && leagues.length === 0 && leagueType === 'public')"
+                            :disabled="isLoading || (!searchQuery && leagues.length === 0 && leagueType === 'all')"
                             @click="clearSearch"
                         />
                     </div>
@@ -301,12 +305,7 @@ const leagueType = ref('all')
 
 // Methods
 const searchLeagues = async () => {
-    // For "all" leagues, we don't need a search term
-    if (leagueType.value !== 'all' && !searchQuery.value.trim()) {
-        searchError.value = 'Please enter a search term'
-        return
-    }
-
+    // Clear any previous errors
     searchError.value = ''
     errorMessage.value = ''
     isLoading.value = true
@@ -314,7 +313,7 @@ const searchLeagues = async () => {
 
     try {
         const searchPayload: FantasyLeagueSearchPayload = {
-            search: leagueType.value === 'all' ? null : searchQuery.value.trim(),
+            search: searchQuery.value.trim() || null,
             is_private: leagueType.value === 'private' ? true : 
                        leagueType.value === 'public' ? false : undefined
         }
@@ -326,8 +325,10 @@ const searchLeagues = async () => {
         if (leagues.value.length === 0) {
             if (leagueType.value === 'all') {
                 toast.info('No Results', 'No leagues available at the moment')
+            } else if (searchQuery.value.trim()) {
+                toast.info('No Results', `No ${leagueType.value} leagues found for "${searchQuery.value}"`)
             } else {
-                toast.info('No Results', `No leagues found for "${searchQuery.value}"`)
+                toast.info('No Results', `No ${leagueType.value} leagues available at the moment`)
             }
         }
     } catch (error) {
