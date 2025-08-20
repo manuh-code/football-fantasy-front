@@ -3,8 +3,6 @@
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Page Header -->
       <PageHeader
-        title="Change Password"
-        description="Update your account password to keep your Football Fantasy account secure"
         back-text="Back"
         breadcrumb-to="/profile"
         breadcrumb-text="Profile"

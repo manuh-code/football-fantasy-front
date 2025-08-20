@@ -8,6 +8,7 @@ import { iconList } from './icons'
 
 // Import global styles
 import './assets/styles/main.scss';
+import 'vue-multiselect/dist/vue-multiselect.css';
 import { createPinia } from 'pinia';
 
 

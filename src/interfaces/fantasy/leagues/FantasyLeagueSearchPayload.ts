@@ -1,4 +1,7 @@
 export interface FantasyLeagueSearchPayload {
-    search?: string | null;
-    is_private?: boolean;
+    filters: {
+        search?: string | null;
+        isPrivate?: boolean;
+        skipJoinedUser?: boolean;
+    };
 }

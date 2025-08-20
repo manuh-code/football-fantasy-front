@@ -1,11 +1,8 @@
-
 import { defineStore } from "pinia";
-import { loginService } from '@/services/login/LoginService';
-import { LoginPayload } from '@/interfaces/login/LoginPayload';
-import { LoginResponse } from '@/interfaces/login/LoginResponse';
+import { loginService } from "@/services/login/LoginService";
+import { LoginPayload } from "@/interfaces/login/LoginPayload";
+import { LoginResponse } from "@/interfaces/login/LoginResponse";
 import { useUserStore } from "../user/useUserStore";
-
-
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
@@ -14,14 +11,12 @@ export const useAuthStore = defineStore("auth", {
       googleUrl: null as string | null,
     };
   },
-  getters: {
-
-  },
+  getters: {},
   actions: {
     clearAuth() {
       const userStore = useUserStore();
       this.token = null;
-      userStore.setUserData(null);
+      userStore.clearUserData();
     },
     setToken(token: string) {
       this.token = token;
@@ -42,8 +37,7 @@ export const useAuthStore = defineStore("auth", {
     async logout(): Promise<void> {
       await loginService.logout();
       this.clearAuth();
-    }
-
+    },
   },
   persist: {
     storage: sessionStorage,

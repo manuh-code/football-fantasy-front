@@ -1,7 +1,7 @@
 export interface CountryResponse {
-    uuid: string;
-    sm_id: number;
-    name: string;
-    fifa_name: string;
-    image_path: string;
+    uuid: string | null;
+    sm_id: number | null;
+    name: string | null;
+    fifa_name: string | null;
+    image_path: string | null;
 }

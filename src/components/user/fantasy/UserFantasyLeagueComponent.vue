@@ -106,103 +106,16 @@
             <!-- Fantasy Leagues Cards -->
             <div v-else-if="fantasyLeagues && fantasyLeagues.length > 0">
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div v-for="league in fantasyLeagues" :key="league.uuid" 
-                        class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300 overflow-hidden">
-                        
-                        <!-- League Header -->
-                        <div class="relative h-24 overflow-hidden">
-                            <!-- Background Image or Fallback Gradient -->
-                            <div v-if="league.image_path" 
-                                class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                                :style="{ backgroundImage: `url(${league.image_path})` }">
-                            </div>
-                            <div v-else 
-                                class="absolute inset-0 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600">
-                            </div>
-                            
-                            <!-- Dark overlay for better text readability -->
-                            <div class="absolute inset-0 bg-black/40"></div>
-                            
-                            <!-- Badge -->
-                            <div class="absolute top-3 right-3 z-10">
-                                <span v-if="league.isAdmin" 
-                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm border border-white/30">
-                                    <v-icon name="hi-solid-star" class="w-3 h-3 mr-1" />
-                                    Admin
-                                </span>
-                                <span v-else 
-                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm border border-white/30">
-                                    <v-icon name="hi-solid-user" class="w-3 h-3 mr-1" />
-                                    Member
-                                </span>
-                            </div>
-                            
-                            <!-- League Name Overlay (optional) -->
-                            <div class="absolute bottom-3 left-3 z-10">
-                                <h4 class="text-white font-semibold text-sm drop-shadow-lg">
-                                    {{ league.name }}
-                                </h4>
-                            </div>
-                            
-                            <!-- Bottom accent line -->
-                            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500"></div>
-                        </div>
-                        
-                        <!-- League Content -->
-                        <div class="p-6">
-                            <div class="mb-4">
-                                <!-- Show description if available, otherwise show league name -->
-                                <div v-if="league.description">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                        {{ league.name }}
-                                    </h3>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                                        {{ league.description }}
-                                    </p>
-                                </div>
-                                <div v-else>
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                        {{ league.name }}
-                                    </h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">
-                                        No description available
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <!-- League Stats -->
-                            <div class="grid grid-cols-2 gap-4 mb-6">
-                                <div class="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Members</p>
-                                    <p class="text-lg font-bold text-gray-900 dark:text-white">{{ league.members_count || 'N/A' }}</p>
-                                </div>
-                                <div class="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Status</p>
-                                    <p class="text-lg font-bold text-emerald-600 dark:text-emerald-400">Active</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Action Buttons -->
-                            <div class="flex gap-2">
-                                <ButtonComponent
-                                    variant="outline"
-                                    size="sm"
-                                    text="View Details"
-                                    icon="hi-solid-eye"
-                                    :full-width="true"
-                                    @click="viewLeague(league.uuid)"
-                                />
-                                <ButtonComponent
-                                    v-if="league.isAdmin"
-                                    variant="primary"
-                                    size="sm"
-                                    text="Manage"
-                                    icon="hi-solid-cog"
-                                    @click="manageLeague(league.uuid)"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <FantasyLeagueCard
+                        v-for="league in fantasyLeagues"
+                        :key="league.uuid"
+                        :league="league"
+                        :show-join-button="false"
+                        :show-view-button="true"
+                        :show-manage-button="true"
+                        @viewDetails="viewLeague"
+                        @manage="manageLeague"
+                    />
                 </div>
             </div>
 
@@ -218,26 +131,7 @@
                     Start your fantasy football journey by creating your own league or joining an existing one!
                 </p>
                 
-                <!-- Action Buttons for Empty State -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-sm mx-auto">
-                    <ButtonComponent
-                        variant="primary"
-                        size="lg"
-                        text="Create League"
-                        icon="hi-solid-plus"
-                        :full-width="true"
-                        class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
-                        @click="createLeague"
-                    />
-                    <ButtonComponent
-                        variant="secondary"
-                        size="lg"
-                        text="Join League"
-                        icon="hi-solid-user"
-                        :full-width="true"
-                        @click="joinLeague"
-                    />
-                </div>
+            
             </div>
         </div>
 
@@ -266,6 +160,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useToast } from '@/composables/useToast'
 import { ButtonComponent } from '@/components/ui'
+import FantasyLeagueCard from '@/components/fantasy/FantasyLeagueCard.vue'
 
 // Stores and composables
 const userStore = useUserStore()
@@ -302,26 +197,27 @@ const loadFantasyLeagues = async () => {
     }
 }
 
-const viewLeague = (leagueUuid: string) => {
-    // TODO: Navigate to league details page
-    console.log('Viewing league:', leagueUuid)
-    toast.info('Coming Soon', 'League details page is under development!')
+const viewLeague = (league: string | { uuid: string }) => {
+    // Navigate to league details page using the league object or UUID
+    const leagueUuid = typeof league === 'string' ? league : league.uuid
+    router.push({ name: 'fantasyLeagueDetail', params: { uuid: leagueUuid } })
 }
 
-const manageLeague = (leagueUuid: string) => {
+const manageLeague = (league: string | { uuid: string }) => {
     // TODO: Navigate to league management page
+    const leagueUuid = typeof league === 'string' ? league : league.uuid
     console.log('Managing league:', leagueUuid)
     toast.info('Coming Soon', 'League management page is under development!')
 }
 
 const createLeague = () => {
     // Navigate to create league page
-    router.push({ path: '/fantasy-league/create' })
+    router.push({ name: 'createFantasyLeague' })
 }
 
 const joinLeague = () => {
     // Navigate to join league page  
-    router.push({ path: '/fantasy-league/join' })
+    router.push({ name: 'joinFantasyLeague' })
 }
 
 // Lifecycle
@@ -346,24 +242,6 @@ onMounted(async () => {
     to {
         transform: rotate(360deg);
     }
-}
-
-/* Text truncation */
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Hover effects */
-.group:hover .group-hover\:text-emerald-600 {
-    color: rgb(5 150 105);
-}
-
-.dark .group:hover .dark\:group-hover\:text-emerald-400 {
-    color: rgb(52 211 153);
 }
 
 /* Accessibility: Respect user's motion preferences */

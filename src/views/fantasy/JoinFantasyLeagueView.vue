@@ -12,12 +12,12 @@
             />
 
             <!-- Join Fantasy League Component -->
-            <JoinFantasyLeagueComponent />
+            <FantasyLeagueJoin />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import PageHeader from '@/components/ui/PageHeader.vue'
-import JoinFantasyLeagueComponent from '@/components/user/fantasy/leagues/JoinFantasyLeagueComponent.vue'
+import FantasyLeagueJoin from '@/components/user/fantasy/leagues/FantasyLeagueJoin.vue'
 </script>

@@ -3,8 +3,6 @@
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Page Header -->
       <PageHeader
-        title="User Profile"
-        description="Manage and view your Football Fantasy account information"
         back-text="Back"
         breadcrumb-to="/dashboard"
         breadcrumb-text="Dashboard"

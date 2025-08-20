@@ -189,7 +189,7 @@ async function handleLogout() {
     emit('logout')
     await authStore.logout()
     closeDropdown()
-    router.push('/')
+    router.push({ name: 'home' })
 }
 
 // Keyboard support

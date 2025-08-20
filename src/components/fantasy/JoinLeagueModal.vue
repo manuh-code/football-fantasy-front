@@ -1,12 +1,23 @@
 <template>
-    <dialog v-if="isVisible" :open="isVisible" class="fixed inset-0 z-50 overflow-y-auto backdrop:bg-gray-500 backdrop:bg-opacity-75" aria-labelledby="modal-title">
-        <!-- Modal Content Container -->
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- This element is to trick the browser into centering the modal contents. -->
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    <!-- Modal Backdrop -->
+    <Transition name="modal-backdrop">
+        <div v-if="isVisible" 
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500 bg-opacity-75 backdrop-blur-sm transition-all duration-300"
+            @click="closeModal"
+        >
+            <!-- Modal Content Container -->
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- This element is to trick the browser into centering the modal contents. -->
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <!-- Modal panel -->
-            <div class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <!-- Modal panel with animation -->
+                <Transition name="modal-content" appear>
+                    <dialog v-if="isVisible" 
+                        :open="isVisible"
+                        class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border-0"
+                        aria-labelledby="modal-title"
+                        @click.stop
+                    >
                 
                 <!-- Header -->
                 <div class="sm:flex sm:items-start">
@@ -16,14 +27,11 @@
                     </div>
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
                         <h3 class="text-lg leading-6 font-semibold text-gray-900 dark:text-white" id="modal-title">
-                            {{ league?.is_private ? 'Request to Join Private League' : 'Join Fantasy League' }}
+                            Join Private League
                         </h3>
                         <div class="mt-2">
                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ league?.is_private 
-                                    ? 'Send a request to join this private fantasy league. The admin will review your request.' 
-                                    : 'Are you sure you want to join this fantasy league?' 
-                                }}
+                                This is a private league. Please enter the league password to join.
                             </p>
                         </div>
                     </div>
@@ -67,18 +75,31 @@
                     </div>
                 </div>
 
-                <!-- Join Message for Private Leagues -->
+                <!-- Password for Private Leagues -->
                 <div v-if="league?.is_private" class="mt-4">
-                    <label for="join-message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Message for Admin (Optional)
+                    <label for="league-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        League Password <span class="text-red-500">*</span>
                     </label>
-                    <textarea
-                        id="join-message"
-                        v-model="joinMessage"
-                        :rows="3"
-                        placeholder="Tell the admin why you'd like to join this league..."
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white"
-                    ></textarea>
+                    <input
+                        id="league-password"
+                        v-model="leaguePassword"
+                        type="password"
+                        placeholder="Enter the league password..."
+                        required
+                        :class="[
+                            'w-full px-3 py-2 border rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white',
+                            passwordError 
+                                ? 'border-red-300 dark:border-red-600 focus:ring-red-500 focus:border-red-500' 
+                                : 'border-gray-300 dark:border-gray-600'
+                        ]"
+                    />
+                    <!-- Password Error Message -->
+                    <div v-if="passwordError" class="mt-2 flex items-start space-x-2">
+                        <v-icon name="hi-solid-exclamation-circle" class="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
+                        <p class="text-sm text-red-600 dark:text-red-400">
+                            {{ passwordError }}
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Actions -->
@@ -91,9 +112,8 @@
                         @click="handleJoin"
                         class="w-full sm:w-auto"
                     >
-                        <v-icon v-if="league?.is_private" name="hi-solid-paper-airplane" class="h-4 w-4 mr-2" />
-                        <v-icon v-else name="hi-solid-user" class="h-4 w-4 mr-2" />
-                        {{ league?.is_private ? 'Send Request' : 'Join League' }}
+                        <v-icon name="hi-solid-user" class="h-4 w-4 mr-2" />
+                        Join League
                     </ButtonComponent>
                     
                     <ButtonComponent
@@ -112,82 +132,109 @@
                     <div class="flex flex-col items-center space-y-2">
                         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                            {{ league?.is_private ? 'Sending request...' : 'Joining league...' }}
+                            Joining league...
                         </p>
                     </div>
                 </div>
+                    </dialog>
+                </Transition>
             </div>
         </div>
-    </dialog>
+    </Transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue'
+<script setup lang="ts">
+import { ref, watch, onMounted, onUnmounted, defineProps, defineEmits, withDefaults } from 'vue'
 import { ButtonComponent } from '@/components/ui'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 
-export default defineComponent({
-    name: 'JoinLeagueModal',
-    components: {
-        ButtonComponent
-    },
-    props: {
-        isVisible: {
-            type: Boolean,
-            default: false
-        },
-        league: {
-            type: Object as PropType<FantasyLeaguesResponse>,
-            default: null
-        },
-        isLoading: {
-            type: Boolean,
-            default: false
-        }
-    },
-    emits: ['close', 'join'],
-    setup(props, { emit }) {
-        const joinMessage = ref('')
+// Props interface
+interface Props {
+    isVisible?: boolean
+    league?: FantasyLeaguesResponse | null
+    isLoading?: boolean
+    passwordError?: string
+}
 
-        // Watch for modal visibility changes to reset form
-        watch(() => props.isVisible, (newValue) => {
-            if (!newValue) {
-                joinMessage.value = ''
-            }
-        })
+// Props with defaults
+const props = withDefaults(defineProps<Props>(), {
+    isVisible: false,
+    league: null,
+    isLoading: false,
+    passwordError: ''
+})
 
-        const closeModal = () => {
-            emit('close')
-        }
+// Emits
+const emit = defineEmits<{
+    close: []
+    join: [joinData: { league: FantasyLeaguesResponse; password?: string }]
+}>()
 
-        const handleJoin = () => {
-            if (!props.league) return
+// Reactive state
+const leaguePassword = ref('')
 
-            const joinData = {
-                league: props.league,
-                message: props.league.is_private ? joinMessage.value : undefined
-            }
-
-            emit('join', joinData)
-        }
-
-        const formatDate = (dateString: string) => {
-            const date = new Date(dateString)
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            })
-        }
-
-        return {
-            joinMessage,
-            closeModal,
-            handleJoin,
-            formatDate
-        }
+// Watch for modal visibility changes to reset form
+watch(() => props.isVisible, (newValue) => {
+    if (!newValue) {
+        leaguePassword.value = ''
     }
 })
+
+// Watch for password error changes to focus the input when there's an error
+watch(() => props.passwordError, (newError) => {
+    if (newError) {
+        // Focus the password input when there's an error
+        setTimeout(() => {
+            const passwordInput = document.getElementById('league-password')
+            if (passwordInput) {
+                passwordInput.focus()
+            }
+        }, 100)
+    }
+})
+
+// Handle keyboard events
+const handleKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && props.isVisible && !props.isLoading) {
+        closeModal()
+    }
+}
+
+// Add/remove event listeners
+onMounted(() => {
+    document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeydown)
+})
+
+// Methods
+const closeModal = () => {
+    if (!props.isLoading) {
+        emit('close')
+    }
+}
+
+const handleJoin = () => {
+    if (!props.league) return
+
+    const joinData = {
+        league: props.league,
+        password: props.league.is_private ? leaguePassword.value : undefined
+    }
+
+    emit('join', joinData)
+}
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    })
+}
 </script>
 
 <style scoped>
@@ -200,15 +247,47 @@ export default defineComponent({
     overflow: hidden;
 }
 
-/* Modal animations */
-.modal-enter-active,
-.modal-leave-active {
-    transition: opacity 0.3s ease;
+/* Modal backdrop animations */
+.modal-backdrop-enter-active,
+.modal-backdrop-leave-active {
+    transition: all 0.3s ease;
 }
 
-.modal-enter-from,
-.modal-leave-to {
+.modal-backdrop-enter-from,
+.modal-backdrop-leave-to {
     opacity: 0;
+    backdrop-filter: blur(0px);
+}
+
+.modal-backdrop-enter-to,
+.modal-backdrop-leave-from {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+}
+
+/* Modal content animations */
+.modal-content-enter-active {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-content-leave-active {
+    transition: all 0.2s ease-in;
+}
+
+.modal-content-enter-from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+}
+
+.modal-content-leave-to {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+}
+
+.modal-content-enter-to,
+.modal-content-leave-from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
 }
 
 /* Accessibility: Focus styles */
@@ -227,6 +306,21 @@ button:focus,
 @media (max-width: 640px) {
     .sm\:max-w-lg {
         max-width: calc(100vw - 2rem);
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .modal-backdrop-enter-active,
+    .modal-backdrop-leave-active,
+    .modal-content-enter-active,
+    .modal-content-leave-active {
+        transition: none !important;
+    }
+    
+    .modal-content-enter-from,
+    .modal-content-leave-to {
+        transform: none !important;
     }
 }
 </style>

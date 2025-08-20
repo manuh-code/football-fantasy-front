@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
+import router from '@/router'
 
 
 export interface ApiError {
@@ -76,6 +77,7 @@ export function useApiFantasy() {
         },
         (error) => {
             const authStore = useAuthStore();
+            
             const apiError: ApiError = {
                 message: error.message || 'An error occurred',
                 status: error.response?.status,
@@ -95,6 +97,7 @@ export function useApiFantasy() {
                         errorTitle = 'Authentication Failed'
                         errorMessage = error.response.data?.message || 'Authentication error. Please verify your credentials.'
                         authStore.clearAuth();
+                        router.push({ name: 'login' });
                         break
                     }
                     case 422: {

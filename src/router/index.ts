@@ -55,7 +55,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/change-password',
+    path: '/change/password',
     name: 'change-password',
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "change-password" */ '@/views/user/password/ChangePasswordView.vue'),
@@ -66,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/favorite-football-team',
+    path: '/favorite/football/team',
     name: 'favorite-football-team',
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "favorite-team" */ '@/views/user/favoriteTeam/FavoriteTeamView.vue'),
@@ -77,7 +77,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/user-fantasy-leagues',
+    path: '/my/fantasy/leagues',
     name: 'userFantasyLeague',
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "user-fantasy-leagues" */ '@/views/user/fantasy/UserFantasyLeagueView.vue'),
@@ -88,10 +88,10 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/fantasy-league/create',
+    path: '/fantasy/league/create',
     name: 'createFantasyLeague',
     // Route level code-splitting for better performance
-    component: () => import(/* webpackChunkName: "create-fantasy-league" */ '@/views/fantasy/CreateFantasyLeagueView.vue'),
+    component: () => import(/* webpackChunkName: "create-fantasy-league" */ '@/views/fantasy/FantasyLeagueCreateView.vue'),
     meta: {
       title: 'Create Fantasy League - Football Fantasy',
       description: 'Create a new fantasy football league',
@@ -99,13 +99,35 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/fantasy-league/join',
+    path: '/fantasy/league/:uuid',
+    name: 'fantasyLeagueDetail',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "fantasy-league-detail" */ '@/views/fantasy/FantasyLeagueDetailView.vue'),
+    meta: {
+      title: 'Fantasy League Details - Football Fantasy',
+      description: 'View detailed information about a fantasy football league',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/fantasy/league/join',
     name: 'joinFantasyLeague',
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "join-fantasy-league" */ '@/views/fantasy/JoinFantasyLeagueView.vue'),
     meta: {
       title: 'Join Fantasy League - Football Fantasy',
       description: 'Join an existing fantasy football league',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/football/player/statistics',
+    name: 'footballPlayerStatistics',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "football-player-statistics" */ '@/views/football/player/FootballPlayerStatisticsView.vue'),
+    meta: {
+      title: 'Football Player Statistics - Football Fantasy',
+      description: 'View detailed statistics for football players',
       requiresAuth: true
     }
   },

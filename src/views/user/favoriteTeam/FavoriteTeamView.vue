@@ -3,8 +3,6 @@
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Page Header -->
       <PageHeader
-        title="Favorite Football Team"
-        description="Select and manage your favorite football team to personalize your Football Fantasy experience"
         back-text="Back"
         breadcrumb-to="/profile"
         breadcrumb-text="Profile"

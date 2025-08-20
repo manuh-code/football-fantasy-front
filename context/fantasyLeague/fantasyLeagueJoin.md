@@ -4,23 +4,23 @@
 
 - **Vista:** `JoinFantasyLeagueView`  
   - Ubicación sugerida: `src/views/fantasy/JoinFantasyLeagueView.vue`
-  - Debe invocar el componente `<JoinFantasyLeagueComponent />`.
+  - Debe invocar el componente `<FantasyLeagueJoin />`.
 
 ```vue
 <template>
-  <JoinFantasyLeagueComponent />
+  <FantasyLeagueJoin />
 </template>
 
 <script setup>
-import JoinFantasyLeagueComponent from '@/components/fantasy/JoinFantasyLeagueComponent.vue'
+import FantasyLeagueJoin from '@/components/fantasy/FantasyLeagueJoin.vue'
 </script>
 ```
 
 ---
 
-## 2. Componente: JoinFantasyLeagueComponent
+## 2. Componente: FantasyLeagueJoin
 
-- **Ubicación:** `src/components/fantasy/JoinFantasyLeagueComponent.vue`
+- **Ubicación:** `src/components/fantasy/FantasyLeagueJoin.vue`
 - **Funcionalidad:**  
   - Input de búsqueda (nombre o descripción).
   - Dos radio buttons para filtrar por pública o privada.
@@ -170,7 +170,7 @@ src/
 │
 ├─ components/
 │   ├─ fantasy/
-│   │    ├─ JoinFantasyLeagueComponent.vue
+│   │    ├─ FantasyLeagueJoin.vue
 │   │    └─ FantasyLeagueCard.vue
 │   └─ ui/
 │        ├─ InputComponent.vue

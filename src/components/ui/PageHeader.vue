@@ -5,7 +5,7 @@
       <!-- Breadcrumb -->
       <nav class="flex items-center text-xs text-gray-500 dark:text-gray-400">
         <router-link 
-          :to="breadcrumbTo" 
+          :to="breadcrumbTo || { name: breadcrumbRouteName }" 
           class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
         >
           {{ breadcrumbText }}
@@ -24,10 +24,12 @@
       </button>
     </div>
 
-    <!-- Compact Title Section -->
-    <div>
-      <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ title }}</h1>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+    <!-- Page Title and Description -->
+    <div v-if="title || description" class="mb-6">
+      <h1 v-if="title" class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        {{ title }}
+      </h1>
+      <p v-if="description" class="text-gray-600 dark:text-gray-400 text-sm md:text-base">
         {{ description }}
       </p>
     </div>
@@ -39,17 +41,21 @@ import { withDefaults, defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface Props {
-  title: string
-  description: string
+  title?: string
+  description?: string
   backText?: string
+  breadcrumbRouteName?: string
   breadcrumbTo?: string
   breadcrumbText?: string
   currentPageText?: string
 }
 
 withDefaults(defineProps<Props>(), {
+  title: '',
+  description: '',
   backText: 'Back',
-  breadcrumbTo: '/dashboard',
+  breadcrumbRouteName: 'dashboard',
+  breadcrumbTo: '',
   breadcrumbText: 'Dashboard',
   currentPageText: 'Current Page'
 })

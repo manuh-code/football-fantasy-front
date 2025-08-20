@@ -45,6 +45,11 @@ import {
   FaDatabase,
   HiSolidLightningBolt,
   HiSolidLightBulb,
+  MdSecurity,
+  BiFunnelFill,
+  HiSearch,
+  HiSelector,
+  RiArrowUpDownFill,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -153,6 +158,11 @@ export const iconList = [
   FaDatabase,
   HiSolidLightningBolt,
   HiSolidLightBulb,
+  MdSecurity,
+  BiFunnelFill,
+  HiSearch,
+  HiSelector,
+  RiArrowUpDownFill,
 
   // Theme icons
   HiSolidSun,
@@ -223,6 +233,8 @@ export const iconNames = {
   error: 'hi-solid-x-circle',
   success: 'hi-solid-check-circle',
   warning: 'hi-solid-exclamation-circle',
+  
+  
 
   // Theme
   sun: 'hi-solid-sun',

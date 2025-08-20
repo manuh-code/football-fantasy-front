@@ -3,9 +3,8 @@
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Page Header -->
       <PageHeader
-        title="My Fantasy Leagues"
-        description="View and manage your fantasy football leagues and track your performance"
-        back-text="Back to Dashboard"
+      
+        back-text="Back"
         breadcrumb-to="/dashboard"
         breadcrumb-text="Dashboard"
         current-page-text="Fantasy Leagues"

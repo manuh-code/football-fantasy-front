@@ -149,11 +149,11 @@ function handleFantasyLeagues() {
 
 async function handleLogout() {
   await authStore.logout()
-  router.push('/')
+  router.push({ name: 'home' })
 }
 
 function handleGoHome() {
-  router.push('/')
+  router.push({ name: 'home' })
 }
 
 // Keyboard support

@@ -81,57 +81,63 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="space-y-3">
-                <!-- View Details Button (always shown) -->
-                <ButtonComponent
-                    variant="secondary"
-                    size="sm"
-                    :full-width="true"
-                    @click="$emit('viewDetails', league)"
-                    class="transition-colors duration-300"
-                >
-                    <v-icon name="hi-solid-eye" class="w-4 h-4 mr-2" />
-                    View Details
-                </ButtonComponent>
+            <div class="space-y-4">
+                <!-- Primary Action Row -->
+                <div class="flex gap-3">
+                    <!-- View Details Button (always shown) -->
+                    <ButtonComponent
+                        variant="secondary"
+                        size="sm"
+                        :full-width="true"
+                        @click="$emit('viewDetails', league)"
+                        class="transition-colors duration-300 flex-1"
+                    >
+                        <v-icon name="hi-solid-eye" class="w-4 h-4 mr-2" />
+                        View Details
+                    </ButtonComponent>
 
-                <!-- Join Button (conditional) -->
-                <ButtonComponent
-                    v-if="showJoinButton && !league.isMember"
-                    variant="primary"
-                    size="sm"
-                    :full-width="true"
-                    @click="$emit('join', league)"
-                    class="group-hover:bg-emerald-600 group-hover:border-emerald-600 transition-colors duration-300"
-                >
-                    <v-icon name="hi-solid-user" class="w-4 h-4 mr-2" />
-                    {{ league.is_private ? 'Request to Join' : 'Join League' }}
-                </ButtonComponent>
+                    <!-- Join Button (conditional) -->
+                    <ButtonComponent
+                        v-if="showJoinButton && !league.isMember"
+                        variant="primary"
+                        size="sm"
+                        :full-width="true"
+                        @click="$emit('join', league)"
+                        class="group-hover:bg-emerald-600 group-hover:border-emerald-600 transition-colors duration-300 flex-1"
+                    >
+                        <v-icon name="hi-solid-user" class="w-4 h-4 mr-2" />
+                        {{ league.is_private ? 'Request' : 'Join' }}
+                    </ButtonComponent>
+                </div>
 
-                <!-- Already Member Button -->
-                <ButtonComponent
-                    v-else-if="league.isMember"
-                    variant="outline"
-                    size="sm"
-                    :full-width="true"
-                    disabled
-                    class="cursor-not-allowed"
-                >
-                    <v-icon name="hi-solid-check-circle" class="w-4 h-4 mr-2 text-green-500" />
-                    Already Joined
-                </ButtonComponent>
+                <!-- Secondary Action Row -->
+                <div v-if="league.isMember || league.isAdmin">
+                    <!-- Already Member Button -->
+                    <ButtonComponent
+                        v-if="league.isMember && !league.isAdmin"
+                        variant="outline"
+                        size="sm"
+                        :full-width="true"
+                        disabled
+                        class="cursor-not-allowed"
+                    >
+                        <v-icon name="hi-solid-check-circle" class="w-4 h-4 mr-2 text-green-500" />
+                        Already Joined
+                    </ButtonComponent>
 
-                <!-- Manage Button (for admins) -->
-                <ButtonComponent
-                    v-if="league.isAdmin"
-                    variant="primary"
-                    size="sm"
-                    :full-width="true"
-                    @click="$emit('manage', league)"
-                    class="bg-yellow-600 hover:bg-yellow-700 border-yellow-600 hover:border-yellow-700"
-                >
-                    <v-icon name="hi-solid-cog" class="w-4 h-4 mr-2" />
-                    Manage League
-                </ButtonComponent>
+                    <!-- Manage Button (for admins) -->
+                    <ButtonComponent
+                        v-if="league.isAdmin"
+                        variant="primary"
+                        size="sm"
+                        :full-width="true"
+                        @click="$emit('manage', league)"
+                        class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 border-yellow-500 hover:border-yellow-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                        <v-icon name="hi-solid-cog" class="w-4 h-4 mr-2" />
+                        Manage League
+                    </ButtonComponent>
+                </div>
             </div>
         </div>
     </div>
