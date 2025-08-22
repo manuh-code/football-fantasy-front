@@ -71,6 +71,15 @@ export class CatalogService {
 
     throw new AxiosError('Failed to fetch type statistics');
   }
+
+  async getTypeTopScore(): Promise<TypeResponse[]> {  
+    const response = await this.api.get<ApiResponse<TypeResponse[]>>('catalog/types/topScore');
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+
+    throw new AxiosError('Failed to fetch type top scores');
+  }
 }
 
 export const catalogService = new CatalogService();

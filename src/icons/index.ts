@@ -50,6 +50,7 @@ import {
   HiSearch,
   HiSelector,
   RiArrowUpDownFill,
+  HiSolidTable,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -207,6 +208,7 @@ export const iconList = [
   BiGoogle,
   BiEyeFill,
   BiEyeSlashFill,
+  HiSolidTable,
 
   // Sports icons
   GiSoccerBall,

@@ -1,4 +1,5 @@
 <template>
+
     <div class="space-y-6">
         <!-- Filters Section -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -90,7 +91,7 @@
                         <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm border border-blue-200 dark:border-blue-800">
                             <v-icon :name="sortDirection === 'asc' ? 'hi-solid-sort-ascending' : 'hi-solid-sort-descending'" class="w-4 h-4" />
                             <span>Sorted by <strong>{{ formatStatColumnName(sortBy) }}</strong> ({{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }})</span>
-                            <button @click="sortBy = null; sortDirection = null; searchPlayers(1)" 
+                            <button @click="sortBy = null; sortDirection = 'desc'; searchPlayers(1)" 
                                     class="ml-auto text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 transition-colors"
                                     title="Clear sorting">
                                 <v-icon name="hi-solid-x" class="w-4 h-4" />
@@ -266,7 +267,7 @@ const pagination = ref({
 
 // Sorting
 const sortBy = ref<string | null>(null)
-const sortDirection = ref<'asc' | 'desc' | null>(null)
+const sortDirection = ref<'asc' | 'desc'>('desc')
 
 // Mobile state for expanded player stats
 const expandedPlayers = ref<string[]>([])
@@ -305,6 +306,13 @@ const loadSeasons = async (fantasyLeagueUuid: string) => {
     isLoadingSeasons.value = true
     try {
         seasons.value = await catalogService.getSeasonByFantasyLeagueUuid(fantasyLeagueUuid)
+        
+        // Auto-select the first season if available
+        if (seasons.value.length > 0) {
+            filters.value.seasons = seasons.value[0].uuid
+            // Trigger season change to load teams
+            onSeasonChange()
+        }
     } catch (error) {
         console.error('Error loading seasons:', error)
         toast.error('Error', 'Failed to load seasons')
@@ -385,8 +393,6 @@ const searchPlayers = async (page = 1) => {
 
         isInitialLoad.value = false
     } catch (error) {
-        console.error('Error searching players:', error)
-        toast.error('Error', 'Failed to search players')
         players.value = []
         // Reset pagination on error
         pagination.value = {
@@ -453,7 +459,7 @@ const clearFilters = () => {
     players.value = []
     pagination.value.current_page = 1
     sortBy.value = null
-    sortDirection.value = null
+    sortDirection.value = 'desc'
     expandedPlayers.value = []
     isInitialLoad.value = true
     
@@ -481,9 +487,9 @@ const handleSort = (column: string) => {
         // Same column clicked, toggle direction
         sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
     } else {
-        // New column clicked, set to ascending
+        // New column clicked, set to descending
         sortBy.value = column
-        sortDirection.value = 'asc'
+        sortDirection.value = 'desc'
     }
     
     // Reset to first page when sorting
@@ -527,6 +533,13 @@ onMounted(async () => {
 
 // Watch for season changes to automatically load teams
 watch(() => filters.value.seasons, onSeasonChange)
+
+// Watch for statistic types changes to reset sorting
+watch(() => filters.value.statTypes, () => {
+    // Reset sorting when statistic types change
+    sortBy.value = null
+    sortDirection.value = 'desc'
+})
 </script>
 
 <style>
