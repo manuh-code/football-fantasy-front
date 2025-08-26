@@ -189,7 +189,8 @@ async function handleLogout() {
     emit('logout')
     await authStore.logout()
     closeDropdown()
-    router.push({ name: 'home' })
+    // Use replace so history doesn't keep the previous protected route
+    router.replace({ name: 'home' })
 }
 
 // Keyboard support

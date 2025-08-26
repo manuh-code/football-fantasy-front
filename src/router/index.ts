@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    component: () => import(/* webpackChunkName: "home" */ '@/views/HomeView.vue'),
     meta: {
       title: 'Home - Football Fantasy',
-      description: 'Football Fantasy main page'
+      description: 'Football Fantasy main page',
+      requiresAuth: false
     }
   },
   {
@@ -19,7 +19,8 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '@/views/AboutView.vue'),
     meta: {
       title: 'About - Football Fantasy',
-      description: 'Information about the Football Fantasy application'
+      description: 'Information about the Football Fantasy application',
+      requiresAuth: false
     }
   },
   {
@@ -29,7 +30,8 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "login" */ '@/views/login/LoginView.vue'),
     meta: {
       title: 'Sign In - Football Fantasy',
-      description: 'Sign in to your Football Fantasy account'
+      description: 'Sign in to your Football Fantasy account',
+      requiresAuth: false
     }
   },
   {
@@ -177,15 +179,6 @@ router.beforeEach(async (to, from, next) => {
     const metaDescription = document.querySelector('meta[name="description"]')
     if (metaDescription) {
       metaDescription.setAttribute('content', to.meta.description as string)
-    }
-  }
-
-  // Handle root path redirection
-  if (to.path === "/") {
-    if (isAuthenticated) {
-      return next({ name: "dashboard" });
-    } else {
-      return next({ name: "login" });
     }
   }
 

@@ -12,8 +12,38 @@
         </button>
       </div>
 
-      <!-- Right side - Theme toggle, Login/User menu -->
+      <!-- Right side - Selected league, Theme toggle, Login/User menu -->
       <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Selected football league (minimal, clickable on mobile) -->
+        <div v-if="selectedLeague" class="flex items-center gap-2 mr-2">
+          <div class="relative" ref="leaguePopoverRef">
+            <button
+              @click="toggleLeaguePopover"
+              :title="selectedLeague.name"
+              class="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md px-1 py-0.5"
+              aria-haspopup="true"
+              :aria-expanded="isLeaguePopoverOpen"
+            >
+              <img :src="selectedLeague.image_path || '/img/default-avatar.svg'" :alt="selectedLeague.name" class="w-8 h-8 rounded-full object-cover shadow-sm" />
+              <div class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate max-w-[6rem] sm:max-w-[8rem]">{{ selectedLeague.name }}</div>
+            </button>
+
+            <Transition name="dropdown">
+              <div v-if="isLeaguePopoverOpen" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 py-2">
+                <div v-if="leaguesLoading" class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">Loading...</div>
+                <div v-else-if="leaguesError" class="px-3 py-2 text-sm text-red-500">{{ leaguesError }}</div>
+                <div v-else>
+                  <template v-if="availableLeagues.length">
+                    <button v-for="league in availableLeagues" :key="league.uuid" @click="selectLeague(league)" class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">{{ league.name }}</button>
+                  </template>
+                  <div v-else class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">No leagues available at the moment.</div>
+                  <hr class="border-t border-gray-100 dark:border-gray-700 my-1" />
+                
+                </div>
+              </div>
+            </Transition>
+          </div>
+        </div>
         <!-- Theme Toggle Button -->
         <button
           @click="handleThemeToggle"
@@ -63,7 +93,10 @@
 import { useThemeStore } from '@/store/theme'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
+import catalogService from '@/services/catalog/CatalogService'
+import type { FootballLeagueResponse } from '@/interfaces/football/league/FootballLeagueResponse'
+import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 import { useRouter } from 'vue-router'
 import { DropdownMenuComponent } from '@/components/ui'
 
@@ -71,6 +104,65 @@ const themeStore = useThemeStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
+
+const leagueStore = useFootballLeagueStore()
+
+const selectedLeague = computed(() => leagueStore.getLeague)
+
+// Popover state for quick league actions
+const isLeaguePopoverOpen = ref(false)
+const leaguePopoverRef = ref<HTMLElement | null>(null)
+const leagues = ref<FootballLeagueResponse[]>([])
+const leaguesLoading = ref(false)
+const leaguesError = ref('')
+
+function toggleLeaguePopover() {
+  isLeaguePopoverOpen.value = !isLeaguePopoverOpen.value
+  if (isLeaguePopoverOpen.value) {
+    fetchLeagues()
+  }
+}
+
+function closeLeaguePopover() {
+  isLeaguePopoverOpen.value = false
+}
+
+async function fetchLeagues() {
+  leaguesLoading.value = true
+  leaguesError.value = ''
+  try {
+    const data = await catalogService.getFootballLeagues()
+    leagues.value = data || []
+  } catch (e) {
+    leaguesError.value = 'Failed to load leagues.'
+    leagues.value = []
+  } finally {
+    leaguesLoading.value = false
+  }
+}
+
+function selectLeague(league: FootballLeagueResponse) {
+  leagueStore.setLeague(league)
+  closeLeaguePopover()
+}
+
+const availableLeagues = computed(() => {
+  return leagues.value.filter(l => l.uuid !== selectedLeague.value?.uuid)
+})
+
+function handleClickOutsideLeague(event: MouseEvent) {
+  if (leaguePopoverRef.value && !leaguePopoverRef.value.contains(event.target as Node)) {
+    closeLeaguePopover()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideLeague)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutsideLeague)
+})
 
 // Computed properties for theme icon
 const themeIcon = computed(() => {
@@ -149,11 +241,12 @@ function handleFantasyLeagues() {
 
 async function handleLogout() {
   await authStore.logout()
-  router.push({ name: 'home' })
+  // Use replace to avoid creating a history entry that might cause navigation loops
+  router.replace({ name: 'home' })
 }
 
 function handleGoHome() {
-  router.push({ name: 'home' })
+  router.replace({ name: 'home' })
 }
 
 // Keyboard support

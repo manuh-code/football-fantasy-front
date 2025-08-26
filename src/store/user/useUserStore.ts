@@ -39,7 +39,6 @@ export const useUserStore = defineStore("user", {
       this.userFantasyLeagues = null;
     },
     clearUserFantasyLeagues(): void {
-        console.log('entro a borrar');
       this.userFantasyLeagues = null;
     },
     async setUserDataFromApi(): Promise<void> {

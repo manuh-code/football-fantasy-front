@@ -18,15 +18,19 @@ export const useAuthStore = defineStore("auth", {
       this.token = null;
       userStore.clearUserData();
     },
+    
     setToken(token: string) {
       this.token = token;
     },
+
     getToken(): string | null {
       return this.token;
     },
+
     async isAuthenticated(): Promise<boolean> {
       return loginService.isAuthenticated(this.token);
     },
+
     async login(payload: LoginPayload): Promise<LoginResponse> {
       const userStore = useUserStore();
       const response = await loginService.login(payload);
@@ -34,9 +38,12 @@ export const useAuthStore = defineStore("auth", {
       userStore.setUserDataFromApi();
       return response;
     },
+
     async logout(): Promise<void> {
-      await loginService.logout();
-      this.clearAuth();
+      const response = await loginService.logout();
+      if (response.code === 200) {
+        this.clearAuth();
+      }
     },
   },
   persist: {

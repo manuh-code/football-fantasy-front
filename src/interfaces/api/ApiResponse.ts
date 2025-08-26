@@ -5,7 +5,7 @@ export interface ApiResponse<T> {
     timestamp: string,
     code: number,
     message: string,
-    data: T
-    pagination: ApiPagination;
-    links: ApiLinks;
+    data: T ;
+    pagination: ApiPagination | null;
+    links: ApiLinks | null;
 }

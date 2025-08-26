@@ -36,8 +36,9 @@ export class LoginService {
     throw new AxiosError('Login failed: Invalid response format');
   }
 
-  async logout(): Promise<void> {
-    await this.api.post<ApiResponse<null>>('auth/logout');
+  async logout(): Promise<ApiResponse<null>> {
+    const response = await this.api.post<ApiResponse<null>>('auth/logout');
+    return response.data;
   }
 
   async isAuthenticated(token: string | null): Promise<boolean> {
