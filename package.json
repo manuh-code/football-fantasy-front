@@ -9,6 +9,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@ably/laravel-echo": "^1.0.6",
+    "ably": "^1.2.50",
     "axios": "^1.11.0",
     "core-js": "^3.8.3",
     "oh-vue-icons": "^1.0.0-rc3",
@@ -32,7 +34,9 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "laravel-echo": "^2.2.0",
     "postcss": "^8.5.6",
+    "pusher-js": "^8.4.0",
     "sass": "^1.32.7",
     "tailwindcss": "^3.4.17",
     "typescript": "~4.5.5",

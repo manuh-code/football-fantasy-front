@@ -6,10 +6,13 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import { iconList } from './icons'
 
+
 // Import global styles
 import './assets/styles/main.scss';
 import 'vue-multiselect/dist/vue-multiselect.css';
 import { createPinia } from 'pinia';
+
+
 
 
 const app = createApp(App);
