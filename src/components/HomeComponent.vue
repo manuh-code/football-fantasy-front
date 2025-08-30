@@ -1,32 +1,23 @@
 <template>
   <div>
-    <RoundFixtureCarousel />
-    <FootballLeagueSelectionModal
-      :isVisible="showLeagueModal"
-      @close="showLeagueModal = false"
-    />
+    <template v-if="hasLeague">
+      <RoundFixtureCarousel />
+      <LeagueStandingCurrent />
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import RoundFixtureCarousel from "@/components/football/fixtures/RoundFixtureCarousel.vue";
-import FootballLeagueSelectionModal from "@/components/football/leagues/FootballLeagueSelectionModal.vue";
+import { computed, defineAsyncComponent } from "vue";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 
+// Lazy-load these heavy components only when a league is selected
+const RoundFixtureCarousel = defineAsyncComponent(() => import('@/components/football/fixtures/RoundFixtureCarousel.vue'))
+const LeagueStandingCurrent = defineAsyncComponent(() => import('@/components/football/leagues/LeagueStandingCurrent.vue'))
+
 const store = useFootballLeagueStore();
-const showLeagueModal = ref(false);
 
-onMounted(() => {
-  if (!store.existLeague()) showLeagueModal.value = true;
-});
-
-watch(
-  () => store.getLeague,
-  (newLeague) => {
-    if (newLeague) showLeagueModal.value = false;
-  }
-);
+const hasLeague = computed(() => store.existLeague())
 </script>
 
 <style scoped>

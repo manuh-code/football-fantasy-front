@@ -1,22 +1,38 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 import MenuGlobal from '@/components/MenuGlobal.vue'
 import { ToastContainer } from '@/components/ui'
-import { useThemeStore } from './store/theme';
+import FootballLeagueSelectionModal from '@/components/football/leagues/FootballLeagueSelectionModal.vue'
+import { useThemeStore } from './store/theme'
+import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 
 const themeStore = useThemeStore();
+const store = useFootballLeagueStore()
+const showLeagueModal = ref(false)
 
 onMounted(() => {
   // Initialize theme on app mount
   themeStore.initTheme()
+  // Show league selection modal when no league is selected
+  if (!store.existLeague()) showLeagueModal.value = true
 })
+
+watch(
+  () => store.getLeague,
+  (newLeague) => {
+    if (newLeague) showLeagueModal.value = false
+  }
+)
 </script>
 
 <template>
   <div id="app" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Global Menu -->
     <MenuGlobal />
+
+    <!-- Global Football League Selection Modal -->
+    <FootballLeagueSelectionModal :isVisible="showLeagueModal" @close="showLeagueModal = false" />
 
     <main class="flex-1 pt-14 sm:pt-16">
       <router-view />
@@ -39,7 +55,9 @@ onMounted(() => {
 }
 
 // Ensure the app takes full height
-html, body, #app {
+html,
+body,
+#app {
   height: 100%;
 }
 
@@ -55,7 +73,7 @@ html, body, #app {
 ::-webkit-scrollbar-thumb {
   background: var(--color-border-hover);
   border-radius: 4px;
-  
+
   &:hover {
     background: var(--color-text-muted);
   }

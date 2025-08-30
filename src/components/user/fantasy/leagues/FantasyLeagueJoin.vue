@@ -116,15 +116,10 @@
 
                     <!-- No Results -->
                     <div v-else class="p-6 text-center py-12">
-                        <div
-                            class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <v-icon name="hi-solid-search" class="w-10 h-10 text-gray-400" />
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">No leagues found</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6">
-                            Try adjusting your search criteria or browse all available leagues.
-                        </p>
-                        <ButtonComponent variant="outline" size="md" text="Clear Search" @click="clearSearch" />
+                        <NoResults title="No leagues found"
+                            description="Try adjusting your search criteria or browse all available leagues."
+                            icon="hi-solid-search" buttonText="Clear Search" @action="clearSearch">
+                        </NoResults>
                     </div>
                 </div>
             </div>
@@ -254,6 +249,7 @@ import { catalogService } from '@/services'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import FantasyLeagueCard from '@/components/fantasy/FantasyLeagueCard.vue'
 import JoinLeagueModal from '@/components/fantasy/JoinLeagueModal.vue'
+import NoResults from '@/components/ui/NoResults.vue'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import type { FantasyLeagueSearchPayload } from '@/interfaces/fantasy/leagues/FantasyLeagueSearchPayload'
 import { FantasyLeagueJoined } from '@/interfaces/fantasy/leagues/FantasyLeagueJoined'
