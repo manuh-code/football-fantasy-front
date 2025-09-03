@@ -29,6 +29,10 @@ export class FootballFixtureService {
 
         throw new AxiosError('Failed to fetch football fixture data');
     }
+
+    async getCurrentFixtures(): Promise<void> {
+        await this.api.get<ApiResponse<void>>("/fixtures/current");
+    }
 }
 
 export const footballFixtureService = new FootballFixtureService();

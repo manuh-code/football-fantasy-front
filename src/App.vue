@@ -1,31 +1,3 @@
-<script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-
-import MenuGlobal from '@/components/MenuGlobal.vue'
-import { ToastContainer } from '@/components/ui'
-import FootballLeagueSelectionModal from '@/components/football/leagues/FootballLeagueSelectionModal.vue'
-import { useThemeStore } from './store/theme'
-import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
-
-const themeStore = useThemeStore();
-const store = useFootballLeagueStore()
-const showLeagueModal = ref(false)
-
-onMounted(() => {
-  // Initialize theme on app mount
-  themeStore.initTheme()
-  // Show league selection modal when no league is selected
-  if (!store.existLeague()) showLeagueModal.value = true
-})
-
-watch(
-  () => store.getLeague,
-  (newLeague) => {
-    if (newLeague) showLeagueModal.value = false
-  }
-)
-</script>
-
 <template>
   <div id="app" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Global Menu -->
@@ -42,6 +14,37 @@ watch(
     <ToastContainer />
   </div>
 </template>
+
+<script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
+
+import MenuGlobal from '@/components/MenuGlobal.vue'
+import { ToastContainer } from '@/components/ui'
+import FootballLeagueSelectionModal from '@/components/football/leagues/FootballLeagueSelectionModal.vue'
+import { useThemeStore } from './store/theme'
+import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
+import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
+
+const themeStore = useThemeStore();
+const store = useFootballLeagueStore()
+const showLeagueModal = ref(false)
+
+onMounted(() => {
+  FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
+  // Initialize theme on app mount
+  themeStore.initTheme()
+  // Show league selection modal when no league is selected
+  if (!store.existLeague()) showLeagueModal.value = true
+})
+
+watch(
+  () => store.getLeague,
+  (newLeague) => {
+    if (newLeague) showLeagueModal.value = false
+  }
+)
+</script>
+
 
 <style lang="scss">
 // Import Inter font from Google Fonts

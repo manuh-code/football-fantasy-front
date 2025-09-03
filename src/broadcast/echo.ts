@@ -1,7 +1,6 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-// Declarar la propiedad Pusher en la interfaz Window
 declare global {
     interface Window {
         Pusher: typeof Pusher;

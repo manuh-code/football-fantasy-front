@@ -202,8 +202,9 @@ import FootballFixtureService from "@/services/football/fixture/FootballFixtureS
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
-import { echo } from "@/broadcast/echo";
+import ably from "@/broadcast/ably";
 
+const channel = ably.channels.get("inplay-channel");
 const rounds = ref<FootballRoundResponse[]>([]);
 const loading = ref(true);
 const error = ref("");
@@ -358,17 +359,27 @@ watch(selectedFixtures, (newVal) => {
 
 onMounted(async () => {
   await fetchRounds();
-  echo
-    .channel("inplay-channel")
-    .listen("MatchScoreUpdated", (event: FootballFixtureResponse[]) => {
-      console.log("Live score update:", event);
-      // Update scores in the current round if applicable
+  channel.subscribe("matchedFixtures", (msg) => {
+    console.log("✅ Evento recibido:", msg.data);
+  });
 
-    });
+  await channel.presence.subscribe((member) => {
+    console.log(
+      `Event type: ${member.action} from ${
+        member.clientId
+      } with the data ${JSON.stringify(member.data)}`
+    );
+  });
+  await channel.presence.enter("I'm here!");
+
+  // channel.subscribe('MatchScoreUpdate', (event) => {
+  //   console.log("Evento recibido:", event);
+
+  // });
 });
 
 onBeforeUnmount(() => {
-  echo.leaveChannel("inplay-channel");
+  channel.presence.leave();
 });
 </script>
 
@@ -376,6 +387,7 @@ onBeforeUnmount(() => {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .round-selected::after {
   content: "";
   position: absolute;
@@ -389,6 +401,7 @@ onBeforeUnmount(() => {
   .round-selected {
     transform: none !important;
   }
+
   .animate-ping {
     animation: none !important;
   }
