@@ -202,9 +202,10 @@ import FootballFixtureService from "@/services/football/fixture/FootballFixtureS
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
-import ably from "@/broadcast/ably";
+import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 
-const channel = ably.channels.get("inplay-channel");
+const { inPlayChannel } = useAblyBroadcast();
+
 const rounds = ref<FootballRoundResponse[]>([]);
 const loading = ref(true);
 const error = ref("");
@@ -359,27 +360,14 @@ watch(selectedFixtures, (newVal) => {
 
 onMounted(async () => {
   await fetchRounds();
-  channel.subscribe("matchedFixtures", (msg) => {
+  inPlayChannel.subscribe("matchedFixtures", (msg) => {
     console.log("✅ Evento recibido:", msg.data);
   });
 
-  await channel.presence.subscribe((member) => {
-    console.log(
-      `Event type: ${member.action} from ${
-        member.clientId
-      } with the data ${JSON.stringify(member.data)}`
-    );
-  });
-  await channel.presence.enter("I'm here!");
-
-  // channel.subscribe('MatchScoreUpdate', (event) => {
-  //   console.log("Evento recibido:", event);
-
-  // });
 });
 
 onBeforeUnmount(() => {
-  channel.presence.leave();
+  inPlayChannel.unsubscribe("matchedFixtures");
 });
 </script>
 

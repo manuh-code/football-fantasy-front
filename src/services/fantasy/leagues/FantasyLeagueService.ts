@@ -1,9 +1,10 @@
-import { ApiResponse } from "@/composables";
+
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { FantasyLeagueCreatePayload } from "@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload";
 import { FantasyLeagueJoined } from "@/interfaces/fantasy/leagues/FantasyLeagueJoined";
 import { useUserStore } from "@/store";
+import { ApiResponse } from "@/interfaces/api/ApiResponse";
 
 export class FantasyLeagueService{
     private api;

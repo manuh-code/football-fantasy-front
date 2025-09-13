@@ -1,16 +1,15 @@
+import { FantasyLeagueDraftPayload } from "./FantasyLeagueDraftPayload";
+
 export interface FantasyLeagueCreatePayload {
     name: string;
-    status_uuid?: string | null;
     league_uuid: string;
-    participants_count: number;
-    description?: string;
-    is_private: boolean;
     password: string;
-    image_path?: string;
-    started_at: string;
-    draft: {
-        draft_day: string;
-        pick_timer: number;
-        snake_order: boolean;
-    };
+   
+    status_uuid?: string | null;
+    participants_count?: number | null;
+    description?: string | null;
+    is_private?: boolean | null;
+    image_path?: string | null;
+    started_at?: string;
+    draft?: FantasyLeagueDraftPayload | null;
 }
