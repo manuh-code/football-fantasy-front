@@ -80,9 +80,21 @@
           >
             <div
               v-for="(fixture, idx) in selectedFixtures"
-              :key="idx"
-              class="min-w-[90vw] max-w-[95vw] sm:min-w-[320px] sm:max-w-[340px] flex-shrink-0 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-3 py-5 flex flex-col items-center justify-center shadow transition-all duration-300 relative group hover:scale-[1.02] hover:shadow-lg cursor-pointer"
+              :key="fixture.fixture_id || idx"
+              :class="[
+                'min-w-[90vw] max-w-[95vw] sm:min-w-[320px] sm:max-w-[340px] flex-shrink-0 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-3 py-5 flex flex-col items-center justify-center shadow transition-all duration-300 relative group hover:scale-[1.02] hover:shadow-lg cursor-pointer',
+                isFixtureLive(fixture) ? 'ring-2 ring-red-500 ring-opacity-50 bg-red-50 dark:bg-red-900/10' : ''
+              ]"
             >
+              <!-- Live indicator -->
+              <div
+                v-if="isFixtureLive(fixture)"
+                class="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-red-500 text-white text-xs font-medium"
+              >
+                <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                LIVE
+              </div>
+              
               <div
                 class="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
               >
@@ -348,9 +360,22 @@ const scrollToCard = (idx: number) => {
 // reset pagination when fixtures change (new round)
 watch(selectedFixtures, (newVal) => {
   if (newVal.length > 0) {
-    // ensure layout then go to first card
+    // ensure layout then go to first card or live fixture
     nextTick(() => {
-      scrollToCard(0);
+      // First, look for live matches
+      const liveFixtures = newVal
+        .map((fixture, index) => ({ fixture, index }))
+        .filter(({ fixture }) => isFixtureLive(fixture));
+      
+      if (liveFixtures.length > 0) {
+        // If there are live matches, focus on the first one
+        const firstLiveIndex = liveFixtures[0].index;
+        scrollToCard(firstLiveIndex);
+        console.log(`[RoundFixtureCarousel] Auto-focused on live fixture at index ${firstLiveIndex}`);
+      } else {
+        // If no live matches, go to the first match
+        scrollToCard(0);
+      }
     });
     currentCard.value = 0;
   } else {
@@ -360,11 +385,92 @@ watch(selectedFixtures, (newVal) => {
 
 onMounted(async () => {
   await fetchRounds();
+  
+  // Subscribe to real-time match updates
   inPlayChannel.subscribe("matchedFixtures", (msg) => {
-    console.log("✅ Evento recibido:", msg.data);
+    const matchedFixtures: FootballFixtureResponse[] = msg.data;
+    
+    console.log(`[RoundFixtureCarousel] Received ${matchedFixtures.length} matchedFixtures from Ably`);
+    updateFixturesInRounds(matchedFixtures);
   });
-
 });
+
+// Function to check if a match is live
+const isFixtureLive = (fixture: FootballFixtureResponse): boolean => {
+  const now = Date.now();
+  const startTime = fixture.starting_at_timestamp * 1000; // Convert to milliseconds
+  const matchDuration = fixture.length * 60 * 1000; // Convert minutes to milliseconds
+  const endTime = startTime + matchDuration;
+  
+  // A match is live if:
+  // 1. It has started (now >= startTime)
+  // 2. It hasn't ended (now <= endTime)
+  // 3. Or the state indicates it's in progress
+  const isInTimeWindow = now >= startTime && now <= endTime;
+  const isInProgress = fixture.football_state?.name?.toLowerCase().includes('in progress') || 
+                      fixture.football_state?.name?.toLowerCase().includes('live') ||
+                      fixture.football_state?.name?.toLowerCase().includes('playing');
+  
+  return isInTimeWindow || isInProgress;
+};
+
+// Function to focus on live matches
+const focusLiveFixtures = () => {
+  const liveFixtures = selectedFixtures.value
+    .map((fixture, index) => ({ fixture, index }))
+    .filter(({ fixture }) => isFixtureLive(fixture));
+  
+  if (liveFixtures.length > 0) {
+    // Focus on the first live match
+    const firstLiveIndex = liveFixtures[0].index;
+    scrollToCard(firstLiveIndex);
+    
+    console.log(`[RoundFixtureCarousel] Focused on live fixture at index ${firstLiveIndex}`);
+  }
+};
+
+// Función para actualizar los fixtures en tiempo real
+const updateFixturesInRounds = (updatedFixtures: FootballFixtureResponse[]) => {
+  if (!updatedFixtures || updatedFixtures.length === 0) return;
+  
+  let hasLiveUpdates = false;
+  
+  // Actualizar fixture por fixture usando fixture_id como identificador principal
+  updatedFixtures.forEach(updatedFixture => {
+    const fixtureId = updatedFixture.fixture_id;
+    
+    // Verificar si este fixture está en vivo
+    const isLive = isFixtureLive(updatedFixture);
+    if (isLive) hasLiveUpdates = true;
+    
+    // Buscar y actualizar el fixture específico en todas las rondas
+    rounds.value.forEach(round => {
+      if (round.fixtures) {
+        const fixtureIndex = round.fixtures.findIndex(
+          existingFixture => existingFixture.fixture_id === fixtureId
+        );
+        
+        if (fixtureIndex !== -1) {
+          // Actualizar solo el fixture específico manteniendo el resto de datos
+          round.fixtures[fixtureIndex] = {
+            ...round.fixtures[fixtureIndex],
+            ...updatedFixture
+          };
+          
+          console.log(`[RoundFixtureCarousel] Updated fixture ${fixtureId}${isLive ? ' (LIVE)' : ''}`);
+        }
+      }
+    });
+  });
+  
+  // If there are live match updates, focus on them
+  if (hasLiveUpdates) {
+    // Wait a tick for the UI to update
+    nextTick(() => {
+      focusLiveFixtures();
+    });
+  }
+};
 
 onBeforeUnmount(() => {
   inPlayChannel.unsubscribe("matchedFixtures");

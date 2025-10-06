@@ -4,6 +4,7 @@ import { FootballTeamResponse } from "../team/FootballTeamResponse";
 import { ScoreResponse } from "./ScoreResponse";
 
 export interface FootballFixtureResponse {
+    fixture_id: string;
     league: FootballLeagueResponse;
     football_state: FootballStateResponse;
     name: string;

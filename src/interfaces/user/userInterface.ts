@@ -1,3 +1,4 @@
+import { FootballLeagueResponse } from "../football/league/FootballLeagueResponse";
 import { FootballTeamResponse } from "../football/team/FootballTeamResponse";
 
 export interface UserDataInterface {
@@ -8,4 +9,5 @@ export interface UserDataInterface {
     phone: string;
     avatar: string;
     favoriteFootballTeam: FootballTeamResponse | null;
+    football_league: FootballLeagueResponse | null;
 }

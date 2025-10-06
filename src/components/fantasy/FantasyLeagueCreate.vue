@@ -9,11 +9,11 @@
                     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                                <v-icon name="hi-solid-trophy" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                                <v-icon name="bi-trophy-fill" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                             </div>
                             <div>
-                                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Crear Liga Fantasy</h2>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Configuración rápida para tu liga fantasy</p>
+                                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Fantasy League</h2>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Quick setup for your fantasy league</p>
                             </div>
                         </div>
                     </div>
@@ -24,29 +24,11 @@
                         <div>
                             <FormInput
                                 v-model="formData.name"
-                                label="Nombre de la Liga *"
-                                placeholder="Ingresa el nombre de tu liga"
+                                label="League Name *"
+                                placeholder="Enter your league name"
                                 :error="getFieldError('name')"
                                 :disabled="isLoading"
                             />
-                        </div>
-
-                        <!-- Football League Selection -->
-                        <div>
-                            <SelectComponent
-                                v-model="formData.league_uuid"
-                                :options="footballLeagueOptions"
-                                value-key="uuid"
-                                label-key="name"
-                                label="Liga de Fútbol *"
-                                placeholder="Selecciona una liga de fútbol"
-                                :error="getFieldError('league_uuid')"
-                                :disabled="isLoading || isLoadingLeagues"
-                            />
-                            <p v-if="isLoadingLeagues" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                                <v-icon name="pr-spinner" class="w-4 h-4 inline mr-1" animation="spin" />
-                                Cargando ligas de fútbol...
-                            </p>
                         </div>
 
                         <!-- Password Field -->
@@ -54,13 +36,13 @@
                             <FormInput
                                 v-model="formData.password"
                                 type="password"
-                                label="Contraseña de la Liga *"
-                                placeholder="Ingresa una contraseña segura"
+                                label="League Password *"
+                                placeholder="Enter a secure password"
                                 :error="getFieldError('password')"
                                 :disabled="isLoading"
                             />
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Esta contraseña será requerida para que otros se unan a tu liga
+                                This password will be required for others to join your league
                             </p>
                         </div>
 
@@ -73,7 +55,7 @@
                                 class="flex-1 sm:flex-none"
                             >
                                 <v-icon name="hi-solid-plus" class="w-4 h-4 mr-2" />
-                                Crear Liga
+                                Create League
                             </ButtonComponent>
                             <ButtonComponent
                                 @click="handleCancel"
@@ -81,7 +63,7 @@
                                 :disabled="isLoading"
                                 class="flex-1 sm:flex-none"
                             >
-                                Cancelar
+                                Cancel
                             </ButtonComponent>
                         </div>
                     </div>
@@ -98,7 +80,7 @@
                         <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Configuración Rápida</h3>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Quick Setup</h3>
                     </div>
                 </div>
 
@@ -109,8 +91,8 @@
                             <v-icon name="hi-solid-check" class="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Creación Simplificada</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Solo 3 campos para comenzar tu liga rápidamente</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Simplified Creation</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Only 2 fields to start your league quickly</p>
                         </div>
                     </div>
 
@@ -119,8 +101,8 @@
                             <v-icon name="hi-solid-lock-closed" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Privada por Defecto</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Tu liga será privada y requerirá contraseña para unirse</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Private by Default</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Your league will be private and require a password to join</p>
                         </div>
                     </div>
 
@@ -129,8 +111,8 @@
                             <v-icon name="hi-solid-cog" class="w-3 h-3 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Configuración Automática</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Se aplicarán configuraciones estándar de fantasy automáticamente</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Automatic Configuration</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Standard fantasy settings will be applied automatically</p>
                         </div>
                     </div>
 
@@ -139,8 +121,8 @@
                             <v-icon name="hi-solid-users" class="w-3 h-3 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Lista para Invitar</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Comparte la contraseña de tu liga con amigos para comenzar</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Ready to Invite</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Share your league password with friends to get started</p>
                         </div>
                     </div>
                 </div>
@@ -153,43 +135,37 @@
                         <div class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Progreso del Formulario</h3>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Form Progress</h3>
                     </div>
                 </div>
 
                 <div class="p-6">
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Nombre de Liga</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">League Name</span>
                             <span class="text-xs font-medium" :class="formData.name.trim() ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ formData.name.trim() ? 'Completo' : 'Pendiente' }}
+                                {{ formData.name.trim() ? 'Complete' : 'Pending' }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Liga de Fútbol</span>
-                            <span class="text-xs font-medium" :class="formData.league_uuid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ formData.league_uuid ? 'Completo' : 'Pendiente' }}
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Contraseña</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Password</span>
                             <span class="text-xs font-medium" :class="formData.password.trim() ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ formData.password.trim() ? 'Completo' : 'Pendiente' }}
+                                {{ formData.password.trim() ? 'Complete' : 'Pending' }}
                             </span>
                         </div>
                     </div>
                     
                     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">Progreso General</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">Overall Progress</span>
                             <span class="text-sm font-medium" :class="isFormValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ Math.round((completedFields / 3) * 100) }}%
+                                {{ Math.round((completedFields / 2) * 100) }}%
                             </span>
                         </div>
                         <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div 
                                 class="bg-emerald-600 h-2 rounded-full transition-all duration-300"
-                                :style="{ width: `${Math.round((completedFields / 3) * 100)}%` }"
+                                :style="{ width: `${Math.round((completedFields / 2) * 100)}%` }"
                             ></div>
                         </div>
                     </div>
@@ -204,21 +180,19 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
-import { ButtonComponent, FormInput, SelectComponent } from '@/components/ui'
-import { catalogService } from '@/services/catalog/CatalogService'
+import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
+import { ButtonComponent, FormInput } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import type { FantasyLeagueCreatePayload } from '@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload'
-import type { FootballLeagueResponse } from '@/interfaces/football/league/FootballLeagueResponse'
 
 // Composables
 const router = useRouter()
 const toast = useToast()
 const validationStore = useValidationStore()
+const footballLeagueStore = useFootballLeagueStore()
 
 // State
 const isLoading = ref(false)
-const isLoadingLeagues = ref(false)
-const footballLeagues = ref<FootballLeagueResponse[]>([])
 
 // Simplified form data - only required fields
 const formData = reactive<FantasyLeagueCreatePayload>({
@@ -227,25 +201,14 @@ const formData = reactive<FantasyLeagueCreatePayload>({
     password: ''
 })
 
-// Computed properties
-const footballLeagueOptions = computed(() => {
-    return footballLeagues.value.map(league => ({
-        uuid: league.uuid,
-        name: league.name,
-        image_path: league.image_path
-    }))
-})
-
 const isFormValid = computed(() => {
     return formData.name.trim() &&
-           formData.league_uuid.trim() &&
            formData.password.trim()
 })
 
 const completedFields = computed(() => {
     let count = 0
     if (formData.name.trim()) count++
-    if (formData.league_uuid.trim()) count++
     if (formData.password.trim()) count++
     return count
 })
@@ -254,19 +217,6 @@ const completedFields = computed(() => {
 const getFieldError = (fieldName: string) => {
     const errors = validationStore.getFieldError(fieldName)
     return Array.isArray(errors) ? errors.join(', ') : errors || ''
-}
-
-// Methods
-const loadFootballLeagues = async () => {
-    isLoadingLeagues.value = true
-    try {
-        footballLeagues.value = await catalogService.getFootballLeagues()
-    } catch (error) {
-        console.error('Error loading football leagues:', error)
-        toast.error('Error', 'No se pudieron cargar las ligas de fútbol. Por favor intenta de nuevo.')
-    } finally {
-        isLoadingLeagues.value = false
-    }
 }
 
 const handleSubmit = async () => {
@@ -283,15 +233,15 @@ const handleSubmit = async () => {
 
         const response = await fantasyLeagueService.storeFantasyLeague(payload)
         
-        toast.success('¡Éxito!', `Liga "${response.name}" ha sido creada exitosamente!`)
+        toast.success('Success!', `League "${response.name}" has been created successfully!`)
         
         // Redirect to the league details or user leagues page
         router.push({ name: 'userFantasyLeague' })
     
     } catch (error) {
         console.error('Error creating fantasy league:', error)
-        // Los errores 422 ya son manejados por el interceptor en useApiFantasy
-        // y almacenados en el validationStore, por lo que no necesitamos hacer nada más aquí
+        // 422 errors are already handled by the interceptor in useApiFantasy
+        // and stored in the validationStore, so we don't need to do anything else here
     } finally {
         isLoading.value = false
     }
@@ -302,8 +252,12 @@ const handleCancel = () => {
 }
 
 // Lifecycle
-onMounted(async () => {
-    await loadFootballLeagues()
+onMounted(() => {
+    // Set the league_uuid from the store
+    const leagueUuid = footballLeagueStore.getFootballLeagueUuid()
+    if (leagueUuid) {
+        formData.league_uuid = leagueUuid
+    }
 })
 </script>
 

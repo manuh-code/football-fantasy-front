@@ -17,6 +17,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import MenuGlobal from '@/components/MenuGlobal.vue'
 import { ToastContainer } from '@/components/ui'
@@ -27,20 +28,38 @@ import FootballFixtureService from "@/services/football/fixture/FootballFixtureS
 
 const themeStore = useThemeStore();
 const store = useFootballLeagueStore()
+const router = useRouter()
 const showLeagueModal = ref(false)
+
+// Función para verificar y mostrar modal si no hay liga seleccionada
+const checkLeagueSelection = () => {
+  if (!store.existLeague()) {
+    showLeagueModal.value = true
+  }
+}
 
 onMounted(() => {
   FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
   // Initialize theme on app mount
   themeStore.initTheme()
   // Show league selection modal when no league is selected
-  if (!store.existLeague()) showLeagueModal.value = true
+  checkLeagueSelection()
 })
 
+// Watcher para cuando se selecciona una liga
 watch(
   () => store.getLeague,
   (newLeague) => {
     if (newLeague) showLeagueModal.value = false
+  }
+)
+
+// Watcher para cambios de ruta - verificar liga seleccionada
+watch(
+  () => router.currentRoute.value.path,
+  () => {
+    // Verificar si hay liga seleccionada cada vez que cambie de ruta
+    checkLeagueSelection()
   }
 )
 </script>

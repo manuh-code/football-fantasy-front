@@ -5,12 +5,15 @@ import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePassword
 import { userService } from "@/services/user/UserService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
+import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
+import { useFootballLeagueStore } from "../football/league/useFootballLeagueStore";
 
 export const useUserStore = defineStore("user", {
   state: () => {
     return {
       userData: null as UserDataInterface | null,
       userFantasyLeagues: null as FantasyLeaguesResponse[] | null,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
   },
   getters: {
@@ -26,6 +29,9 @@ export const useUserStore = defineStore("user", {
     getUserFantasyLeagues(): FantasyLeaguesResponse[] | null {
       return this.userFantasyLeagues;
     },
+    getTimezone(): string {
+      return this.timezone;
+    }
   },
   actions: {
     setUserData(userData: UserDataInterface | null): void {
@@ -65,6 +71,15 @@ export const useUserStore = defineStore("user", {
       const response = await userService.getUserFantasyLeagues();
       this.setUserFantasyLeagues(response);
     },
+    async storeFootballLeagues(payload: UserFootballLeaguePayload): Promise<void> {
+      const footballLeagueStore = useFootballLeagueStore();
+      const response = await userService.storeFootballLeagues(payload);
+      this.setUserData(response);
+     
+      if (response.football_league) {
+        footballLeagueStore.setLeague(response.football_league);
+      }
+    }
   },
   persist: {
     storage: sessionStorage,

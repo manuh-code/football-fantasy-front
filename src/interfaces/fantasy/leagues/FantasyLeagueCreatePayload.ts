@@ -10,6 +10,6 @@ export interface FantasyLeagueCreatePayload {
     description?: string | null;
     is_private?: boolean | null;
     image_path?: string | null;
-    started_at?: string;
+    started_at?: string | null;
     draft?: FantasyLeagueDraftPayload | null;
 }
