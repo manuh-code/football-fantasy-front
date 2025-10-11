@@ -93,9 +93,11 @@
                                         row.position }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <img :src="row.team?.image_path || '/img/default-avatar.svg'"
-                                                :alt="row.team?.name"
-                                                class="w-8 h-8 rounded-full border border-gray-100 dark:border-gray-700 object-cover" />
+                                            <TeamLogo 
+                                                :team="row.team"
+                                                size="md"
+                                                variant="square"
+                                            />
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900 dark:text-white">{{
                                                     row.team?.name }}</div>
@@ -146,8 +148,11 @@
                                 <div class="flex items-center gap-3">
                                     <div class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ row.position
                                         }}.</div>
-                                    <img :src="row.team?.image_path || '/img/default-avatar.svg'" :alt="row.team?.name"
-                                        class="w-8 h-8 rounded-full" />
+                                    <TeamLogo 
+                                        :team="row.team"
+                                        size="md"
+                                        variant="square"
+                                    />
                                     <div class="flex flex-col">
                                         <span class="text-sm font-medium text-gray-800 dark:text-gray-100">{{
                                             row.team?.name }}</span>
@@ -188,6 +193,7 @@ import { ref, onMounted } from 'vue'
 import footballLeagueService from '@/services/football/league/FootballLeagueService'
 import NoResults from '@/components/ui/NoResults.vue'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
+import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import type { FootballLeagueStandingsResponse } from '@/interfaces/football/league/FootballLeagueStandingsResponse'
 
 const store = useFootballLeagueStore()

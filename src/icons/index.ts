@@ -52,6 +52,8 @@ import {
   RiArrowUpDownFill,
   HiSolidTable,
   HiSolidCollection,
+  HiChevronLeft,
+  HiChevronRight,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -166,6 +168,8 @@ export const iconList = [
   HiSelector,
   RiArrowUpDownFill,
   HiSolidCollection,
+  HiChevronLeft,
+  HiChevronRight,
 
   // Theme icons
   HiSolidSun,

@@ -78,10 +78,11 @@
                     <!-- Player Info -->
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <img :src="player.image_path || '/img/default-avatar.svg'"
-                                :alt="player.display_name"
-                                class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
-                                @error="handleImageError" />
+                            <PlayerAvatar 
+                                :player="player"
+                                size="md"
+                                variant="circle"
+                            />
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                                     {{ player.display_name }}
@@ -96,9 +97,13 @@
                     <!-- Team -->
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <img v-if="player.team.image_path" :src="player.team.image_path"
-                                :alt="player.team.name" class="w-6 h-6 rounded mr-2"
-                                @error="handleTeamImageError" />
+                            <div class="mr-2">
+                                <TeamLogo 
+                                    :team="player.team"
+                                    size="sm"
+                                    variant="square"
+                                />
+                            </div>
                             <span class="text-sm text-gray-900 dark:text-white">
                                 {{ player.team.name }}
                             </span>
@@ -140,6 +145,8 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
 import type { FootballPlayerStatisticResponse } from '@/interfaces/football/player/FootballPlayerStatisticResponse'
+import PlayerAvatar from '@/components/football/ui/PlayerAvatar.vue'
+import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 
 // Props
 interface Props {
@@ -178,21 +185,7 @@ const formatStatValue = (value: number | undefined | null): string => {
     return String(value)
 }
 
-const handleImageError = (event: Event) => {
-    const img = event.target as HTMLImageElement
-    if (!img.dataset.fallbackUsed) {
-        img.dataset.fallbackUsed = 'true'
-        img.src = '/img/default-avatar.svg'
-    }
-}
 
-const handleTeamImageError = (event: Event) => {
-    const img = event.target as HTMLImageElement
-    if (!img.dataset.fallbackUsed) {
-        img.dataset.fallbackUsed = 'true'
-        img.style.display = 'none'
-    }
-}
 </script>
 
 <style scoped>

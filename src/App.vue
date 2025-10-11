@@ -25,6 +25,58 @@ import FootballLeagueSelectionModal from '@/components/football/leagues/Football
 import { useThemeStore } from './store/theme'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAl3be7iO35vuAW_Hi2RL3ODAeSrWguQbc",
+  authDomain: "fantasymx-3c6de.firebaseapp.com",
+  projectId: "fantasymx-3c6de",
+  storageBucket: "fantasymx-3c6de.firebasestorage.app",
+  messagingSenderId: "681526312308",
+  appId: "1:681526312308:web:c2d7e7f735ce69e6068021",
+  measurementId: "G-5EZKWCYGVJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+
+
+
+
+// Get registration token. Initially this makes a network call, once retrieved
+// subsequent calls to getToken will return from cache.
+const messaging = getMessaging();
+
+onMessage(messaging, (payload) => {
+  console.log('Message received. ', payload);
+  // ...
+});
+
+getToken(messaging, { vapidKey: 'BL0hrW6dbGIyY-RqclFlBT0DiP6WPl7Zzy4pNrl_IfeFmjIM4IBYmkhECBKGSTh8wrLpczYLRLhsC0kcC-9-yzE' }).then((currentToken) => {
+  if (currentToken) {
+    // Send the token to your server and update the UI if necessary
+    console.log('current token for client: ', currentToken);
+  } else {
+    // Show permission request UI
+    console.log('No registration token available. Request permission to generate one.');
+    // ...
+  }
+}).catch((err) => {
+  console.log('An error occurred while retrieving token. ', err);
+  // ...
+});
+
+
+
 
 const themeStore = useThemeStore();
 const store = useFootballLeagueStore()

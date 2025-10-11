@@ -9,5 +9,5 @@ export interface FootballRoundResponse {
     starting_at: string;
     ending_at: string;
     games_in_current_week: boolean;
-    fixtures: FootballFixtureResponse[];
+    fixtures: FootballFixtureResponse[] | null;
 }

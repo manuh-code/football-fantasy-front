@@ -195,11 +195,10 @@
                 <!-- Player -->
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
-                    <img 
-                      :src="scorer.player.image_path || '/img/default-avatar.svg'" 
-                      :alt="scorer.player.display_name"
-                      class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
-                      @error="handleImageError"
+                    <PlayerAvatar 
+                      :player="scorer.player"
+                      size="md"
+                      variant="circle"
                     />
                     <div class="ml-4">
                       <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -215,12 +214,11 @@
                 <!-- Team -->
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
-                    <img 
-                      v-if="scorer.team.image_path"
-                      :src="scorer.team.image_path" 
-                      :alt="scorer.team.name"
-                      class="w-6 h-6 rounded mr-2"
-                      @error="handleTeamImageError"
+                    <TeamLogo 
+                      :team="scorer.team"
+                      size="sm"
+                      variant="rounded"
+                      class="mr-2"
                     />
                     <div>
                       <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -308,11 +306,10 @@
 
             <!-- Player Info -->
             <div class="flex items-center space-x-3 mb-3">
-              <img 
-                :src="scorer.player.image_path || '/img/default-avatar.svg'"
-                :alt="scorer.player.display_name"
-                class="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
-                @error="handleImageError"
+              <PlayerAvatar 
+                :player="scorer.player"
+                size="lg"
+                variant="circle"
               />
               <div class="flex-1 min-w-0">
                 <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -328,12 +325,10 @@
             <div class="grid grid-cols-2 gap-3 mb-3">
               <!-- Team -->
               <div class="flex items-center space-x-2">
-                <img 
-                  v-if="scorer.team.image_path" 
-                  :src="scorer.team.image_path"
-                  :alt="scorer.team.name" 
-                  class="w-5 h-5 rounded"
-                  @error="handleTeamImageError" 
+                <TeamLogo 
+                  :team="scorer.team"
+                  size="xs"
+                  variant="rounded"
                 />
                 <div class="min-w-0">
                   <p class="text-xs text-gray-500 dark:text-gray-400">Team</p>
@@ -386,6 +381,8 @@
 import { ref, onMounted, computed, defineProps } from 'vue'
 import { useRoute } from 'vue-router'
 import { SelectComponent, ButtonComponent, PaginationComponent } from '@/components/ui'
+import PlayerAvatar from '@/components/football/ui/PlayerAvatar.vue'
+import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import { catalogService } from '@/services/catalog/CatalogService'
 import { footballPlayerService } from '@/services/football/player/FootballPlayerService'
 import { useToast } from '@/composables/useToast'
@@ -449,22 +446,6 @@ const typeOptions = computed(() => {
 })
 
 // Methods
-const handleImageError = (event: Event) => {
-  const img = event.target as HTMLImageElement
-  if (!img.dataset.fallbackUsed) {
-    img.dataset.fallbackUsed = 'true'
-    img.src = '/img/default-avatar.svg'
-  }
-}
-
-const handleTeamImageError = (event: Event) => {
-  const img = event.target as HTMLImageElement
-  if (!img.dataset.fallbackUsed) {
-    img.dataset.fallbackUsed = 'true'
-    img.style.display = 'none'
-  }
-}
-
 const loadSeasons = async (fantasyLeagueUuid: string) => {
   isLoadingSeasons.value = true
   try {
