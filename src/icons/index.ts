@@ -54,6 +54,8 @@ import {
   HiSolidCollection,
   HiChevronLeft,
   HiChevronRight,
+  MdSportssoccer,
+  HiSolidClipboardCheck,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -170,6 +172,7 @@ export const iconList = [
   HiSolidCollection,
   HiChevronLeft,
   HiChevronRight,
+  HiSolidClipboardCheck,
 
   // Theme icons
   HiSolidSun,
@@ -215,6 +218,7 @@ export const iconList = [
   BiEyeFill,
   BiEyeSlashFill,
   HiSolidTable,
+  MdSportssoccer,
 
   // Sports icons
   GiSoccerBall,

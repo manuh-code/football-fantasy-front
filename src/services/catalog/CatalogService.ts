@@ -7,6 +7,7 @@ import { AxiosError } from "axios";
 import { FootballLeagueResponse } from "@/interfaces/football/league/FootballLeagueResponse";
 import { FootballSeasonResponse } from "@/interfaces/football/season/FootballSeasonResponse";
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
+import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 
 export class CatalogService {
   private api;
@@ -54,6 +55,14 @@ export class CatalogService {
     throw new AxiosError('Failed to fetch football seasons');
   }
 
+  async getStagesBySeasonUuid(footballSeasonUuid: string): Promise<FootballStageResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballStageResponse[]>>(`catalog/season/${footballSeasonUuid}/stages`);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+    throw new AxiosError('Failed to fetch football stages');
+  }
+
   async getTeamsBySeasonUuid(footballSeasonUuid: string): Promise<FootballTeamResponse[]> {
     const response = await this.api.get<ApiResponse<FootballTeamResponse[]>>(`catalog/teams/by/season/${footballSeasonUuid}`);
     if (response.data.code === 200) {
@@ -72,13 +81,22 @@ export class CatalogService {
     throw new AxiosError('Failed to fetch type statistics');
   }
 
-  async getTypeTopScore(): Promise<TypeResponse[]> {  
+  async getTypeTopScore(): Promise<TypeResponse[]> {
     const response = await this.api.get<ApiResponse<TypeResponse[]>>('catalog/types/topScore');
     if (response.data.code === 200) {
       return response.data.data;
     }
 
     throw new AxiosError('Failed to fetch type top scores');
+  }
+
+  async getTypePosition(): Promise<TypeResponse[]> {
+    const response = await this.api.get<ApiResponse<TypeResponse[]>>('catalog/types/positions');
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+
+    throw new AxiosError('Failed to fetch type positions');
   }
 }
 

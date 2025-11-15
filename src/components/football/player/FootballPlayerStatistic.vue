@@ -381,13 +381,35 @@ const searchPlayers = async (page = 1) => {
 
         // Update pagination info (assuming the response includes pagination data)
         if (response.pagination) {
-            pagination.value = {
-                current_page: response.pagination.current_page || 1,
-                last_page: response.pagination.last_page || 1,
-                per_page: response.pagination.per_page || 15,
-                total: response.pagination.total || 0,
-                from: response.pagination.from || 0,
-                to: response.pagination.to || 0
+            const paginationData = response.pagination
+            if ('total' in paginationData && 'last_page' in paginationData && 'from' in paginationData && 'to' in paginationData) {
+                pagination.value = {
+                    current_page: paginationData.current_page ?? 1,
+                    last_page: paginationData.last_page ?? 1,
+                    per_page: paginationData.per_page ?? 15,
+                    total: paginationData.total ?? 0,
+                    from: paginationData.from ?? 0,
+                    to: paginationData.to ?? 0
+                }
+            } else {
+                const currentPage = 'current_page' in paginationData && typeof paginationData.current_page === 'number'
+                    ? paginationData.current_page
+                    : 1
+                const perPage = 'per_page' in paginationData && typeof paginationData.per_page === 'number'
+                    ? paginationData.per_page
+                    : pagination.value.per_page
+                const totalItems = players.value.length
+                const from = totalItems > 0 ? (currentPage - 1) * perPage + 1 : 0
+                const to = totalItems > 0 ? from + totalItems - 1 : 0
+
+                pagination.value = {
+                    current_page: currentPage,
+                    last_page: currentPage,
+                    per_page: perPage,
+                    total: totalItems,
+                    from,
+                    to
+                }
             }
         }
 

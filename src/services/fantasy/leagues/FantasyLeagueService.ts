@@ -5,6 +5,7 @@ import { FantasyLeagueCreatePayload } from "@/interfaces/fantasy/leagues/Fantasy
 import { FantasyLeagueJoined } from "@/interfaces/fantasy/leagues/FantasyLeagueJoined";
 import { useUserStore } from "@/store";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
+import { ScoreRulePayload } from "@/interfaces/fantasy/score/ScoreRulePayload";
 
 export class FantasyLeagueService{
     private api;
@@ -39,6 +40,14 @@ export class FantasyLeagueService{
             return response.data.data;
         }
         throw new Error('Failed to join fantasy league');
+    }
+
+    async updateScoreRules(payload: ScoreRulePayload , leagueUuid: string): Promise<ApiResponse<null>> {
+        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/score/${leagueUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to update score rules');
     }
 
 }

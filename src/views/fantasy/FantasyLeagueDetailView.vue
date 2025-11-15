@@ -26,25 +26,9 @@
             <FootballPlayerStatisticMenu :fantasy-league-uuid="uuid" />
           </div>
 
-          <!-- Management Content (Coming Soon) -->
+          <!-- Management Content -->
           <div v-else-if="activeTab === 'management'" key="management" class="animate-fade-in">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-              <div class="p-12 text-center">
-                <div
-                  class="w-20 h-20 bg-purple-100 dark:bg-purple-900/30 rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <v-icon name="hi-solid-cog" class="w-10 h-10 text-purple-600 dark:text-purple-400" />
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">League Management</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">
-                  Manage your league settings, participants, and administrative functions.
-                </p>
-                <div
-                  class="inline-flex items-center px-4 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-lg">
-                  <v-icon name="hi-solid-clock" class="w-4 h-4 mr-2" />
-                  <span class="text-sm font-medium">Coming Soon</span>
-                </div>
-              </div>
-            </div>
+            <FantasyLeagueManagement :uuid="uuid" />
           </div>
 
           <!-- Settings Content (Coming Soon) -->
@@ -77,6 +61,7 @@
 import { ref, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
+import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import { PageHeader, TabNavigationComponent } from '@/components/ui'
 import type { Tab } from '@/components/ui/TabNavigationComponent.vue'
@@ -103,9 +88,7 @@ const navigationTabs = computed<Tab[]>(() => [
     key: 'management',
     label: 'Management',
     icon: 'hi-solid-cog',
-    color: 'purple',
-    disabled: true,
-    badge: 'Soon'
+    color: 'purple'
   },
   {
     key: 'settings',

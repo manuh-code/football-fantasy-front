@@ -52,6 +52,22 @@
               <span>Top Scorers</span>
             </div>
           </button>
+
+          <!-- Fantasy Points Tab -->
+          <button
+            @click="setActiveStatistic('fantasypoints')"
+            :class="[
+              'flex-1 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500',
+              activeStatistic === 'fantasypoints'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
+            ]"
+          >
+            <div class="flex items-center justify-center gap-2">
+              <v-icon name="gi-soccer-ball" class="w-4 h-4" />
+              <span>Fantasy Points</span>
+            </div>
+          </button>
         </div>
       </div>
     </div>
@@ -68,6 +84,11 @@
         <div v-else-if="activeStatistic === 'topscorers'" key="topscorers" class="animate-fade-in">
           <FootballPlayerTopScore :fantasy-league-uuid="fantasyLeagueUuid" />
         </div>
+
+        <!-- Fantasy Points Component -->
+        <div v-else-if="activeStatistic === 'fantasypoints'" key="fantasypoints" class="animate-fade-in">
+          <FootballPlayerFantasyPoints :fantasy-league-uuid="fantasyLeagueUuid" />
+        </div>
       </Transition>
     </div>
   </div>
@@ -77,6 +98,7 @@
 import { ref, nextTick, defineProps } from 'vue'
 import FootballPlayerStatistic from '@/components/football/player/FootballPlayerStatistic.vue'
 import FootballPlayerTopScore from '@/components/football/player/FootballPlayerTopScore.vue'
+import FootballPlayerFantasyPoints from '@/components/football/player/FootballPlayerFantasyPoints.vue'
 
 // Props
 interface Props {
@@ -86,10 +108,10 @@ interface Props {
 defineProps<Props>()
 
 // Reactive data
-const activeStatistic = ref<'statistics' | 'topscorers'>('statistics')
+const activeStatistic = ref<'statistics' | 'topscorers' | 'fantasypoints'>('statistics')
 
 // Methods
-const setActiveStatistic = (statistic: 'statistics' | 'topscorers') => {
+const setActiveStatistic = (statistic: 'statistics' | 'topscorers' | 'fantasypoints') => {
   activeStatistic.value = statistic
 }
 
