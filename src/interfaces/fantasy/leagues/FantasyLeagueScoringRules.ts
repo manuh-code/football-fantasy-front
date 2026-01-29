@@ -11,11 +11,13 @@ export interface FantasyRule {
     position: TypeResponse | null;
     points: number;
     condition: FantasyRuleCondition | null;
+    hasCondition?: boolean; // Indica si esta regla permite tener condiciones
 }
 
-export interface FantasyRuleCondition {
-    multiplier?: boolean;
-    every?: number;
-    min_rating?: number;
-    min_minutes?: number;
-}
+export type FantasyRuleCondition =
+    | string
+    | number
+    | boolean
+    | null
+    | Record<string, unknown>
+    | unknown[];

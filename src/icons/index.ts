@@ -56,6 +56,9 @@ import {
   HiChevronRight,
   MdSportssoccer,
   HiSolidClipboardCheck,
+  HiSolidSave,
+  HiSolidHashtag,
+  HiSolidCode,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -173,11 +176,14 @@ export const iconList = [
   HiChevronLeft,
   HiChevronRight,
   HiSolidClipboardCheck,
+  HiSolidSave,
+  HiSolidHashtag,
 
   // Theme icons
   HiSolidSun,
   HiSolidMoon,
   HiSolidDesktopComputer,
+  HiSolidCode,
 
   // Search and filter icons
   HiSolidSearch,

@@ -28,7 +28,30 @@
 
           <!-- Management Content -->
           <div v-else-if="activeTab === 'management'" key="management" class="animate-fade-in">
-            <FantasyLeagueManagement :uuid="uuid" />
+            <!-- Loading State -->
+            <div v-if="isLoadingLeague" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+              <p class="text-gray-600 dark:text-gray-400">Cargando datos de gestión...</p>
+            </div>
+            
+            <!-- No Scoring Data -->
+            <div v-else-if="!scoringData" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+              <div class="w-20 h-20 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <v-icon name="hi-solid-exclamation" class="w-10 h-10 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Sin Reglas de Puntuación</h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                Esta liga aún no tiene reglas de puntuación configuradas.
+              </p>
+            </div>
+            
+            <!-- Management Component -->
+            <FantasyLeagueManagement 
+              v-else
+              :scoring-data="scoringData" 
+              :league-uuid="uuid"
+              @saved="handleLeagueSaved"
+            />
           </div>
 
           <!-- Settings Content (Coming Soon) -->
@@ -58,17 +81,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import { PageHeader, TabNavigationComponent } from '@/components/ui'
 import type { Tab } from '@/components/ui/TabNavigationComponent.vue'
+import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
+import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
+import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
 
 const route = useRoute()
 const uuid = route.params.uuid as string
 const activeTab = ref('overview')
+const league = ref<FantasyLeaguesResponse | null>(null)
+const isLoadingLeague = ref(false)
+
+// Computed para obtener las reglas de puntuación
+const scoringData = computed<FantasyLeagueScoringRules[] | null>(() => {
+  if (!league.value || !league.value.scoring_rules || league.value.scoring_rules.length === 0) {
+    return null
+  }
+  // Retornar el array completo de scoring_rules (ya viene agrupado por posición)
+  return league.value.scoring_rules
+})
+
+// Cargar datos de la liga
+const fetchLeagueData = async () => {
+  try {
+    isLoadingLeague.value = true
+    league.value = await fantasyLeagueService.showFantasyLeague(uuid)
+  } catch (error) {
+    console.error('Error loading league data:', error)
+  } finally {
+    isLoadingLeague.value = false
+  }
+}
 
 // Navigation tabs configuration
 const navigationTabs = computed<Tab[]>(() => [
@@ -104,6 +153,11 @@ const setActiveTab = (tab: string) => {
   activeTab.value = tab
 }
 
+const handleLeagueSaved = () => {
+  // Recargar datos de la liga después de guardar
+  fetchLeagueData()
+}
+
 // Transition event handlers
 const onEnter = (el: Element) => {
   nextTick(() => {
@@ -114,6 +168,11 @@ const onEnter = (el: Element) => {
 const onLeave = (el: Element) => {
   (el as HTMLElement).style.opacity = '0'
 }
+
+// Cargar datos al montar
+onMounted(() => {
+  fetchLeagueData()
+})
 </script>
 
 <style scoped>

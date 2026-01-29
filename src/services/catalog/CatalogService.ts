@@ -8,6 +8,7 @@ import { FootballLeagueResponse } from "@/interfaces/football/league/FootballLea
 import { FootballSeasonResponse } from "@/interfaces/football/season/FootballSeasonResponse";
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
+import { FantasyConditionsRulesResponse } from "@/interfaces/fantasy/leagues/FantasyConditionsRulesResponse";
 
 export class CatalogService {
   private api;
@@ -55,6 +56,16 @@ export class CatalogService {
     throw new AxiosError('Failed to fetch football seasons');
   }
 
+  async getSeasonsByLeagueUuid(footballLeagueUuid: string): Promise<FootballSeasonResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballSeasonResponse[]>>(`catalog/season/by/league/${footballLeagueUuid}`);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+
+    throw new AxiosError('Failed to fetch football seasons');
+  }
+
+
   async getStagesBySeasonUuid(footballSeasonUuid: string): Promise<FootballStageResponse[]> {
     const response = await this.api.get<ApiResponse<FootballStageResponse[]>>(`catalog/season/${footballSeasonUuid}/stages`);
     if (response.data.code === 200) {
@@ -62,6 +73,7 @@ export class CatalogService {
     }
     throw new AxiosError('Failed to fetch football stages');
   }
+
 
   async getTeamsBySeasonUuid(footballSeasonUuid: string): Promise<FootballTeamResponse[]> {
     const response = await this.api.get<ApiResponse<FootballTeamResponse[]>>(`catalog/teams/by/season/${footballSeasonUuid}`);
@@ -97,6 +109,15 @@ export class CatalogService {
     }
 
     throw new AxiosError('Failed to fetch type positions');
+  }
+
+  async getConditionsRules(): Promise<FantasyConditionsRulesResponse> {
+    const response = await this.api.get<ApiResponse<FantasyConditionsRulesResponse>>('catalog/fantasy/conditions/rules');
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+
+    throw new AxiosError('Failed to fetch fantasy conditions rules');
   }
 }
 
