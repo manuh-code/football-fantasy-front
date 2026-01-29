@@ -1,0 +1,11 @@
+<template>
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <HomeComponent />
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import HomeComponent from "@/components/HomeComponent.vue";
+</script>
