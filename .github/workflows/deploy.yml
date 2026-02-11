@@ -29,5 +29,5 @@ jobs:
           path: dist/
           remote_path: /var/www/dist
           remote_host: ${{ secrets.VPS_HOST }}
-          remote_user: ${{ secrets.VPS_USER }}
+          remote_user: ${{ secrets.VPS_USERNAME }}
           remote_key: ${{ secrets.VPS_KEY }}
