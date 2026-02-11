@@ -12,7 +12,7 @@
 			:is-initializing="isInitializing"
 			v-model:selected-teams="filters.teams"
 			v-model:selected-positions="filters.positions"
-			v-model:selected-stage-uuid="filters.stageUuid"
+			v-model:selected-stages="filters.stages"
 			@search="handleSearch"
 			@clear="clearFilters"
 		/>
@@ -35,7 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, defineProps } from 'vue'
+/* eslint-disable no-undef */
+import { ref, reactive, computed, watch } from 'vue'
 import FootballPlayerFantasyPointsFilters from '@/components/football/player/FootballPlayerFantasyPointsFilters.vue'
 import FootballPlayerFantasyPointsResults from '@/components/football/player/FootballPlayerFantasyPointsResults.vue'
 import { useToast } from '@/composables/useToast'
@@ -68,7 +69,7 @@ const fantasyPoints = ref<FootballPlayerFantasyPointsResponse[]>([])
 const filters = reactive({
 	teams: [] as FootballTeamResponse[],
 	positions: [] as TypeResponse[],
-	stageUuid: ''
+	stages: [] as FootballStageResponse[]
 })
 
 const isInitializing = ref(false)
@@ -79,7 +80,7 @@ const isLoadingFantasyPoints = ref(false)
 const hasSearched = ref(false)
 
 const currentSeasonUuid = ref('')
-const defaultStageUuid = ref('')
+const defaultStages = ref<FootballStageResponse[]>([])
 
 const pagination = ref<ApiSimplePagination | null>(null)
 const paginationLinks = ref<ApiLinks | null>(null)
@@ -125,9 +126,9 @@ const resetState = () => {
 	fantasyPoints.value = []
 	filters.teams = []
 	filters.positions = []
-	filters.stageUuid = ''
+	filters.stages = []
 	currentSeasonUuid.value = ''
-	defaultStageUuid.value = ''
+	defaultStages.value = []
 	pagination.value = null
 	paginationLinks.value = null
 	hasSearched.value = false
@@ -180,21 +181,20 @@ const loadStages = async (seasonUuid: string) => {
 
 		const currentStage = stages.value.find(stage => stage.is_current)
 		const fallbackStage = currentStage || stages.value[0]
-		defaultStageUuid.value = fallbackStage ? fallbackStage.uuid : ''
+		defaultStages.value = fallbackStage ? [fallbackStage] : []
 
-		if (!filters.stageUuid && defaultStageUuid.value) {
-			filters.stageUuid = defaultStageUuid.value
-		} else if (
-			filters.stageUuid &&
-			!stages.value.some(stage => stage.uuid === filters.stageUuid)
-		) {
-			filters.stageUuid = defaultStageUuid.value
+		if (filters.stages.length === 0 && defaultStages.value.length > 0) {
+			filters.stages = [...defaultStages.value]
+		} else {
+			filters.stages = filters.stages.filter(stage =>
+				stages.value.some(option => option.uuid === stage.uuid)
+			)
 		}
 	} catch (error) {
 		console.error('Error loading stages:', error)
 		stages.value = []
-		defaultStageUuid.value = ''
-		filters.stageUuid = ''
+		defaultStages.value = []
+		filters.stages = []
 		toast.error('Error', 'Unable to load the stages for this season.')
 	} finally {
 		isLoadingStages.value = false
@@ -260,7 +260,7 @@ const searchFantasyPoints = async (page = 1) => {
 			filters: {
 				team_uuids: filters.teams.length ? filters.teams.map(team => team.uuid) : null,
 				position_uuids: filters.positions.length ? filters.positions.map(position => position.uuid) : null,
-				stage_uuid: filters.stageUuid || null
+				stage_uuids: filters.stages.map(stage => stage.uuid)
 			},
 			sort_direction: sortDirection.value,
 			sort_by: sortBy.value
@@ -311,7 +311,7 @@ const handleSearch = () => {
 const clearFilters = () => {
 	filters.teams = []
 	filters.positions = []
-	filters.stageUuid = defaultStageUuid.value || ''
+	filters.stages = defaultStages.value.length > 0 ? [...defaultStages.value] : []
 	fantasyPoints.value = []
 	pagination.value = null
 	paginationLinks.value = null

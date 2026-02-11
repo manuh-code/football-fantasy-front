@@ -50,19 +50,18 @@
 
         <!-- Stages -->
         <div>
-          <SelectComponent
-            v-model="localSelectedStageUuid"
+          <MultiselectComponent
+            v-model="localSelectedStages"
             :options="stageOptions"
             value-key="uuid"
             label-key="name"
-            label="Stage"
-            placeholder="Select a stage"
+            label="Stages"
+            placeholder="Select stages"
             :disabled="disabled || isLoadingStages || !stageOptions.length"
+            :loading="isLoadingStages"
+            no-result-text="No stages found."
+            :no-options-text="isLoadingStages ? 'Loading stages…' : 'No stages available'"
           />
-          <div v-if="isLoadingStages" class="mt-1 text-xs text-gray-500 flex items-center gap-1">
-            <v-icon name="pr-spinner" class="w-3 h-3" animation="spin" />
-            Loading stages…
-          </div>
         </div>
 
         <!-- Initial state -->
@@ -107,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineEmits, defineProps, withDefaults } from 'vue'
+import { computed, defineProps, defineEmits, withDefaults } from 'vue'
 import { ButtonComponent, MultiselectComponent, SelectComponent } from '@/components/ui'
 import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
 import type { FootballStageResponse } from '@/interfaces/football/stage/FootballStageResponse'
@@ -116,7 +115,7 @@ import type { TypeResponse } from '@/interfaces/football/type/TypeResponse'
 interface Props {
   selectedTeams: FootballTeamResponse[]
   selectedPositions: TypeResponse[]
-  selectedStageUuid: string | null
+  selectedStages: FootballStageResponse[]
   teams: FootballTeamResponse[]
   stages: FootballStageResponse[]
   positions: TypeResponse[]
@@ -136,18 +135,14 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   'update:selectedTeams': [value: FootballTeamResponse[]]
   'update:selectedPositions': [value: TypeResponse[]]
-  'update:selectedStageUuid': [value: string | null]
+  'update:selectedStages': [value: FootballStageResponse[]]
   search: []
   clear: []
 }>()
 
 type TeamOption = FootballTeamResponse & Record<string, unknown>
 type PositionOption = TypeResponse & Record<string, unknown>
-
-interface StageOption extends Record<string, string | number | boolean | null | undefined> {
-  uuid: string
-  name: string
-}
+type StageOption = FootballStageResponse & Record<string, unknown>
 
 const teamOptions = computed<TeamOption[]>(() => props.teams as TeamOption[])
 const positionOptions = computed<PositionOption[]>(() => props.positions as PositionOption[])
@@ -158,8 +153,7 @@ const stageOptions = computed<StageOption[]>(() => {
   }
 
   return [...props.stages]
-    .sort((a, b) => a.sort_order - b.sort_order)
-    .map(stage => ({ uuid: stage.uuid, name: stage.name }))
+    .sort((a, b) => a.sort_order - b.sort_order) as StageOption[]
 })
 
 const localSelectedTeams = computed<TeamOption[]>({
@@ -172,8 +166,8 @@ const localSelectedPositions = computed<PositionOption[]>({
   set: value => emit('update:selectedPositions', Array.isArray(value) ? value as TypeResponse[] : [])
 })
 
-const localSelectedStageUuid = computed({
-  get: () => props.selectedStageUuid ?? '',
-  set: value => emit('update:selectedStageUuid', typeof value === 'string' ? value : null)
+const localSelectedStages = computed<StageOption[]>({
+  get: () => props.selectedStages as StageOption[],
+  set: value => emit('update:selectedStages', Array.isArray(value) ? value as FootballStageResponse[] : [])
 })
 </script>
