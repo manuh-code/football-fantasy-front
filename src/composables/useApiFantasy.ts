@@ -22,10 +22,7 @@ export function useApiFantasy() {
 
     // Get API base URL from environment variables
     const baseURL = computed(() => {
-        const url = import.meta.env.VITE_API_URL
-        if (!url) {
-            return 'https://api.fantasymx.test/api/'
-        }
+        const url = import.meta.env.VITE_API_BASE_URL
         return url
     })
 

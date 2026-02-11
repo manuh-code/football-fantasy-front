@@ -1,7 +1,7 @@
 export interface FootballPlayerFantasyPointsFilters {
     team_uuids: string[] | null;
     position_uuids: string[] | null;
-    stage_uuid: string | null;
+    stage_uuids: string[];
 }
 
 export interface FootballPlayerFantasyPointsPayload {
