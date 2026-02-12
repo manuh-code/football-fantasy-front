@@ -10,6 +10,23 @@ CMD ["npm", "run", "dev", "--", "--host"]
 
 
 FROM development AS build
+
+# Variables de entorno para el build de producción
+ARG VITE_APP_TITLE="Football Fantasy"
+ARG VITE_API_BASE_URL
+ARG VITE_APP_NAME="Football Fantasy"
+ARG VITE_APP_SHORT_NAME="FootballFantasy"
+ARG VITE_ABLY_PUBLIC_KEY
+ARG VITE_ABLY_CLUSTER="mt1"
+
+# Pasar las variables al build
+ENV VITE_APP_TITLE=$VITE_APP_TITLE
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_APP_NAME=$VITE_APP_NAME
+ENV VITE_APP_SHORT_NAME=$VITE_APP_SHORT_NAME
+ENV VITE_ABLY_PUBLIC_KEY=$VITE_ABLY_PUBLIC_KEY
+ENV VITE_ABLY_CLUSTER=$VITE_ABLY_CLUSTER
+
 RUN npm run build
 
 FROM nginx:stable-alpine AS production
