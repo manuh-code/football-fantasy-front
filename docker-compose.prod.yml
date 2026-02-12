@@ -1,5 +1,15 @@
 services:
   fantasymx-front:
+    env_file:
+      - .env.docker
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+      args:
+        VITE_API_BASE_URL: https://api.fantasymx.cloud/api/
+        VITE_ABLY_PUBLIC_KEY: ${VITE_ABLY_PUBLIC_KEY}
+        VITE_ABLY_CLUSTER: mt1
     image: manuh0989/fantasymx-front:latest
     container_name: fantasymx_front_nginx
     ports:
