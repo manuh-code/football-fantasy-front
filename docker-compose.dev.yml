@@ -1,0 +1,17 @@
+services:
+  vue-dev:
+    # Usamos el target 'development' definido en el Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: vue_dev_container
+    ports:
+      - "5174:5174"
+    volumes:
+      # Sincroniza tu carpeta actual con /var/www en el contenedor
+      - .:/var/www
+      # ¡IMPORTANTE! Evita que el node_modules de tu host sobrescriba el del contenedor
+      - /var/www/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Ayuda con el hot-reload en algunos sistemas (Windows/WSL)

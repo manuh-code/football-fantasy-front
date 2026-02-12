@@ -1,0 +1,7 @@
+services:
+  fantasymx-front:
+    image: manuh0989/fantasymx-front:latest
+    container_name: fantasymx_front_nginx
+    ports:
+      - "80:80"
+    restart: always
