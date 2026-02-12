@@ -3,5 +3,5 @@ services:
     image: manuh0989/fantasymx-front:latest
     container_name: fantasymx_front_nginx
     ports:
-      - "80:80"
+      - "3000:80"
     restart: always
