@@ -130,7 +130,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: 8080,
+    port: 5174,
     open: false,  // Deshabilitar apertura automática
     strictPort: false,
     host: 'localhost',
