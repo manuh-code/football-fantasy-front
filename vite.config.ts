@@ -120,19 +120,13 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    commonjsOptions: {
-      include: [/node_modules/],
-      transformMixedEsModules: true
-    },
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['vue', 'vue-router', 'pinia'],
-          icons: ['oh-vue-icons'],
-          lodash: ['lodash']
+          icons: ['oh-vue-icons']
         }
-      },
-      external: []
+      }
     }
   },
   server: {
