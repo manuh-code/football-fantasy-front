@@ -3,22 +3,22 @@
     class="w-full mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
   >
     <!-- Card Header -->
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex items-center justify-between gap-4">
+    <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center"
+            class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0"
           >
             <v-icon
               name="bi-trophy-fill"
               class="w-5 h-5 text-emerald-600 dark:text-emerald-400"
             />
           </div>
-          <div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          <div class="min-w-0">
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
               League Standings
             </h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               Current standings table
             </p>
           </div>
@@ -26,13 +26,12 @@
 
         <!-- Stage selector -->
         <div class="flex items-center gap-2">
-       
           <select
             id="stage-select"
             v-model="selectedStageUuid"
             @change="onStageChange"
             :disabled="loadingStages"
-            class="text-sm px-3 py-1.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px] sm:min-w-[180px]"
+            class="w-full sm:w-auto text-sm px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed sm:min-w-[180px]"
           >
             <option value="">Select stage</option>
             <option
