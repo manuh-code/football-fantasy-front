@@ -33,6 +33,7 @@ jobs:
             VITE_APP_NAME=Football Fantasy
             VITE_APP_SHORT_NAME=FootballFantasy
             VITE_ABLY_PUBLIC_KEY=${{ secrets.VITE_ABLY_PUBLIC_KEY }}
+            VITE_ABLY_KEY=${{ secrets.VITE_ABLY_KEY }}
             VITE_ABLY_CLUSTER=mt1
 
   deploy:
