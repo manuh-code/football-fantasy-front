@@ -271,6 +271,7 @@ const maxSlides = computed(() => paginatedFixtures.value.length);
 // Methods
 const fetchFixtures = async () => {
   try {
+    console.log("Fetching weekly fixtures...");
     loading.value = true;
     error.value = null;
     fixtures.value = await footballFixtureService.getFixturesForTheWeek();
@@ -337,7 +338,7 @@ const getAwayScore = (fixture: FootballFixtureResponse): number => {
 
 const getTeamResultClass = (
   fixture: FootballFixtureResponse,
-  teamIndex: number
+  teamIndex: number,
 ): string => {
   // Only show result colors if the match has finished
   if (!hasScores(fixture) || !isMatchFinished(fixture)) {
@@ -426,12 +427,15 @@ const formatMatchTime = (dateString: string): string => {
 };
 
 const { inPlayChannel } = useAblyBroadcast();
+
 // Lifecycle
 onMounted(async () => {
+
   await fetchFixtures();
+
   inPlayChannel.subscribe("matchedFixtures", (msg) => {
     const matchedFixtures: FootballFixtureResponse[] = msg.data;
-    
+
     console.log("Received matchedFixtures update via Ably:", matchedFixtures);
   });
 });
