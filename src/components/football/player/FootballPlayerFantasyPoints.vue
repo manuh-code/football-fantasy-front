@@ -18,6 +18,7 @@
 		/>
 
 		<FootballPlayerFantasyPointsResults
+			ref="resultsSection"
 			:fantasy-points="fantasyPoints"
 			:is-loading="isLoadingFantasyPoints"
 			:has-searched="hasSearched"
@@ -36,7 +37,7 @@
 
 <script setup lang="ts">
 /* eslint-disable no-undef */
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import FootballPlayerFantasyPointsFilters from '@/components/football/player/FootballPlayerFantasyPointsFilters.vue'
 import FootballPlayerFantasyPointsResults from '@/components/football/player/FootballPlayerFantasyPointsResults.vue'
 import { useToast } from '@/composables/useToast'
@@ -304,8 +305,9 @@ const searchFantasyPoints = async (page = 1) => {
 	}
 }
 
-const handleSearch = () => {
-	searchFantasyPoints(1)
+const handleSearch = async () => {
+	await searchFantasyPoints(1)
+	scrollToResults()
 }
 
 const clearFilters = () => {
@@ -363,6 +365,25 @@ const handleSort = (column: SortField) => {
 		searchFantasyPoints(1)
 	}
 }
+
+const scrollToResults = () => {
+	nextTick(() => {
+		setTimeout(() => {
+			const resultsElement = resultsSection.value?.$el
+			if (resultsElement) {
+				const rect = resultsElement.getBoundingClientRect()
+				const offset = 80
+				const scrollPosition = window.pageYOffset + rect.top - offset
+				window.scrollTo({
+					top: scrollPosition,
+					behavior: 'smooth'
+				})
+			}
+		}, 300)
+	})
+}
+
+const resultsSection = ref()
 
 watch(
 	() => props.fantasyLeagueUuid,

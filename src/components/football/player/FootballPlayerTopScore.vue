@@ -2,18 +2,25 @@
   <div class="space-y-6">
     <!-- Filters Section -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
-            <v-icon name="bi-trophy-fill" class="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+      <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-2 md:gap-3">
+          <div class="w-8 h-8 md:w-10 md:h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+            <v-icon name="bi-trophy-fill" class="w-4 h-4 md:w-5 md:h-5 text-yellow-600 dark:text-yellow-400" />
           </div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Top Scorers</h2>
+          <div class="min-w-0">
+            <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Top Scorers</h2>
+            <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">
+              Find the highest scoring players
+            </p>
+          </div>
         </div>
       </div>
 
-      <div class="p-6">
+      <div class="p-4 md:p-6">
         <form @submit.prevent="() => searchTopScorers()"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          class="space-y-4">
+          <!-- Filters Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Season Selection -->
           <div>
             <SelectComponent
@@ -47,15 +54,18 @@
               :loading="loadingTypes"
             />
           </div>
+          </div>
 
-          <!-- Search Button -->
-          <div class="lg:col-span-3 flex justify-end gap-3">
+          <!-- Search Buttons -->
+          <div class="flex flex-col md:flex-row justify-end gap-3">
             <ButtonComponent 
               type="button" 
               variant="outline" 
               size="md" 
               text="Clear Filters"
               @click="clearFilters" 
+              :full-width="true"
+              class="md:w-auto"
             />
             <ButtonComponent
               type="submit"
@@ -65,6 +75,8 @@
               icon="hi-search"
               :loading="loadingTopScorers"
               :disabled="!selectedSeasonUuid || !selectedTypeUuid"
+              :full-width="true"
+              class="md:w-auto"
             />
           </div>
         </form>
@@ -72,24 +84,24 @@
     </div>
 
     <!-- Results Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
-              <v-icon name="bi-trophy-fill" class="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+    <div ref="resultsSection" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div class="flex items-center gap-2 md:gap-3">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+              <v-icon name="bi-trophy-fill" class="w-4 h-4 md:w-5 md:h-5 text-yellow-600 dark:text-yellow-400" />
             </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Top Scorers Results</h3>
-              <p v-if="topScorers.length" class="text-sm text-gray-600 dark:text-gray-400">
-                Found {{ paginationData?.total || 0 }} players
+            <div class="min-w-0">
+              <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white truncate">Top Scorers Results</h3>
+              <p v-if="topScorers.length" class="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                {{ paginationData?.from }}-{{ paginationData?.to }} of {{ paginationData?.total || 0 }} players
               </p>
             </div>
           </div>
           
           <!-- Items per page selector -->
           <div v-if="topScorers.length" class="flex items-center gap-2">
-            <label for="per-page-select" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label for="per-page-select" class="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
               Show
             </label>
             <SelectComponent
@@ -98,17 +110,18 @@
               :options="perPageOptions"
               value-key="value"
               label-key="label"
+              class="w-16 md:w-20"
               @change="onPerPageChange"
             />
-            <span class="text-sm text-gray-600 dark:text-gray-400">per page</span>
+            <span class="text-xs md:text-sm text-gray-600 dark:text-gray-400">per page</span>
           </div>
         </div>
       </div>
 
       <!-- Loading State -->
-      <div v-if="loadingTopScorers" class="p-8 text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-600 dark:text-gray-400">Loading top scorers...</p>
+      <div v-if="loadingTopScorers" class="p-6 md:p-8 text-center">
+        <div class="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">Loading top scorers...</p>
       </div>
 
       <!-- Error State -->
@@ -125,23 +138,23 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!loadingTopScorers && topScorers.length === 0 && hasSearched" class="p-8 text-center">
-        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-          <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-400" />
+      <div v-else-if="!loadingTopScorers && topScorers.length === 0 && hasSearched" class="p-6 md:p-8 text-center">
+        <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <v-icon name="hi-solid-search" class="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No results found</h3>
-        <p class="text-gray-600 dark:text-gray-400">
+        <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No results found</h3>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
           No top scorers found for the selected criteria. Try adjusting your filters.
         </p>
       </div>
 
       <!-- Initial State -->
-      <div v-else-if="!hasSearched" class="p-8 text-center">
-        <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mx-auto mb-4 flex items-center justify-center">
-          <v-icon name="bi-trophy-fill" class="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
+      <div v-else-if="!hasSearched" class="p-6 md:p-8 text-center">
+        <div class="w-12 h-12 md:w-16 md:h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <v-icon name="bi-trophy-fill" class="w-6 h-6 md:w-8 md:h-8 text-yellow-600 dark:text-yellow-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Search Top Scorers</h3>
-        <p class="text-gray-600 dark:text-gray-400">
+        <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">Search Top Scorers</h3>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
           Select a season and score type, then click search to view the top scoring players.
         </p>
       </div>
@@ -378,7 +391,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, defineProps } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { SelectComponent, ButtonComponent, PaginationComponent } from '@/components/ui'
 import PlayerAvatar from '@/components/football/ui/PlayerAvatar.vue'
@@ -401,6 +414,9 @@ const props = defineProps<Props>()
 // Composables
 const toast = useToast()
 const route = useRoute()
+
+// Refs
+const resultsSection = ref<HTMLElement | null>(null)
 
 // Reactive data
 const loadingTypes = ref(false)
@@ -529,6 +545,14 @@ const searchTopScorers = async () => {
     const response = await footballPlayerService.getFootballPlayerTopScore(payload, selectedSeasonUuid.value)
     topScorers.value = response.data
     paginationData.value = response.pagination
+    
+    // Scroll to results section after search (with slight delay for render)
+    if (topScorers.value.length > 0) {
+      await nextTick()
+      setTimeout(() => {
+        scrollToResults()
+      }, 300)
+    }
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Failed to load top scorers'
     error.value = errorMessage
@@ -562,6 +586,20 @@ const onPerPageChange = () => {
   // Reset to first page when changing per page
   currentPage.value = 1
   searchTopScorers()
+}
+
+const scrollToResults = () => {
+  if (resultsSection.value) {
+    // Calculate offset for fixed bottom menu (adjust if needed)
+    const offset = 80 // Account for any fixed headers/menus
+    const elementPosition = resultsSection.value.getBoundingClientRect().top
+    const offsetPosition = elementPosition + window.pageYOffset - offset
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    })
+  }
 }
 
 const onFantasyLeagueChange = async (fantasyLeagueUuid: string) => {

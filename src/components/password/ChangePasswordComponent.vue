@@ -66,11 +66,12 @@
           <!-- Form Actions -->
           <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
             <ButtonComponent
+              type="button"
               variant="cancel"
               size="md"
-              text="Cancel"
+              text="Clear"
               :full-width="true"
-              @click="handleCancel"
+              @click="handleClear"
             />
             <ButtonComponent
               type="submit"
@@ -149,7 +150,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
@@ -159,7 +159,6 @@ import { ChangePasswordPayload } from '@/interfaces/user/password/ChangePassword
 
 
 // Stores and composables
-const router = useRouter()
 const userStore = useUserStore()
 const validationStore = useValidationStore()
 const toast = useToast()
@@ -210,23 +209,19 @@ const handleSubmit = async () => {
       new_password_confirmation: ''
     }
     
-    // Navigate back to profile or dashboard
-    router.push({ name: 'profile' })
-    
   } finally {
     isLoading.value = false
   }
 }
 
-const handleCancel = () => {
-  // Clear form and navigate back
+const handleClear = () => {
+  // Clear form
   formData.value = {
     old_password: '',
     new_password: '',
     new_password_confirmation: ''
   }
   validationStore.clearValidatorError()
-  router.back()
 }
 </script>
 

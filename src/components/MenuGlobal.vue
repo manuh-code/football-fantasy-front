@@ -1,64 +1,45 @@
 <template>
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200">
+  <!-- Menú superior - siempre visible -->
+  <nav aria-label="Main navigation" class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200">
     <div class="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-4 h-14 sm:h-16">
-      <!-- Left side - App name -->
-      <div class="navbar-brand">
-        <button 
+      <!-- Left side - Logo/Brand (clickable to gaming) -->
+      <button
+        @click="handleGoGaming"
+        class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 group"
+        aria-label="Go to games"
+        title="Go to Games"
+      >
+        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+          <v-icon name="hi-solid-lightning-bolt" class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+        </div>
+        <div class="hidden sm:flex flex-col items-start">
+          <span class="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">Fantasy MX</span>
+          <span class="text-xs text-gray-500 dark:text-gray-400 leading-tight">Football</span>
+        </div>
+      </button>
+
+      <!-- Center - Selected football league (clickable to home) -->
+      <div class="flex items-center justify-center flex-1">
+        <button
+          v-if="selectedLeague"
           @click="handleGoHome"
-          class="px-1 sm:px-2 py-1 rounded-lg bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          :title="`${selectedLeague.name} - Go to home`"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Go to home"
         >
-          <span class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">FantasyMX</span>
+          <img 
+            :src="selectedLeague.image_path || '/img/default-avatar.svg'" 
+            :alt="selectedLeague.name" 
+            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover shadow-sm" 
+          />
+          <div class="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100 truncate max-w-[8rem] sm:max-w-[12rem]">
+            {{ selectedLeague.name }}
+          </div>
         </button>
       </div>
 
-      <!-- Right side - Selected league, Theme toggle, Login/User menu -->
+      <!-- Right side - User Avatar -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Selected football league (minimal, clickable on mobile) -->
-        <div v-if="selectedLeague" class="flex items-center gap-2 mr-2">
-          <div class="relative" ref="leaguePopoverRef">
-            <button
-              @click="toggleLeaguePopover"
-              :title="selectedLeague.name"
-              class="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md px-1 py-0.5"
-              aria-haspopup="true"
-              :aria-expanded="isLeaguePopoverOpen"
-            >
-              <img :src="selectedLeague.image_path || '/img/default-avatar.svg'" :alt="selectedLeague.name" class="w-8 h-8 rounded-full object-cover shadow-sm" />
-              <div class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate max-w-[6rem] sm:max-w-[8rem]">{{ selectedLeague.name }}</div>
-            </button>
-
-            <Transition name="dropdown">
-              <div v-if="isLeaguePopoverOpen" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 py-2">
-                <div v-if="leaguesLoading" class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">Loading...</div>
-                <div v-else-if="leaguesError" class="px-3 py-2 text-sm text-red-500">{{ leaguesError }}</div>
-                <div v-else>
-                  <template v-if="availableLeagues.length">
-                    <button v-for="league in availableLeagues" :key="league.uuid" @click="selectLeague(league)" class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">{{ league.name }}</button>
-                  </template>
-                  <div v-else class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">No leagues available at the moment.</div>
-                  <hr class="border-t border-gray-100 dark:border-gray-700 my-1" />
-                
-                </div>
-              </div>
-            </Transition>
-          </div>
-        </div>
-        <!-- Theme Toggle Button -->
-        <button
-          @click="handleThemeToggle"
-          @keydown="handleKeydown"
-          :title="themeTooltip"
-          class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 transform hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Toggle theme"
-          tabindex="0"
-        >
-          <v-icon 
-            :name="themeIcon" 
-            class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:rotate-180 transition-all duration-300"
-          />
-        </button>
-
         <!-- Login Button (when not authenticated) -->
         <button
           v-if="!isAuthenticatedRef"
@@ -69,38 +50,39 @@
           Login
         </button>
 
-        <!-- User Avatar Dropdown (when authenticated) -->
-        <DropdownMenuComponent
+        <!-- User Avatar (when authenticated) -->
+        <button
           v-if="isAuthenticatedRef"
-          :avatar-url="avatarUrl"
-          :user-initials="userInitials"
-          :user-name="userName"
-          :user-email="userEmail"
-          @logout="handleLogout"
-          @view-profile="handleViewProfile"
-          @change-password="handleChangePassword"
-          @favorite-team="handleFavoriteTeam"
-          @fantasy-leagues="handleFantasyLeagues"
-        />
-         
-       
+          @click="handleViewProfile"
+          class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          :title="`Go to ${userName} profile`"
+          aria-label="Go to profile"
+        >
+          <img 
+            v-if="avatarUrl" 
+            :src="avatarUrl" 
+            :alt="userName"
+            class="w-full h-full object-cover"
+          />
+          <div 
+            v-else 
+            class="w-full h-full flex items-center justify-center bg-blue-600 dark:bg-blue-700 text-white text-xs sm:text-sm font-semibold"
+          >
+            {{ userInitials }}
+          </div>
+        </button>
       </div>
     </div>
   </nav>
 </template>
 
 <script lang="ts" setup>
-import { useThemeStore } from '@/store/theme'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
-import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
-import catalogService from '@/services/catalog/CatalogService'
-import type { FootballLeagueResponse } from '@/interfaces/football/league/FootballLeagueResponse'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 import { useRouter } from 'vue-router'
-import { DropdownMenuComponent } from '@/components/ui'
 
-const themeStore = useThemeStore()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
@@ -108,70 +90,6 @@ const router = useRouter()
 const leagueStore = useFootballLeagueStore()
 
 const selectedLeague = computed(() => leagueStore.getLeague)
-
-// Popover state for quick league actions
-const isLeaguePopoverOpen = ref(false)
-const leaguePopoverRef = ref<HTMLElement | null>(null)
-const leagues = ref<FootballLeagueResponse[]>([])
-const leaguesLoading = ref(false)
-const leaguesError = ref('')
-
-function toggleLeaguePopover() {
-  isLeaguePopoverOpen.value = !isLeaguePopoverOpen.value
-  if (isLeaguePopoverOpen.value) {
-    fetchLeagues()
-  }
-}
-
-function closeLeaguePopover() {
-  isLeaguePopoverOpen.value = false
-}
-
-async function fetchLeagues() {
-  leaguesLoading.value = true
-  leaguesError.value = ''
-  try {
-    const data = await catalogService.getFootballLeagues()
-    leagues.value = data || []
-  } catch (e) {
-    leaguesError.value = 'Failed to load leagues.'
-    leagues.value = []
-  } finally {
-    leaguesLoading.value = false
-  }
-}
-
-function selectLeague(league: FootballLeagueResponse) {
-  leagueStore.setLeague(league)
-  closeLeaguePopover()
-}
-
-const availableLeagues = computed(() => {
-  return leagues.value.filter(l => l.uuid !== selectedLeague.value?.uuid)
-})
-
-function handleClickOutsideLeague(event: MouseEvent) {
-  if (leaguePopoverRef.value && !leaguePopoverRef.value.contains(event.target as Node)) {
-    closeLeaguePopover()
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutsideLeague)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutsideLeague)
-})
-
-// Computed properties for theme icon
-const themeIcon = computed(() => {
-  return themeStore.currentTheme === 'dark' ? 'hi-solid-sun' : 'hi-solid-moon'
-})
-
-const themeTooltip = computed(() => {
-  return themeStore.currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
-})
 
 // Computed properties for authentication
 const isAuthenticatedRef = ref(false)
@@ -210,51 +128,20 @@ const userName = computed(() => {
   return 'User'
 })
 
-const userEmail = computed(() => {
-  const userData = userStore.getUserData
-  return userData?.email || 'user@example.com'
-})
-
-function handleThemeToggle() {
-  themeStore.toggleTheme()
-}
-
 function handleLogin() {
   router.push({name: 'login'})
 }
 
-function handleViewProfile() {
-  router.push({name: 'profile'})
-}
-
-function handleChangePassword() {
-  router.push({name: 'change-password'})
-}
-
-function handleFavoriteTeam() {
-  router.push({name: 'favorite-football-team'})
-}
-
-function handleFantasyLeagues() {
-  router.push({name: 'userFantasyLeague'})
-}
-
-async function handleLogout() {
-  await authStore.logout()
-  // Use replace to avoid creating a history entry that might cause navigation loops
-  router.replace({ name: 'home' })
-}
-
 function handleGoHome() {
-  router.replace({ name: 'home' })
+  router.push({ name: 'home' })
 }
 
-// Keyboard support
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault()
-    handleThemeToggle()
-  }
+function handleGoGaming() {
+  router.push({ name: 'gaming' })
+}
+
+function handleViewProfile() {
+  router.push({ name: 'profile' })
 }
 </script>
 
@@ -266,5 +153,22 @@ function handleKeydown(event: KeyboardEvent) {
     transition: none !important;
     transform: none !important;
   }
+}
+
+// Safe area padding for devices with notch (iPhone X+, etc.)
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// Transición para el dropdown
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

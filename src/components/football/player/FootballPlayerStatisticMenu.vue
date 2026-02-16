@@ -2,25 +2,25 @@
   <div class="space-y-6">
     <!-- Statistics Header with Menu -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-              <v-icon name="hi-solid-chart-bar" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <div>
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Player Statistics</h2>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                View detailed statistics and rankings for players in this league
-              </p>
-            </div>
+      <!-- Simplified Header for Mobile -->
+      <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-2 md:gap-3">
+          <div class="w-8 h-8 md:w-10 md:h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Player Statistics</h2>
+            <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">
+              View detailed statistics and rankings for players in this league
+            </p>
           </div>
         </div>
       </div>
 
-      <!-- Statistics Type Menu -->
-      <div class="px-6 py-4 bg-gray-50 dark:bg-gray-750">
-        <div class="flex flex-col sm:flex-row gap-2">
+      <!-- Mobile-Friendly Statistics Type Menu -->
+      <div class="px-3 md:px-6 py-3 md:py-4 bg-gray-50 dark:bg-gray-750">
+        <!-- Desktop: Row layout with full buttons -->
+        <div class="hidden md:flex gap-2">
           <!-- Player Statistics Tab -->
           <button
             @click="setActiveStatistic('statistics')"
@@ -69,6 +69,51 @@
             </div>
           </button>
         </div>
+
+        <!-- Mobile: Compact grid layout with icons -->
+        <div class="md:hidden grid grid-cols-3 gap-2">
+          <!-- Player Statistics Tab -->
+          <button
+            @click="setActiveStatistic('statistics')"
+            :class="[
+              'flex flex-col items-center justify-center gap-2 px-3 py-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500',
+              activeStatistic === 'statistics'
+                ? 'bg-blue-600 text-white shadow-lg scale-105'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
+            ]"
+          >
+            <v-icon name="hi-solid-table" class="w-6 h-6" />
+            <span class="text-xs font-medium leading-tight text-center">Details</span>
+          </button>
+
+          <!-- Top Scorers Tab -->
+          <button
+            @click="setActiveStatistic('topscorers')"
+            :class="[
+              'flex flex-col items-center justify-center gap-2 px-3 py-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500',
+              activeStatistic === 'topscorers'
+                ? 'bg-yellow-600 text-white shadow-lg scale-105'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
+            ]"
+          >
+            <v-icon name="bi-trophy-fill" class="w-6 h-6" />
+            <span class="text-xs font-medium leading-tight text-center">Top Scorers</span>
+          </button>
+
+          <!-- Fantasy Points Tab -->
+          <button
+            @click="setActiveStatistic('fantasypoints')"
+            :class="[
+              'flex flex-col items-center justify-center gap-2 px-3 py-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500',
+              activeStatistic === 'fantasypoints'
+                ? 'bg-emerald-600 text-white shadow-lg scale-105'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
+            ]"
+          >
+            <v-icon name="gi-soccer-ball" class="w-6 h-6" />
+            <span class="text-xs font-medium leading-tight text-center">Fantasy</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -95,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, defineProps } from 'vue'
+import { ref, nextTick } from 'vue'
 import FootballPlayerStatistic from '@/components/football/player/FootballPlayerStatistic.vue'
 import FootballPlayerTopScore from '@/components/football/player/FootballPlayerTopScore.vue'
 import FootballPlayerFantasyPoints from '@/components/football/player/FootballPlayerFantasyPoints.vue'

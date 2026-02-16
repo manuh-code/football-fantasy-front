@@ -139,6 +139,17 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/gaming',
+    name: 'gaming',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "gaming" */ '@/views/fantasy/GamingView.vue'),
+    meta: {
+      title: 'Fantasy Games - Football Fantasy',
+      description: 'Manage your fantasy games and leagues',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/football/player/statistics',
     name: 'footballPlayerStatistics',
     // Route level code-splitting for better performance

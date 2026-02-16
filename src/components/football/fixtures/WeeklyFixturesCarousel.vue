@@ -74,7 +74,12 @@
 
       <!-- Fixtures Carousel -->
       <div v-else class="relative">
-        <div class="overflow-hidden">
+        <div 
+          class="overflow-hidden"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchMove"
+          @touchend="handleTouchEnd"
+        >
           <div
             class="flex transition-transform duration-300 ease-in-out"
             :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
@@ -223,7 +228,8 @@
         <!-- Mobile Swipe Hint -->
         <div v-if="isMobile && maxSlides > 1" class="text-center mt-2">
           <p class="text-xs text-gray-400 dark:text-gray-500">
-            {{ currentSlide + 1 }} of {{ maxSlides }} fixtures
+            <v-icon name="md-comparearrows-round" class="w-3 h-3 inline-block mr-1" />
+            Swipe to navigate • {{ currentSlide + 1 }} of {{ maxSlides }}
           </p>
         </div>
       </div>
@@ -247,6 +253,13 @@ const fixtures = ref<FootballFixtureResponse[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const currentSlide = ref(0);
+
+// Touch/Swipe state
+const touchStartX = ref(0);
+const touchEndX = ref(0);
+const touchStartY = ref(0);
+const touchEndY = ref(0);
+const isSwiping = ref(false);
 
 // Composables
 const { error: showErrorToast } = useToast();
@@ -293,6 +306,61 @@ const nextSlide = () => {
 const prevSlide = () => {
   if (currentSlide.value > 0) {
     currentSlide.value--;
+  }
+};
+
+// Touch/Swipe handlers
+const handleTouchStart = (e: TouchEvent) => {
+  touchStartX.value = e.touches[0].clientX;
+  touchStartY.value = e.touches[0].clientY;
+  isSwiping.value = false;
+};
+
+const handleTouchMove = (e: TouchEvent) => {
+  if (isSwiping.value) {
+    // Continue preventing scroll while swiping
+    e.preventDefault();
+    return;
+  }
+  
+  const deltaX = Math.abs(e.touches[0].clientX - touchStartX.value);
+  const deltaY = Math.abs(e.touches[0].clientY - touchStartY.value);
+  
+  // Only consider it a swipe if horizontal movement is greater than vertical
+  if (deltaX > deltaY && deltaX > 10) {
+    isSwiping.value = true;
+    // Prevent vertical scrolling when swiping horizontally
+    e.preventDefault();
+  }
+};
+
+const handleTouchEnd = (e: TouchEvent) => {
+  if (!isSwiping.value) return;
+  
+  touchEndX.value = e.changedTouches[0].clientX;
+  touchEndY.value = e.changedTouches[0].clientY;
+  
+  handleSwipe();
+  isSwiping.value = false;
+};
+
+const handleSwipe = () => {
+  const swipeThreshold = 50; // Minimum swipe distance in pixels
+  const deltaX = touchStartX.value - touchEndX.value;
+  const deltaY = Math.abs(touchStartY.value - touchEndY.value);
+  
+  // Only process horizontal swipes (ignore if vertical movement is too large)
+  if (Math.abs(deltaX) < swipeThreshold || deltaY > 100) {
+    return;
+  }
+  
+  // Swipe left (next slide)
+  if (deltaX > 0 && currentSlide.value < maxSlides.value - 1) {
+    nextSlide();
+  }
+  // Swipe right (previous slide)
+  else if (deltaX < 0 && currentSlide.value > 0) {
+    prevSlide();
   }
 };
 
@@ -449,6 +517,12 @@ onBeforeUnmount(() => {
 /* Smooth transition for carousel */
 .transition-transform {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Improve touch responsiveness */
+.overflow-hidden {
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Responsive fixture cards */
