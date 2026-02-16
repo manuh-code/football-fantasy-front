@@ -35,6 +35,22 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/auth/google/callback', // Debe coincidir con lo que pusiste en Google Cloud
+    name: 'GoogleCallback',
+    component: () => import('../views/login/GoogleCallback.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "register" */ '@/views/user/store/UserStoreView.vue'),
+    meta: {
+      title: 'Create Account - Football Fantasy',
+      description: 'Create your Football Fantasy account',
+      requiresAuth: false
+    }
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     // Route level code-splitting for better performance
@@ -190,8 +206,8 @@ router.beforeEach(async (to, from, next) => {
     });
   }
 
-  // If user is authenticated and trying to access login page, redirect to dashboard
-  if (to.name === 'login' && isAuthenticated) {
+  // If user is authenticated and trying to access login or register page, redirect to dashboard
+  if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
     return next({ name: "dashboard" });
   }
 

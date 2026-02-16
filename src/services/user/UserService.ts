@@ -8,6 +8,7 @@ import { AxiosError } from "axios";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
+import { UserStorePayload } from "@/interfaces/user/store/userStorePayload";
 
 export class UserService {
     private api;
@@ -15,6 +16,14 @@ export class UserService {
     constructor() {
         const { apiFantasyInstance } = useApiFantasy();
         this.api = apiFantasyInstance;
+    }
+
+    async userStore(payload: UserStorePayload): Promise<UserDataInterface> {
+        const response = await this.api.post<ApiResponse<UserDataInterface>>('user/store', payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to register user');
     }
 
     async getUserData(): Promise<UserDataInterface> {
