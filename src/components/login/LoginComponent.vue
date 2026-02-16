@@ -66,7 +66,7 @@
                 <a href="#" class="link">Forgot your password?</a>
                 <p class="text-muted">
                     Don't have an account?
-                    <a href="#" class="link">Sign up here</a>
+                    <router-link to="/register" class="link">Sign up here</router-link>
                 </p>
             </div>
         </div>
@@ -167,15 +167,12 @@ const handleGoogleLogin = async () => {
     isGoogleLoading.value = true
 
     try {
-        // Google authentication logic would go here
+        const url = await authStore.fetchGoogleLoginUrl();
+        window.location.href = url;
         
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000))
-
-        // TODO: Implement Google authentication logic
 
     } catch (error) {
-        // Google login error
+        console.error('Google login error:', error)
     } finally {
         isGoogleLoading.value = false
     }

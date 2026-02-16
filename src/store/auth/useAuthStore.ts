@@ -18,7 +18,7 @@ export const useAuthStore = defineStore("auth", {
       this.token = null;
       userStore.clearUserData();
     },
-    
+
     setToken(token: string) {
       this.token = token;
     },
@@ -37,6 +37,23 @@ export const useAuthStore = defineStore("auth", {
       this.setToken(response.token);
       userStore.setUserDataFromApi();
       return response;
+    },
+
+    async fetchGoogleLoginUrl(): Promise<string> {
+      if (this.googleUrl) {
+        return this.googleUrl;
+      }
+      const url = await loginService.fetchGoogleLoginUrl();
+      this.googleUrl = url;
+      return url;
+    },
+
+    async loginWithGoogle(queryParams: string): Promise<void> {
+      const userStore = useUserStore();
+      const response = await loginService.loginWithGoogle(queryParams);
+      this.setToken(response.token);
+
+      userStore.setUserDataFromApi();
     },
 
     async logout(): Promise<void> {

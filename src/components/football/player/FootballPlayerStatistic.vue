@@ -3,18 +3,25 @@
     <div class="space-y-6">
         <!-- Filters Section -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                        <v-icon name="bi-funnel-fill" class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-2 md:gap-3">
+                    <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <v-icon name="bi-funnel-fill" class="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Search Filters</h2>
+                    <div class="min-w-0">
+                        <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Search Filters</h2>
+                        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">
+                            Filter players by season, team, and statistics
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="p-6">
+            <div class="p-4 md:p-6">
                 <form @submit.prevent="() => searchPlayers()"
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    class="space-y-4">
+                    <!-- Filters Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Season Selection -->
                     <div>
                         <SelectComponent
@@ -77,22 +84,38 @@
                             no-result-text="No statistic types found."
                         />
                     </div>
+                    </div>
 
-                    <!-- Search Button -->
-                    <div class="lg:col-span-3 flex justify-end gap-3">
-                        <ButtonComponent type="button" variant="outline" size="md" text="Clear Filters"
-                            @click="clearFilters" />
-                        <ButtonComponent type="submit" variant="primary" size="md" text="Search Players"
-                            icon="hi-search" :loading="isLoadingPlayers" />
+                    <!-- Search Buttons -->
+                    <div class="flex flex-col md:flex-row justify-end gap-3">
+                        <ButtonComponent 
+                            type="button" 
+                            variant="outline" 
+                            size="md" 
+                            text="Clear Filters"
+                            @click="clearFilters" 
+                            :full-width="true"
+                            class="md:w-auto"
+                        />
+                        <ButtonComponent 
+                            type="submit" 
+                            variant="primary" 
+                            size="md" 
+                            text="Search Players"
+                            icon="hi-search" 
+                            :loading="isLoadingPlayers" 
+                            :full-width="true"
+                            class="md:w-auto"
+                        />
                     </div>
                     
                     <!-- Current Sort Indicator -->
-                    <div v-if="sortBy && sortDirection" class="lg:col-span-3">
+                    <div v-if="sortBy && sortDirection">
                         <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm border border-blue-200 dark:border-blue-800">
                             <v-icon :name="sortDirection === 'asc' ? 'hi-solid-sort-ascending' : 'hi-solid-sort-descending'" class="w-4 h-4" />
-                            <span>Sorted by <strong>{{ formatStatColumnName(sortBy) }}</strong> ({{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }})</span>
+                            <span class="text-xs md:text-sm">Sorted by <strong>{{ formatStatColumnName(sortBy) }}</strong> ({{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }})</span>
                             <button @click="sortBy = null; sortDirection = 'desc'; searchPlayers(1)" 
-                                    class="ml-auto text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 transition-colors"
+                                    class="ml-auto text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 transition-colors flex-shrink-0"
                                     title="Clear sorting">
                                 <v-icon name="hi-solid-x" class="w-4 h-4" />
                             </button>
@@ -103,25 +126,25 @@
         </div>
 
         <!-- Results Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
+        <div ref="resultsSection" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div class="flex items-center gap-2 md:gap-3">
                         <div
-                            class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                            <v-icon name="hi-solid-chart-bar" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                            class="w-8 h-8 md:w-10 md:h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
-                        <div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Player Statistics</h2>
-                            <p v-if="pagination.total" class="text-sm text-gray-600 dark:text-gray-400">
-                                Showing {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} players
+                        <div class="min-w-0">
+                            <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Player Statistics</h2>
+                            <p v-if="pagination.total" class="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                                {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} players
                             </p>
                         </div>
                     </div>
                     
                     <!-- Items per page selector -->
                     <div v-if="players.length" class="flex items-center gap-2">
-                        <label for="per-page-select" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="per-page-select" class="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
                             Show:
                         </label>
                         <SelectComponent
@@ -131,28 +154,28 @@
                             value-key="value"
                             label-key="label"
                             placeholder=""
-                            class="w-20"
+                            class="w-16 md:w-20"
                             @change="onPerPageChange"
                         />
-                        <span class="text-sm text-gray-600 dark:text-gray-400">per page</span>
+                        <span class="text-xs md:text-sm text-gray-600 dark:text-gray-400">per page</span>
                     </div>
                 </div>
             </div>
 
             <!-- Loading State -->
-            <div v-if="isLoadingPlayers" class="p-8 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p class="text-gray-600 dark:text-gray-400">Loading player statistics...</p>
+            <div v-if="isLoadingPlayers" class="p-6 md:p-8 text-center">
+                <div class="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">Loading player statistics...</p>
             </div>
 
             <!-- Empty State -->
-            <div v-else-if="!players.length && !isInitialLoad" class="p-8 text-center">
+            <div v-else-if="!players.length && !isInitialLoad" class="p-6 md:p-8 text-center">
                 <div
-                    class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <v-icon name="hi-solid-chart-bar" class="w-8 h-8 text-gray-400" />
+                    class="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <v-icon name="hi-solid-chart-bar" class="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No players found</h3>
-                <p class="text-gray-600 dark:text-gray-400">Try adjusting your search filters to find players.</p>
+                <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No players found</h3>
+                <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">Try adjusting your search filters to find players.</p>
             </div>
 
             <!-- Results Table -->
@@ -207,7 +230,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, defineProps } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { ButtonComponent, PaginationComponent, SelectComponent, MultiselectComponent } from '@/components/ui'
@@ -230,6 +253,9 @@ const props = defineProps<{
 // Composables
 const toast = useToast()
 const route = useRoute()
+
+// Refs
+const resultsSection = ref<HTMLElement | null>(null)
 
 // State
 const seasons = ref<FootballSeasonResponse[]>([])
@@ -414,6 +440,14 @@ const searchPlayers = async (page = 1) => {
         }
 
         isInitialLoad.value = false
+        
+        // Scroll to results section after search (with slight delay for render)
+        if (players.value.length > 0) {
+            await nextTick()
+            setTimeout(() => {
+                scrollToResults()
+            }, 300)
+        }
     } catch (error) {
         players.value = []
         // Reset pagination on error
@@ -532,6 +566,20 @@ const formatStatColumnName = (statKey: string): string => {
     return statKey
         .replace(/_/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase())
+}
+
+const scrollToResults = () => {
+    if (resultsSection.value) {
+        // Calculate offset for fixed bottom menu (adjust if needed)
+        const offset = 80 // Account for any fixed headers/menus
+        const elementPosition = resultsSection.value.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - offset
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        })
+    }
 }
 
 // Lifecycle

@@ -59,6 +59,8 @@ import {
   HiSolidSave,
   HiSolidHashtag,
   HiSolidCode,
+  BiEnvelopeFill,
+  HiSolidDocumentText,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -96,6 +98,8 @@ import {
   HiSolidRefresh,
   HiSolidEye,
   HiSolidEyeOff,
+  HiSolidLogin,
+  HiArrowsExpand
 } from 'oh-vue-icons/icons'
 
 // Status icons
@@ -106,6 +110,7 @@ import {
   HiSolidHeart,
   HiSolidBookmark,
   HiSolidShare,
+  MdComparearrowsRound,
 } from 'oh-vue-icons/icons'
 
 // Login icons (Bootstrap Icons)
@@ -115,6 +120,7 @@ import {
   BiGoogle,
   BiEyeFill,
   BiEyeSlashFill,
+  HiSolidSparkles,
 } from 'oh-vue-icons/icons'
 
 // Sports icons
@@ -178,12 +184,17 @@ export const iconList = [
   HiSolidClipboardCheck,
   HiSolidSave,
   HiSolidHashtag,
+  BiEnvelopeFill,
+  HiSolidSparkles,
+  HiArrowsExpand,
+  MdComparearrowsRound,
 
   // Theme icons
   HiSolidSun,
   HiSolidMoon,
   HiSolidDesktopComputer,
   HiSolidCode,
+  HiSolidLogin,
 
   // Search and filter icons
   HiSolidSearch,
@@ -191,6 +202,7 @@ export const iconList = [
   HiSolidAdjustments,
   HiSolidSortAscending,
   HiSolidSortDescending,
+  HiSolidDocumentText,
 
   // Navigation icons
   HiSolidArrowLeft,

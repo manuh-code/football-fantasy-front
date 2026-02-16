@@ -1,18 +1,18 @@
 <template>
   <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-            <v-icon name="hi-solid-chart-bar" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+    <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div class="flex items-center gap-2 md:gap-3 min-w-0">
+          <div class="w-8 h-8 md:w-10 md:h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Fantasy Points Results</h3>
-            <p v-if="rangeDescription" class="text-sm text-gray-600 dark:text-gray-400">{{ rangeDescription }}</p>
+          <div class="min-w-0">
+            <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white truncate">Fantasy Points Results</h3>
+            <p v-if="rangeDescription" class="text-sm text-gray-600 dark:text-gray-400 truncate">{{ rangeDescription }}</p>
           </div>
         </div>
 
-        <div v-if="fantasyPoints.length" class="flex items-center gap-2">
+        <div v-if="fantasyPoints.length" class="flex items-center gap-2 flex-shrink-0">
           <label for="fantasy-points-per-page" class="text-sm font-medium text-gray-700 dark:text-gray-300">
             Show
           </label>
@@ -30,29 +30,29 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="isLoading" class="p-8 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-  <p class="text-gray-600 dark:text-gray-400">Loading fantasy points…</p>
+    <div v-if="isLoading" class="p-6 md:p-8 text-center">
+      <div class="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+  <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">Loading fantasy points…</p>
     </div>
 
     <!-- Initial State -->
-    <div v-else-if="!hasSearched" class="p-8 text-center">
-      <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mx-auto mb-4 flex items-center justify-center">
-        <v-icon name="hi-solid-lightning-bolt" class="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+    <div v-else-if="!hasSearched" class="p-6 md:p-8 text-center">
+      <div class="w-12 h-12 md:w-16 md:h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mx-auto mb-4 flex items-center justify-center">
+        <v-icon name="hi-solid-lightning-bolt" class="w-6 h-6 md:w-8 md:h-8 text-emerald-600 dark:text-emerald-400" />
       </div>
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Search fantasy points</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">Search fantasy points</h3>
+      <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
         Adjust the filters and press search to display the results.
       </p>
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="!fantasyPoints.length" class="p-8 text-center">
-      <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-        <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-400" />
+    <div v-else-if="!fantasyPoints.length" class="p-6 md:p-8 text-center">
+      <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
+        <v-icon name="hi-solid-search" class="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
       </div>
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No results</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No results</h3>
+      <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
         No players matched the selected filters. Try a different combination.
       </p>
     </div>

@@ -1,21 +1,23 @@
 <template>
   <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-          <v-icon name="hi-solid-lightning-bolt" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+    <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center gap-2 md:gap-3">
+        <div class="w-8 h-8 md:w-10 md:h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+          <v-icon name="hi-solid-lightning-bolt" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
         </div>
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Fantasy Points Filters</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+        <div class="min-w-0">
+          <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Fantasy Points Filters</h2>
+          <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">
             Choose teams and stages to analyse league fantasy points.
           </p>
         </div>
       </div>
     </div>
 
-    <div class="p-6">
-      <form @submit.prevent="emit('search')" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="p-4 md:p-6">
+      <form @submit.prevent="emit('search')" class="space-y-4">
+        <!-- Filters Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Teams -->
         <div>
           <MultiselectComponent
@@ -63,9 +65,10 @@
             :no-options-text="isLoadingStages ? 'Loading stages…' : 'No stages available'"
           />
         </div>
+        </div>
 
         <!-- Initial state -->
-        <div v-if="disabled && isInitializing" class="lg:col-span-3">
+        <div v-if="disabled && isInitializing">
           <div class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
             <v-icon name="pr-spinner" class="w-3 h-3 mr-2" animation="spin" />
             Preparing league data…
@@ -73,7 +76,7 @@
         </div>
 
         <!-- Message when there is no active season -->
-        <div v-else-if="disabled && !isInitializing" class="lg:col-span-3">
+        <div v-else-if="disabled && !isInitializing">
           <div class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-700">
             <v-icon name="hi-solid-information-circle" class="w-4 h-4 mr-2 text-amber-600 dark:text-amber-400" />
             This league does not have an active season to query fantasy points.
@@ -81,7 +84,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="lg:col-span-3 flex justify-end gap-3">
+        <div class="flex flex-col md:flex-row justify-end gap-3">
           <ButtonComponent
             type="button"
             variant="outline"
@@ -89,6 +92,8 @@
             text="Clear filters"
             @click="emit('clear')"
             :disabled="isSearching"
+            :full-width="true"
+            class="md:w-auto"
           />
           <ButtonComponent
             type="submit"
@@ -98,6 +103,8 @@
             icon="hi-solid-search"
             :loading="isSearching"
             :disabled="disabled || isSearching"
+            :full-width="true"
+            class="md:w-auto"
           />
         </div>
       </form>
@@ -106,8 +113,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, defineEmits, withDefaults } from 'vue'
-import { ButtonComponent, MultiselectComponent, SelectComponent } from '@/components/ui'
+import { computed } from 'vue'
+import { ButtonComponent, MultiselectComponent } from '@/components/ui'
 import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
 import type { FootballStageResponse } from '@/interfaces/football/stage/FootballStageResponse'
 import type { TypeResponse } from '@/interfaces/football/type/TypeResponse'
