@@ -21,6 +21,11 @@
             <FantasyLeagueDetail :uuid="uuid" />
           </div>
 
+          <!-- My Team Content -->
+          <div v-else-if="activeTab === 'myteam'" key="myteam" class="animate-fade-in">
+            <MyFantasyTeamComponent :fantasy-league-uuid="uuid" />
+          </div>
+
           <!-- Player Statistics Content -->
           <div v-else-if="activeTab === 'statistics'" key="statistics" class="animate-fade-in">
             <!-- Football Player Statistics Menu Component -->
@@ -74,6 +79,7 @@ import { useRoute } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
+import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
 import { PageHeader, BottomMenuFantasyLeague } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
