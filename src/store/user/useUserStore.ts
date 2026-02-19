@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { UserPayload } from "@/interfaces/user/userPayload";
 import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
-import { userService } from "@/services/user/UserService";
+import { getUserService } from "@/services/user/UserService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
@@ -50,32 +50,32 @@ export const useUserStore = defineStore("user", {
       this.userFantasyLeagues = null;
     },
     async setUserDataFromApi(): Promise<void> {
-      const response = await userService.getUserData();
+      const response = await getUserService().getUserData();
       this.setUserData(response);
     },
     async updateProfile(payload: UserPayload): Promise<void> {
-      const response = await userService.updateProfile(payload);
+      const response = await getUserService().updateProfile(payload);
       this.setUserData(response);
     },
     async changeAvatar(file: File): Promise<void> {
-      const response = await userService.changeAvatar(file);
+      const response = await getUserService().changeAvatar(file);
       this.setUserData(response);
     },
     async changePassword(payload: ChangePasswordPayload): Promise<void> {
-      const response = await userService.changePassword(payload);
+      const response = await getUserService().changePassword(payload);
       this.setUserData(response);
     },
     async updateFavoriteTeam(payload: { teamUuid: string }): Promise<void> {
-      const response = await userService.updateFavoriteTeam(payload);
+      const response = await getUserService().updateFavoriteTeam(payload);
       this.setUserData(response);
     },
     async getUserFantasyLeaguesFromApi(): Promise<void> {
-      const response = await userService.getUserFantasyLeagues();
+      const response = await getUserService().getUserFantasyLeagues();
       this.setUserFantasyLeagues(response);
     },
     async storeFootballLeagues(payload: UserFootballLeaguePayload): Promise<void> {
       const footballLeagueStore = useFootballLeagueStore();
-      const response = await userService.storeFootballLeagues(payload);
+      const response = await getUserService().storeFootballLeagues(payload);
       this.setUserData(response);
      
       if (response.football_league) {
@@ -83,7 +83,7 @@ export const useUserStore = defineStore("user", {
       }
     },
     async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse[]> {
-      return await userService.getFantasyFootballPlayersByLeagueUuid(leagueUuid, payload);
+      return await getUserService().getFantasyFootballPlayersByLeagueUuid(leagueUuid, payload);
     }
   },
   persist: {

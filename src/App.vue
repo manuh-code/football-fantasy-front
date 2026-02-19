@@ -25,19 +25,22 @@
         transition: swipeNav.isActive.value ? 'none' : 'transform 0.3s ease-out',
       }"
     >
-      <!-- Global Menu -->
-      <MenuGlobal />
+      <!-- Header Menu -->
+      <HeaderMenu />
 
       <!-- Global Football League Selection Modal -->
       <FootballLeagueSelectionModal :isVisible="showLeagueModal" @close="showLeagueModal = false" />
 
-      <main class="flex-1 pt-14 sm:pt-16">
+      <main class="flex-1 pt-14 sm:pt-16 pb-24">
         <router-view />
       </main>
 
       <!-- Toast Container -->
       <ToastContainer />
     </div>
+
+    <!-- Footer Menu - Fixed at bottom, outside transform context -->
+    <FooterMenu />
   </div>
 </template>
 
@@ -45,8 +48,8 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import MenuGlobal from '@/components/MenuGlobal.vue'
-import { ToastContainer } from '@/components/ui'
+import HeaderMenu from '@/components/HeaderMenu.vue'
+import { ToastContainer, FooterMenu } from '@/components/ui'
 import FootballLeagueSelectionModal from '@/components/football/leagues/FootballLeagueSelectionModal.vue'
 import { useThemeStore } from './store/theme'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'

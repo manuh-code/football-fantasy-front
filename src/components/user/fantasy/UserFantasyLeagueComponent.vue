@@ -61,17 +61,17 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center py-12 mb-8">
+      <div v-else class="text-center py-6 mb-4">
         <div
-          class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full mx-auto mb-6 flex items-center justify-center"
+          class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center"
         >
           <v-icon name="bi-trophy-fill" class="w-12 h-12 text-gray-400" />
         </div>
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           No Fantasy Leagues Yet
         </h3>
         <p
-          class="text-gray-600 dark:text-gray-400 text-base mb-6 max-w-md mx-auto leading-relaxed"
+          class="text-gray-600 dark:text-gray-400 text-base mb-4 max-w-md mx-auto leading-relaxed"
         >
           Start your fantasy football journey by creating your own league or
           joining an existing one below!

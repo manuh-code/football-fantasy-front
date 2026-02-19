@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 pb-20 md:pb-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 pb-24 md:pb-8">
     <div class="max-w-7xl mx-auto px-4 py-6 sm:py-8">
       <!-- Header -->
       <div class="mb-8">
