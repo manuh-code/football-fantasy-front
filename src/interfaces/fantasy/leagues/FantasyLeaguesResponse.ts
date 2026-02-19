@@ -1,6 +1,7 @@
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { FantasyDraftResponse } from "../draft/FantasyDraftResponse";
 import { FantasyLeagueScoringRules } from "./FantasyLeagueScoringRules";
+import { FantasyLeagueFormationResponse } from "./FantasyLeagueFormationResponse";
 
 export interface FantasyLeaguesResponse {
     uuid: string;
@@ -18,4 +19,5 @@ export interface FantasyLeaguesResponse {
     participants: UserDataInterface[] | null;
     scoring_rules: FantasyLeagueScoringRules[] | null;
     draft: FantasyDraftResponse | null;
+    formation: FantasyLeagueFormationResponse | null;
 }

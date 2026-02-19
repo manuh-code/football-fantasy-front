@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
@@ -86,8 +86,10 @@ import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeag
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
 
 const route = useRoute()
+const router = useRouter()
 const uuid = route.params.uuid as string
-const activeTab = ref('overview')
+// Initialize activeTab from query param or default to 'overview'
+const activeTab = ref((route.query.tab as string) || 'overview')
 const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoadingLeague = ref(false)
 
@@ -114,6 +116,12 @@ const fetchLeagueData = async () => {
 
 const setActiveTab = (tab: string) => {
   activeTab.value = tab
+  // Update URL query param to reflect active tab
+  router.replace({ 
+    name: 'fantasyLeagueDetail', 
+    params: { uuid }, 
+    query: { tab } 
+  })
 }
 
 const handleLeagueSaved = () => {

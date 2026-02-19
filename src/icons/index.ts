@@ -61,6 +61,11 @@ import {
   HiSolidCode,
   BiEnvelopeFill,
   HiSolidDocumentText,
+  HiSolidUserAdd,
+  HiSolidPlusCircle,
+  HiSolidClipboardList,
+  HiSolidViewGrid,
+  HiSolidShieldExclamation,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -111,6 +116,8 @@ import {
   HiSolidBookmark,
   HiSolidShare,
   MdComparearrowsRound,
+  HiSolidChevronDoubleLeft,
+  HiSolidChevronDoubleRight,
 } from 'oh-vue-icons/icons'
 
 // Login icons (Bootstrap Icons)
@@ -160,6 +167,7 @@ export const iconList = [
   HiCamera,
   HiSolidShieldCheck,
   MdPassword,
+  HiSolidShieldExclamation,
   PrSpinner,
   HiSolidLockClosed,
   BiKeyFill,
@@ -188,6 +196,10 @@ export const iconList = [
   HiSolidSparkles,
   HiArrowsExpand,
   MdComparearrowsRound,
+  HiSolidClipboardList,
+  HiSolidChevronDoubleLeft,
+  HiSolidChevronDoubleRight,
+  HiSolidViewGrid,
 
   // Theme icons
   HiSolidSun,
@@ -203,6 +215,8 @@ export const iconList = [
   HiSolidSortAscending,
   HiSolidSortDescending,
   HiSolidDocumentText,
+  HiSolidUserAdd,
+  HiSolidPlusCircle,
 
   // Navigation icons
   HiSolidArrowLeft,

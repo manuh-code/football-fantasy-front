@@ -8,6 +8,7 @@ import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeag
 import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
 import { useFootballLeagueStore } from "../football/league/useFootballLeagueStore";
 import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 
 export const useUserStore = defineStore("user", {
   state: () => {
@@ -81,8 +82,8 @@ export const useUserStore = defineStore("user", {
         footballLeagueStore.setLeague(response.football_league);
       }
     },
-    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string): Promise<FantasyFootballPlayersResponse[]> {
-      return await userService.getFantasyFootballPlayersByLeagueUuid(leagueUuid);
+    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse[]> {
+      return await userService.getFantasyFootballPlayersByLeagueUuid(leagueUuid, payload);
     }
   },
   persist: {
