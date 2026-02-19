@@ -21,6 +21,11 @@
             <FantasyLeagueDetail :uuid="uuid" />
           </div>
 
+          <!-- My Team Content -->
+          <div v-else-if="activeTab === 'myteam'" key="myteam" class="animate-fade-in">
+            <MyFantasyTeamComponent :fantasy-league-uuid="uuid" />
+          </div>
+
           <!-- Player Statistics Content -->
           <div v-else-if="activeTab === 'statistics'" key="statistics" class="animate-fade-in">
             <!-- Football Player Statistics Menu Component -->
@@ -70,18 +75,21 @@
 
 <script setup lang="ts">
 import { ref, nextTick, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
+import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
 import { PageHeader, BottomMenuFantasyLeague } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
 
 const route = useRoute()
+const router = useRouter()
 const uuid = route.params.uuid as string
-const activeTab = ref('overview')
+// Initialize activeTab from query param or default to 'overview'
+const activeTab = ref((route.query.tab as string) || 'overview')
 const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoadingLeague = ref(false)
 
@@ -108,6 +116,12 @@ const fetchLeagueData = async () => {
 
 const setActiveTab = (tab: string) => {
   activeTab.value = tab
+  // Update URL query param to reflect active tab
+  router.replace({ 
+    name: 'fantasyLeagueDetail', 
+    params: { uuid }, 
+    query: { tab } 
+  })
 }
 
 const handleLeagueSaved = () => {

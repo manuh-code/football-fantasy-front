@@ -9,6 +9,8 @@ import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeag
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
 import { UserStorePayload } from "@/interfaces/user/store/userStorePayload";
+import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 
 export class UserService {
     private api;
@@ -88,6 +90,14 @@ export class UserService {
             return response.data.data;
         }
         throw new AxiosError('Failed to store football leagues');
+    }
+
+    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse[]> {
+        const response = await this.api.post<ApiResponse<FantasyFootballPlayersResponse[]>>(`user/fantasy/football/lineups/${leagueUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to fetch fantasy football players');
     }
 }
 

@@ -6,11 +6,17 @@ import { FantasyLeagueJoined } from "@/interfaces/fantasy/leagues/FantasyLeagueJ
 import { useUserStore } from "@/store";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { ScoreRulePayload } from "@/interfaces/fantasy/score/ScoreRulePayload";
+import { FantasyRoundResponse } from "@/interfaces/fantasy/rounds/FantasyRoundResponse";
+import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import { FantasyPlayerDraftResponse } from "@/interfaces/fantasy/draft/FantasyPlayerDraftResponse";
+import { FantasyPlayerDraftPayload } from "@/interfaces/fantasy/draft/FantasyPlayerDraftPayload";
+import { FantasyAddPlayerPayload } from "@/interfaces/fantasy/draft/FantasyAddPlayerPayload";
 
-export class FantasyLeagueService{
-    private api;
+export class FantasyLeagueService {
+    private readonly api;
 
-    private userStore;
+    private readonly userStore;
+
     constructor() {
         const { apiFantasyInstance } = useApiFantasy();
         this.api = apiFantasyInstance;
@@ -31,7 +37,7 @@ export class FantasyLeagueService{
             this.userStore.clearUserFantasyLeagues();
             return response.data.data;
         }
-        throw new Error('Failed to create fantasy league'); 
+        throw new Error('Failed to create fantasy league');
     }
 
     async joinFantasyLeague(payload: FantasyLeagueJoined, leagueUuid: string): Promise<FantasyLeaguesResponse> {
@@ -42,12 +48,36 @@ export class FantasyLeagueService{
         throw new Error('Failed to join fantasy league');
     }
 
-    async updateScoreRules(payload: ScoreRulePayload , leagueUuid: string): Promise<ApiResponse<null>> {
+    async updateScoreRules(payload: ScoreRulePayload, leagueUuid: string): Promise<ApiResponse<null>> {
         const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/score/${leagueUuid}`, payload);
         if (response.data.code === 200) {
             return response.data;
         }
         throw new Error('Failed to update score rules');
+    }
+
+    async getFantasyRoundsByLeagueUuid(leagueUuid: string): Promise<FantasyRoundResponse[]> {
+        const response = await this.api.get<ApiResponse<FantasyRoundResponse[]>>(`fantasy/leagues/rounds/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch fantasy rounds');
+    }
+
+    async getPlayersToDraft(leagueUuid: string, payload: FantasyPlayerDraftPayload): Promise<FantasyPlayerDraftResponse[]> {
+        const response = await this.api.post<ApiResponse<FantasyPlayerDraftResponse[]>>(`fantasy/leagues/draft/players/${leagueUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch players to draft');
+    }
+
+    async addPlayer(payload: FantasyAddPlayerPayload): Promise<ApiResponse<null>> {
+        const response = await this.api.post<ApiResponse<null>>(`fantasy/leagues/draft/pick/`, payload);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to add player');
     }
 
 }

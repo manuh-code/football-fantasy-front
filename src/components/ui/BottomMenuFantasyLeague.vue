@@ -9,7 +9,7 @@
       <button
         @click="handleTabChange('overview')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
           activeTab === 'overview' 
             ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
             : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -20,14 +20,29 @@
         <span class="text-xs font-medium">Overview</span>
       </button>
 
+      <!-- My Team -->
+      <button
+        @click="handleTabChange('myteam')"
+        :class="[
+          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          activeTab === 'myteam' 
+            ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' 
+            : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+        ]"
+        aria-label="My Team"
+      >
+        <v-icon name="hi-solid-user-group" class="w-6 h-6" />
+        <span class="text-xs font-medium">My Team</span>
+      </button>
+
       <!-- Player Statistics -->
       <button
         @click="handleTabChange('statistics')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
           activeTab === 'statistics' 
-            ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' 
-            : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30' 
+            : 'text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-50 dark:hover:bg-gray-700'
         ]"
         aria-label="Player Statistics"
       >
@@ -39,7 +54,7 @@
       <button
         @click="handleTabChange('management')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
           activeTab === 'management' 
             ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30' 
             : 'text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-50 dark:hover:bg-gray-700'

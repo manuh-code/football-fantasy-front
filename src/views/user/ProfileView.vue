@@ -99,6 +99,29 @@
                 <v-icon name="hi-solid-sparkles" class="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
                 <p class="text-sm text-gray-600 dark:text-gray-400">More settings coming soon</p>
               </div>
+
+              <!-- Logout Section -->
+              <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-200 dark:border-red-900/30">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-solid-logout" class="w-6 h-6 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-900 dark:text-white">Sign Out</h3>
+                      <p class="text-sm text-gray-600 dark:text-gray-400">Close your session and return to home</p>
+                    </div>
+                  </div>
+                  <button
+                    @click="handleLogout"
+                    :disabled="isLoggingOut"
+                    class="px-4 py-2 bg-red-600 hover:bg-red-700 active:bg-red-800 disabled:bg-red-400 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 flex items-center gap-2"
+                  >
+                    <v-icon v-if="isLoggingOut" name="pr-spinner" class="w-4 h-4" animation="spin" />
+                    <span>{{ isLoggingOut ? 'Signing out...' : 'Sign Out' }}</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -130,14 +153,21 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import ProfileComponent from '@/components/user/ProfileComponent.vue'
 import ChangePasswordComponent from '@/components/password/ChangePasswordComponent.vue'
 import { PageHeader } from '@/components/ui'
 import { useThemeStore } from '@/store/theme'
+import { useAuthStore } from '@/store/auth/useAuthStore'
+import { useToast } from '@/composables/useToast'
 
 const themeStore = useThemeStore()
+const authStore = useAuthStore()
+const router = useRouter()
+const toast = useToast()
 
 const activeTab = ref('profile')
+const isLoggingOut = ref(false)
 
 const tabs = [
   {
@@ -172,6 +202,22 @@ const themeDescription = computed(() => {
 
 const handleThemeToggle = () => {
   themeStore.toggleTheme()
+}
+
+const handleLogout = async () => {
+  if (isLoggingOut.value) return
+  
+  isLoggingOut.value = true
+  try {
+    await authStore.logout()
+    toast.success('Signed Out', 'You have been signed out successfully')
+    router.push({ name: 'home' })
+  } catch (error) {
+    console.error('Logout error:', error)
+    toast.error('Error', 'Failed to sign out. Please try again.')
+  } finally {
+    isLoggingOut.value = false
+  }
 }
 </script>
 
