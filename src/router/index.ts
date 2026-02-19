@@ -73,6 +73,26 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/settings',
+    name: 'userSettings',
+    component: () => import(/* webpackChunkName: "user-settings" */ '@/views/user/settings/UserSettingsView.vue'),
+    meta: {
+      title: 'Settings - Football Fantasy',
+      description: 'Manage your account settings',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/settings/system',
+    name: 'system-settings',
+    component: () => import(/* webpackChunkName: "system-settings" */ '@/views/user/settings/SystemSettingsView.vue'),
+    meta: {
+      title: 'System Settings - Football Fantasy',
+      description: 'Customize appearance and system preferences',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/change/password',
     name: 'change-password',
     // Route level code-splitting for better performance

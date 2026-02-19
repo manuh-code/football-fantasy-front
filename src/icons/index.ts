@@ -91,6 +91,7 @@ import {
   HiSolidArrowUp,
   HiSolidArrowDown,
   HiSolidExternalLink,
+  HiCalendar,
 } from 'oh-vue-icons/icons'
 
 // Action icons
@@ -163,6 +164,7 @@ export const iconList = [
   IoSettingsSharp,
   IoPencilSharp,
   MdCancel,
+  HiCalendar,
   HiSolidKey,
   HiCamera,
   HiSolidShieldCheck,

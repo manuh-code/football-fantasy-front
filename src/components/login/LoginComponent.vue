@@ -181,21 +181,21 @@ const handleGoogleLogin = async () => {
 
 
 <style scoped>
-/* Component styles converted to pure CSS with Tailwind-compatible classes */
 .login-component {
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height - respects mobile keyboard */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1rem;
 }
 
 .login-container {
     width: 100%;
     max-width: 28rem;
     background: var(--color-bg);
-    border-radius: 16px;
-    padding: 2rem;
+    border-radius: 1rem;
+    padding: 1.75rem 1.5rem;
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--color-border);
 }
@@ -206,42 +206,45 @@ const handleGoogleLogin = async () => {
 }
 
 .login-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.75rem;
+    font-weight: 800;
     margin-bottom: 0.5rem;
     color: var(--color-text);
+    letter-spacing: -0.025em;
 }
 
 .login-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: var(--color-text-secondary);
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .remember-me {
     display: flex;
     align-items: center;
-    margin: 1rem 0;
+    margin: 0.25rem 0;
 }
 
 .remember-label {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: var(--color-text-secondary);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .remember-checkbox {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.625rem;
     accent-color: var(--color-primary);
+    border-radius: 0.25rem;
 }
 
 .remember-text {
@@ -249,19 +252,20 @@ const handleGoogleLogin = async () => {
 }
 
 .login-footer {
-    margin-top: 2rem;
+    margin-top: 1.75rem;
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.875rem;
 }
 
 .link {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     font-weight: 500;
     transition: color 0.2s ease;
     color: var(--color-primary);
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .link:hover {
@@ -269,7 +273,7 @@ const handleGoogleLogin = async () => {
 }
 
 .text-muted {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: var(--color-text-secondary);
     margin: 0;
 }
@@ -292,25 +296,39 @@ const handleGoogleLogin = async () => {
 
 .separator-text {
     padding: 0 1rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     background: var(--color-bg);
     color: var(--color-text-secondary);
     white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
-    .login-component {
-        padding: 1rem;
-    }
-
+/* Desktop refinements */
+@media (min-width: 768px) {
     .login-container {
-        margin: 1rem;
-        padding: 1.5rem;
+        padding: 2.5rem;
+        border-radius: 1.25rem;
     }
 
     .login-title {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
+    }
+
+    .login-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .link,
+    .text-muted,
+    .remember-label {
+        font-size: 0.875rem;
+    }
+
+    .remember-checkbox {
+        width: 1rem;
+        height: 1rem;
     }
 }
 </style>

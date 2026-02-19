@@ -2,6 +2,8 @@ import { FootballPlayerResponse } from "@/interfaces/football/player/FootballPla
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 
 export interface FantasyFootballPlayersResponse {
-    "football_player": FootballPlayerResponse;
-    "position": TypeResponse;
+    football_player: FootballPlayerResponse;
+    position: TypeResponse;
+    is_starter: boolean;
+    is_flex: boolean;
 }

@@ -1,238 +1,244 @@
 <template>
-  <div
-    class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
-  >
-    <!-- Header -->
-    <div
-      class="px-3 py-3 sm:px-4 sm:py-4 border-b border-gray-200 dark:border-gray-700"
-    >
+  <div class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+    <!-- Card Header -->
+    <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between">
-        <h2
-          class="text-base sm:text-lg font-medium text-gray-900 dark:text-white"
-        >
-          Weekly Fixtures
-        </h2>
-        <div class="flex items-center gap-1" v-if="maxSlides > 1">
-          <button
-            @click="prevSlide"
-            :disabled="currentSlide === 0"
-            class="p-1.5 sm:p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200"
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center shrink-0"
           >
-            <v-icon name="hi-chevron-left" class="w-3 h-3 sm:w-4 sm:h-4" />
-          </button>
-          <button
-            @click="nextSlide"
-            :disabled="currentSlide >= maxSlides - 1"
-            class="p-1.5 sm:p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200"
-          >
-            <v-icon name="hi-chevron-right" class="w-3 h-3 sm:w-4 sm:h-4" />
-          </button>
+            <v-icon
+              name="hi-calendar"
+              class="w-5 h-5 text-blue-600 dark:text-blue-400"
+            />
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
+              Weekly Fixtures
+            </h2>
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              This week's matches
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2" v-if="maxSlides > 1">
+          <span class="text-xs text-gray-400 dark:text-gray-500 tabular-nums">
+            {{ currentSlide + 1 }}/{{ maxSlides }}
+          </span>
+          <div class="flex items-center gap-0.5">
+            <button
+              @click="prevSlide"
+              :disabled="currentSlide === 0"
+              class="p-1 rounded-md text-gray-400 dark:text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <v-icon name="hi-chevron-left" class="w-4 h-4" />
+            </button>
+            <button
+              @click="nextSlide"
+              :disabled="currentSlide >= maxSlides - 1"
+              class="p-1 rounded-md text-gray-400 dark:text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <v-icon name="hi-chevron-right" class="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="p-3 sm:p-4">
-      <!-- Loading State -->
-      <div
-        v-if="loading"
-        class="text-center py-6 sm:py-8 text-gray-400 dark:text-gray-500"
+    <!-- Card Body -->
+    <div class="p-4 sm:p-6">
+    <!-- Loading State -->
+    <div
+      v-if="loading"
+      class="text-center py-8 text-gray-400 dark:text-gray-500"
+    >
+      <v-icon
+        name="pr-spinner"
+        class="w-5 h-5 mx-auto text-gray-300 dark:text-gray-600"
+        animation="spin"
+        aria-hidden="true"
+      />
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="text-center py-8">
+      <p class="text-sm text-red-500 mb-3">{{ error }}</p>
+      <button
+        @click="fetchFixtures"
+        class="px-3 py-1.5 text-sm text-red-500 border border-red-300 dark:border-red-700 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
       >
-        <div class="flex items-center justify-center gap-2">
-          <v-icon
-            name="pr-spinner"
-            class="w-5 h-5 text-gray-400 dark:text-gray-500"
-            animation="spin"
-            aria-hidden="true"
-          />
-          <span class="text-sm">Loading...</span>
-        </div>
-      </div>
+        Retry
+      </button>
+    </div>
 
-      <!-- Error State -->
-      <div v-else-if="error" class="text-center py-6 sm:py-8">
-        <p class="text-sm text-red-500 mb-3">{{ error }}</p>
-        <button
-          @click="fetchFixtures"
-          class="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-        >
-          Retry
-        </button>
-      </div>
+    <!-- Empty State -->
+    <div
+      v-else-if="fixtures.length === 0"
+      class="text-center py-8 text-gray-400 dark:text-gray-500"
+    >
+      <v-icon
+        name="hi-calendar"
+        class="w-6 h-6 mx-auto mb-1.5 text-gray-300 dark:text-gray-600"
+      />
+      <p class="text-xs">No fixtures this week</p>
+    </div>
 
-      <!-- Empty State -->
-      <div
-        v-else-if="fixtures.length === 0"
-        class="text-center py-6 sm:py-8 text-gray-400 dark:text-gray-500"
+    <!-- Fixtures Carousel -->
+    <div v-else class="relative">
+      <div 
+        class="overflow-hidden"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="handleTouchEnd"
       >
-        <v-icon
-          name="hi-calendar"
-          class="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 text-gray-300 dark:text-gray-600"
-        />
-        <p class="text-sm">No fixtures this week</p>
-      </div>
-
-      <!-- Fixtures Carousel -->
-      <div v-else class="relative">
-        <div 
-          class="overflow-hidden"
-          @touchstart="handleTouchStart"
-          @touchmove="handleTouchMove"
-          @touchend="handleTouchEnd"
+        <div
+          class="flex transition-transform duration-300 ease-in-out"
+          :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
         >
           <div
-            class="flex transition-transform duration-300 ease-in-out"
-            :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
+            v-for="(slideFixtures, slideIndex) in paginatedFixtures"
+            :key="slideIndex"
+            class="w-full flex-shrink-0"
           >
-            <div
-              v-for="(slideFixtures, slideIndex) in paginatedFixtures"
-              :key="slideIndex"
-              class="w-full flex-shrink-0"
-            >
+            <!-- Mobile: single card per slide -->
+            <div v-if="isMobile">
               <div
-                class="gap-2 sm:gap-3"
-                :class="
-                  isMobile
-                    ? 'flex justify-center'
-                    : 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3'
-                "
+                v-for="fixture in slideFixtures"
+                :key="fixture.uuid"
+                class="py-2"
               >
-                <div
-                  v-for="fixture in slideFixtures"
-                  :key="fixture.uuid"
-                  class="fixture-card bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
-                  :class="isMobile ? 'p-4 w-full max-w-sm mx-auto' : 'p-3'"
-                >
-                  <!-- Match Date/Time -->
-                  <div class="text-center" :class="isMobile ? 'mb-4' : 'mb-3'">
-                    <div
-                      :class="isMobile ? 'text-sm' : 'text-xs'"
-                      class="text-gray-500 dark:text-gray-400"
+                <!-- Date -->
+                <div class="text-center mb-3">
+                  <span class="text-xs text-gray-400 dark:text-gray-500">
+                    {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
+                  </span>
+                </div>
+
+                <!-- Match row -->
+                <div class="flex items-center justify-between gap-3">
+                  <!-- Home Team -->
+                  <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                    <TeamLogo :team="fixture.participants[0]" size="md" />
+                    <span
+                      :class="getTeamResultClass(fixture, 0)"
+                      class="text-sm truncate"
+                      :title="getTeamName(fixture.participants[0])"
                     >
-                      {{ formatMatchDate(fixture.starting_at) }}
-                    </div>
-                    <div
-                      :class="
-                        isMobile
-                          ? 'text-base font-semibold'
-                          : 'text-xs font-medium'
-                      "
-                      class="text-gray-700 dark:text-gray-300"
-                    >
-                      {{ formatMatchTime(fixture.starting_at) }}
-                    </div>
+                      {{ getTeamName(fixture.participants[0]) }}
+                    </span>
                   </div>
 
-                  <!-- Teams and Score -->
-                  <div class="flex items-center justify-between gap-2">
-                    <!-- Home Team -->
-                    <div class="flex flex-col items-center flex-1 min-w-0">
-                      <div :class="isMobile ? 'mb-2' : 'mb-1'">
-                        <TeamLogo
-                          :team="fixture.participants[0]"
-                          :size="isMobile ? 'lg' : 'md'"
-                        />
-                      </div>
-                      <span
-                        :class="[
-                          getTeamResultClass(fixture, 0),
-                          isMobile ? 'text-sm font-medium' : 'text-xs',
-                        ]"
-                        class="text-center truncate w-full px-1"
-                        :title="getTeamName(fixture.participants[0])"
-                      >
-                        {{ getTeamName(fixture.participants[0]) }}
-                      </span>
+                  <!-- Score -->
+                  <div class="flex flex-col items-center shrink-0 min-w-[60px]">
+                    <div class="text-xl font-bold text-gray-900 dark:text-white tabular-nums">
+                      <template v-if="hasScores(fixture)">
+                        {{ getHomeScore(fixture) }} - {{ getAwayScore(fixture) }}
+                      </template>
+                      <span v-else class="text-sm text-gray-300 dark:text-gray-600 font-medium">vs</span>
                     </div>
-
-                    <!-- Score Section -->
-                    <div
-                      class="flex flex-col items-center"
-                      :class="isMobile ? 'min-w-[70px]' : 'min-w-[50px]'"
+                    <span
+                      :class="[
+                        getStateClass(fixture.state),
+                        isMatchInProgress(fixture) ? 'animate-pulse' : '',
+                      ]"
+                      class="text-[10px] px-1.5 py-0.5 rounded-full mt-0.5 font-medium"
                     >
-                      <div
-                        :class="
-                          isMobile ? 'text-2xl mb-2' : 'text-lg sm:text-xl mb-1'
-                        "
-                        class="font-bold text-gray-900 dark:text-white"
-                      >
-                        <template v-if="hasScores(fixture)">
-                          {{ getHomeScore(fixture) }}-{{
-                            getAwayScore(fixture)
-                          }}
-                        </template>
-                        <template v-else>
-                          <span
-                            class="text-gray-400"
-                            :class="isMobile ? 'text-lg' : 'text-sm'"
-                            >VS</span
-                          >
-                        </template>
-                      </div>
-                      <span
-                        :class="[
-                          getStateClass(fixture.state),
-                          isMobile
-                            ? 'text-sm px-2 py-1'
-                            : 'text-xs px-1.5 py-0.5',
-                          isMatchInProgress(fixture) ? 'animate-pulse' : '',
-                        ]"
-                        class="rounded-full whitespace-nowrap"
-                      >
-                        {{ getStateText(fixture.state) }}
-                      </span>
-                    </div>
+                      {{ getStateText(fixture.state) }}
+                    </span>
+                  </div>
 
-                    <!-- Away Team -->
-                    <div class="flex flex-col items-center flex-1 min-w-0">
-                      <div :class="isMobile ? 'mb-2' : 'mb-1'">
-                        <TeamLogo
-                          :team="fixture.participants[1]"
-                          :size="isMobile ? 'lg' : 'md'"
-                        />
-                      </div>
-                      <span
-                        :class="[
-                          getTeamResultClass(fixture, 1),
-                          isMobile ? 'text-sm font-medium' : 'text-xs',
-                        ]"
-                        class="text-center truncate w-full px-1"
-                        :title="getTeamName(fixture.participants[1])"
-                      >
-                        {{ getTeamName(fixture.participants[1]) }}
-                      </span>
-                    </div>
+                  <!-- Away Team -->
+                  <div class="flex items-center gap-2.5 flex-1 min-w-0 justify-end">
+                    <span
+                      :class="getTeamResultClass(fixture, 1)"
+                      class="text-sm truncate text-right"
+                      :title="getTeamName(fixture.participants[1])"
+                    >
+                      {{ getTeamName(fixture.participants[1]) }}
+                    </span>
+                    <TeamLogo :team="fixture.participants[1]" size="md" />
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- Desktop: grid layout -->
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+              <div
+                v-for="fixture in slideFixtures"
+                :key="fixture.uuid"
+                class="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+              >
+                <!-- Home Team -->
+                <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                  <span
+                    :class="getTeamResultClass(fixture, 0)"
+                    class="text-xs truncate text-right"
+                    :title="getTeamName(fixture.participants[0])"
+                  >
+                    {{ getTeamName(fixture.participants[0]) }}
+                  </span>
+                  <TeamLogo :team="fixture.participants[0]" size="sm" />
+                </div>
+
+                <!-- Score -->
+                <div class="flex flex-col items-center shrink-0 min-w-[52px]">
+                  <div class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">
+                    <template v-if="hasScores(fixture)">
+                      {{ getHomeScore(fixture) }} - {{ getAwayScore(fixture) }}
+                    </template>
+                    <span v-else class="text-xs text-gray-300 dark:text-gray-600 font-medium">vs</span>
+                  </div>
+                  <span
+                    :class="[
+                      getStateClass(fixture.state),
+                      isMatchInProgress(fixture) ? 'animate-pulse' : '',
+                    ]"
+                    class="text-[10px] leading-tight px-1.5 py-px rounded-full font-medium"
+                  >
+                    {{ getStateText(fixture.state) }}
+                  </span>
+                </div>
+
+                <!-- Away Team -->
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                  <TeamLogo :team="fixture.participants[1]" size="sm" />
+                  <span
+                    :class="getTeamResultClass(fixture, 1)"
+                    class="text-xs truncate"
+                    :title="getTeamName(fixture.participants[1])"
+                  >
+                    {{ getTeamName(fixture.participants[1]) }}
+                  </span>
+                </div>
+
+                <!-- Time (desktop) -->
+                <span class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
+                  {{ formatMatchTime(fixture.starting_at) }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Slide Indicators -->
-        <div class="flex justify-center mt-3 gap-1.5" v-if="maxSlides > 1">
-          <button
-            v-for="slide in maxSlides"
-            :key="slide"
-            @click="currentSlide = slide - 1"
-            :class="[
-              'rounded-full transition-all duration-200',
-              isMobile ? 'w-2 h-2' : 'w-1.5 h-1.5',
-              currentSlide === slide - 1
-                ? 'bg-emerald-500 scale-125'
-                : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500',
-            ]"
-          />
-        </div>
-
-        <!-- Mobile Swipe Hint -->
-        <div v-if="isMobile && maxSlides > 1" class="text-center mt-2">
-          <p class="text-xs text-gray-400 dark:text-gray-500">
-            <v-icon name="md-comparearrows-round" class="w-3 h-3 inline-block mr-1" />
-            Swipe to navigate • {{ currentSlide + 1 }} of {{ maxSlides }}
-          </p>
-        </div>
       </div>
+
+      <!-- Slide Indicators (dots) -->
+      <div class="flex justify-center mt-3 gap-1" v-if="maxSlides > 1">
+        <button
+          v-for="slide in maxSlides"
+          :key="slide"
+          @click="currentSlide = slide - 1"
+          :class="[
+            'rounded-full transition-all duration-200',
+            'w-1.5 h-1.5',
+            currentSlide === slide - 1
+              ? 'bg-emerald-500 w-4'
+              : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600',
+          ]"
+        />
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -525,35 +531,8 @@ onBeforeUnmount(() => {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Responsive fixture cards */
-.fixture-card {
-  min-height: 130px; /* More compact without league badge */
-}
-
-@media (min-width: 640px) {
-  .fixture-card {
-    min-height: 120px; /* Even more compact on desktop/tablet */
-  }
-}
-
-/* Better image loading states - more minimal without circles */
-img {
-  background: transparent;
-}
-
-/* Hover states for better interaction feedback */
-.fixture-card:hover {
-  transform: translateY(-1px);
-}
-
-/* Ensure proper text truncation */
-.truncate-team-name {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.2;
-  max-height: 2.4em;
+/* Tabular numbers for scores */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 </style>

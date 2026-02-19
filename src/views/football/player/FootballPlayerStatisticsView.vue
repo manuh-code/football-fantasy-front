@@ -1,11 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-24 md:pb-8">
-    <PageHeader
-      title="Football Player Statistics"
-      description="View detailed statistics and performance data for football players"
-      :breadcrumbs="breadcrumbs"
-    />
-    
     <!-- Back to League Button (if coming from a league) -->
     <div v-if="returnPath" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
       <button
@@ -26,7 +20,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import PageHeader from '@/components/ui/PageHeader.vue'
 import FootballPlayerStatistic from '@/components/football/player/FootballPlayerStatistic.vue'
 
 const route = useRoute()

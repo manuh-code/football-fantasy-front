@@ -133,15 +133,18 @@ function handleLogin() {
 }
 
 function handleGoHome() {
+  if (router.currentRoute.value.name === 'home') return
   router.push({ name: 'home' })
 }
 
 function handleGoGaming() {
-  router.push({ name: 'gaming' })
+  if (router.currentRoute.value.name === 'gaming') return
+  router.push({ name: 'gaming' }).catch(() => {})
 }
 
 function handleViewProfile() {
-  router.push({ name: 'profile' })
+  if (router.currentRoute.value.name === 'userSettings') return
+  router.push({ name: 'userSettings' })
 }
 </script>
 

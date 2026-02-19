@@ -491,7 +491,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { FantasyPlayerDraftResponse } from "@/interfaces/fantasy/draft/FantasyPlayerDraftResponse";
 import { FantasyPlayerDraftPayload } from "@/interfaces/fantasy/draft/FantasyPlayerDraftPayload";
 import { FantasyAddPlayerPayload } from "@/interfaces/fantasy/draft/FantasyAddPlayerPayload";
@@ -507,6 +507,7 @@ const props = defineProps<Props>();
 
 // Router
 const route = useRoute();
+const router = useRouter();
 
 // State
 const players = ref<FantasyPlayerDraftResponse[]>([]);
@@ -520,6 +521,7 @@ const hasMoreData = ref(true);
 const observerTarget = ref<HTMLElement | null>(null);
 const addingPlayers = ref<Set<string>>(new Set());
 const selectedPosition = ref<string>("ALL");
+const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
 let observer: IntersectionObserver | null = null;
 
@@ -634,8 +636,8 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       fantasy_league_uuid: leagueUuid.value,
       player_uuid: player.player.uuid,
       position_uuid: player.position.uuid,
-      is_flex: false, // This can be modified based on your logic
-      is_starter: true, // This can be modified based on your logic
+      is_flex: slotType.value === 'FLEX',
+      is_starter: slotType.value !== 'BENCH',
     };
 
     await fantasyLeagueService.addPlayer(payload);
@@ -646,10 +648,12 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       { duration: 3000 },
     );
 
-    // Remove player from the list after successful addition
-    players.value = players.value.filter(
-      (p) => p.player.uuid !== player.player.uuid,
-    );
+    // Redirect to My Team tab with highlight on the newly added player
+    router.push({
+      name: 'fantasyLeagueDetail',
+      params: { uuid: leagueUuid.value },
+      query: { tab: 'myteam', highlightPlayer: player.player.uuid }
+    });
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "Error adding player";
@@ -777,6 +781,12 @@ onMounted(async () => {
   const positionFromQuery = route.query.position as string;
   if (positionFromQuery && ['GOALKEEPER', 'DEFENDER', 'MIDFIELDER', 'ATTACKER', 'ALL'].includes(positionFromQuery)) {
     selectedPosition.value = positionFromQuery;
+  }
+
+  // Check if there's a slot type in query params (BENCH, FLEX, or a starter position)
+  const slotTypeFromQuery = route.query.slotType as string;
+  if (slotTypeFromQuery) {
+    slotType.value = slotTypeFromQuery;
   }
   
   await loadPlayers();
