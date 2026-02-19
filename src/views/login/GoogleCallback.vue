@@ -14,8 +14,8 @@ onMounted(async () => {
         await authStore.loginWithGoogle(queryString);
         
         
-        // Si todo sale bien, al dashboard
-        router.push('/dashboard');
+        // Si todo sale bien, redirigir al gaming hub
+        router.push('/gaming');
     } catch (error) {
         console.error("Falló el login", error);
         // router.push('/login?error=social_auth_failed');
