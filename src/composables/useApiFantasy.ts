@@ -19,8 +19,10 @@ export interface ApiError {
 export function useApiFantasy() {
     const toast = useToast();
 
-    // Get API base URL from environment variables (accessed directly, not in computed)
-    const baseURL = import.meta?.env?.VITE_API_BASE_URL || 'http://localhost:8084/api/'
+    // Get API base URL from environment variables
+    // IMPORTANT: Do NOT use optional chaining (import.meta?.env?) — it breaks Vite's
+    // static replacement of env variables during production builds.
+    const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8084/api/'
 
     // Get current timezone dynamically
     const getTimezone = (): string => {
