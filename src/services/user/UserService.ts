@@ -101,8 +101,15 @@ export class UserService {
     }
 }
 
-// Export singleton instance
-export const userService = new UserService()
+// Export factory function instead of singleton to avoid early initialization
+let userServiceInstance: UserService | null = null;
 
-// Export default
-export default userService
+export const getUserService = (): UserService => {
+  if (!userServiceInstance) {
+    userServiceInstance = new UserService();
+  }
+  return userServiceInstance;
+}
+
+// Export default using factory
+export default getUserService()

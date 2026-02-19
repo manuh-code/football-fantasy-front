@@ -9,7 +9,11 @@ declare module '*.vue' {
 
 interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
-  // more env variables...
+  readonly VITE_API_BASE_URL: string
+  readonly VITE_APP_NAME: string
+  readonly VITE_APP_SHORT_NAME: string
+  readonly VITE_ABLY_KEY: string
+  readonly VITE_ABLY_CLUSTER: string
 }
 
 interface ImportMeta {

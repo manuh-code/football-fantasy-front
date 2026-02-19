@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios'
-import { computed } from 'vue'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
@@ -20,11 +19,8 @@ export interface ApiError {
 export function useApiFantasy() {
     const toast = useToast();
 
-    // Get API base URL from environment variables
-    const baseURL = computed(() => {
-        const url = import.meta.env.VITE_API_BASE_URL
-        return url
-    })
+    // Get API base URL from environment variables (accessed directly, not in computed)
+    const baseURL = import.meta?.env?.VITE_API_BASE_URL || 'http://localhost:8084/api/'
 
     // Get current timezone dynamically
     const getTimezone = (): string => {
@@ -38,7 +34,7 @@ export function useApiFantasy() {
     // Create axios instance
     const apiFantasyInstance: AxiosInstance = axios.create({
 
-        baseURL: baseURL.value,
+        baseURL: baseURL,
         timeout: 30000, // 30 seconds timeout
         withCredentials: true, // Enable cookies for cross-origin requests
 

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { loginService } from "@/services/login/LoginService";
+import { getLoginService } from "@/services/login/LoginService";
 import { LoginPayload } from "@/interfaces/login/LoginPayload";
 import { LoginResponse } from "@/interfaces/login/LoginResponse";
 import { useUserStore } from "../user/useUserStore";
@@ -28,12 +28,12 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async isAuthenticated(): Promise<boolean> {
-      return loginService.isAuthenticated(this.token);
+      return getLoginService().isAuthenticated(this.token);
     },
 
     async login(payload: LoginPayload): Promise<LoginResponse> {
       const userStore = useUserStore();
-      const response = await loginService.login(payload);
+      const response = await getLoginService().login(payload);
       this.setToken(response.token);
       userStore.setUserDataFromApi();
       return response;
@@ -43,21 +43,21 @@ export const useAuthStore = defineStore("auth", {
       if (this.googleUrl) {
         return this.googleUrl;
       }
-      const url = await loginService.fetchGoogleLoginUrl();
+      const url = await getLoginService().fetchGoogleLoginUrl();
       this.googleUrl = url;
       return url;
     },
 
     async loginWithGoogle(queryParams: string): Promise<void> {
       const userStore = useUserStore();
-      const response = await loginService.loginWithGoogle(queryParams);
+      const response = await getLoginService().loginWithGoogle(queryParams);
       this.setToken(response.token);
 
       userStore.setUserDataFromApi();
     },
 
     async logout(): Promise<void> {
-      const response = await loginService.logout();
+      const response = await getLoginService().logout();
       if (response.code === 200) {
         this.clearAuth();
       }

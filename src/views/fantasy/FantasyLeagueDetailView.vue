@@ -1,17 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-24 md:pb-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-8">
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Page Header -->
       <PageHeader back-text="Back" breadcrumb-to="/user-fantasy-leagues" breadcrumb-text="My Leagues"
         current-page-text="League Details" />
-
-      <!-- Tab Menu - Desktop Only -->
-      <div class="hidden md:block mb-6">
-        <BottomMenuFantasyLeague 
-          :active-tab="activeTab"
-          @update:active-tab="setActiveTab"
-        />
-      </div>
 
       <!-- Dynamic Content Area with Smooth Transitions -->
       <div class="relative">
@@ -62,25 +54,17 @@
         </Transition>
       </div>
     </div>
-
-    <!-- Bottom Menu - Mobile Only -->
-    <div class="md:hidden">
-      <BottomMenuFantasyLeague 
-        :active-tab="activeTab"
-        @update:active-tab="setActiveTab"
-      />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, onMounted } from 'vue'
+import { ref, nextTick, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
-import { PageHeader, BottomMenuFantasyLeague } from '@/components/ui'
+import { PageHeader } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
@@ -92,6 +76,13 @@ const uuid = route.params.uuid as string
 const activeTab = ref((route.query.tab as string) || 'overview')
 const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoadingLeague = ref(false)
+
+// Watch for changes in route query to sync activeTab
+watch(() => route.query.tab, (newTab) => {
+  if (newTab && typeof newTab === 'string') {
+    activeTab.value = newTab
+  }
+})
 
 // Computed para obtener las reglas de puntuación
 const scoringData = computed<FantasyLeagueScoringRules[] | null>(() => {

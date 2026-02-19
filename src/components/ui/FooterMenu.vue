@@ -1,10 +1,11 @@
 <template>
-  <!-- Fantasy League Navigation -->
+  <!-- Footer Navigation - Fixed Bottom Tab Bar -->
   <nav 
-    aria-label="Fantasy League navigation" 
-    class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm md:rounded-xl transition-colors duration-200 md:static fixed bottom-0 left-0 right-0 z-50 md:border-t-0 border-t"
+    v-if="shouldShowMenu"
+    aria-label="Main navigation" 
+    class="fixed bottom-0 left-0 right-0 z-[100] bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95"
   >
-    <div class="flex items-center justify-around px-2 py-2 safe-area-bottom md:py-3">
+    <div class="flex items-center justify-around px-2 py-2 safe-area-bottom min-h-[60px]">
       <!-- League Overview -->
       <button
         @click="handleTabChange('overview')"
@@ -69,19 +70,60 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  activeTab: string
-}
+import { ref, onMounted, watch, computed } from 'vue'
+import { useAuthStore } from '@/store/auth/useAuthStore'
+import { useRoute, useRouter } from 'vue-router'
 
-defineProps<Props>()
+const authStore = useAuthStore()
+const route = useRoute()
+const router = useRouter()
+const isAuthenticatedRef = ref(false)
 
-const emit = defineEmits<{
-  'update:activeTab': [value: string]
-}>()
+// Get active tab from route query or default based on route
+const activeTab = computed(() => {
+  // If we're in playersToDraft, set myteam as active
+  if (route.name === 'playersToDraft') {
+    return 'myteam'
+  }
+  return (route.query.tab as string) || 'overview'
+})
+
+// Only show footer menu in fantasy league related routes when authenticated
+const shouldShowMenu = computed(() => {
+  if (!isAuthenticatedRef.value) return false
+  const fantasyRoutes = ['fantasyLeagueDetail', 'playersToDraft']
+  return fantasyRoutes.includes(route.name as string)
+})
+
+// Check authentication status on mount
+onMounted(async () => {
+  isAuthenticatedRef.value = await authStore.isAuthenticated()
+})
+
+// Watch for token changes to update authentication status
+watch(() => authStore.token, async (newToken) => {
+  if (newToken) {
+    isAuthenticatedRef.value = await authStore.isAuthenticated()
+  } else {
+    isAuthenticatedRef.value = false
+  }
+}, { immediate: true })
 
 // Handle tab change
 function handleTabChange(tab: string) {
-  emit('update:activeTab', tab)
+  // If we're in playersToDraft view, redirect to fantasyLeagueDetail with the selected tab
+  if (route.name === 'playersToDraft') {
+    router.push({
+      name: 'fantasyLeagueDetail',
+      params: route.params,
+      query: { tab }
+    })
+  } else {
+    // Update the query parameter to change the active tab
+    router.replace({
+      query: { ...route.query, tab }
+    })
+  }
 }
 </script>
 

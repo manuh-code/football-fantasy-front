@@ -131,7 +131,7 @@ import { ref, computed, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormInput, ButtonComponent } from '@/components/ui';
 import { UserStorePayload } from '@/interfaces/user/store/userStorePayload';
-import { userService } from '@/services/user/UserService';
+import { getUserService } from '@/services/user/UserService';
 import { useToast } from '@/composables/useToast';
 import { AxiosError } from 'axios';
 
@@ -343,7 +343,7 @@ const handleRegister = async () => {
     isLoading.value = true;
 
     try {
-        await userService.userStore(payload.value);
+        await getUserService().userStore(payload.value);
         
         // Show success message
         toast.success(

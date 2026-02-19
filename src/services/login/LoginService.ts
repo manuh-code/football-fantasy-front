@@ -16,6 +16,7 @@ export class LoginService {
   private api;
 
   constructor() {
+    // Lazy initialization to ensure import.meta.env is available
     const { apiFantasyInstance } = useApiFantasy();
     this.api = apiFantasyInstance;
   }
@@ -70,8 +71,15 @@ export class LoginService {
   }
 }
 
-// Export singleton instance
-export const loginService = new LoginService()
+// Export factory function instead of singleton to avoid early initialization
+let loginServiceInstance: LoginService | null = null;
 
-// Export default
-export default loginService
+export const getLoginService = (): LoginService => {
+  if (!loginServiceInstance) {
+    loginServiceInstance = new LoginService();
+  }
+  return loginServiceInstance;
+}
+
+// Export default using factory
+export default getLoginService()
