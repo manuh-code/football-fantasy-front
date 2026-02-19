@@ -3,6 +3,7 @@ export { useMediaQuery, useBreakpoints } from './useMediaQuery'
 export { useToast } from './useToast'
 export { useLoading } from './useLoading'
 export { useApiFantasy } from './useApiFantasy'
+export { useSwipeNavigation } from './useSwipeNavigation'
 
 // Re-export types
 export type { ToastMessage } from './useToast'

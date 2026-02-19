@@ -16,131 +16,77 @@
       </div>
     </div>
 
-   
-    <!-- Floating Action Button (FAB) - Fixed to bottom-right of screen -->
-    <Transition name="fab">
-      <div 
-        v-if="fantasyLeagues && fantasyLeagues.length > 0"
-        class="fixed bottom-24 md:bottom-6 right-6 z-50"
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+      <button
+        @click="toggleFabMenu"
+        class="group relative w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 hover:scale-110 active:scale-95"
+        :class="{ 'rotate-45': isFabMenuOpen, 'rotate-0': !isFabMenuOpen }"
+        :title="isFabMenuOpen ? 'Close menu' : 'Quick actions'"
       >
-        <!-- Expanded Menu Options -->
-        <Transition name="fab-menu">
-          <div
-            v-if="isFabExpanded"
-            class="absolute bottom-16 right-0 flex flex-col gap-3 mb-2"
+        <v-icon name="hi-solid-plus" class="w-8 h-8" />
+      </button>
+
+      <!-- FAB Menu -->
+      <transition name="fab-menu">
+        <div v-if="isFabMenuOpen" class="absolute bottom-20 right-0 flex flex-col gap-3 min-w-max">
+          <button
+            @click="goToCreateLeague"
+            class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
           >
-            <!-- Create League FAB Option -->
-            <button
-              @click="handleFabAction('create')"
-              class="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full pl-4 pr-5 py-3 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              <div
-                class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
-              >
-                <v-icon name="bi-trophy-fill" class="w-5 h-5" />
-              </div>
-              <span class="font-medium whitespace-nowrap">Create League</span>
-            </button>
+            <span class="text-sm font-semibold">Create League</span>
+            <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+              <v-icon name="hi-solid-plus-circle" class="w-5 h-5 text-white" />
+            </div>
+          </button>
 
-            <!-- Join League FAB Option -->
-            <button
-              @click="handleFabAction('join')"
-              class="group flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full pl-4 pr-5 py-3 shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <div
-                class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
-              >
-                <v-icon name="hi-solid-user-group" class="w-5 h-5" />
-              </div>
-              <span class="font-medium whitespace-nowrap">Join League</span>
-            </button>
-          </div>
-        </Transition>
-
-        <!-- Main FAB Button -->
-        <button
-          @click="toggleFab"
-          :class="[
-            'w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-800 flex items-center justify-center',
-            isFabExpanded ? 'rotate-45' : 'rotate-0',
-          ]"
-          :aria-label="isFabExpanded ? 'Close menu' : 'Open quick actions'"
-          :aria-expanded="isFabExpanded"
-        >
-          <v-icon
-            name="hi-solid-plus"
-            class="w-7 h-7 transition-transform duration-300"
-          />
-        </button>
-      </div>
-    </Transition>
+          <button
+            @click="goToJoinLeague"
+            class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
+          >
+            <span class="text-sm font-semibold">Join League</span>
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+              <v-icon name="hi-solid-user-add" class="w-5 h-5 text-white" />
+            </div>
+          </button>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import UserFantasyLeagueComponent from '@/components/user/fantasy/UserFantasyLeagueComponent.vue'
-import { PageHeader, MobileBottomMenu } from '@/components/ui'
-import { useUserStore } from '@/store/user/useUserStore'
+import { PageHeader } from '@/components/ui'
 
 // Set page title
 document.title = 'My Fantasy Leagues - Football Fantasy'
 
-// Router and stores
+// Router
 const router = useRouter()
-const userStore = useUserStore()
 
 // State
-const isFabExpanded = ref(false)
+const isFabMenuOpen = ref(false)
 
-// Computed
-const fantasyLeagues = computed(() => userStore.getUserFantasyLeagues)
-
-// FAB methods
-const toggleFab = () => {
-  isFabExpanded.value = !isFabExpanded.value
+// Methods
+const toggleFabMenu = () => {
+  isFabMenuOpen.value = !isFabMenuOpen.value
 }
 
-const handleFabAction = (action: 'create' | 'join') => {
-  isFabExpanded.value = false
-  if (action === 'create') {
-    router.push({ name: 'createFantasyLeague' })
-  } else {
-    router.push({ name: 'joinFantasyLeague' })
-  }
+const goToCreateLeague = () => {
+  isFabMenuOpen.value = false
+  router.push({ name: 'createFantasyLeague' })
 }
 
-// Close FAB menu when scrolling
-const handleScroll = () => {
-  if (isFabExpanded.value) {
-    isFabExpanded.value = false
-  }
+const goToJoinLeague = () => {
+  isFabMenuOpen.value = false
+  router.push({ name: 'joinFantasyLeague' })
 }
-
-// Lifecycle
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
 </script>
 
 <style scoped>
-/* FAB Transitions */
-.fab-enter-active,
-.fab-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fab-enter-from,
-.fab-leave-to {
-  opacity: 0;
-  transform: scale(0.5) translateY(20px);
-}
-
 /* FAB Menu Transitions */
 .fab-menu-enter-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -177,8 +123,6 @@ onUnmounted(() => {
     animation: none !important;
   }
 
-  .fab-enter-active,
-  .fab-leave-active,
   .fab-menu-enter-active,
   .fab-menu-leave-active {
     transition: none !important;
@@ -190,3 +134,4 @@ onUnmounted(() => {
   }
 }
 </style>
+
