@@ -105,14 +105,15 @@ const toggleVisibility = () => {
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.375rem;
 }
 
 .form-label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     display: block;
     color: var(--color-text);
+    margin-bottom: 0.125rem;
 }
 
 .input-container {
@@ -123,51 +124,55 @@ const toggleVisibility = () => {
 
 .input-icon {
     position: absolute;
-    left: 0.75rem;
+    left: 0.875rem;
     z-index: 1;
-    width: 1rem;
-    height: 1rem;
+    width: 1.25rem;
+    height: 1.25rem;
     color: var(--color-text-secondary);
 }
 
 .form-input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid;
+    /* 16px prevents iOS auto-zoom on focus */
+    font-size: 1rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid;
     transition: all 0.2s ease;
-    font-size: 0.875rem;
     background: var(--color-bg-secondary);
     border-color: var(--color-border);
     color: var(--color-text);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: #059669; /* emerald-600 */
+    border-color: #059669;
     box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }
 
 .form-input::placeholder {
     color: var(--color-text-muted);
+    font-size: 0.875rem;
 }
 
 .form-input--error {
-    border-color: #dc2626; /* red-600 */
+    border-color: #dc2626;
 }
 
 .form-input--error:focus {
-    border-color: #dc2626; /* red-600 */
+    border-color: #dc2626;
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .form-input--with-icon {
-    padding-left: 2.5rem;
+    padding-left: 2.75rem;
 }
 
 .form-input--with-icons {
-    padding-left: 2.5rem;
-    padding-right: 3rem;
+    padding-left: 2.75rem;
+    padding-right: 3.25rem;
 }
 
 .form-input:disabled {
@@ -186,9 +191,15 @@ const toggleVisibility = () => {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
     transition: all 0.15s ease-in-out;
+    /* Larger touch target for mobile */
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .password-toggle-btn:hover {
@@ -201,8 +212,8 @@ const toggleVisibility = () => {
 }
 
 .password-toggle-icon {
-    width: 1rem;
-    height: 1rem;
+    width: 1.25rem;
+    height: 1.25rem;
     color: var(--color-text-secondary);
 }
 
@@ -212,6 +223,39 @@ const toggleVisibility = () => {
 
 .form-error {
     font-size: 0.75rem;
-    color: #dc2626; /* red-600 */
+    color: #dc2626;
+    margin-top: 0.125rem;
+}
+
+/* Desktop refinements */
+@media (min-width: 768px) {
+    .form-input {
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-input::placeholder {
+        font-size: 0.875rem;
+    }
+
+    .input-icon {
+        width: 1rem;
+        height: 1rem;
+        left: 0.75rem;
+    }
+
+    .form-input--with-icon {
+        padding-left: 2.5rem;
+    }
+
+    .form-input--with-icons {
+        padding-left: 2.5rem;
+        padding-right: 3rem;
+    }
+
+    .password-toggle-icon {
+        width: 1rem;
+        height: 1rem;
+    }
 }
 </style>

@@ -1,10 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-8">
     <div class="container mx-auto px-4 max-w-7xl">
-      <!-- Page Header -->
-      <PageHeader back-text="Back" breadcrumb-to="/user-fantasy-leagues" breadcrumb-text="My Leagues"
-        current-page-text="League Details" />
-
       <!-- Dynamic Content Area with Smooth Transitions -->
       <div class="relative">
         <Transition name="tab-content" mode="out-in" @enter="onEnter" @leave="onLeave">
@@ -64,7 +60,6 @@ import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
-import { PageHeader } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'

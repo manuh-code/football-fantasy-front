@@ -14,6 +14,10 @@ export interface LoginResult {
 export class LoginService {
 
   private api;
+  private lastValidatedToken: string | null = null;
+  private lastValidationResult = false;
+  private lastValidationTime = 0;
+  private static readonly VALIDATION_CACHE_MS = 5 * 60 * 1000; // 5 minutes
 
   constructor() {
     // Lazy initialization to ensure import.meta.env is available
@@ -60,14 +64,41 @@ export class LoginService {
 
   async isAuthenticated(token: string | null): Promise<boolean> {
     if (!token) {
+      this.lastValidatedToken = null;
+      this.lastValidationResult = false;
       return false;
     }
-    const response = await this.api.get<ApiResponse<null>>('auth/validate', {
-      headers: {
-        Authorization: `Bearer ${token}`
+
+    // Return cached result if same token and within cache window
+    const now = Date.now();
+    if (
+      token === this.lastValidatedToken &&
+      this.lastValidationResult &&
+      now - this.lastValidationTime < LoginService.VALIDATION_CACHE_MS
+    ) {
+      return true;
+    }
+
+    try {
+      const response = await this.api.get<ApiResponse<null>>('auth/validate', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const isValid = response.data.code === 200;
+      this.lastValidatedToken = token;
+      this.lastValidationResult = isValid;
+      this.lastValidationTime = now;
+      return isValid;
+    } catch {
+      // If token exists but API call fails (network error, timeout),
+      // assume authenticated to avoid blocking navigation.
+      // Actual API calls will handle 401 if token is truly expired.
+      if (this.lastValidatedToken === token && this.lastValidationResult) {
+        return true;
       }
-    });
-    return response.data.code === 200;
+      return !!token;
+    }
   }
 }
 

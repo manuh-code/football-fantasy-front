@@ -17,6 +17,9 @@
       </div>
     </transition>
 
+    <!-- Header Menu - Fixed at top, outside transform context -->
+    <HeaderMenu />
+
     <!-- Main Content with Swipe Transform -->
     <div
       class="app-content"
@@ -25,9 +28,6 @@
         transition: swipeNav.isActive.value ? 'none' : 'transform 0.3s ease-out',
       }"
     >
-      <!-- Header Menu -->
-      <HeaderMenu />
-
       <!-- Global Football League Selection Modal -->
       <FootballLeagueSelectionModal :isVisible="showLeagueModal" @close="showLeagueModal = false" />
 

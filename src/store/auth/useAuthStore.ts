@@ -64,7 +64,7 @@ export const useAuthStore = defineStore("auth", {
     },
   },
   persist: {
-    storage: sessionStorage,
-    pick: ["token"], // Only persist the count property
+    storage: localStorage,
+    pick: ["token"],
   },
 });

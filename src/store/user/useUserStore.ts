@@ -87,7 +87,7 @@ export const useUserStore = defineStore("user", {
     }
   },
   persist: {
-    storage: sessionStorage,
-    pick: ["userData"], // Only persist the userData property
+    storage: localStorage,
+    pick: ["userData"],
   },
 });

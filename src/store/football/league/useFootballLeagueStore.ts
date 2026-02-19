@@ -29,7 +29,7 @@ export const useFootballLeagueStore = defineStore("footballLeague", {
         getLeague: (state) => state.league
     },
     persist: {
-        storage: sessionStorage
+        storage: localStorage
     }
 
 });
