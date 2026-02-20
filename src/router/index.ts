@@ -148,6 +148,16 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/fantasy/league/:uuid/team/create',
+    name: 'fantasyTeamCreate',
+    component: () => import(/* webpackChunkName: "fantasy-team-create" */ '@/views/fantasy/FantasyTeamUserView.vue'),
+    meta: {
+      title: 'Create Team - Football Fantasy',
+      description: 'Create your fantasy team with a custom shield',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/fantasy/league/:uuid/draft',
     name: 'playersToDraft',
     // Route level code-splitting for better performance

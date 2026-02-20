@@ -1,7 +1,10 @@
 <template>
     <div 
-        @click="handleCardClick"
-        class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:border-emerald-300 dark:hover:border-emerald-600 transform hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        @click="clickable ? handleCardClick() : undefined"
+        :class="[
+            'group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300',
+            clickable ? 'hover:shadow-xl hover:border-emerald-300 dark:hover:border-emerald-600 transform hover:-translate-y-1 cursor-pointer' : ''
+        ]">
         
         <!-- League Header with Image/Gradient -->
         <div class="relative h-40 overflow-hidden">
@@ -116,6 +119,10 @@ export default defineComponent({
             default: true
         },
         showManageButton: {
+            type: Boolean,
+            default: true
+        },
+        clickable: {
             type: Boolean,
             default: true
         }

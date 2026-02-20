@@ -5,7 +5,7 @@
     aria-label="Main navigation" 
     class="fixed bottom-0 left-0 right-0 z-[100] bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95"
   >
-    <div class="flex items-center justify-around px-2 py-2 safe-area-bottom min-h-[60px]">
+    <div class="flex items-center justify-around px-2 pt-2 pb-2 min-h-[60px]" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem))">
       <!-- League Overview -->
       <button
         @click="handleTabChange('overview')"
@@ -49,6 +49,21 @@
       >
         <v-icon name="hi-solid-chart-bar" class="w-6 h-6" />
         <span class="text-xs font-medium">Statistics</span>
+      </button>
+
+      <!-- Matchups -->
+      <button
+        @click="handleTabChange('matchups')"
+        :class="[
+          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          activeTab === 'matchups' 
+            ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30' 
+            : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+        ]"
+        aria-label="Matchups"
+      >
+        <v-icon name="gi-crossed-swords" class="w-6 h-6" />
+        <span class="text-xs font-medium">Matchups</span>
       </button>
 
       <!-- Management -->

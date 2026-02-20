@@ -1,255 +1,178 @@
 <template>
-    <div class="animate-page-enter grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-        <!-- Main Search Form -->
-        <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <!-- Card Header -->
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                            <v-icon name="hi-solid-search" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Search Fantasy Leagues</h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Find and join exciting fantasy football
-                                leagues</p>
-                        </div>
-                    </div>
+    <div class="animate-page-enter space-y-4">
+        <!-- Header compacto -->
+        <div class="flex items-center gap-3 px-1">
+            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
+                <v-icon name="hi-solid-search" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-gray-900 dark:text-white">Search Leagues</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Find and join fantasy football leagues</p>
+            </div>
+        </div>
+
+        <!-- Search bar sticky estilo iOS -->
+        <div class="sticky top-0 z-30 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-xl -mx-4 px-4 py-3 border-b border-gray-200/60 dark:border-gray-700/60">
+            <form @submit.prevent="searchLeagues" class="space-y-3">
+                <!-- Search Input nativo -->
+                <div class="relative">
+                    <v-icon name="hi-solid-search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 dark:text-gray-500 pointer-events-none" />
+                    <input
+                        v-model="searchQuery"
+                        type="search"
+                        placeholder="Search by name..."
+                        class="w-full pl-10 pr-4 py-2.5 bg-gray-200/60 dark:bg-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-0 focus:ring-2 focus:ring-emerald-500/50 focus:bg-white dark:focus:bg-gray-700 transition-all"
+                    />
+                    <button
+                        v-if="searchQuery"
+                        type="button"
+                        @click="searchQuery = ''"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                        <v-icon name="hi-solid-x-circle" class="w-4 h-4" />
+                    </button>
                 </div>
 
-                <!-- Search Form -->
-                <form @submit.prevent="searchLeagues" class="p-6 space-y-5">
-                    <!-- Search Input -->
-                    <div>
-                        <FormInput v-model="searchQuery" label="Search Fantasy Leagues"
-                            placeholder="Search by league name or description..." :error="searchError"
-                            :disabled="isLoading || leagueType === 'all'" icon="hi-solid-search" />
-                        <p v-if="leagueType === 'all'" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            Search is disabled when showing all leagues
-                        </p>
-                        <p v-else-if="leagueType === 'public' || leagueType === 'private'"
-                            class="mt-2 text-sm text-blue-600 dark:text-blue-400">
-                            <v-icon name="hi-solid-information-circle" class="w-4 h-4 inline mr-1" />
-                            You can search with keywords or leave empty to show all {{ leagueType }} leagues
-                        </p>
-                    </div>
+                <!-- Filtros tipo: chips horizontales -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-hide">
+                    <button
+                        v-for="filter in leagueFilters"
+                        :key="filter.value"
+                        type="button"
+                        @click="setLeagueType(filter.value)"
+                        :class="[
+                            'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all',
+                            leagueType === filter.value
+                                ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-500/30'
+                                : 'bg-gray-200/70 dark:bg-gray-800 text-gray-600 dark:text-gray-400 active:scale-95'
+                        ]"
+                        :disabled="isLoading"
+                    >
+                        <v-icon :name="filter.icon" class="w-3.5 h-3.5" />
+                        {{ filter.label }}
+                    </button>
 
-                    <!-- League Type Filter -->
-                    <fieldset>
-                        <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                            League Type
-                        </legend>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <!-- All Leagues Button -->
-                            <button type="button" @click="setLeagueType('all')" :class="[
-                                'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-                                leagueType === 'all'
-                                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-2 border-emerald-300 dark:border-emerald-600'
-                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
-                            ]" :disabled="isLoading">
-                                <v-icon name="fa-database" class="w-4 h-4 mr-2 text-emerald-500" />
-                                All Leagues
-                            </button>
+                    <!-- Search button -->
+                    <button
+                        type="submit"
+                        :disabled="isLoading"
+                        class="ml-auto inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-600 text-white shadow-sm shadow-emerald-500/30 active:scale-95 transition-all disabled:opacity-50"
+                    >
+                        <v-icon v-if="!isLoading" name="hi-solid-search" class="w-3.5 h-3.5" />
+                        <div v-else class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
 
-                            <label class="flex items-center">
-                                <input type="radio" v-model="leagueType" value="public"
-                                    class="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                    :disabled="isLoading" />
-                                <span
-                                    class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 flex items-center">
-                                    <v-icon name="hi-solid-globe-alt" class="w-4 h-4 mr-1 text-green-500" />
-                                    Public
-                                </span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" v-model="leagueType" value="private"
-                                    class="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                    :disabled="isLoading" />
-                                <span
-                                    class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 flex items-center">
-                                    <v-icon name="hi-solid-lock-closed" class="w-4 h-4 mr-1 text-gray-500" />
-                                    Private
-                                </span>
-                            </label>
-                        </div>
-                    </fieldset>
-
-                    <!-- Form Actions -->
-                    <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <ButtonComponent type="submit" variant="primary" size="md"
-                            :text="leagueType === 'all' ? 'Load All Leagues' : (searchQuery.trim() ? 'Search Leagues' : `Show All ${leagueType === 'public' ? 'Public' : 'Private'} Leagues`)"
-                            :loading="isLoading" :disabled="false" :full-width="true" icon="hi-solid-search" />
-                        <ButtonComponent type="button" variant="cancel" size="md" text="Clear" :full-width="true"
-                            :disabled="isLoading || (!searchQuery && leagues.length === 0 && leagueType === 'all')"
-                            @click="clearSearch" />
-                    </div>
-                </form>
-            </div>
-
-            <!-- Search Results -->
-            <div v-if="hasSearched" class="mt-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <!-- Results Header -->
-                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Search Results</h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    {{ leagues.length }} league{{ leagues.length !== 1 ? 's' : '' }} found
-                                    {{ searchQuery ? `for "${searchQuery}"` : '' }}
-                                </p>
-                            </div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ getFilterDescription() }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- League Cards Grid -->
-                    <div v-if="leagues.length > 0" class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FantasyLeagueCard v-for="league in leagues" :key="league.uuid" :league="league"
-                                :show-join-button="true" @join="onJoinLeague" @viewDetails="onViewDetails" />
-                        </div>
-                    </div>
-
-                    <!-- No Results -->
-                    <div v-else class="p-6 text-center py-12">
-                        <NoResults title="No leagues found"
-                            description="Try adjusting your search criteria or browse all available leagues."
-                            icon="hi-solid-search" buttonText="Clear Search" @action="clearSearch">
-                        </NoResults>
+        <!-- Loading skeleton -->
+        <div v-if="isLoading" class="space-y-3">
+            <div v-for="i in 3" :key="i" class="bg-white dark:bg-gray-800 rounded-xl p-4 animate-pulse">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                    <div class="flex-1 space-y-2">
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-lg w-3/4" />
+                        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-lg w-1/2" />
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Search Tips Sidebar -->
-        <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <!-- Tips Header -->
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <v-icon name="hi-solid-information-circle"
-                                class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Search Tips</h3>
-                    </div>
-                </div>
-
-                <!-- Tips Content -->
-                <div class="p-6 space-y-4">
-                    <div class="flex items-start gap-3">
-                        <div
-                            class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">All Leagues</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Browse all available leagues
-                                without filtering</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div
-                            class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Public Leagues</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Open to everyone, join instantly
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div
-                            class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Private Leagues</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Invitation only, request to join
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div
-                            class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Search by Name</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Use keywords to find specific
-                                leagues</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- Resultados -->
+        <div v-else-if="hasSearched">
+            <!-- Results count -->
+            <div class="flex items-center justify-between px-1">
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                    {{ leagues.length }} league{{ leagues.length !== 1 ? 's' : '' }} found
+                </p>
+                <button
+                    v-if="leagues.length > 0 || searchQuery"
+                    @click="clearSearch"
+                    class="text-xs font-medium text-emerald-600 dark:text-emerald-400 active:opacity-70"
+                >
+                    Clear
+                </button>
             </div>
 
-            <!-- Welcome Message -->
-            <div v-if="!hasSearched"
-                class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="p-6 text-center">
-                    <div
-                        class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <v-icon name="hi-solid-user" class="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        Discover Leagues
-                    </h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Use the search form to find leagues that match your interests and join the competition!
-                    </p>
+            <!-- League list -->
+            <div v-if="leagues.length > 0" class="space-y-3">
+                <FantasyLeagueCard
+                    v-for="league in leagues"
+                    :key="league.uuid"
+                    :league="league"
+                    :show-join-button="true"
+                    :clickable="false"
+                    @join="onJoinLeague"
+                />
+            </div>
+
+            <!-- No results -->
+            <div v-else class="py-16 text-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <v-icon name="hi-solid-search" class="w-7 h-7 text-gray-400 dark:text-gray-500" />
                 </div>
+                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">No leagues found</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
+                    Try a different search or browse all available leagues
+                </p>
+                <button
+                    @click="clearSearch"
+                    class="mt-4 px-4 py-2 rounded-full text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 active:scale-95 transition-all"
+                >
+                    Clear filters
+                </button>
             </div>
         </div>
-    </div>
 
-    <!-- Loading State -->
-    <div v-if="isLoading" class="animate-page-enter">
-        <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-            <p class="text-gray-600 dark:text-gray-400 text-lg">Searching for fantasy leagues...</p>
+        <!-- Estado vacío inicial (antes de buscar) -->
+        <div v-else class="py-20 text-center">
+            <div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl mx-auto mb-5 flex items-center justify-center">
+                <v-icon name="bi-trophy-fill" class="w-10 h-10 text-emerald-500 dark:text-emerald-400" />
+            </div>
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Discover Leagues</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
+                Search by name or browse all available leagues to join the competition
+            </p>
         </div>
-    </div>
 
-    <!-- Error State -->
-    <div v-if="errorMessage" class="animate-page-enter">
-        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6">
-            <div class="flex items-center">
-                <v-icon name="hi-solid-exclamation" class="w-6 h-6 text-red-600 dark:text-red-400 mr-3" />
+        <!-- Error State -->
+        <div v-if="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+                <v-icon name="hi-solid-exclamation" class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
                 <div>
-                    <h3 class="text-lg font-semibold text-red-800 dark:text-red-200">Search Error</h3>
-                    <p class="text-red-700 dark:text-red-300">{{ errorMessage }}</p>
+                    <p class="text-sm font-medium text-red-800 dark:text-red-200">{{ errorMessage }}</p>
+                    <button
+                        @click="retrySearch"
+                        class="mt-2 text-xs font-semibold text-red-600 dark:text-red-400 active:opacity-70"
+                    >
+                        Try again
+                    </button>
                 </div>
             </div>
-            <ButtonComponent variant="outline" size="md" text="Try Again" class="mt-4" @click="retrySearch" />
         </div>
-    </div>
 
-    <!-- Join League Modal -->
-    <JoinLeagueModal :is-visible="showJoinModal" :league="selectedLeague || null" :is-loading="isLoading"
-        :password-error="passwordError" @close="closeJoinModal" @join="handleJoinLeague" />
+        <!-- Join League Modal -->
+        <JoinLeagueModal
+            :is-visible="showJoinModal"
+            :league="selectedLeague || null"
+            :is-loading="isLoading"
+            :password-error="passwordError"
+            @close="closeJoinModal"
+            @join="handleJoinLeague"
+        />
+    </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ButtonComponent, FormInput } from '@/components/ui'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { catalogService } from '@/services'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import FantasyLeagueCard from '@/components/fantasy/FantasyLeagueCard.vue'
 import JoinLeagueModal from '@/components/fantasy/JoinLeagueModal.vue'
-import NoResults from '@/components/ui/NoResults.vue'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import type { FantasyLeagueSearchPayload } from '@/interfaces/fantasy/leagues/FantasyLeagueSearchPayload'
 import { FantasyLeagueJoined } from '@/interfaces/fantasy/leagues/FantasyLeagueJoined'
@@ -259,6 +182,13 @@ const router = useRouter()
 const toast = useToast()
 const validationStore = useValidationStore()
 
+// Filter options
+const leagueFilters = [
+    { value: 'all', label: 'All', icon: 'fa-database' },
+    { value: 'public', label: 'Public', icon: 'hi-solid-globe-alt' },
+    { value: 'private', label: 'Private', icon: 'hi-solid-lock-closed' },
+]
+
 // State
 const searchQuery = ref('')
 const isLoading = ref(false)
@@ -266,7 +196,6 @@ const hasSearched = ref(false)
 const searchResults = ref<FantasyLeaguesResponse[]>([])
 const showJoinModal = ref(false)
 const selectedLeague = ref<FantasyLeaguesResponse | null>(null)
-const searchError = ref('')
 const errorMessage = ref('')
 
 // Computed properties
@@ -281,8 +210,6 @@ const passwordError = computed(() => {
 
 // Methods
 const searchLeagues = async () => {
-    // Clear any previous errors
-    searchError.value = ''
     errorMessage.value = ''
     isLoading.value = true
     hasSearched.value = true
@@ -293,7 +220,7 @@ const searchLeagues = async () => {
                 search: searchQuery.value.trim() || null,
                 isPrivate: leagueType.value === 'private' ? true :
                     leagueType.value === 'public' ? false : undefined,
-                skipJoinedUser: true // Always skip leagues the user has already joined
+                skipJoinedUser: true
             }
         }
 
@@ -322,10 +249,6 @@ const searchLeagues = async () => {
 
 const setLeagueType = (type: string) => {
     leagueType.value = type
-    if (type === 'all') {
-        searchQuery.value = ''
-        searchError.value = ''
-    }
 }
 
 const clearSearch = () => {
@@ -334,7 +257,6 @@ const clearSearch = () => {
     leagues.value = []
     hasSearched.value = false
     leagueType.value = 'all'
-    searchError.value = ''
     errorMessage.value = ''
 }
 
@@ -343,28 +265,12 @@ const retrySearch = () => {
     searchLeagues()
 }
 
-const getFilterDescription = () => {
-    switch (leagueType.value) {
-        case 'public':
-            return 'Showing only public leagues'
-        case 'private':
-            return 'Showing only private leagues'
-        case 'all':
-            return 'Showing all available leagues'
-        default:
-            return 'Showing all league types'
-    }
-}
-
 const onJoinLeague = async (league: FantasyLeaguesResponse) => {
-    // Clear any previous password error when opening modal
     validationStore.clearFieldError('password')
 
-    // If league is public, join directly without modal
     if (!league.is_private) {
         await handleJoinLeague({ league })
     } else {
-        // If league is private, show modal to request password
         selectedLeague.value = league
         showJoinModal.value = true
     }
@@ -375,39 +281,27 @@ const closeJoinModal = () => {
     validationStore.clearFieldError('password')
 }
 
-const onViewDetails = (league: FantasyLeaguesResponse) => {
-    // Navigate to league details page
-    router.push({ name: 'fantasyLeagueDetail', params: { uuid: league.uuid } })
-}
-
 const handleJoinLeague = async (joinData: { league: FantasyLeaguesResponse; password?: string }) => {
     try {
         isLoading.value = true
-        validationStore.clearFieldError('password') // Clear previous password errors
+        validationStore.clearFieldError('password')
         const { league, password } = joinData
 
-        // Prepare payload for the API
         const payload: FantasyLeagueJoined = {
             password: league.is_private ? (password || null) : null
         }
 
-        // Call the API to join the league
         await fantasyLeagueService.joinFantasyLeague(payload, league.uuid)
 
         toast.success('Success', `Successfully ${league.is_private ? 'requested to join' : 'joined'} "${league.name}"`)
         closeJoinModal()
 
-        // Navigate to the league details page
         router.push({ name: 'fantasyLeagueDetail', params: { uuid: league.uuid } })
 
     } catch (error) {
-
-        // The interceptor in useApiFantasy already handles 422 errors and stores them in the validation store
-        // For non-422 errors, close the modal and let the interceptor show the toast
         if (error && typeof error === 'object' && 'status' in error && error.status !== 422) {
             closeJoinModal()
         }
-        // If it's a 422 error, the modal stays open and shows the validation error from the store
     } finally {
         isLoading.value = false
     }
@@ -415,18 +309,12 @@ const handleJoinLeague = async (joinData: { league: FantasyLeaguesResponse; pass
 </script>
 
 <style scoped>
-/* Loading spinner animation */
-.animate-spin {
-    animation: spin 1s linear infinite;
+/* Hide scrollbar for chips container */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
 </style>

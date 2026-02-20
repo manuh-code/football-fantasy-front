@@ -72,6 +72,9 @@ export function useApiFantasy() {
         },
         (error) => {
             const authStore = useAuthStore();
+
+            // Check if this request was marked as silent (skip toast)
+            const isSilent = error.config?._silent === true
             
             const apiError: ApiError = {
                 message: error.message || 'An error occurred',
@@ -124,8 +127,10 @@ export function useApiFantasy() {
                     default:
                         errorMessage = error.response.data?.message || error.message || 'An unexpected error occurred'
                 }
-                toast.error(errorTitle, errorMessage)
-            } else if (error.request) {
+                if (!isSilent) {
+                    toast.error(errorTitle, errorMessage)
+                }
+            } else if (error.request && !isSilent) {
                 toast.error('Connection Error', 'Please check your internet connection and try again.')
             }
             return Promise.reject(apiError)

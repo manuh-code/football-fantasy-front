@@ -530,6 +530,9 @@ function handleClearAll() {
   emit("change", emptyValue);
 }
 
+// Detect non-touch device for auto-focus behavior
+const isDesktop = globalThis.window !== undefined && globalThis.window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 function toggleDropdown() {
   if (props.disabled || props.loading) return;
   isOpen.value = !isOpen.value;
@@ -537,9 +540,11 @@ function toggleDropdown() {
   if (isOpen.value) {
     searchQuery.value = "";
     emit("open");
-    nextTick(() => {
-      searchInputRef.value?.focus();
-    });
+    if (props.searchable && isDesktop) {
+      nextTick(() => {
+        searchInputRef.value?.focus();
+      });
+    }
   } else {
     emit("close");
   }
@@ -563,9 +568,9 @@ watch(searchQuery, (val) => {
   emit("search-change", val);
 });
 
-// Auto-focus search on open
+// Auto-focus search on open (only on desktop to avoid mobile keyboard)
 watch(isOpen, (val) => {
-  if (val && props.searchable) {
+  if (val && props.searchable && isDesktop) {
     nextTick(() => {
       searchInputRef.value?.focus();
     });

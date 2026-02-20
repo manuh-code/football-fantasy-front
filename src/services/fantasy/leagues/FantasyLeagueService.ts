@@ -7,10 +7,12 @@ import { useUserStore } from "@/store";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { ScoreRulePayload } from "@/interfaces/fantasy/score/ScoreRulePayload";
 import { FantasyRoundResponse } from "@/interfaces/fantasy/rounds/FantasyRoundResponse";
-import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyPlayerDraftResponse } from "@/interfaces/fantasy/draft/FantasyPlayerDraftResponse";
 import { FantasyPlayerDraftPayload } from "@/interfaces/fantasy/draft/FantasyPlayerDraftPayload";
 import { FantasyAddPlayerPayload } from "@/interfaces/fantasy/draft/FantasyAddPlayerPayload";
+import { FantasyUserTeamPayload } from "@/interfaces/fantasy/team/FantasyUserTeamPayload";
+import { FantasyTeamData } from "@/interfaces/fantasy/team/FantasyUserTeamResponse";
+import { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse";
 
 export class FantasyLeagueService {
     private readonly api;
@@ -80,6 +82,57 @@ export class FantasyLeagueService {
         throw new Error('Failed to add player');
     }
 
+    async addTeam(payload: FantasyUserTeamPayload): Promise<ApiResponse<FantasyTeamData>> {
+        const formData = new FormData();
+        formData.append('fantasy_league_uuid', payload.fantasy_league_uuid);
+        formData.append('team_name', payload.team_name);
+        formData.append('initials', payload.initials);
+
+        if (payload.image) {
+            formData.append('image', payload.image);
+        }
+
+        const response = await this.api.post<ApiResponse<FantasyTeamData>>(
+            `fantasy/leagues/team/store`,
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to add team');
+    }
+
+    async getTeam(leagueUuid: string): Promise<FantasyTeamData> {
+        const response = await this.api.get<ApiResponse<FantasyTeamData>>(`fantasy/leagues/team/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch team');
+    }
+
+    async getMatchupsByFantasyRound(leagueUuid: string, roundUuid: string): Promise<ApiResponse<FantasyLeagueMatchupResponse[]>> {
+        const response = await this.api.get<ApiResponse<FantasyLeagueMatchupResponse[]>>(`fantasy/leagues/matchups/${leagueUuid}/round/${roundUuid}`);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to fetch matchups');
+    }
+
+    /**
+     * Check if the user has a team in the given league.
+     * Uses silent mode to avoid showing toast on 404 errors.
+     */
+    async getTeamSilent(leagueUuid: string): Promise<FantasyTeamData> {
+        const response = await this.api.get<ApiResponse<FantasyTeamData>>(
+            `fantasy/leagues/team/${leagueUuid}`,
+            { _silent: true } as any
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch team');
+    }
 }
 
 export const fantasyLeagueService = new FantasyLeagueService();
