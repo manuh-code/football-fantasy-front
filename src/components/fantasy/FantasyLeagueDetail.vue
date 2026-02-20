@@ -243,16 +243,24 @@
       @close="closeJoinModal"
       @join="joinLeague"
     />
+
+    <!-- Create Team Invitation Modal -->
+    <CreateTeamModal
+      :is-visible="showCreateTeamModal"
+      @close="showCreateTeamModal = false"
+      @create="goToCreateTeam"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, defineProps, computed } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { ButtonComponent } from '@/components/ui'
 import JoinLeagueModal from '@/components/fantasy/JoinLeagueModal.vue'
+import CreateTeamModal from '@/components/fantasy/team/CreateTeamModal.vue'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 
@@ -273,6 +281,7 @@ const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoading = ref(true)
 const errorMessage = ref<string>('')
 const showJoinModal = ref(false)
+const showCreateTeamModal = ref(false)
 const isJoining = ref(false)
 
 // Get password error from validation store
@@ -294,12 +303,43 @@ const fetchLeague = async () => {
 
   try {
     league.value = await fantasyLeagueService.showFantasyLeague(props.uuid)
+
+    // Validate if the user already has a fantasy team for this league
+    await checkUserTeam()
   } catch (error) {
     console.error('Error loading league details:', error)
     errorMessage.value = 'Failed to load league details. Please try again later.'
   } finally {
     isLoading.value = false
   }
+}
+
+/**
+ * Check if the current user has a fantasy team in this league.
+ * If the API returns 404, redirect to the team creation page.
+ */
+const checkUserTeam = async () => {
+  try {
+    await fantasyLeagueService.getTeamSilent(props.uuid)
+    // Team exists — do nothing, user can see league detail normally
+  } catch (error: unknown) {
+    const apiError = error as { status?: number }
+    if (apiError?.status === 404) {
+      // User has no team — show invitation modal
+      showCreateTeamModal.value = true
+      return
+    }
+    // For other errors, silently ignore — the league detail still loads
+    console.error('Error checking user team:', error)
+  }
+}
+
+const goToCreateTeam = () => {
+  showCreateTeamModal.value = false
+  router.push({
+    name: 'fantasyTeamCreate',
+    params: { uuid: props.uuid },
+  })
 }
 
 const formatDate = (dateString: string) => {

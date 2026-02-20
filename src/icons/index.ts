@@ -92,6 +92,7 @@ import {
   HiSolidArrowDown,
   HiSolidExternalLink,
   HiCalendar,
+  HiSolidPhotograph,
 } from 'oh-vue-icons/icons'
 
 // Action icons
@@ -134,6 +135,7 @@ import {
 // Sports icons
 import {
   GiSoccerBall,
+  GiCrossedSwords,
 } from 'oh-vue-icons/icons'
 
 // Export all icons in an array for easy registration
@@ -253,9 +255,11 @@ export const iconList = [
   BiEyeSlashFill,
   HiSolidTable,
   MdSportssoccer,
+  HiSolidPhotograph,
 
   // Sports icons
   GiSoccerBall,
+  GiCrossedSwords,
 ]
 
 // Icon name mapping for easier usage

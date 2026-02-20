@@ -20,6 +20,11 @@
             <FootballPlayerStatisticMenu :fantasy-league-uuid="uuid" />
           </div>
 
+          <!-- Matchups Content -->
+          <div v-else-if="activeTab === 'matchups'" key="matchups" class="animate-fade-in">
+            <FantasyLeagueMatchup :fantasy-league-uuid="uuid" />
+          </div>
+
           <!-- Management Content -->
           <div v-else-if="activeTab === 'management'" key="management" class="animate-fade-in">
             <!-- Loading State -->
@@ -60,6 +65,7 @@ import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
+import FantasyLeagueMatchup from '@/components/fantasy/matchups/FantasyLeagueMatchup.vue'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'

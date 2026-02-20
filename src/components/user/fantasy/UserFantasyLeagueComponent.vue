@@ -122,10 +122,8 @@ const viewLeague = (league: string | { uuid: string }) => {
 
 // Lifecycle
 onMounted(async () => {
-  // Check if fantasy leagues are already loaded
-  if (!fantasyLeagues.value) {
-    await loadFantasyLeagues();
-  }
+  // Always refresh leagues to reflect recent joins or changes
+  await loadFantasyLeagues();
 });
 </script>
 

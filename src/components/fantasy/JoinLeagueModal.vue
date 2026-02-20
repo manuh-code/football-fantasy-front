@@ -1,154 +1,104 @@
 <template>
-    <!-- Modal Backdrop -->
-    <Transition name="modal-backdrop">
-        <div v-if="isVisible" 
-            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500 bg-opacity-75 backdrop-blur-sm transition-all duration-300"
-            @click="closeModal"
-        >
-            <!-- Modal Content Container -->
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <!-- This element is to trick the browser into centering the modal contents. -->
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                <!-- Modal panel with animation -->
-                <Transition name="modal-content" appear>
-                    <dialog v-if="isVisible" 
-                        :open="isVisible"
-                        class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border-0"
-                        aria-labelledby="modal-title"
-                        @click.stop
-                    >
-                
-                <!-- Header -->
-                <div class="sm:flex sm:items-start">
-                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 sm:mx-0 sm:h-10 sm:w-10">
-                        <v-icon v-if="league?.is_private" name="hi-solid-lock-closed" class="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-                        <v-icon v-else name="hi-solid-user" class="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+    <BottomSheet
+        :is-visible="isVisible"
+        title="Join Private League"
+        subtitle="Enter the password to join this league"
+        icon="hi-solid-lock-closed"
+        icon-variant="emerald"
+        size="auto"
+        :dismissible="!isLoading"
+        @close="closeModal"
+    >
+        <!-- League Info Card -->
+        <div v-if="league" class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3.5 mb-4">
+            <div class="flex items-center gap-3">
+                <div class="flex-shrink-0">
+                    <div v-if="league.image_path" class="h-12 w-12 rounded-xl overflow-hidden">
+                        <img :src="league.image_path" :alt="league.name" class="h-full w-full object-cover" />
                     </div>
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
-                        <h3 class="text-lg leading-6 font-semibold text-gray-900 dark:text-white" id="modal-title">
-                            Join Private League
-                        </h3>
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                This is a private league. Please enter the league password to join.
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Close button -->
-                    <button 
-                        @click="closeModal"
-                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                        aria-label="Close modal"
-                    >
-                        <v-icon name="hi-solid-x" class="h-5 w-5" />
-                    </button>
-                </div>
-
-                <!-- League Info -->
-                <div v-if="league" class="mt-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                            <div v-if="league.image_path" class="h-16 w-16 rounded-lg overflow-hidden">
-                                <img :src="league.image_path" :alt="league.name" class="h-full w-full object-cover" />
-                            </div>
-                            <div v-else class="h-16 w-16 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                                <v-icon name="bi-trophy-fill" class="h-8 w-8 text-white" />
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ league.name }}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                                {{ league.description || 'No description provided.' }}
-                            </p>
-                            <div class="flex items-center mt-3 space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                <span class="flex items-center">
-                                    <v-icon name="hi-solid-users" class="h-4 w-4 mr-1" />
-                                    {{ league.participants_count }} participants
-                                </span>
-                                <span class="flex items-center">
-                                    <v-icon name="hi-solid-calendar" class="h-4 w-4 mr-1" />
-                                    Started {{ formatDate(league.started_at) }}
-                                </span>
-                            </div>
-                        </div>
+                    <div v-else class="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                        <v-icon name="bi-trophy-fill" class="h-6 w-6 text-white" />
                     </div>
                 </div>
-
-                <!-- Password for Private Leagues -->
-                <div v-if="league?.is_private" class="mt-4">
-                    <label for="league-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        League Password <span class="text-red-500">*</span>
-                    </label>
-                    <input
-                        id="league-password"
-                        v-model="leaguePassword"
-                        type="password"
-                        placeholder="Enter the league password..."
-                        required
-                        :class="[
-                            'w-full px-3 py-2 border rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white',
-                            passwordError 
-                                ? 'border-red-300 dark:border-red-600 focus:ring-red-500 focus:border-red-500' 
-                                : 'border-gray-300 dark:border-gray-600'
-                        ]"
-                    />
-                    <!-- Password Error Message -->
-                    <div v-if="passwordError" class="mt-2 flex items-start space-x-2">
-                        <v-icon name="hi-solid-exclamation-circle" class="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                        <p class="text-sm text-red-600 dark:text-red-400">
-                            {{ passwordError }}
-                        </p>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ league.name }}</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                        {{ league.description || 'No description provided.' }}
+                    </p>
+                    <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                        <span class="flex items-center gap-1">
+                            <v-icon name="hi-solid-users" class="h-3 w-3" />
+                            {{ league.participants_count }}
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <v-icon name="hi-solid-calendar" class="h-3 w-3" />
+                            {{ formatDate(league.started_at) }}
+                        </span>
                     </div>
                 </div>
-
-                <!-- Actions -->
-                <div class="mt-8 sm:flex sm:flex-row-reverse space-y-3 sm:space-y-0 sm:space-x-3 sm:space-x-reverse">
-                    <ButtonComponent
-                        variant="primary"
-                        size="md"
-                        :loading="isLoading"
-                        :disabled="isLoading"
-                        @click="handleJoin"
-                        class="w-full sm:w-auto"
-                    >
-                        <v-icon name="hi-solid-user" class="h-4 w-4 mr-2" />
-                        Join League
-                    </ButtonComponent>
-                    
-                    <ButtonComponent
-                        variant="outline"
-                        size="md"
-                        :disabled="isLoading"
-                        @click="closeModal"
-                        class="w-full sm:w-auto"
-                    >
-                        Cancel
-                    </ButtonComponent>
-                </div>
-
-                <!-- Loading overlay -->
-                <div v-if="isLoading" class="absolute inset-0 bg-white/80 dark:bg-gray-800/80 flex items-center justify-center rounded-lg">
-                    <div class="flex flex-col items-center space-y-2">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Joining league...
-                        </p>
-                    </div>
-                </div>
-                    </dialog>
-                </Transition>
             </div>
         </div>
-    </Transition>
+
+        <!-- Password Input -->
+        <div v-if="league?.is_private">
+            <label for="league-password" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                Password
+            </label>
+            <div class="relative">
+                <v-icon name="hi-solid-lock-closed" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <input
+                    id="league-password"
+                    v-model="leaguePassword"
+                    type="password"
+                    placeholder="Enter league password..."
+                    required
+                    :class="[
+                        'w-full pl-10 pr-4 py-3 rounded-xl text-sm border-0 transition-all',
+                        'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white',
+                        'placeholder-gray-400 dark:placeholder-gray-500',
+                        'focus:ring-2 focus:bg-white dark:focus:bg-gray-700',
+                        passwordError
+                            ? 'ring-2 ring-red-500/50 bg-red-50 dark:bg-red-900/10'
+                            : 'focus:ring-emerald-500/50'
+                    ]"
+                />
+            </div>
+            <!-- Error -->
+            <div v-if="passwordError" class="flex items-center gap-1.5 mt-2">
+                <v-icon name="hi-solid-exclamation-circle" class="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
+                <p class="text-xs text-red-600 dark:text-red-400">{{ passwordError }}</p>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <template #footer>
+            <div class="flex gap-3">
+                <button
+                    @click="closeModal"
+                    :disabled="isLoading"
+                    class="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-50"
+                >
+                    Cancel
+                </button>
+                <button
+                    @click="handleJoin"
+                    :disabled="isLoading"
+                    class="flex-1 py-3 rounded-xl text-sm font-semibold text-white bg-emerald-600 active:scale-[0.98] shadow-sm shadow-emerald-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                    <div v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <v-icon v-else name="hi-solid-user" class="w-4 h-4" />
+                    Join League
+                </button>
+            </div>
+        </template>
+    </BottomSheet>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, defineProps, defineEmits, withDefaults } from 'vue'
-import { ButtonComponent } from '@/components/ui'
+import { ref, watch } from 'vue'
+import BottomSheet from '@/components/ui/BottomSheet.vue'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 
-// Props interface
 interface Props {
     isVisible?: boolean
     league?: FantasyLeaguesResponse | null
@@ -156,7 +106,6 @@ interface Props {
     passwordError?: string
 }
 
-// Props with defaults
 const props = withDefaults(defineProps<Props>(), {
     isVisible: false,
     league: null,
@@ -164,52 +113,28 @@ const props = withDefaults(defineProps<Props>(), {
     passwordError: ''
 })
 
-// Emits
 const emit = defineEmits<{
     close: []
     join: [joinData: { league: FantasyLeaguesResponse; password?: string }]
 }>()
 
-// Reactive state
 const leaguePassword = ref('')
 
-// Watch for modal visibility changes to reset form
 watch(() => props.isVisible, (newValue) => {
     if (!newValue) {
         leaguePassword.value = ''
     }
 })
 
-// Watch for password error changes to focus the input when there's an error
 watch(() => props.passwordError, (newError) => {
     if (newError) {
-        // Focus the password input when there's an error
         setTimeout(() => {
-            const passwordInput = document.getElementById('league-password')
-            if (passwordInput) {
-                passwordInput.focus()
-            }
+            const input = document.getElementById('league-password')
+            input?.focus()
         }, 100)
     }
 })
 
-// Handle keyboard events
-const handleKeydown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && props.isVisible && !props.isLoading) {
-        closeModal()
-    }
-}
-
-// Add/remove event listeners
-onMounted(() => {
-    document.addEventListener('keydown', handleKeydown)
-})
-
-onUnmounted(() => {
-    document.removeEventListener('keydown', handleKeydown)
-})
-
-// Methods
 const closeModal = () => {
     if (!props.isLoading) {
         emit('close')
@@ -218,18 +143,14 @@ const closeModal = () => {
 
 const handleJoin = () => {
     if (!props.league) return
-
-    const joinData = {
+    emit('join', {
         league: props.league,
         password: props.league.is_private ? leaguePassword.value : undefined
-    }
-
-    emit('join', joinData)
+    })
 }
 
 const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
@@ -238,89 +159,11 @@ const formatDate = (dateString: string) => {
 </script>
 
 <style scoped>
-/* Line clamp utility */
-.line-clamp-2 {
+.line-clamp-1 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-/* Modal backdrop animations */
-.modal-backdrop-enter-active,
-.modal-backdrop-leave-active {
-    transition: all 0.3s ease;
-}
-
-.modal-backdrop-enter-from,
-.modal-backdrop-leave-to {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-}
-
-.modal-backdrop-enter-to,
-.modal-backdrop-leave-from {
-    opacity: 1;
-    backdrop-filter: blur(4px);
-}
-
-/* Modal content animations */
-.modal-content-enter-active {
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.modal-content-leave-active {
-    transition: all 0.2s ease-in;
-}
-
-.modal-content-enter-from {
-    opacity: 0;
-    transform: scale(0.9) translateY(-20px);
-}
-
-.modal-content-leave-to {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-}
-
-.modal-content-enter-to,
-.modal-content-leave-from {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-}
-
-/* Accessibility: Focus styles */
-button:focus,
-.focus\:ring-2:focus {
-    outline: 2px solid #10b981;
-    outline-offset: 2px;
-}
-
-/* Ensure modal is above other content */
-.z-50 {
-    z-index: 50;
-}
-
-/* Responsive modal sizing */
-@media (max-width: 640px) {
-    .sm\:max-w-lg {
-        max-width: calc(100vw - 2rem);
-    }
-}
-
-/* Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-    .modal-backdrop-enter-active,
-    .modal-backdrop-leave-active,
-    .modal-content-enter-active,
-    .modal-content-leave-active {
-        transition: none !important;
-    }
-    
-    .modal-content-enter-from,
-    .modal-content-leave-to {
-        transform: none !important;
-    }
 }
 </style>

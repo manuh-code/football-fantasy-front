@@ -1,6 +1,6 @@
 <template>
   <!-- Menú superior - siempre visible -->
-  <nav aria-label="Main navigation" class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200">
+  <nav aria-label="Main navigation" class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200 safe-area-top">
     <div class="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-4 h-14 sm:h-16">
       <!-- Left side - Logo/Brand (clickable to gaming) -->
       <button

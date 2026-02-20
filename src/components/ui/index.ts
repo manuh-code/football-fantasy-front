@@ -1,4 +1,5 @@
 export { default as ButtonComponent } from './ButtonComponent.vue'
+export { default as BottomSheet } from './BottomSheet.vue'
 export { default as FormInput } from './FormInput.vue'
 export { default as ToastComponent } from './ToastComponent.vue'
 export { default as ToastContainer } from './ToastContainer.vue'

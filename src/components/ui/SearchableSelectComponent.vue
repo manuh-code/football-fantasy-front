@@ -372,15 +372,20 @@ const filteredOptions = computed(() => {
   });
 });
 
+// Detect non-touch device for auto-focus behavior
+const isDesktop = globalThis.window !== undefined && globalThis.window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 // Methods
 function toggleDropdown() {
   if (props.disabled || props.loading) return;
   isOpen.value = !isOpen.value;
   if (isOpen.value) {
     searchQuery.value = "";
-    nextTick(() => {
-      searchInputRef.value?.focus();
-    });
+    if (props.searchable && isDesktop) {
+      nextTick(() => {
+        searchInputRef.value?.focus();
+      });
+    }
   }
 }
 

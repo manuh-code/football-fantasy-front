@@ -31,7 +31,7 @@
       <!-- Global Football League Selection Modal -->
       <FootballLeagueSelectionModal :isVisible="showLeagueModal" @close="showLeagueModal = false" />
 
-      <main class="flex-1 pt-14 sm:pt-16 pb-24">
+      <main class="flex-1 pb-24 main-content-safe">
         <router-view />
       </main>
 
@@ -124,7 +124,26 @@ body,
 // App content wrapper
 .app-content {
   min-height: 100vh;
+  min-height: 100dvh; // Dynamic viewport height for mobile browsers
   will-change: transform;
+}
+
+// Safe area utilities for iOS notch/Dynamic Island
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+// Main content padding that accounts for header + safe area
+.main-content-safe {
+  padding-top: calc(3.5rem + env(safe-area-inset-top, 0px)); // 56px (h-14) + safe area
+
+  @media (min-width: 640px) {
+    padding-top: calc(4rem + env(safe-area-inset-top, 0px)); // 64px (h-16) + safe area
+  }
 }
 
 // Swipe navigation indicator
