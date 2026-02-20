@@ -804,7 +804,7 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "Error adding player";
-    toast.error("Failed to add player", errorMessage, { duration: 3000 });
+    console.error('Error adding player:', errorMessage);
   } finally {
     addingPlayers.value.delete(player.player.uuid);
   }
@@ -843,7 +843,6 @@ async function loadPlayers(append = false) {
     const errorMessage =
       err instanceof Error ? err.message : "Error loading players";
     error.value = errorMessage;
-    toast.error("Error loading players", errorMessage, { duration: 3000 });
   } finally {
     isLoading.value = false;
     isLoadingMore.value = false;

@@ -480,7 +480,6 @@ const loadSeasons = async (fantasyLeagueUuid: string) => {
     }
   } catch (error) {
     console.error('Error loading seasons:', error)
-    toast.error('Error', 'Failed to load seasons')
     seasons.value = []
   } finally {
     isLoadingSeasons.value = false
@@ -512,7 +511,6 @@ const loadTypes = async () => {
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Failed to load score types'
     error.value = errorMessage
-    toast.error('Error', 'Failed to load score types')
   } finally {
     loadingTypes.value = false
   }
@@ -561,7 +559,6 @@ const searchTopScorers = async () => {
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Failed to load top scorers'
     error.value = errorMessage
-    toast.error('Error', 'Failed to load top scorers')
   } finally {
     loadingTopScorers.value = false
   }
@@ -622,7 +619,6 @@ const onFantasyLeagueChange = async (fantasyLeagueUuid: string) => {
     }
   } catch (error) {
     console.error('Error changing fantasy league:', error)
-    toast.error('Error', 'Failed to load seasons for the selected league')
   }
 }
 
@@ -641,7 +637,7 @@ onMounted(async () => {
       await onFantasyLeagueChange(targetLeagueUuid)
     }
   } catch (error) {
-    toast.error('Error', 'Failed to initialize top scorers component')
+    console.error('Error initializing top scorers:', error)
   }
 })
 </script>

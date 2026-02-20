@@ -369,25 +369,9 @@ const handleRegister = async () => {
             const { status, data } = error.response;
             
             if (status === 422 && data.errors) {
-                // Handle server validation errors
+                // Handle server validation errors for inline display
                 handleServerErrors(data.errors);
-                toast.error(
-                    'Validation error',
-                    data.message || 'Please check the form fields.'
-                );
-            } else {
-                // Generic server error
-                toast.error(
-                    'Registration error',
-                    'An unexpected error occurred. Please try again.'
-                );
             }
-        } else {
-            // Network or other error
-            toast.error(
-                'Connection error',
-                'Could not connect to the server. Check your internet connection.'
-            );
         }
     } finally {
         isLoading.value = false;

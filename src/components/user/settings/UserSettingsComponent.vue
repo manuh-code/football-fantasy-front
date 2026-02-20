@@ -150,7 +150,6 @@ async function handleLogout() {
     router.push({ name: 'home' })
   } catch (error) {
     console.error('Logout error:', error)
-    toast.error('Error', 'Failed to sign out. Please try again.')
   } finally {
     isLoggingOut.value = false
   }

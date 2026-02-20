@@ -154,7 +154,6 @@ const loadTeams = async (seasonUuid: string) => {
 	} catch (error) {
 		console.error('Error loading teams:', error)
 		teams.value = []
-		toast.error('Error', 'Unable to load the teams for this season.')
 	} finally {
 		isLoadingTeams.value = false
 	}
@@ -168,7 +167,6 @@ const loadPositions = async () => {
 	} catch (error) {
 		console.error('Error loading positions:', error)
 		positions.value = []
-		toast.error('Error', 'Unable to load player positions.')
 	} finally {
 		isLoadingPositions.value = false
 	}
@@ -196,7 +194,6 @@ const loadStages = async (seasonUuid: string) => {
 		stages.value = []
 		defaultStages.value = []
 		filters.stages = []
-		toast.error('Error', 'Unable to load the stages for this season.')
 	} finally {
 		isLoadingStages.value = false
 	}
@@ -227,7 +224,6 @@ const initialize = async (leagueUuid: string) => {
 		])
 	} catch (error) {
 		console.error('Error initialising fantasy points:', error)
-		toast.error('Error', 'Unable to fetch league information.')
 		resetState()
 	} finally {
 		isInitializing.value = false
@@ -299,7 +295,6 @@ const searchFantasyPoints = async (page = 1) => {
 		fantasyPoints.value = []
 		pagination.value = null
 		paginationLinks.value = null
-		toast.error('Error', 'Unable to fetch fantasy points.')
 	} finally {
 		isLoadingFantasyPoints.value = false
 	}

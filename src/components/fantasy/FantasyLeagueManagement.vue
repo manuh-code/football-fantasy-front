@@ -857,7 +857,6 @@ const loadConditionsRules = async () => {
     } catch (err) {
         console.error('Error loading conditions rules:', err);
         error.value = 'Error loading condition rules';
-        toast.error('Error loading available conditions');
     }
 };
 
@@ -890,7 +889,6 @@ const saveScoreRules = async () => {
     } catch (err) {
         console.error('Error saving score rules:', err);
         error.value = 'Error saving scoring rules';
-        toast.error('Error saving rules');
     } finally {
         saving.value = false;
     }

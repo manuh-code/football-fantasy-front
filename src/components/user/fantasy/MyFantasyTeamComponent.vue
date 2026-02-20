@@ -1152,7 +1152,6 @@ import { FantasyRoundResponse } from "@/interfaces/fantasy/rounds/FantasyRoundRe
 import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
-import { useToast } from "@/composables/useToast";
 
 interface Props {
   fantasyLeagueUuid?: string;
@@ -1164,7 +1163,6 @@ const props = defineProps<Props>();
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
-const toast = useToast();
 
 // State
 const players = ref<FantasyFootballPlayersResponse[]>([]);
@@ -1380,7 +1378,7 @@ async function loadRounds() {
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "Error loading rounds";
-    toast.error("Error loading rounds", errorMessage, { duration: 3000 });
+    console.error('Error loading rounds:', errorMessage);
   } finally {
     isLoadingRounds.value = false;
   }
@@ -1410,9 +1408,6 @@ async function loadPlayers() {
     const errorMessage =
       err instanceof Error ? err.message : "Error loading players";
     error.value = errorMessage;
-    toast.error("Error loading your fantasy team", errorMessage, {
-      duration: 3000,
-    });
   } finally {
     isLoading.value = false;
   }
