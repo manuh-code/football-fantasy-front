@@ -6,4 +6,5 @@ export interface FantasyFootballPlayersResponse {
     position: TypeResponse;
     is_starter: boolean;
     is_flex: boolean;
+    fantasy_points: number;
 }

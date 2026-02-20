@@ -24,15 +24,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Season Selection -->
                     <div>
-                        <SelectComponent
+                        <SearchableSelectComponent
                             v-model="filters.seasons"
                             :options="seasons"
                             value-key="uuid"
                             label-key="name"
-                            label="Season"
                             placeholder="Select a season"
                             :disabled="isLoadingSeasons"
-                            :class="seasonError ? 'border-red-500' : ''"
+                            :loading="isLoadingSeasons"
+                            :error="seasonError"
+                            :clearable="false"
+                            accent-color="emerald"
                             @change="onSeasonChange"
                         />
                         <div v-if="isLoadingSeasons" class="mt-1 text-xs text-gray-500">
@@ -147,14 +149,16 @@
                         <label for="per-page-select" class="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
                             Show:
                         </label>
-                        <SelectComponent
-                            id="per-page-select"
+                        <SearchableSelectComponent
                             v-model="pagination.per_page"
                             :options="perPageOptions"
                             value-key="value"
                             label-key="label"
                             placeholder=""
-                            class="w-16 md:w-20"
+                            :searchable="false"
+                            :clearable="false"
+                            accent-color="gray"
+                            class="w-20 md:w-24"
                             @change="onPerPageChange"
                         />
                         <span class="text-xs md:text-sm text-gray-600 dark:text-gray-400">per page</span>
@@ -233,7 +237,7 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from '@/composables/useToast'
-import { ButtonComponent, PaginationComponent, SelectComponent, MultiselectComponent } from '@/components/ui'
+import { ButtonComponent, PaginationComponent, SearchableSelectComponent, MultiselectComponent } from '@/components/ui'
 import PlayerStatisticsDesktopTable from './PlayerStatisticsDesktopTable.vue'
 import PlayerStatisticsTabletTable from './PlayerStatisticsTabletTable.vue'
 import PlayerStatisticsMobileCards from './PlayerStatisticsMobileCards.vue'

@@ -63,42 +63,129 @@
     <div v-else-if="initialLoadComplete" class="space-y-6">
       <!-- Position Filters -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="p-4">
-          <div class="flex items-center gap-3 mb-4">
-            <v-icon name="hi-solid-filter" class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Filter by Position</h3>
-          </div>
-          
-          <!-- Horizontal Filter Buttons -->
-          <div class="flex items-center gap-2 overflow-x-auto pb-2">
+        <div class="px-2 pt-3 pb-0 sm:px-4 sm:pt-4">
+          <!-- Filter Tabs -->
+          <div class="flex items-stretch gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
             <button
               v-for="filter in positionFilters"
               :key="filter.code"
               @click="handleFilterChange(filter.code)"
+              class="group relative flex flex-col items-center min-w-[72px] sm:min-w-[90px] px-3 sm:px-5 pt-3 pb-3.5 rounded-t-xl font-medium text-sm transition-all duration-200 whitespace-nowrap"
               :class="[
-                'flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap',
                 selectedPosition === filter.code
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md scale-105'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? filter.activeClasses
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50'
               ]"
             >
-              <v-icon 
-                :name="filter.icon" 
-                class="w-4 h-4"
-                :class="selectedPosition === filter.code ? 'text-white' : filter.color"
-              />
-              <span>{{ filter.name }}</span>
-              <span 
+              <!-- Icon with position-specific bg -->
+              <div
+                class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full mb-1.5 transition-all duration-200"
                 :class="[
-                  'px-2 py-0.5 rounded-full text-xs font-bold',
                   selectedPosition === filter.code
-                    ? 'bg-white/20 text-white'
-                    : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
+                    ? filter.iconBgActive
+                    : 'bg-gray-100 dark:bg-gray-700 group-hover:scale-110'
                 ]"
               >
-                {{ getPlayerCountByPosition(filter.code) }}
+                <v-icon
+                  :name="filter.icon"
+                  class="w-4.5 h-4.5 sm:w-5 sm:h-5 transition-colors duration-200"
+                  :class="[
+                    selectedPosition === filter.code
+                      ? 'text-white'
+                      : filter.color
+                  ]"
+                />
+              </div>
+              
+              <!-- Label -->
+              <span class="text-xs sm:text-sm font-semibold">{{ filter.name }}</span>
+              
+              <!-- Formation slots info -->
+              <span
+                v-if="filter.slots"
+                class="text-[10px] sm:text-xs mt-0.5 transition-colors duration-200"
+                :class="[
+                  selectedPosition === filter.code
+                    ? filter.slotsTextActive
+                    : 'text-gray-400 dark:text-gray-500'
+                ]"
+              >
+                {{ filter.slots }} slots
               </span>
+
+              <!-- Active indicator bar -->
+              <div
+                class="absolute bottom-0 left-2 right-2 h-[3px] rounded-t-full transition-all duration-300"
+                :class="[
+                  selectedPosition === filter.code
+                    ? filter.barColor + ' opacity-100'
+                    : 'bg-transparent opacity-0'
+                ]"
+              />
             </button>
+          </div>
+        </div>
+        
+        <!-- Separator line -->
+        <div class="h-px bg-gray-200 dark:bg-gray-700" />
+      </div>
+
+      <!-- Team Filter -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-visible">
+        <div class="p-4">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <!-- Label -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
+                <v-icon name="hi-solid-user-group" class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Team</span>
+            </div>
+
+            <!-- Team Selector -->
+            <div class="flex-1">
+              <SearchableSelectComponent
+                v-model="selectedTeam"
+                :options="teams"
+                value-key="uuid"
+                label-key="name"
+                image-key="image_path"
+                subtitle-key="short_code"
+                placeholder="All teams"
+                search-placeholder="Search team..."
+                :all-option="true"
+                all-option-label="All teams"
+                all-option-value="ALL"
+                accent-color="indigo"
+                default-image="/img/default-team.svg"
+                no-results-text="No teams found for"
+                @change="onTeamFilterChange"
+              />
+            </div>
+
+            <!-- Active Filters Summary -->
+            <div v-if="selectedTeam !== 'ALL' || selectedPosition !== 'ALL'" class="flex items-center gap-2 flex-wrap sm:flex-shrink-0">
+              <span class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">Active:</span>
+              <span
+                v-if="selectedPosition !== 'ALL'"
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+              >
+                {{ selectedPosition === 'GOALKEEPER' ? 'GK' : selectedPosition === 'DEFENDER' ? 'DF' : selectedPosition === 'MIDFIELDER' ? 'MF' : 'FW' }}
+                <button @click="handleFilterChange('ALL')" class="hover:text-blue-900 dark:hover:text-blue-100">
+                  <v-icon name="hi-solid-x" class="w-3 h-3" />
+                </button>
+              </span>
+              <span
+                v-if="selectedTeamData"
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300"
+              >
+                <img :src="selectedTeamData.image_path || '/img/default-team.svg'" :alt="selectedTeamData.short_code" class="w-3.5 h-3.5 object-contain" />
+                {{ selectedTeamData.short_code }}
+                <button @click="onTeamFilterChange('ALL')" class="hover:text-indigo-900 dark:hover:text-indigo-100">
+                  <v-icon name="hi-solid-x" class="w-3 h-3" />
+                </button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -497,6 +584,9 @@ import { FantasyPlayerDraftPayload } from "@/interfaces/fantasy/draft/FantasyPla
 import { FantasyAddPlayerPayload } from "@/interfaces/fantasy/draft/FantasyAddPlayerPayload";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
+import { catalogService } from "@/services/catalog/CatalogService";
+import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import { SearchableSelectComponent } from "@/components/ui";
 import { useToast } from "@/composables/useToast";
 
 interface Props {
@@ -521,6 +611,8 @@ const hasMoreData = ref(true);
 const observerTarget = ref<HTMLElement | null>(null);
 const addingPlayers = ref<Set<string>>(new Set());
 const selectedPosition = ref<string>("ALL");
+const selectedTeam = ref<string>("ALL");
+const teams = ref<FootballTeamResponse[]>([]);
 const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
 let observer: IntersectionObserver | null = null;
@@ -532,17 +624,41 @@ const toast = useToast();
 const leagueUuid = computed(() => props.fantasyLeagueUuid);
 
 const positionFilters = computed(() => {
-  const filters = [
-    { code: "ALL", name: "All", icon: "hi-solid-view-grid", color: "text-gray-600 dark:text-gray-400" }
+  const filters: Array<{
+    code: string;
+    name: string;
+    icon: string;
+    color: string;
+    activeClasses: string;
+    iconBgActive: string;
+    slotsTextActive: string;
+    barColor: string;
+    slots?: number;
+  }> = [
+    {
+      code: "ALL",
+      name: "All",
+      icon: "hi-solid-view-grid",
+      color: "text-gray-600 dark:text-gray-400",
+      activeClasses: "text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/60",
+      iconBgActive: "bg-gray-700 dark:bg-gray-300",
+      slotsTextActive: "text-gray-500 dark:text-gray-400",
+      barColor: "bg-gray-700 dark:bg-gray-300",
+    },
   ];
-  
+
   if (league.value?.formation) {
     if (league.value.formation.goalkeeper?.starter > 0) {
       filters.push({
         code: "GOALKEEPER",
         name: "GK",
         icon: "hi-solid-shield-check",
-        color: "text-blue-600 dark:text-blue-400"
+        color: "text-blue-600 dark:text-blue-400",
+        activeClasses: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20",
+        iconBgActive: "bg-blue-600 dark:bg-blue-500 shadow-blue-500/30 shadow-md",
+        slotsTextActive: "text-blue-500 dark:text-blue-400",
+        barColor: "bg-blue-600 dark:bg-blue-400",
+        slots: league.value.formation.goalkeeper.starter,
       });
     }
     if (league.value.formation.defender?.starter > 0) {
@@ -550,7 +666,12 @@ const positionFilters = computed(() => {
         code: "DEFENDER",
         name: "DF",
         icon: "hi-solid-shield-exclamation",
-        color: "text-green-600 dark:text-green-400"
+        color: "text-emerald-600 dark:text-emerald-400",
+        activeClasses: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20",
+        iconBgActive: "bg-emerald-600 dark:bg-emerald-500 shadow-emerald-500/30 shadow-md",
+        slotsTextActive: "text-emerald-500 dark:text-emerald-400",
+        barColor: "bg-emerald-600 dark:bg-emerald-400",
+        slots: league.value.formation.defender.starter,
       });
     }
     if (league.value.formation.midfielder?.starter > 0) {
@@ -558,7 +679,12 @@ const positionFilters = computed(() => {
         code: "MIDFIELDER",
         name: "MF",
         icon: "hi-solid-lightning-bolt",
-        color: "text-yellow-600 dark:text-yellow-400"
+        color: "text-amber-600 dark:text-amber-400",
+        activeClasses: "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20",
+        iconBgActive: "bg-amber-600 dark:bg-amber-500 shadow-amber-500/30 shadow-md",
+        slotsTextActive: "text-amber-500 dark:text-amber-400",
+        barColor: "bg-amber-600 dark:bg-amber-400",
+        slots: league.value.formation.midfielder.starter,
       });
     }
     if (league.value.formation.attacker?.starter > 0) {
@@ -566,18 +692,23 @@ const positionFilters = computed(() => {
         code: "ATTACKER",
         name: "FW",
         icon: "hi-solid-fire",
-        color: "text-red-600 dark:text-red-400"
+        color: "text-rose-600 dark:text-rose-400",
+        activeClasses: "text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20",
+        iconBgActive: "bg-rose-600 dark:bg-rose-500 shadow-rose-500/30 shadow-md",
+        slotsTextActive: "text-rose-500 dark:text-rose-400",
+        barColor: "bg-rose-600 dark:bg-rose-400",
+        slots: league.value.formation.attacker.starter,
       });
     }
   }
-  
+
   return filters;
 });
 
-const getPlayerCountByPosition = (position: string) => {
-  // When a filter is active, show the current count from API
-  return players.value.length;
-};
+const selectedTeamData = computed(() => {
+  if (selectedTeam.value === "ALL") return null;
+  return teams.value.find((t) => t.uuid === selectedTeam.value) || null;
+});
 
 // Methods
 function formatNumber(value: number | null | undefined, decimals = 2): string {
@@ -616,6 +747,22 @@ async function loadLeague() {
   } catch (err: unknown) {
     console.error("Error loading league:", err);
   }
+}
+
+async function loadTeams() {
+  if (!league.value?.current_football_season_uuid) return;
+  try {
+    teams.value = await catalogService.getTeamsBySeasonUuid(
+      league.value.current_football_season_uuid
+    );
+  } catch (err: unknown) {
+    console.error("Error loading teams:", err);
+  }
+}
+
+function onTeamFilterChange(value: string | number | null) {
+  selectedTeam.value = String(value || "ALL");
+  loadPlayers(false);
 }
 
 function handleFilterChange(position: string) {
@@ -682,50 +829,16 @@ async function loadPlayers(append = false) {
     const payload: FantasyPlayerDraftPayload = {
       page: currentPage.value,
       per_page: perPage.value,
+      filters: buildPayloadFilters(),
     };
-
-    // Add position filter if not "ALL"
-    if (selectedPosition.value !== "ALL" && league.value?.formation) {
-      const positionMap: Record<string, string | undefined> = {
-        GOALKEEPER: league.value.formation.goalkeeper?.uuid,
-        DEFENDER: league.value.formation.defender?.uuid,
-        MIDFIELDER: league.value.formation.midfielder?.uuid,
-        ATTACKER: league.value.formation.attacker?.uuid,
-      };
-
-      const positionUuid = positionMap[selectedPosition.value];
-      if (positionUuid) {
-        payload.filters = {
-          position_uuid: positionUuid,
-        };
-      }
-    }
 
     const response = await fantasyLeagueService.getPlayersToDraft(
       leagueUuid.value,
       payload,
     );
 
-    if (append) {
-      players.value = [...players.value, ...response];
-    } else {
-      players.value = response;
-    }
-
-    // Si recibimos menos elementos que el per_page, significa que no hay más datos
-    if (response.length < perPage.value) {
-      hasMoreData.value = false;
-    } else {
-      hasMoreData.value = true;
-      currentPage.value++;
-
-      // Reconectar observer después de cargar
-      if (append) {
-        setTimeout(() => {
-          setupIntersectionObserver();
-        }, 100);
-      }
-    }
+    players.value = append ? [...players.value, ...response] : response;
+    handlePaginationResult(response.length, append);
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "Error loading players";
@@ -734,6 +847,41 @@ async function loadPlayers(append = false) {
   } finally {
     isLoading.value = false;
     isLoadingMore.value = false;
+  }
+}
+
+function buildPayloadFilters(): FantasyPlayerDraftPayload["filters"] {
+  const filters: Record<string, string> = {};
+
+  if (selectedPosition.value !== "ALL" && league.value?.formation) {
+    const positionMap: Record<string, string | undefined> = {
+      GOALKEEPER: league.value.formation.goalkeeper?.uuid,
+      DEFENDER: league.value.formation.defender?.uuid,
+      MIDFIELDER: league.value.formation.midfielder?.uuid,
+      ATTACKER: league.value.formation.attacker?.uuid,
+    };
+    const positionUuid = positionMap[selectedPosition.value];
+    if (positionUuid) {
+      filters.position_uuid = positionUuid;
+    }
+  }
+
+  if (selectedTeam.value !== "ALL") {
+    filters.team_uuid = selectedTeam.value;
+  }
+
+  return Object.keys(filters).length > 0 ? filters : undefined;
+}
+
+function handlePaginationResult(responseLength: number, append: boolean) {
+  if (responseLength < perPage.value) {
+    hasMoreData.value = false;
+  } else {
+    hasMoreData.value = true;
+    currentPage.value++;
+    if (append) {
+      setTimeout(() => setupIntersectionObserver(), 100);
+    }
   }
 }
 
@@ -776,6 +924,7 @@ function setupIntersectionObserver() {
 // Lifecycle
 onMounted(async () => {
   await loadLeague();
+  await loadTeams();
   
   // Check if there's a position filter in query params
   const positionFromQuery = route.query.position as string;
@@ -813,5 +962,14 @@ onUnmounted(() => {
   * {
     transition-duration: 0.2s;
   }
+}
+
+/* Hide scrollbar for filter tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 </style>

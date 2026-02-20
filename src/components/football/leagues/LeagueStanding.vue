@@ -25,23 +25,21 @@
         </div>
 
         <!-- Stage selector -->
-        <div class="flex items-center gap-2">
-          <select
-            id="stage-select"
+        <div class="flex items-center gap-2 sm:min-w-[220px]">
+          <SearchableSelectComponent
             v-model="selectedStageUuid"
-            @change="onStageChange"
+            :options="stages"
+            value-key="stageUuid"
+            label-key="stage"
+            placeholder="Select stage"
+            search-placeholder="Search stage..."
             :disabled="loadingStages"
-            class="w-full sm:w-auto text-sm px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed sm:min-w-[180px]"
-          >
-            <option value="">Select stage</option>
-            <option
-              v-for="stage in stages"
-              :key="stage.stageUuid"
-              :value="stage.stageUuid"
-            >
-              {{ stage.stage }}
-            </option>
-          </select>
+            :loading="loadingStages"
+            accent-color="emerald"
+            :searchable="stages.length > 5"
+            :clearable="false"
+            @change="onStageChange"
+          />
         </div>
       </div>
     </div>
@@ -344,6 +342,7 @@ import { ref, onMounted } from "vue";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
 import catalogService from "@/services/catalog/CatalogService";
 import NoResults from "@/components/ui/NoResults.vue";
+import { SearchableSelectComponent } from "@/components/ui";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
@@ -448,8 +447,9 @@ const fetchStandings = async () => {
 };
 
 // Event handlers
-const onStageChange = async () => {
-  // Encontrar el stage seleccionado y obtener su seasonUuid
+const onStageChange = async (value: string | number | null) => {
+  selectedStageUuid.value = String(value || "");
+  // Find the selected stage and get its seasonUuid
   const selectedStage = stages.value.find(
     (s) => s.stageUuid === selectedStageUuid.value,
   );
