@@ -1,12 +1,12 @@
 <template>
   <!-- Teleported to body to avoid transform context issues (swipe navigation) -->
   <Teleport to="body">
-    <!-- Mobile: bottom (above footer nav), Desktop: top-right -->
-    <div class="toast-container fixed left-4 right-4 z-[9999] pointer-events-none md:left-auto md:right-6 md:top-6 toast-position">
-      <TransitionGroup 
-        name="toast" 
-        tag="div" 
-        class="flex flex-col gap-3 items-center md:items-end"
+    <!-- Mobile: bottom (above footer nav), Desktop: top-center -->
+    <div class="toast-container fixed left-4 right-4 z-[9999] pointer-events-none md:left-1/2 md:-translate-x-1/2 md:right-auto md:top-6 md:w-[400px] toast-position">
+      <TransitionGroup
+        name="toast"
+        tag="div"
+        class="flex flex-col gap-3 items-center"
       >
         <ToastComponent
           v-for="toast in toasts"
@@ -34,7 +34,7 @@ const { toasts, removeToast } = useToast()
   bottom: calc(5rem + env(safe-area-inset-bottom));
 }
 
-/* Desktop: top-right corner */
+/* Desktop: top-center */
 @media (min-width: 768px) {
   .toast-position {
     bottom: auto;
@@ -42,38 +42,41 @@ const { toasts, removeToast } = useToast()
 }
 
 /* Toast animations */
-.toast-enter-active,
+.toast-enter-active {
+  transition: all 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
 .toast-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.06, 0.71, 0.55, 1);
 }
 
 /* Mobile: slide from bottom */
 @media (max-width: 767px) {
   .toast-enter-from {
     opacity: 0;
-    transform: translateY(100%) scale(0.95);
+    transform: translateY(24px) scale(0.96);
   }
-  
+
   .toast-leave-to {
     opacity: 0;
-    transform: translateY(100%) scale(0.95);
+    transform: translateY(24px) scale(0.96);
   }
 }
 
-/* Desktop: slide from right */
+/* Desktop: slide from top */
 @media (min-width: 768px) {
   .toast-enter-from {
     opacity: 0;
-    transform: translateX(100%) scale(0.95);
+    transform: translateY(-16px) scale(0.96);
   }
-  
+
   .toast-leave-to {
     opacity: 0;
-    transform: translateX(100%) scale(0.95);
+    transform: translateY(-16px) scale(0.96);
   }
 }
 
 .toast-move {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
 }
 </style>

@@ -297,7 +297,6 @@ const fetchLeague = async () => {
   } catch (error) {
     console.error('Error loading league details:', error)
     errorMessage.value = 'Failed to load league details. Please try again later.'
-    toast.error('Error', 'Failed to load league details.')
   } finally {
     isLoading.value = false
   }

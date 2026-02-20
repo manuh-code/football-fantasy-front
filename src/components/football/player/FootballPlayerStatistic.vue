@@ -236,7 +236,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
-import { useToast } from '@/composables/useToast'
 import { ButtonComponent, PaginationComponent, SearchableSelectComponent, MultiselectComponent } from '@/components/ui'
 import PlayerStatisticsDesktopTable from './PlayerStatisticsDesktopTable.vue'
 import PlayerStatisticsTabletTable from './PlayerStatisticsTabletTable.vue'
@@ -255,7 +254,6 @@ const props = defineProps<{
 }>()
 
 // Composables
-const toast = useToast()
 const route = useRoute()
 
 // Refs
@@ -345,7 +343,6 @@ const loadSeasons = async (fantasyLeagueUuid: string) => {
         }
     } catch (error) {
         console.error('Error loading seasons:', error)
-        toast.error('Error', 'Failed to load seasons')
         seasons.value = []
     } finally {
         isLoadingSeasons.value = false
@@ -358,7 +355,6 @@ const loadTeams = async (seasonUuid: string) => {
         teams.value = await catalogService.getTeamsBySeasonUuid(seasonUuid)
     } catch (error) {
         console.error('Error loading teams:', error)
-        toast.error('Error', 'Failed to load teams')
         teams.value = []
     } finally {
         isLoadingTeams.value = false
@@ -371,7 +367,6 @@ const loadStatTypes = async () => {
         statTypes.value = await catalogService.getTypeStatistic()
     } catch (error) {
         console.error('Error loading statistic types:', error)
-        toast.error('Error', 'Failed to load statistic types')
     } finally {
         isLoadingStatTypes.value = false
     }
@@ -482,7 +477,6 @@ const onFantasyLeagueChange = async (fantasyLeagueUuid: string) => {
         }
     } catch (error) {
         console.error('Error changing fantasy league:', error)
-        toast.error('Error', 'Failed to load seasons for the selected league')
     }
 }
 
@@ -601,7 +595,7 @@ onMounted(async () => {
             await onFantasyLeagueChange(targetLeagueUuid)
         }
     } catch (error) {
-        toast.error('Error', 'Failed to initialize player statistics component')
+        console.error('Error initializing player statistics:', error)
     }
 })
 
