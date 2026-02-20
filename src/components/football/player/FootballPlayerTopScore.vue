@@ -23,15 +23,17 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Season Selection -->
           <div>
-            <SelectComponent
+            <SearchableSelectComponent
               v-model="selectedSeasonUuid"
               :options="seasons"
               value-key="uuid"
               label-key="name"
-              label="Season"
               placeholder="Select a season"
               :disabled="isLoadingSeasons"
-              :class="seasonError ? 'border-red-500' : ''"
+              :loading="isLoadingSeasons"
+              :error="seasonError"
+              :clearable="false"
+              accent-color="amber"
               @change="onSeasonChange"
             />
             <div v-if="isLoadingSeasons" class="mt-1 text-xs text-gray-500">
@@ -45,13 +47,14 @@
 
           <!-- Type Filter -->
           <div>
-            <SelectComponent
+            <SearchableSelectComponent
               v-model="selectedTypeUuid"
               :options="typeOptions"
-              label="Score Type"
               placeholder="Select score type..."
               :disabled="!selectedSeasonUuid || loadingTypes"
               :loading="loadingTypes"
+              :clearable="false"
+              accent-color="amber"
             />
           </div>
           </div>
@@ -104,13 +107,15 @@
             <label for="per-page-select" class="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
               Show
             </label>
-            <SelectComponent
-              id="per-page-select"
+            <SearchableSelectComponent
               v-model="perPage"
               :options="perPageOptions"
               value-key="value"
               label-key="label"
-              class="w-16 md:w-20"
+              :searchable="false"
+              :clearable="false"
+              accent-color="gray"
+              class="w-20 md:w-24"
               @change="onPerPageChange"
             />
             <span class="text-xs md:text-sm text-gray-600 dark:text-gray-400">per page</span>
@@ -393,7 +398,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
-import { SelectComponent, ButtonComponent, PaginationComponent } from '@/components/ui'
+import { SearchableSelectComponent, ButtonComponent, PaginationComponent } from '@/components/ui'
 import PlayerAvatar from '@/components/football/ui/PlayerAvatar.vue'
 import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import { catalogService } from '@/services/catalog/CatalogService'

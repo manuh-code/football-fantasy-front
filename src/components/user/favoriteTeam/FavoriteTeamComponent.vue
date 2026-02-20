@@ -57,14 +57,19 @@
                 <form @submit.prevent="handleSubmit" class="p-6 space-y-5">
                     <!-- Team Selection -->
                     <div>
-                        <SelectComponent 
+                        <SearchableSelectComponent 
                             v-model="selectedTeamId" 
                             :options="teamOptions" 
                             value-key="uuid"
-                            label-key="name" 
+                            label-key="name"
+                            image-key="image_path"
                             :label="hasExistingFavoriteTeam ? 'Change Favorite Team *' : 'Select Favorite Team *'" 
                             :placeholder="hasExistingFavoriteTeam ? 'Choose a different team' : 'Select your favorite team'" 
                             :error="hasFieldError('teamUuid') ? getFieldError('teamUuid').join(', ') : ''"
+                            search-placeholder="Search team..."
+                            accent-color="emerald"
+                            default-image="/img/default-team.svg"
+                            :clearable="false"
                             required
                         />
                     </div>
@@ -238,7 +243,7 @@ import { computed, onMounted, ref } from 'vue'
 import { catalogService } from '@/services'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
-import { ButtonComponent, SelectComponent } from '@/components/ui'
+import { ButtonComponent, SearchableSelectComponent } from '@/components/ui'
 import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
 import { useUserStore } from '@/store'
 

@@ -3,5 +3,6 @@ export interface FantasyPlayerDraftPayload {
     per_page: number;
     filters?: {
         position_uuid?: string;
+        team_uuid?: string;
     };
 }

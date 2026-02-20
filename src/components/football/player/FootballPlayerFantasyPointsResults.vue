@@ -16,12 +16,15 @@
           <label for="fantasy-points-per-page" class="text-sm font-medium text-gray-700 dark:text-gray-300">
             Show
           </label>
-          <SelectComponent
-            id="fantasy-points-per-page"
+          <SearchableSelectComponent
             :model-value="String(perPage)"
             :options="perPageSelectOptions"
             value-key="value"
             label-key="label"
+            :searchable="false"
+            :clearable="false"
+            accent-color="gray"
+            class="w-20 md:w-24"
             @change="handlePerPageChange"
           />
           <span class="text-sm text-gray-600 dark:text-gray-400">per page</span>
@@ -230,7 +233,7 @@
 
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, withDefaults } from 'vue'
-import { SelectComponent } from '@/components/ui'
+import { SearchableSelectComponent } from '@/components/ui'
 import PlayerAvatar from '@/components/football/ui/PlayerAvatar.vue'
 import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import type { FootballPlayerFantasyPointsResponse } from '@/interfaces/football/player/FootballPlayerFantasyPointsResponse'
