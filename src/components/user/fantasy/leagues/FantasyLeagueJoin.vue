@@ -21,7 +21,7 @@
                         v-model="searchQuery"
                         type="search"
                         placeholder="Search by name..."
-                        class="w-full pl-10 pr-4 py-2.5 bg-gray-200/60 dark:bg-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-0 focus:ring-2 focus:ring-emerald-500/50 focus:bg-white dark:focus:bg-gray-700 transition-all"
+                        class="w-full pl-10 pr-4 py-2.5 bg-gray-200/60 dark:bg-gray-800 rounded-xl text-base md:text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-0 focus:ring-2 focus:ring-emerald-500/50 focus:bg-white dark:focus:bg-gray-700 transition-all"
                     />
                     <button
                         v-if="searchQuery"

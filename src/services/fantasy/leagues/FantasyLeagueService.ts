@@ -13,6 +13,7 @@ import { FantasyAddPlayerPayload } from "@/interfaces/fantasy/draft/FantasyAddPl
 import { FantasyUserTeamPayload } from "@/interfaces/fantasy/team/FantasyUserTeamPayload";
 import { FantasyTeamData } from "@/interfaces/fantasy/team/FantasyUserTeamResponse";
 import { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse";
+import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/FantasyParticipanCountResponse";
 
 export class FantasyLeagueService {
     private readonly api;
@@ -132,6 +133,14 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch team');
+    }
+
+    async getParticipantOptions(leagueUuid: string): Promise<ApiResponse<FantasyParticipantCountResponse>> {
+        const response = await this.api.get<ApiResponse<FantasyParticipantCountResponse>>(`fantasy/leagues/participant-options/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to fetch participant options');
     }
 }
 
