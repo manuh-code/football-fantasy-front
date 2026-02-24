@@ -53,7 +53,7 @@
                     placeholder="Enter league password..."
                     required
                     :class="[
-                        'w-full pl-10 pr-4 py-3 rounded-xl text-sm border-0 transition-all',
+                        'w-full pl-10 pr-4 py-3 rounded-xl text-base md:text-sm border-0 transition-all',
                         'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white',
                         'placeholder-gray-400 dark:placeholder-gray-500',
                         'focus:ring-2 focus:bg-white dark:focus:bg-gray-700',

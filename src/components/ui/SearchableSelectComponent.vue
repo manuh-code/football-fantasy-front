@@ -414,9 +414,9 @@ function handleClickOutside(event: MouseEvent) {
   }
 }
 
-// Auto-focus search on open
+// Auto-focus search on open (only on desktop to avoid mobile keyboard issues)
 watch(isOpen, (val) => {
-  if (val && props.searchable) {
+  if (val && props.searchable && isDesktop) {
     nextTick(() => {
       searchInputRef.value?.focus();
     });

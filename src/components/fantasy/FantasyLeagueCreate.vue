@@ -46,6 +46,24 @@
                             </p>
                         </div>
 
+                        <!-- Participants Count -->
+                        <div>
+                            <SelectComponent
+                                v-model="formData.participants_count"
+                                :options="participantOptions"
+                                value-key="value"
+                                label-key="label"
+                                label="Number of Participants *"
+                                placeholder="Select number of participants"
+                                :error="getFieldError('participants_count')"
+                                :disabled="isLoading || isLoadingOptions"
+                                :required="true"
+                            />
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Choose how many participants can join this league
+                            </p>
+                        </div>
+
                         <!-- Form Actions -->
                         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <ButtonComponent
@@ -153,19 +171,25 @@
                                 {{ formData.password.trim() ? 'Complete' : 'Pending' }}
                             </span>
                         </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Participants</span>
+                            <span class="text-xs font-medium" :class="formData.participants_count !== null ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
+                                {{ formData.participants_count !== null ? 'Complete' : 'Pending' }}
+                            </span>
+                        </div>
                     </div>
                     
                     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-900 dark:text-white">Overall Progress</span>
                             <span class="text-sm font-medium" :class="isFormValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ Math.round((completedFields / 2) * 100) }}%
+                                {{ Math.round((completedFields / 3) * 100) }}%
                             </span>
                         </div>
                         <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div 
                                 class="bg-emerald-600 h-2 rounded-full transition-all duration-300"
-                                :style="{ width: `${Math.round((completedFields / 2) * 100)}%` }"
+                                :style="{ width: `${Math.round((completedFields / 3) * 100)}%` }"
                             ></div>
                         </div>
                     </div>
@@ -181,7 +205,7 @@ import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
-import { ButtonComponent, FormInput } from '@/components/ui'
+import { ButtonComponent, FormInput, SelectComponent } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import type { FantasyLeagueCreatePayload } from '@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload'
 
@@ -193,23 +217,28 @@ const footballLeagueStore = useFootballLeagueStore()
 
 // State
 const isLoading = ref(false)
+const participantOptions = ref<{ value: number; label: string }[]>([])
+const isLoadingOptions = ref(false)
 
 // Simplified form data - only required fields
 const formData = reactive<FantasyLeagueCreatePayload>({
     name: '',
     league_uuid: '',
-    password: ''
+    password: '',
+    participants_count: null
 })
 
 const isFormValid = computed(() => {
     return formData.name.trim() &&
-           formData.password.trim()
+           formData.password.trim() &&
+           formData.participants_count !== null
 })
 
 const completedFields = computed(() => {
     let count = 0
     if (formData.name.trim()) count++
     if (formData.password.trim()) count++
+    if (formData.participants_count !== null) count++
     return count
 })
 
@@ -228,7 +257,8 @@ const handleSubmit = async () => {
         const payload: FantasyLeagueCreatePayload = {
             name: formData.name.trim(),
             league_uuid: formData.league_uuid,
-            password: formData.password.trim()
+            password: formData.password.trim(),
+            participants_count: formData.participants_count
         }
 
         const response = await fantasyLeagueService.storeFantasyLeague(payload)
@@ -251,12 +281,31 @@ const handleCancel = () => {
     router.push({ name: 'userFantasyLeague' })
 }
 
+// Fetch participant options from the API
+const fetchParticipantOptions = async (leagueUuid: string) => {
+    isLoadingOptions.value = true
+    try {
+        const response = await fantasyLeagueService.getParticipantOptions(leagueUuid)
+        const data = response.data
+        participantOptions.value = [
+            { value: data.min, label: `${data.min} participants` },
+            { value: data.mid, label: `${data.mid} participants` },
+            { value: data.max, label: `${data.max} participants` }
+        ]
+    } catch (error) {
+        console.error('Error fetching participant options:', error)
+    } finally {
+        isLoadingOptions.value = false
+    }
+}
+
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
     // Set the league_uuid from the store
     const leagueUuid = footballLeagueStore.getFootballLeagueUuid()
     if (leagueUuid) {
         formData.league_uuid = leagueUuid
+        await fetchParticipantOptions(leagueUuid)
     }
 })
 </script>
