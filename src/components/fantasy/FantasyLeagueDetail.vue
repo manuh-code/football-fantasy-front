@@ -258,6 +258,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
+import { useFantasyLeagueDetailStore } from '@/store/fantasy/useFantasyLeagueDetailStore'
 import { ButtonComponent } from '@/components/ui'
 import JoinLeagueModal from '@/components/fantasy/JoinLeagueModal.vue'
 import CreateTeamModal from '@/components/fantasy/team/CreateTeamModal.vue'
@@ -275,6 +276,7 @@ const props = defineProps<Props>()
 const router = useRouter()
 const toast = useToast()
 const validationStore = useValidationStore()
+const leagueDetailStore = useFantasyLeagueDetailStore()
 
 // State
 const league = ref<FantasyLeaguesResponse | null>(null)
@@ -283,6 +285,11 @@ const errorMessage = ref<string>('')
 const showJoinModal = ref(false)
 const showCreateTeamModal = ref(false)
 const isJoining = ref(false)
+
+// Show create team modal based on API response
+watch(() => league.value?.show_create_team, (value) => {
+  showCreateTeamModal.value = value === true
+})
 
 // Get password error from validation store
 const passwordError = computed(() => {
@@ -303,34 +310,12 @@ const fetchLeague = async () => {
 
   try {
     league.value = await fantasyLeagueService.showFantasyLeague(props.uuid)
-
-    // Validate if the user already has a fantasy team for this league
-    await checkUserTeam()
+    leagueDetailStore.setCurrentLeague(league.value)
   } catch (error) {
     console.error('Error loading league details:', error)
     errorMessage.value = 'Failed to load league details. Please try again later.'
   } finally {
     isLoading.value = false
-  }
-}
-
-/**
- * Check if the current user has a fantasy team in this league.
- * If the API returns 404, redirect to the team creation page.
- */
-const checkUserTeam = async () => {
-  try {
-    await fantasyLeagueService.getTeamSilent(props.uuid)
-    // Team exists — do nothing, user can see league detail normally
-  } catch (error: unknown) {
-    const apiError = error as { status?: number }
-    if (apiError?.status === 404) {
-      // User has no team — show invitation modal
-      showCreateTeamModal.value = true
-      return
-    }
-    // For other errors, silently ignore — the league detail still loads
-    console.error('Error checking user team:', error)
   }
 }
 
