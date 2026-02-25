@@ -12,6 +12,7 @@ export interface FantasyLeaguesResponse {
     description: string;
     is_private: boolean;
     isMember: boolean | null;
+    show_create_team: boolean | null;
     password: string | null;
     image_path: string;
     started_at: string; // ISO 8601 date string

@@ -23,6 +23,7 @@
 
       <!-- My Team -->
       <button
+        v-if="canAccessMemberTabs"
         @click="handleTabChange('myteam')"
         :class="[
           'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
@@ -30,14 +31,15 @@
             ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' 
             : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-700'
         ]"
-        aria-label="My Team"
+        aria-label="Team"
       >
         <v-icon name="hi-solid-user-group" class="w-6 h-6" />
-        <span class="text-xs font-medium">My Team</span>
+        <span class="text-xs font-medium">Team</span>
       </button>
 
       <!-- Player Statistics -->
       <button
+        v-if="canAccessMemberTabs"
         @click="handleTabChange('statistics')"
         :class="[
           'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
@@ -53,6 +55,7 @@
 
       <!-- Matchups -->
       <button
+        v-if="canAccessMemberTabs"
         @click="handleTabChange('matchups')"
         :class="[
           'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
@@ -68,6 +71,7 @@
 
       <!-- Management -->
       <button
+        v-if="canAccessAdminTabs"
         @click="handleTabChange('management')"
         :class="[
           'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
@@ -87,9 +91,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useAuthStore } from '@/store/auth/useAuthStore'
+import { useFantasyLeagueDetailStore } from '@/store/fantasy/useFantasyLeagueDetailStore'
 import { useRoute, useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
+const leagueDetailStore = useFantasyLeagueDetailStore()
 const route = useRoute()
 const router = useRouter()
 const isAuthenticatedRef = ref(false)
@@ -102,6 +108,12 @@ const activeTab = computed(() => {
   }
   return (route.query.tab as string) || 'overview'
 })
+
+// Only show member-only tabs when user is a member or admin of the league
+const canAccessMemberTabs = computed(() => leagueDetailStore.isMember || leagueDetailStore.isAdmin)
+
+// Only show admin tabs when user is an admin of the league
+const canAccessAdminTabs = computed(() => leagueDetailStore.isAdmin)
 
 // Only show footer menu in fantasy league related routes when authenticated
 const shouldShowMenu = computed(() => {

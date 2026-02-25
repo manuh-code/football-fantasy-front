@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, onMounted, watch } from 'vue'
+import { ref, nextTick, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
@@ -69,19 +69,54 @@ import FantasyLeagueMatchup from '@/components/fantasy/matchups/FantasyLeagueMat
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
+import { useFantasyLeagueDetailStore } from '@/store/fantasy/useFantasyLeagueDetailStore'
 
 const route = useRoute()
 const router = useRouter()
+const leagueDetailStore = useFantasyLeagueDetailStore()
 const uuid = route.params.uuid as string
 // Initialize activeTab from query param or default to 'overview'
-const activeTab = ref((route.query.tab as string) || 'overview')
+const activeTab = ref('overview')
 const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoadingLeague = ref(false)
 
-// Watch for changes in route query to sync activeTab
+// Tabs that require membership
+const memberTabs = new Set(['myteam', 'statistics', 'matchups'])
+// Tabs that require admin
+const adminTabs = new Set(['management'])
+
+/**
+ * Validate if the user has access to the given tab.
+ * Returns the tab if allowed, or 'overview' if not.
+ */
+function validateTab(tab: string): string {
+  const isMember = leagueDetailStore.isMember
+  const isAdmin = leagueDetailStore.isAdmin
+
+  if (adminTabs.has(tab) && !isAdmin) return 'overview'
+  if (memberTabs.has(tab) && !isMember && !isAdmin) return 'overview'
+  return tab
+}
+
+// Watch for changes in route query to sync activeTab (with validation)
 watch(() => route.query.tab, (newTab) => {
   if (newTab && typeof newTab === 'string') {
-    activeTab.value = newTab
+    const validTab = validateTab(newTab)
+    activeTab.value = validTab
+    // If tab was blocked, update URL to reflect the actual tab
+    if (validTab !== newTab) {
+      router.replace({ query: { ...route.query, tab: validTab } })
+    }
+  }
+})
+
+// Re-validate active tab when store permissions change (after league loads)
+watch(() => [leagueDetailStore.isMember, leagueDetailStore.isAdmin], () => {
+  const requestedTab = (route.query.tab as string) || 'overview'
+  const validTab = validateTab(requestedTab)
+  activeTab.value = validTab
+  if (validTab !== requestedTab) {
+    router.replace({ query: { ...route.query, tab: validTab } })
   }
 })
 
@@ -99,6 +134,7 @@ const fetchLeagueData = async () => {
   try {
     isLoadingLeague.value = true
     league.value = await fantasyLeagueService.showFantasyLeague(uuid)
+    leagueDetailStore.setCurrentLeague(league.value)
   } catch (error) {
     console.error('Error loading league data:', error)
   } finally {
@@ -120,6 +156,9 @@ const handleLeagueSaved = () => {
   // Recargar datos de la liga después de guardar
   fetchLeagueData()
 }
+
+// Clear store when leaving the view
+onUnmounted(() => leagueDetailStore.clearCurrentLeague())
 
 // Transition event handlers
 const onEnter = (el: Element) => {
