@@ -228,6 +228,29 @@
                   {{ league.draft.status?.name || 'Not Started' }}
                 </span>
               </div>
+
+              <!-- Activate Draft Button (Admin only, when NOT_STARTED and all members joined) -->
+              <div v-if="league.isAdmin && draftStatusValue === 'NOT_STARTED' && league.members_count === league.participants_count" class="pt-2">
+                <ButtonComponent
+                  variant="primary"
+                  size="md"
+                  :text="isActivatingDraft ? 'Activating...' : 'Activate Draft'"
+                  :disabled="isActivatingDraft"
+                  class="w-full"
+                  @click="handleActivateDraft"
+                />
+              </div>
+
+              <!-- Enter Draft Button (All users, when draft is ACTIVE) -->
+              <div v-if="draftStatusValue === 'ACTIVE'" class="pt-2">
+                <ButtonComponent
+                  variant="primary"
+                  size="md"
+                  text="Enter Draft"
+                  class="w-full"
+                  @click="goToDraft"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -285,6 +308,7 @@ const errorMessage = ref<string>('')
 const showJoinModal = ref(false)
 const showCreateTeamModal = ref(false)
 const isJoining = ref(false)
+const isActivatingDraft = ref(false)
 
 // Show create team modal based on API response
 watch(() => league.value?.show_create_team, (value) => {
@@ -296,6 +320,8 @@ const passwordError = computed(() => {
   const passwordErrors = validationStore.getFieldError('password')
   return passwordErrors.length > 0 ? passwordErrors[0] : ''
 })
+
+const draftStatusValue = computed(() => (league.value?.draft?.status?.value || '').toUpperCase())
 
 // Methods
 const fetchLeague = async () => {
@@ -317,6 +343,13 @@ const fetchLeague = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+const goToDraft = () => {
+  router.push({
+    name: 'playersToDraft',
+    params: { uuid: props.uuid },
+  })
 }
 
 const goToCreateTeam = () => {
@@ -353,6 +386,20 @@ const handleImageError = (event: Event) => {
 
 const manageLeague = () => {
   toast.info('Coming Soon', 'League management page is under development!')
+}
+
+const handleActivateDraft = async () => {
+  if (!league.value) return
+  try {
+    isActivatingDraft.value = true
+    await fantasyLeagueService.activateDraft(league.value.uuid)
+    toast.success('Draft Activated', 'The draft has been activated successfully.')
+    await fetchLeague()
+  } catch (error) {
+    console.error('Error activating draft:', error)
+  } finally {
+    isActivatingDraft.value = false
+  }
 }
 
 const handleJoinLeague = () => {

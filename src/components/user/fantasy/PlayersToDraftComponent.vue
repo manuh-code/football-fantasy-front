@@ -61,6 +61,12 @@
 
     <!-- Players Table -->
     <div v-else-if="initialLoadComplete" class="space-y-6">
+      <!-- Draft Order Carousel -->
+      <DraftOrderCarousel
+        v-if="league?.draft?.draft_order?.length"
+        :draft-order="league.draft.draft_order"
+      />
+
       <!-- Position Filters -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="px-2 pt-3 pb-0 sm:px-4 sm:pt-4">
@@ -587,6 +593,7 @@ import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueSe
 import { catalogService } from "@/services/catalog/CatalogService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { SearchableSelectComponent } from "@/components/ui";
+import DraftOrderCarousel from "@/components/fantasy/draft/DraftOrderCarousel.vue";
 import { useToast } from "@/composables/useToast";
 
 interface Props {
