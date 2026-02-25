@@ -142,6 +142,17 @@ export class FantasyLeagueService {
         }
         throw new Error('Failed to fetch participant options');
     }
+
+    async activateDraft(leagueUuid: string): Promise<ApiResponse<null>> {
+        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/draft/activate`, {
+            fantasy_league_uuid: leagueUuid
+        }
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to activate draft');
+    }
 }
 
 export const fantasyLeagueService = new FantasyLeagueService();

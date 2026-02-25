@@ -73,6 +73,7 @@ import {
   HiSolidSun,
   HiSolidMoon,
   HiSolidDesktopComputer,
+  HiSolidSwitchHorizontal,
 } from 'oh-vue-icons/icons'
 
 // Search and filter icons
@@ -256,7 +257,7 @@ export const iconList = [
   HiSolidTable,
   MdSportssoccer,
   HiSolidPhotograph,
-
+  HiSolidSwitchHorizontal,
   // Sports icons
   GiSoccerBall,
   GiCrossedSwords,
@@ -283,8 +284,8 @@ export const iconNames = {
   error: 'hi-solid-x-circle',
   success: 'hi-solid-check-circle',
   warning: 'hi-solid-exclamation-circle',
-  
-  
+
+
 
   // Theme
   sun: 'hi-solid-sun',
