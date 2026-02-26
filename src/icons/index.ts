@@ -74,6 +74,7 @@ import {
   HiSolidMoon,
   HiSolidDesktopComputer,
   HiSolidSwitchHorizontal,
+  RiTeamLine,
 } from 'oh-vue-icons/icons'
 
 // Search and filter icons
@@ -107,7 +108,8 @@ import {
   HiSolidEye,
   HiSolidEyeOff,
   HiSolidLogin,
-  HiArrowsExpand
+  HiArrowsExpand,
+  HiSolidCursorClick,
 } from 'oh-vue-icons/icons'
 
 // Status icons
@@ -229,6 +231,7 @@ export const iconList = [
   HiSolidArrowUp,
   HiSolidArrowDown,
   HiSolidExternalLink,
+  HiSolidCursorClick,
 
   // Action icons
   HiSolidPencil,
@@ -261,6 +264,7 @@ export const iconList = [
   // Sports icons
   GiSoccerBall,
   GiCrossedSwords,
+  RiTeamLine,
 ]
 
 // Icon name mapping for easier usage

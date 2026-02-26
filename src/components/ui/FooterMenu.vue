@@ -118,7 +118,7 @@ const canAccessAdminTabs = computed(() => leagueDetailStore.isAdmin)
 // Only show footer menu in fantasy league related routes when authenticated
 const shouldShowMenu = computed(() => {
   if (!isAuthenticatedRef.value) return false
-  const fantasyRoutes = ['fantasyLeagueDetail', 'playersToDraft']
+  const fantasyRoutes = ['fantasyLeagueDetail']
   return fantasyRoutes.includes(route.name as string)
 })
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full pb-safe md:pl-[368px] transition-[padding] duration-300">
     <!-- Loading State -->
     <div
       v-if="isLoading && players.length === 0"
@@ -65,13 +65,30 @@
       <DraftOrderCarousel
         v-if="league?.draft?.draft_order?.length"
         :draft-order="league.draft.draft_order"
+        :current-turn="currentTurn"
+        :is-draft-complete="isDraftComplete"
+        :is-my-turn="isMyTurn"
       />
 
+      <!-- Draft Complete Banner (when no carousel data) -->
+      <div
+        v-if="isDraftComplete && !league?.draft?.draft_order?.length"
+        class="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 rounded-xl p-6 text-center shadow-lg"
+      >
+        <p class="text-white font-bold text-lg">
+          🏆 Draft Complete! All players have been selected.
+        </p>
+      </div>
+
       <!-- Position Filters -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+      >
         <div class="px-2 pt-3 pb-0 sm:px-4 sm:pt-4">
           <!-- Filter Tabs -->
-          <div class="flex items-stretch gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
+          <div
+            class="flex items-stretch gap-1 sm:gap-2 overflow-x-auto scrollbar-hide"
+          >
             <button
               v-for="filter in positionFilters"
               :key="filter.code"
@@ -80,7 +97,7 @@
               :class="[
                 selectedPosition === filter.code
                   ? filter.activeClasses
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50',
               ]"
             >
               <!-- Icon with position-specific bg -->
@@ -89,7 +106,7 @@
                 :class="[
                   selectedPosition === filter.code
                     ? filter.iconBgActive
-                    : 'bg-gray-100 dark:bg-gray-700 group-hover:scale-110'
+                    : 'bg-gray-100 dark:bg-gray-700 group-hover:scale-110',
                 ]"
               >
                 <v-icon
@@ -98,14 +115,16 @@
                   :class="[
                     selectedPosition === filter.code
                       ? 'text-white'
-                      : filter.color
+                      : filter.color,
                   ]"
                 />
               </div>
-              
+
               <!-- Label -->
-              <span class="text-xs sm:text-sm font-semibold">{{ filter.name }}</span>
-              
+              <span class="text-xs sm:text-sm font-semibold">{{
+                filter.name
+              }}</span>
+
               <!-- Formation slots info -->
               <span
                 v-if="filter.slots"
@@ -113,7 +132,7 @@
                 :class="[
                   selectedPosition === filter.code
                     ? filter.slotsTextActive
-                    : 'text-gray-400 dark:text-gray-500'
+                    : 'text-gray-400 dark:text-gray-500',
                 ]"
               >
                 {{ filter.slots }} slots
@@ -125,27 +144,37 @@
                 :class="[
                   selectedPosition === filter.code
                     ? filter.barColor + ' opacity-100'
-                    : 'bg-transparent opacity-0'
+                    : 'bg-transparent opacity-0',
                 ]"
               />
             </button>
           </div>
         </div>
-        
+
         <!-- Separator line -->
         <div class="h-px bg-gray-200 dark:bg-gray-700" />
       </div>
 
       <!-- Team Filter -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-visible">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-visible"
+      >
         <div class="p-4">
           <div class="flex flex-col sm:flex-row sm:items-center gap-3">
             <!-- Label -->
             <div class="flex items-center gap-2 flex-shrink-0">
-              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-                <v-icon name="hi-solid-user-group" class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <div
+                class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30"
+              >
+                <v-icon
+                  name="hi-solid-user-group"
+                  class="w-4 h-4 text-indigo-600 dark:text-indigo-400"
+                />
               </div>
-              <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Team</span>
+              <span
+                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >Team</span
+              >
             </div>
 
             <!-- Team Selector -->
@@ -170,14 +199,31 @@
             </div>
 
             <!-- Active Filters Summary -->
-            <div v-if="selectedTeam !== 'ALL' || selectedPosition !== 'ALL'" class="flex items-center gap-2 flex-wrap sm:flex-shrink-0">
-              <span class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">Active:</span>
+            <div
+              v-if="selectedTeam !== 'ALL' || selectedPosition !== 'ALL'"
+              class="flex items-center gap-2 flex-wrap sm:flex-shrink-0"
+            >
+              <span
+                class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline"
+                >Active:</span
+              >
               <span
                 v-if="selectedPosition !== 'ALL'"
                 class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
               >
-                {{ selectedPosition === 'GOALKEEPER' ? 'GK' : selectedPosition === 'DEFENDER' ? 'DF' : selectedPosition === 'MIDFIELDER' ? 'MF' : 'FW' }}
-                <button @click="handleFilterChange('ALL')" class="hover:text-blue-900 dark:hover:text-blue-100">
+                {{
+                  selectedPosition === "GOALKEEPER"
+                    ? "GK"
+                    : selectedPosition === "DEFENDER"
+                      ? "DF"
+                      : selectedPosition === "MIDFIELDER"
+                        ? "MF"
+                        : "FW"
+                }}
+                <button
+                  @click="handleFilterChange('ALL')"
+                  class="hover:text-blue-900 dark:hover:text-blue-100"
+                >
                   <v-icon name="hi-solid-x" class="w-3 h-3" />
                 </button>
               </span>
@@ -185,9 +231,16 @@
                 v-if="selectedTeamData"
                 class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300"
               >
-                <img :src="selectedTeamData.image_path || '/img/default-team.svg'" :alt="selectedTeamData.short_code" class="w-3.5 h-3.5 object-contain" />
+                <img
+                  :src="selectedTeamData.image_path || '/img/default-team.svg'"
+                  :alt="selectedTeamData.short_code"
+                  class="w-3.5 h-3.5 object-contain"
+                />
                 {{ selectedTeamData.short_code }}
-                <button @click="onTeamFilterChange('ALL')" class="hover:text-indigo-900 dark:hover:text-indigo-100">
+                <button
+                  @click="onTeamFilterChange('ALL')"
+                  class="hover:text-indigo-900 dark:hover:text-indigo-100"
+                >
                   <v-icon name="hi-solid-x" class="w-3 h-3" />
                 </button>
               </span>
@@ -197,7 +250,10 @@
       </div>
 
       <!-- Show players if available -->
-      <div v-if="(players.length > 0 && initialLoadComplete) || isLoading" class="relative">
+      <div
+        v-if="(players.length > 0 && initialLoadComplete) || isLoading"
+        class="relative"
+      >
         <!-- Loading Overlay when filtering -->
         <div
           v-if="isLoading"
@@ -214,6 +270,28 @@
             </p>
           </div>
         </div>
+
+        <!-- Locked Overlay: not your turn -->
+        <Transition name="fade">
+          <div
+            v-if="!canPick && !isDraftComplete && currentTurn && !isLoading"
+            class="absolute inset-0 bg-gray-900/10 dark:bg-gray-900/20 backdrop-blur-[1px] z-[5] rounded-xl flex items-start justify-center pt-8 pointer-events-none"
+          >
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-yellow-300 dark:border-yellow-600 px-6 py-4 flex items-center gap-3 pointer-events-auto max-w-sm mx-4">
+              <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                <v-icon name="hi-solid-lock-closed" class="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                  Waiting for {{ currentTurn?.user_name ?? 'another player' }}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Players will unlock when it's your turn
+                </p>
+              </div>
+            </div>
+          </div>
+        </Transition>
 
         <!-- Table Container -->
         <div
@@ -283,16 +361,29 @@
                   <td class="px-4 py-4">
                     <button
                       @click="handleAddPlayer(player)"
-                      :disabled="isAddingPlayer(player.player.uuid)"
-                      class="group relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-md"
+                      :disabled="isAddingPlayer(player.player.uuid) || !canPick"
+                      :class="[
+                        'group relative flex items-center justify-center w-11 h-11 rounded-xl shadow-md transition-all duration-200',
+                        canPick
+                          ? 'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 hover:shadow-lg hover:scale-105 active:scale-95'
+                          : 'bg-gray-300 dark:bg-gray-600 cursor-not-allowed shadow-none',
+                        isAddingPlayer(player.player.uuid) ? 'opacity-60 cursor-not-allowed hover:scale-100 hover:shadow-md' : '',
+                      ]"
                       :title="
-                        isAddingPlayer(player.player.uuid)
-                          ? 'Adding player...'
-                          : 'Select player'
+                        !canPick
+                          ? `Waiting for ${currentTurn?.user_name ?? 'another player'}...`
+                          : isAddingPlayer(player.player.uuid)
+                            ? 'Adding player...'
+                            : 'Select player'
                       "
                     >
                       <v-icon
-                        v-if="!isAddingPlayer(player.player.uuid)"
+                        v-if="!canPick && !isAddingPlayer(player.player.uuid)"
+                        name="hi-solid-lock-closed"
+                        class="w-5 h-5 text-white/70"
+                      />
+                      <v-icon
+                        v-else-if="!isAddingPlayer(player.player.uuid)"
                         name="hi-solid-plus-circle"
                         class="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300"
                       />
@@ -396,16 +487,29 @@
                 <!-- Select Button -->
                 <button
                   @click="handleAddPlayer(player)"
-                  :disabled="isAddingPlayer(player.player.uuid)"
-                  class="flex-shrink-0 group relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-md"
+                  :disabled="isAddingPlayer(player.player.uuid) || !canPick"
+                  :class="[
+                    'flex-shrink-0 group relative flex items-center justify-center w-12 h-12 rounded-xl shadow-md transition-all duration-200',
+                    canPick
+                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 hover:shadow-lg hover:scale-105 active:scale-95'
+                      : 'bg-gray-300 dark:bg-gray-600 cursor-not-allowed shadow-none',
+                    isAddingPlayer(player.player.uuid) ? 'opacity-60 cursor-not-allowed hover:scale-100 hover:shadow-md' : '',
+                  ]"
                   :title="
-                    isAddingPlayer(player.player.uuid)
-                      ? 'Adding player...'
-                      : 'Select player'
+                    !canPick
+                      ? `Waiting for ${currentTurn?.user_name ?? 'another player'}...`
+                      : isAddingPlayer(player.player.uuid)
+                        ? 'Adding player...'
+                        : 'Select player'
                   "
                 >
                   <v-icon
-                    v-if="!isAddingPlayer(player.player.uuid)"
+                    v-if="!canPick && !isAddingPlayer(player.player.uuid)"
+                    name="hi-solid-lock-closed"
+                    class="w-5 h-5 text-white/70"
+                  />
+                  <v-icon
+                    v-else-if="!isAddingPlayer(player.player.uuid)"
                     name="hi-solid-plus-circle"
                     class="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300"
                   />
@@ -562,12 +666,17 @@
           />
         </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          {{ selectedPosition === 'ALL' ? 'No players available' : 'No players found' }}
+          {{
+            selectedPosition === "ALL"
+              ? "No players available"
+              : "No players found"
+          }}
         </h3>
         <p class="text-gray-600 dark:text-gray-400">
-          {{ selectedPosition === 'ALL' 
-            ? 'There are no players available for draft at this moment.' 
-            : `There are no ${selectedPosition.toLowerCase()} players available for draft.` 
+          {{
+            selectedPosition === "ALL"
+              ? "There are no players available for draft at this moment."
+              : `There are no ${selectedPosition.toLowerCase()} players available for draft.`
           }}
         </p>
         <button
@@ -580,11 +689,21 @@
       </div>
     </div>
   </div>
+
+  <!-- Spacer on mobile so content doesn't hide behind persistent bottom sheet peek -->
+  <div class="md:hidden h-20" />
+
+  <!-- Team Drawer -->
+  <DraftTeamDrawer
+    v-model="showTeamDrawer"
+    :fantasy-league-uuid="leagueUuid"
+    :refresh-key="teamRefreshKey"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import { FantasyPlayerDraftResponse } from "@/interfaces/fantasy/draft/FantasyPlayerDraftResponse";
 import { FantasyPlayerDraftPayload } from "@/interfaces/fantasy/draft/FantasyPlayerDraftPayload";
 import { FantasyAddPlayerPayload } from "@/interfaces/fantasy/draft/FantasyAddPlayerPayload";
@@ -594,7 +713,12 @@ import { catalogService } from "@/services/catalog/CatalogService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { SearchableSelectComponent } from "@/components/ui";
 import DraftOrderCarousel from "@/components/fantasy/draft/DraftOrderCarousel.vue";
+import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
 import { useToast } from "@/composables/useToast";
+import { useDraftChannel } from "@/composables/useDraftChannel";
+import { useUserStore } from "@/store"; // ya lo tienes en useAblyBroadcast
+
+const userStore = useUserStore();
 
 interface Props {
   fantasyLeagueUuid?: string;
@@ -602,9 +726,67 @@ interface Props {
 
 const props = defineProps<Props>();
 
+// 2. Inicializar el composable (después de definir leagueUuid computed)
+const {
+  currentTurn,
+  isMyTurn,
+  isDraftComplete,
+  setInitialTurn,
+  onPlayerPicked,
+  onDraftActivated,
+} = useDraftChannel(
+  props.fantasyLeagueUuid ?? "",
+  userStore.getUserData?.uuid ?? "",
+);
+
+// 3. Registrar callbacks
+// Cuando otro usuario pickea → eliminar el jugador de la lista local
+onPlayerPicked((payload) => {
+  players.value = players.value.filter(
+    (p) => p.player.uuid !== payload.player_uuid,
+  );
+  // Refresh team drawer data (useful if drawer is open)
+  teamRefreshKey.value++;
+});
+
+// Cuando el admin activa el draft estando ya en la sala
+onDraftActivated(() => {
+  toast.info("Draft Started!", "The draft has been activated. Good luck! 🏆");
+});
+
+// 4. Computed: ¿puede el usuario actual seleccionar jugadores?
+const canPick = computed(() => isMyTurn.value && !isDraftComplete.value);
+
+// 5. Watch: notificar al usuario cuando sea su turno (via Ably real-time)
+watch(isMyTurn, (newVal, oldVal) => {
+  if (newVal && !oldVal && !isDraftComplete.value) {
+    toast.success(
+      "It's your turn!",
+      "Select a player from the list below",
+      { duration: 5000 },
+    );
+    // Try to play a notification sound
+    try {
+      const audio = new Audio("/sounds/turn-notification.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(() => { /* browser may block autoplay */ });
+    } catch { /* sound file may not exist */ }
+  }
+});
+
+// 6. Watch: notificar cuando el draft se completa
+watch(isDraftComplete, (newVal) => {
+  if (newVal) {
+    toast.info(
+      "Draft Complete!",
+      "All players have been selected. Check your team! 🏆",
+      { duration: 8000 },
+    );
+  }
+});
+
 // Router
 const route = useRoute();
-const router = useRouter();
 
 // State
 const players = ref<FantasyPlayerDraftResponse[]>([]);
@@ -622,6 +804,8 @@ const selectedTeam = ref<string>("ALL");
 const teams = ref<FootballTeamResponse[]>([]);
 const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
+const showTeamDrawer = ref(false);
+const teamRefreshKey = ref(0);
 let observer: IntersectionObserver | null = null;
 
 // Composables
@@ -647,7 +831,8 @@ const positionFilters = computed(() => {
       name: "All",
       icon: "hi-solid-view-grid",
       color: "text-gray-600 dark:text-gray-400",
-      activeClasses: "text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/60",
+      activeClasses:
+        "text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/60",
       iconBgActive: "bg-gray-700 dark:bg-gray-300",
       slotsTextActive: "text-gray-500 dark:text-gray-400",
       barColor: "bg-gray-700 dark:bg-gray-300",
@@ -661,8 +846,10 @@ const positionFilters = computed(() => {
         name: "GK",
         icon: "hi-solid-shield-check",
         color: "text-blue-600 dark:text-blue-400",
-        activeClasses: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20",
-        iconBgActive: "bg-blue-600 dark:bg-blue-500 shadow-blue-500/30 shadow-md",
+        activeClasses:
+          "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20",
+        iconBgActive:
+          "bg-blue-600 dark:bg-blue-500 shadow-blue-500/30 shadow-md",
         slotsTextActive: "text-blue-500 dark:text-blue-400",
         barColor: "bg-blue-600 dark:bg-blue-400",
         slots: league.value.formation.goalkeeper.starter,
@@ -674,8 +861,10 @@ const positionFilters = computed(() => {
         name: "DF",
         icon: "hi-solid-shield-exclamation",
         color: "text-emerald-600 dark:text-emerald-400",
-        activeClasses: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20",
-        iconBgActive: "bg-emerald-600 dark:bg-emerald-500 shadow-emerald-500/30 shadow-md",
+        activeClasses:
+          "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20",
+        iconBgActive:
+          "bg-emerald-600 dark:bg-emerald-500 shadow-emerald-500/30 shadow-md",
         slotsTextActive: "text-emerald-500 dark:text-emerald-400",
         barColor: "bg-emerald-600 dark:bg-emerald-400",
         slots: league.value.formation.defender.starter,
@@ -687,8 +876,10 @@ const positionFilters = computed(() => {
         name: "MF",
         icon: "hi-solid-lightning-bolt",
         color: "text-amber-600 dark:text-amber-400",
-        activeClasses: "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20",
-        iconBgActive: "bg-amber-600 dark:bg-amber-500 shadow-amber-500/30 shadow-md",
+        activeClasses:
+          "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20",
+        iconBgActive:
+          "bg-amber-600 dark:bg-amber-500 shadow-amber-500/30 shadow-md",
         slotsTextActive: "text-amber-500 dark:text-amber-400",
         barColor: "bg-amber-600 dark:bg-amber-400",
         slots: league.value.formation.midfielder.starter,
@@ -700,8 +891,10 @@ const positionFilters = computed(() => {
         name: "FW",
         icon: "hi-solid-fire",
         color: "text-rose-600 dark:text-rose-400",
-        activeClasses: "text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20",
-        iconBgActive: "bg-rose-600 dark:bg-rose-500 shadow-rose-500/30 shadow-md",
+        activeClasses:
+          "text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20",
+        iconBgActive:
+          "bg-rose-600 dark:bg-rose-500 shadow-rose-500/30 shadow-md",
         slotsTextActive: "text-rose-500 dark:text-rose-400",
         barColor: "bg-rose-600 dark:bg-rose-400",
         slots: league.value.formation.attacker.starter,
@@ -750,7 +943,9 @@ async function loadLeague() {
   }
 
   try {
-    league.value = await fantasyLeagueService.showFantasyLeague(leagueUuid.value);
+    league.value = await fantasyLeagueService.showFantasyLeague(
+      leagueUuid.value,
+    );
   } catch (err: unknown) {
     console.error("Error loading league:", err);
   }
@@ -760,7 +955,7 @@ async function loadTeams() {
   if (!league.value?.current_football_season_uuid) return;
   try {
     teams.value = await catalogService.getTeamsBySeasonUuid(
-      league.value.current_football_season_uuid
+      league.value.current_football_season_uuid,
     );
   } catch (err: unknown) {
     console.error("Error loading teams:", err);
@@ -779,6 +974,14 @@ function handleFilterChange(position: string) {
 }
 
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
+  if (!canPick.value) {
+    toast.warning(
+      "Not your turn",
+      `Waiting for ${currentTurn.value?.user_name ?? "another player"}...`,
+    );
+    return;
+  }
+
   if (!leagueUuid.value || isAddingPlayer(player.player.uuid)) {
     return;
   }
@@ -790,8 +993,8 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       fantasy_league_uuid: leagueUuid.value,
       player_uuid: player.player.uuid,
       position_uuid: player.position.uuid,
-      is_flex: slotType.value === 'FLEX',
-      is_starter: slotType.value !== 'BENCH',
+      is_flex: slotType.value === "FLEX",
+      is_starter: slotType.value !== "BENCH",
     };
 
     await fantasyLeagueService.addPlayer(payload);
@@ -802,16 +1005,17 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       { duration: 3000 },
     );
 
-    // Redirect to My Team tab with highlight on the newly added player
-    router.push({
-      name: 'fantasyLeagueDetail',
-      params: { uuid: leagueUuid.value },
-      query: { tab: 'myteam', highlightPlayer: player.player.uuid }
-    });
+    players.value = players.value.filter(
+      (p) => p.player.uuid !== player.player.uuid,
+    );
+
+    // Refresh team drawer and briefly show it
+    teamRefreshKey.value++;
+    showTeamDrawer.value = true;
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "Error adding player";
-    console.error('Error adding player:', errorMessage);
+    console.error("Error adding player:", errorMessage);
   } finally {
     addingPlayers.value.delete(player.player.uuid);
   }
@@ -931,10 +1135,15 @@ function setupIntersectionObserver() {
 onMounted(async () => {
   await loadLeague();
   await loadTeams();
-  
+
   // Check if there's a position filter in query params
   const positionFromQuery = route.query.position as string;
-  if (positionFromQuery && ['GOALKEEPER', 'DEFENDER', 'MIDFIELDER', 'ATTACKER', 'ALL'].includes(positionFromQuery)) {
+  if (
+    positionFromQuery &&
+    ["GOALKEEPER", "DEFENDER", "MIDFIELDER", "ATTACKER", "ALL"].includes(
+      positionFromQuery,
+    )
+  ) {
     selectedPosition.value = positionFromQuery;
   }
 
@@ -943,16 +1152,23 @@ onMounted(async () => {
   if (slotTypeFromQuery) {
     slotType.value = slotTypeFromQuery;
   }
-  
+
   await loadPlayers();
-  
+
   // Mark initial load as complete
   initialLoadComplete.value = true;
-  
+
   // Delay para asegurar que el DOM esté listo
   setTimeout(() => {
     setupIntersectionObserver();
   }, 1000);
+
+  if (leagueUuid.value) {
+    const initialTurn = await fantasyLeagueService.getCurrentDraftTurn(
+      leagueUuid.value,
+    );
+    setInitialTurn(initialTurn);
+  }
 });
 
 onUnmounted(() => {
@@ -977,5 +1193,15 @@ onUnmounted(() => {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Fade transition for locked overlay */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
