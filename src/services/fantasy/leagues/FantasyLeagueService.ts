@@ -14,6 +14,7 @@ import { FantasyUserTeamPayload } from "@/interfaces/fantasy/team/FantasyUserTea
 import { FantasyTeamData } from "@/interfaces/fantasy/team/FantasyUserTeamResponse";
 import { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse";
 import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/FantasyParticipanCountResponse";
+import { DraftTurn } from "@/composables/useDraftChannel";
 
 export class FantasyLeagueService {
     private readonly api;
@@ -152,6 +153,14 @@ export class FantasyLeagueService {
             return response.data;
         }
         throw new Error('Failed to activate draft');
+    }
+
+    async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<DraftTurn | null> {
+        const response = await this.api.get(`/fantasy/leagues/draft/turn/${fantasyLeagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data as DraftTurn | null;
+        }
+        throw new Error('Failed to fetch current draft turn');
     }
 }
 
