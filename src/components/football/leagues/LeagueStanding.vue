@@ -1,56 +1,30 @@
 <template>
   <div
-    class="w-full mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
+    class="w-full mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60"
   >
-    <!-- Card Header -->
-    <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0"
-          >
-            <v-icon
-              name="bi-trophy-fill"
-              class="w-5 h-5 text-emerald-600 dark:text-emerald-400"
-            />
-          </div>
-          <div class="min-w-0">
-            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
-              League Standings
-            </h2>
-            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-              Current standings table
-            </p>
-          </div>
-        </div>
-
-        <!-- Stage selector -->
-        <div class="flex items-center gap-2 sm:min-w-[220px]">
-          <SearchableSelectComponent
-            v-model="selectedStageUuid"
-            :options="stages"
-            value-key="stageUuid"
-            label-key="stage"
-            placeholder="Select stage"
-            search-placeholder="Search stage..."
-            :disabled="loadingStages"
-            :loading="loadingStages"
-            accent-color="emerald"
-            :searchable="stages.length > 5"
-            :clearable="false"
-            @change="onStageChange"
-          />
-        </div>
+    <!-- Card Header (minimal iOS/Android style) -->
+    <div class="px-4 py-3">
+      <div class="flex items-center gap-2">
+        <v-icon
+          name="bi-trophy-fill"
+          class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0"
+        />
+        <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white">
+          Standings
+        </h2>
+        <span class="text-[11px] text-gray-400 dark:text-gray-500">
+          Table
+        </span>
       </div>
     </div>
 
     <!-- Card Body -->
     <div class="p-6">
       <div
-        v-if="!leagueUuid"
+        v-if="!stageUuid"
         class="text-center py-8 text-gray-500 dark:text-gray-400"
       >
-        No league selected.
+        No stage selected.
       </div>
 
       <div v-else>
@@ -76,18 +50,6 @@
         </div>
 
         <!-- Empty state -->
-        <div
-          v-else-if="!selectedStageUuid"
-          class="text-center py-8 text-gray-400 dark:text-gray-500"
-        >
-          <NoResults
-            title="Select stage"
-            description="Please select a stage to view the standings."
-            icon="bi-trophy-fill"
-          />
-        </div>
-
-        <!-- No standings available -->
         <div
           v-else-if="standings.length === 0"
           class="text-center py-8 text-gray-400 dark:text-gray-500"
@@ -338,25 +300,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
-import catalogService from "@/services/catalog/CatalogService";
 import NoResults from "@/components/ui/NoResults.vue";
-import { SearchableSelectComponent } from "@/components/ui";
-import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
-import type { FootballStageLeagueResponse } from "@/interfaces/football/league/stage/FootballStageLeagueResponse";
 import type { FootballLeagueStandingsPayload } from "@/interfaces/football/league/Standing/FootballLeagueStandingsPayload";
 
-const store = useFootballLeagueStore();
-const leagueUuid = store.getFootballLeagueUuid();
-
-// State para etapas
-const stages = ref<FootballStageLeagueResponse[]>([]);
-const loadingStages = ref(false);
-const selectedStageUuid = ref("");
-const selectedSeasonUuid = ref("");
+// Props
+const props = defineProps<{
+  stageUuid: string;
+  seasonUuid: string;
+}>();
 
 // State para standings
 const standings = ref<FootballLeagueStandingsResponse[]>([]);
@@ -398,69 +353,42 @@ const formColor = (f: string | undefined) => {
   return "bg-gray-300 dark:bg-gray-700";
 };
 
-// Cargar etapas
-const fetchStages = async () => {
-  if (!leagueUuid) return;
-  loadingStages.value = true;
-  stages.value = [];
-  selectedStageUuid.value = "";
-  standings.value = [];
-  try {
-    const res = await footballLeagueService.getStage(leagueUuid);
-    if (Array.isArray(res)) {
-      stages.value = res;
-      // Auto-select the current stage, or the first stage if none is current
-      if (res.length > 0) {
-        const currentStage = res.find(s => s.isCurrent === true);
-        const stageToSelect = currentStage || res[0];
-        selectedStageUuid.value = stageToSelect.stageUuid;
-        selectedSeasonUuid.value = stageToSelect.seasonUuid;
-        await fetchStandings();
-      }
-    }
-  } catch (e) {
-    error.value = "Error loading stages.";
-  } finally {
-    loadingStages.value = false;
-  }
-};
-
 // Cargar standings
 const fetchStandings = async () => {
-  if (!selectedStageUuid.value) return;
+  if (!props.stageUuid || !props.seasonUuid) return;
   loading.value = true;
   error.value = "";
   standings.value = [];
   try {
     const payload: FootballLeagueStandingsPayload = {
-      stage_uuid: selectedStageUuid.value,
-      season_uuid: selectedSeasonUuid.value,
+      stage_uuid: props.stageUuid,
+      season_uuid: props.seasonUuid,
     };
     const res = await footballLeagueService.getStandings(payload);
     if (Array.isArray(res)) standings.value = res;
     else standings.value = [];
   } catch (e) {
     error.value = "Error loading standings.";
+    console.error("Error loading standings:", e);
   } finally {
     loading.value = false;
   }
 };
 
-// Event handlers
-const onStageChange = async (value: string | number | null) => {
-  selectedStageUuid.value = String(value || "");
-  // Find the selected stage and get its seasonUuid
-  const selectedStage = stages.value.find(
-    (s) => s.stageUuid === selectedStageUuid.value,
-  );
-  if (selectedStage) {
-    selectedSeasonUuid.value = selectedStage.seasonUuid;
-  }
-  await fetchStandings();
-};
+// Watch for prop changes
+watch(
+  () => [props.stageUuid, props.seasonUuid],
+  ([newStage, newSeason]) => {
+    if (newStage && newSeason) {
+      fetchStandings();
+    }
+  },
+);
 
 onMounted(() => {
-  fetchStages();
+  if (props.stageUuid && props.seasonUuid) {
+    fetchStandings();
+  }
 });
 </script>
 

@@ -162,6 +162,21 @@ export class FantasyLeagueService {
         }
         throw new Error('Failed to fetch current draft turn');
     }
+
+    /**
+     * Skip the current draft turn (timer expired).
+     * The backend advances to the next turn and broadcasts via Ably.
+     */
+    async skipDraftTurn(fantasyLeagueUuid: string): Promise<ApiResponse<null>> {
+        const response = await this.api.post<ApiResponse<null>>(
+            `fantasy/leagues/draft/skip-turn`,
+            { fantasy_league_uuid: fantasyLeagueUuid }
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to skip draft turn');
+    }
 }
 
 export const fantasyLeagueService = new FantasyLeagueService();

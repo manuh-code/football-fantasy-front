@@ -68,6 +68,8 @@
         :current-turn="currentTurn"
         :is-draft-complete="isDraftComplete"
         :is-my-turn="isMyTurn"
+        :pick-time="league?.draft?.pick_time ?? 0"
+        @time-expired="handleTimerExpired"
       />
 
       <!-- Draft Complete Banner (when no carousel data) -->
@@ -973,6 +975,31 @@ function handleFilterChange(position: string) {
   loadPlayers(false);
 }
 
+/** Handle timer expiration — skip turn via API */
+async function handleTimerExpired() {
+  if (!leagueUuid.value) return;
+
+  // Only the user whose turn expired should call the skip API
+  if (isMyTurn.value) {
+    toast.warning(
+      "Time's up!",
+      "You lost your pick. The turn advances to the next player.",
+      { duration: 5000 },
+    );
+    try {
+      await fantasyLeagueService.skipDraftTurn(leagueUuid.value);
+    } catch (err: unknown) {
+      console.error("Error skipping turn:", err);
+    }
+  } else {
+    toast.info(
+      "Time expired",
+      `${currentTurn.value?.user_name ?? "Player"} ran out of time.`,
+      { duration: 3000 },
+    );
+  }
+}
+
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   if (!canPick.value) {
     toast.warning(
@@ -1116,7 +1143,8 @@ function setupIntersectionObserver() {
         entry.isIntersecting &&
         hasMoreData.value &&
         !isLoadingMore.value &&
-        !isLoading.value
+        !isLoading.value &&
+        canPick.value
       ) {
         loadPlayers(true);
       }

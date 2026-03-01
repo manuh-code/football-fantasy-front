@@ -18,25 +18,8 @@
         </div>
       </button>
 
-      <!-- Center - Selected football league (clickable to home) -->
-      <div class="flex items-center justify-center flex-1">
-        <button
-          v-if="selectedLeague"
-          @click="handleGoHome"
-          :title="`${selectedLeague.name} - Go to home`"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Go to home"
-        >
-          <img 
-            :src="selectedLeague.image_path || '/img/default-avatar.svg'" 
-            :alt="selectedLeague.name" 
-            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover shadow-sm" 
-          />
-          <div class="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100 truncate max-w-[8rem] sm:max-w-[12rem]">
-            {{ selectedLeague.name }}
-          </div>
-        </button>
-      </div>
+      <!-- Center - Spacer -->
+      <div class="flex-1"></div>
 
       <!-- Right side - User Avatar -->
       <div class="flex items-center gap-2 sm:gap-3">
@@ -80,16 +63,11 @@
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
 import { computed, ref, onMounted, watch } from 'vue'
-import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
-
-const leagueStore = useFootballLeagueStore()
-
-const selectedLeague = computed(() => leagueStore.getLeague)
 
 // Computed properties for authentication
 const isAuthenticatedRef = ref(false)
@@ -130,11 +108,6 @@ const userName = computed(() => {
 
 function handleLogin() {
   router.push({name: 'login'})
-}
-
-function handleGoHome() {
-  if (router.currentRoute.value.name === 'home') return
-  router.push({ name: 'home' })
 }
 
 function handleGoGaming() {

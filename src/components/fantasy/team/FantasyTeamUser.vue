@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
@@ -25,6 +25,8 @@ const isSaving = ref(false)
 const hasEditedInitials = ref(false)
 const isDragging = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
+const isExistingTeam = ref(false)
+const isLoadingTeam = ref(false)
 
 // ─── Image Upload ───────────────────────────────────────────
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024 // 2MB
@@ -127,6 +129,12 @@ const previewInitials = computed(() => {
 
 // ─── Submit ─────────────────────────────────────────────────
 const handleSubmit = async () => {
+  if (isExistingTeam.value) {
+    // If team already exists, go to league detail
+    router.push({ name: 'fantasyLeagueDetail', params: { uuid: props.fantasyLeagueUuid } })
+    return
+  }
+
   if (!isFormValid.value || isSaving.value) return
 
   isSaving.value = true
@@ -152,6 +160,28 @@ const handleSubmit = async () => {
     isSaving.value = false
   }
 }
+
+onMounted(async () => {
+  isLoadingTeam.value = true
+  try {
+    const team = await fantasyLeagueService.getTeamSilent(props.fantasyLeagueUuid)
+    if (team) {
+      isExistingTeam.value = true
+      teamName.value = team.team_name || ''
+      initials.value = autoInitials(team.team_name || '')
+      if (team.image_path) {
+        imagePreview.value = team.image_path
+      } else if (team.svg) {
+        // use svg string as preview if available
+        imagePreview.value = `data:image/svg+xml;utf8,${encodeURIComponent(team.svg)}`
+      }
+    }
+  } catch (e) {
+    // silent: no team or fetch error (404 expected when no team)
+  } finally {
+    isLoadingTeam.value = false
+  }
+})
 
 const goBack = () => {
   router.push({
@@ -226,6 +256,11 @@ const goBack = () => {
             <div class="mb-5">
               <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Team Identity</h2>
               <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Choose a name and initials for your team</p>
+            </div>
+
+            <div v-if="isExistingTeam" class="mb-4 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 flex items-center justify-between">
+              <div class="text-sm text-emerald-800 dark:text-emerald-200">You already have a team in this league.</div>
+              <button @click="() => router.push({ name: 'fantasyLeagueDetail', params: { uuid: props.fantasyLeagueUuid } })" type="button" class="px-3 py-1.5 rounded-md bg-emerald-500 text-white text-sm">View Team</button>
             </div>
 
             <div class="space-y-5">
@@ -379,7 +414,7 @@ const goBack = () => {
             </button>
             <button
               @click="handleSubmit"
-              :disabled="!isFormValid || isSaving"
+              :disabled="((!isExistingTeam && !isFormValid) || isSaving)"
               class="px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2"
               :class="isFormValid && !isSaving
                 ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-500/25 active:scale-[0.98]'
@@ -388,6 +423,10 @@ const goBack = () => {
               <span v-if="isSaving" class="flex items-center gap-2">
                 <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 Creating...
+              </span>
+              <span v-else-if="isExistingTeam" class="flex items-center gap-2">
+                <v-icon name="hi-solid-eye" class="w-4 h-4" />
+                View Team
               </span>
               <span v-else class="flex items-center gap-2">
                 <v-icon name="hi-solid-check" class="w-4 h-4" />
