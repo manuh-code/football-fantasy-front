@@ -2,7 +2,7 @@
   <div class="space-y-4 sm:space-y-6">
     <template v-if="hasLeague">
       <!-- Stage Selector Bar — Apple Sports / FotMob style -->
-      <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden">
+      <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
         <!-- League identity row -->
         <div class="flex items-center gap-3 px-4 pt-3.5 pb-2">
           <img
