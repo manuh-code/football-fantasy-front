@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60"
+    class="w-full mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
   >
     <!-- Card Header (minimal iOS/Android style) -->
     <div class="px-4 py-3">
@@ -19,281 +19,155 @@
     </div>
 
     <!-- Card Body -->
-    <div class="p-6">
+    <div>
+      <!-- Loading -->
       <div
-        v-if="!stageUuid"
-        class="text-center py-8 text-gray-500 dark:text-gray-400"
+        v-if="!stageUuid || loading"
+        class="flex items-center justify-center py-12"
       >
-        No stage selected.
+        <v-icon
+          v-if="loading"
+          name="pr-spinner"
+          class="w-5 h-5 text-gray-300 dark:text-gray-600"
+          animation="spin"
+          aria-hidden="true"
+        />
+        <p v-else class="text-[13px] text-gray-400 dark:text-gray-500">No stage selected.</p>
       </div>
 
-      <div v-else>
-        <!-- Loading state -->
-        <div
-          v-if="loading"
-          class="text-center py-8 text-gray-400 dark:text-gray-500"
-        >
-          <div class="flex items-center justify-center">
-            <v-icon
-              name="pr-spinner"
-              class="w-6 h-6 text-gray-400 dark:text-gray-500"
-              animation="spin"
-              aria-hidden="true"
-            />
-            <span class="sr-only">Loading standings...</span>
-          </div>
-        </div>
+      <!-- Error -->
+      <div v-else-if="error" class="text-center py-10 px-4">
+        <p class="text-[13px] text-red-500 dark:text-red-400">{{ error }}</p>
+      </div>
 
-        <!-- Error state -->
-        <div v-else-if="error" class="text-center py-8 text-red-500">
-          {{ error }}
-        </div>
+      <!-- Empty -->
+      <div
+        v-else-if="standings.length === 0"
+        class="text-center py-10 text-gray-400 dark:text-gray-500"
+      >
+        <NoResults
+          title="No standings available"
+          description="No standings available for this stage."
+          icon="bi-trophy-fill"
+        />
+      </div>
 
-        <!-- Empty state -->
-        <div
-          v-else-if="standings.length === 0"
-          class="text-center py-8 text-gray-400 dark:text-gray-500"
-        >
-          <NoResults
-            title="No standings available"
-            description="No standings available for this stage."
-            icon="bi-trophy-fill"
-          />
-        </div>
+      <!-- ═══════════ STANDINGS TABLE ═══════════ -->
+      <div v-else class="standings-table-wrapper overflow-x-auto">
+        <table class="w-full min-w-[600px]">
+          <!-- Header row -->
+          <thead>
+            <tr class="border-b border-gray-100 dark:border-gray-700/60">
+              <th class="standings-th standings-sticky-left left-0 z-10 w-8 text-center bg-white dark:bg-gray-800">#</th>
+              <th class="standings-th standings-sticky-left left-8 z-10 text-left pl-2 bg-white dark:bg-gray-800">Team</th>
+              <th class="standings-th w-8 text-center">MP</th>
+              <th class="standings-th w-8 text-center">W</th>
+              <th class="standings-th w-8 text-center">D</th>
+              <th class="standings-th w-8 text-center">L</th>
+              <th class="standings-th w-9 text-center">GF</th>
+              <th class="standings-th w-9 text-center">GA</th>
+              <th class="standings-th w-9 text-center">GD</th>
+              <th class="standings-th w-24 text-center">Form</th>
+              <th class="standings-th standings-sticky-right right-0 z-10 w-12 text-center bg-white dark:bg-gray-800">Pts</th>
+            </tr>
+          </thead>
 
-        <!-- Standings table -->
-        <div v-else>
-          <!-- Desktop table -->
-          <div
-            class="hidden md:block table-container overflow-x-auto bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg"
-          >
-            <table
-              class="table-fixed min-w-[720px] w-full divide-y divide-gray-200 dark:divide-gray-700"
-            >
-              <colgroup>
-                <col style="width: 56px" />
-                <col style="width: 260px" />
-                <col style="width: 56px" />
-                <col style="width: 56px" />
-                <col style="width: 56px" />
-                <col style="width: 56px" />
-                <col style="width: 72px" />
-                <col style="width: 72px" />
-                <col style="width: 72px" />
-                <col style="width: 140px" />
-                <col style="width: 80px" />
-              </colgroup>
-              <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    #
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    Team
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    MP
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    W
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    D
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    L
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    GF
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    GA
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    GD
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    Form
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none"
-                  >
-                    Pts
-                  </th>
-                </tr>
-              </thead>
-              <tbody
-                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
-              >
-                <tr
-                  v-for="(row, idx) in standings"
-                  :key="row.team?.uuid || idx"
-                  class="hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
-                  >
-                    {{ row.position }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center gap-2">
-                      <TeamLogo :team="row.team" size="sm" variant="square" />
-                      <div class="flex flex-col">
-                        <span
-                          class="text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          {{ row.team?.name }}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "overall-matches-played") }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "overall-won") }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "overall-draw") }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "overall-lost") }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "overall-goals-for") }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "overall-goals-against") }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200"
-                  >
-                    {{ getStat(row.statistics, "goal-difference") }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center gap-1">
-                      <template v-for="(f, i) in lastFive(row.form)" :key="i">
-                        <div
-                          :class="[
-                            formColor(f.form),
-                            'w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold',
-                          ]"
-                          :title="
-                            f.form === 'W'
-                              ? 'Win'
-                              : f.form === 'L'
-                                ? 'Loss'
-                                : f.form === 'D'
-                                  ? 'Draw'
-                                  : ''
-                          "
-                        >
-                          {{ f.form }}
-                        </div>
-                      </template>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm">
-                    <span
-                      class="inline-flex items-center px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 rounded font-semibold"
-                    >
-                      {{ getStat(row.statistics, "overall-points") }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Mobile cards -->
-          <ul class="md:hidden space-y-3">
-            <li
+          <!-- Body -->
+          <tbody>
+            <tr
               v-for="(row, idx) in standings"
               :key="row.team?.uuid || idx"
-              class="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg p-3"
+              class="standings-row group"
+              :class="{
+                'border-b border-gray-50 dark:border-gray-700/30': idx < standings.length - 1,
+              }"
             >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="text-sm font-semibold text-gray-800 dark:text-gray-100"
-                  >
-                    {{ row.position }}.
-                  </div>
-                  <TeamLogo :team="row.team" size="sm" variant="square" />
-                  <div class="flex flex-col">
-                    <span
-                      class="text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      {{ row.team?.name }}
-                    </span>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <div class="text-sm text-gray-700 dark:text-gray-200">
-                    <span
-                      class="inline-flex items-center px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 rounded font-semibold"
-                    >
-                      {{ getStat(row.statistics, "overall-points") }} pts
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-3 flex items-center justify-between">
+              <!-- Position with zone indicator -->
+              <td class="py-2.5 px-1 text-center relative standings-sticky-left left-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
                 <div
-                  class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-200"
-                >
-                  <div>W {{ getStat(row.statistics, "overall-won") }}</div>
-                  <div>D {{ getStat(row.statistics, "overall-draw") }}</div>
-                  <div>L {{ getStat(row.statistics, "overall-lost") }}</div>
+                  class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                  :class="positionZoneColor(row.position)"
+                />
+                <span class="text-[12px] font-semibold text-gray-500 dark:text-gray-400 tabular-nums">
+                  {{ row.position }}
+                </span>
+              </td>
+
+              <!-- Team -->
+              <td class="py-2 pl-2 pr-1 standings-sticky-left left-8 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
+                <div class="flex items-center gap-2 min-w-0">
+                  <TeamLogo :team="row.team" size="sm" variant="square" />
+                  <span class="text-[12px] font-medium text-gray-900 dark:text-white truncate">
+                    {{ row.team?.name }}
+                  </span>
                 </div>
-                <div class="flex items-center gap-1">
+              </td>
+
+              <!-- MP -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-matches-played") }}
+              </td>
+
+              <!-- W -->
+              <td class="standings-cell font-semibold text-emerald-600 dark:text-emerald-400">
+                {{ getStat(row.statistics, "overall-won") }}
+              </td>
+
+              <!-- D -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-draw") }}
+              </td>
+
+              <!-- L -->
+              <td class="standings-cell font-semibold text-red-500 dark:text-red-400">
+                {{ getStat(row.statistics, "overall-lost") }}
+              </td>
+
+              <!-- GF -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-goals-for") }}
+              </td>
+
+              <!-- GA -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-goals-against") }}
+              </td>
+
+              <!-- GD -->
+              <td class="py-2.5 px-1 text-center">
+                <span
+                  class="text-[11px] tabular-nums font-semibold"
+                  :class="gdColor(getStat(row.statistics, 'goal-difference'))"
+                >
+                  {{ formatGD(getStat(row.statistics, 'goal-difference')) }}
+                </span>
+              </td>
+
+              <!-- Form -->
+              <td class="py-2.5 px-1 text-center">
+                <div class="flex items-center justify-center gap-[3px]">
                   <template v-for="(f, i) in lastFive(row.form)" :key="i">
                     <div
                       :class="[
                         formColor(f.form),
-                        'w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold',
+                        'w-[18px] h-[18px] rounded-[4px] flex items-center justify-center text-white text-[9px] font-bold leading-none',
                       ]"
                     >
                       {{ f.form }}
                     </div>
                   </template>
                 </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+              </td>
+
+              <!-- Points -->
+              <td class="py-2.5 px-1 text-center standings-sticky-right right-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
+                <span class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-[13px] font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+                  {{ getStat(row.statistics, "overall-points") }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -353,6 +227,36 @@ const formColor = (f: string | undefined) => {
   return "bg-gray-300 dark:bg-gray-700";
 };
 
+/**
+ * Position zone color — colored left bar accent like FotMob/Apple Sports.
+ * UCL spots = blue, Europa = orange, relegation = red, rest = transparent
+ */
+const positionZoneColor = (pos: number | undefined) => {
+  if (!pos) return "bg-transparent";
+  if (pos <= 4) return "bg-blue-500";           // Champions League
+  if (pos >= 5 && pos <= 6) return "bg-orange-400"; // Europa League / Conference
+  // Relegation zone — show for bottom 3 if league has 18+ teams
+  if (standings.value.length >= 18 && pos > standings.value.length - 3) return "bg-red-500";
+  return "bg-transparent";
+};
+
+/** Color class for goal difference value */
+const gdColor = (val: string | number | undefined) => {
+  const n = Number(val);
+  if (Number.isNaN(n) || n === 0) return "text-gray-500 dark:text-gray-400";
+  return n > 0
+    ? "text-emerald-600 dark:text-emerald-400"
+    : "text-red-500 dark:text-red-400";
+};
+
+/** Format goal difference with +/- prefix */
+const formatGD = (val: string | number | undefined) => {
+  const n = Number(val);
+  if (Number.isNaN(n)) return "-";
+  if (n > 0) return `+${n}`;
+  return String(n);
+};
+
 // Cargar standings
 const fetchStandings = async () => {
   if (!props.stageUuid || !props.seasonUuid) return;
@@ -393,12 +297,75 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.dark .dark\:bg-gray-850 {
-  background-color: #0b1220;
+/* Compact header cells */
+.standings-th {
+  padding: 8px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9ca3af; /* gray-400 */
+  white-space: nowrap;
+}
+.dark .standings-th {
+  color: #6b7280; /* gray-500 */
 }
 
-.table-container {
-  overflow-x: auto;
+/* Compact body cells */
+.standings-cell {
+  padding: 10px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #4b5563; /* gray-600 */
+  white-space: nowrap;
+}
+.dark .standings-cell {
+  color: #d1d5db; /* gray-300 */
+}
+
+/* Row hover */
+.standings-row:hover {
+  background-color: #f9fafb; /* gray-50 */
+}
+.dark .standings-row:hover {
+  background-color: rgba(55, 65, 81, 0.3); /* gray-700/30 */
+}
+
+/* Smooth horizontal scroll on mobile */
+.standings-table-wrapper {
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.standings-table-wrapper::-webkit-scrollbar {
+  height: 3px;
+}
+.standings-table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.standings-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+}
+.dark .standings-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #374151;
+}
+
+/* Sticky columns */
+.standings-sticky-left,
+.standings-sticky-right {
+  position: sticky;
+}
+
+/* Subtle shadow on sticky-right (Pts) to separate from scrollable content */
+.standings-sticky-right {
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.06);
+}
+.dark .standings-sticky-right {
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.3);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 </style>

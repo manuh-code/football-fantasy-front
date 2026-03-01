@@ -1,44 +1,46 @@
 <template>
   <div class="space-y-4 sm:space-y-6">
     <template v-if="hasLeague">
-      <!-- Stage Selector Bar -->
-      <div class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="px-4 sm:px-6 py-3 sm:py-4">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <!-- Title -->
-            <div class="flex items-center gap-3 min-w-0">
-              <img
-                :src="leagueImage || '/img/default-avatar.svg'"
-                :alt="leagueName"
-                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover shadow-sm shrink-0"
-              />
-              <div class="min-w-0">
-                <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-tight">
-                  {{ leagueName }}
-                </h2>
-                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {{ selectedStageName || 'Select a stage' }}
-                </p>
-              </div>
-            </div>
+      <!-- Stage Selector Bar — Apple Sports / FotMob style -->
+      <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden">
+        <!-- League identity row -->
+        <div class="flex items-center gap-3 px-4 pt-3.5 pb-2">
+          <img
+            :src="leagueImage || '/img/default-avatar.svg'"
+            :alt="leagueName"
+            class="w-8 h-8 rounded-lg object-cover shadow-sm ring-1 ring-gray-100 dark:ring-gray-700 shrink-0"
+          />
+          <div class="min-w-0 flex-1">
+            <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white leading-tight truncate">
+              {{ leagueName }}
+            </h2>
+          </div>
+          <!-- Season badge -->
+          <span
+            v-if="selectedStageName"
+            class="text-[10px] font-medium text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50 px-2 py-0.5 rounded-full shrink-0"
+          >
+            {{ currentSeasonLabel }}
+          </span>
+        </div>
 
-            <!-- Stage Selector -->
-            <div class="w-full sm:w-auto sm:min-w-[220px] sm:max-w-[280px]">
-              <SearchableSelectComponent
-                v-model="selectedStageUuid"
-                :options="stages"
-                value-key="stageUuid"
-                label-key="stage"
-                placeholder="Select stage"
-                search-placeholder="Search stage..."
-                :disabled="loadingStages"
-                :loading="loadingStages"
-                accent-color="blue"
-                :searchable="stages.length > 5"
-                :clearable="false"
-                @change="onStageChange"
-              />
-            </div>
+        <!-- Stage selector row -->
+        <div class="px-4 pb-3.5">
+          <div class="relative">
+            <SearchableSelectComponent
+              v-model="selectedStageUuid"
+              :options="stages"
+              value-key="stageUuid"
+              label-key="stage"
+              placeholder="Select stage"
+              search-placeholder="Search stage..."
+              :disabled="loadingStages"
+              :loading="loadingStages"
+              accent-color="blue"
+              :searchable="stages.length > 5"
+              :clearable="false"
+              @change="onStageChange"
+            />
           </div>
         </div>
       </div>
@@ -93,6 +95,12 @@ const selectedStageUuid = ref("");
 const selectedSeasonUuid = ref("");
 
 const selectedStageName = computed(() => {
+  const stage = stages.value.find((s) => s.stageUuid === selectedStageUuid.value);
+  return stage?.stage ?? "";
+});
+
+/** Extract a short season label from the selected stage */
+const currentSeasonLabel = computed(() => {
   const stage = stages.value.find((s) => s.stageUuid === selectedStageUuid.value);
   return stage?.stage ?? "";
 });
