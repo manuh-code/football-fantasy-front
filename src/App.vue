@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import HeaderMenu from '@/components/HeaderMenu.vue'
@@ -55,6 +55,7 @@ import { useThemeStore } from './store/theme'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 import { useSwipeNavigation } from '@/composables'
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
+import { useDevResetStores } from '@/composables/useDevResetStores';
 
 
 
@@ -66,6 +67,14 @@ const showLeagueModal = ref(false)
 
 // Initialize swipe navigation
 const swipeNav = useSwipeNavigation()
+
+// Dev tools: Ctrl+Shift+K to reset all stores (dev mode only)
+let cleanupDevShortcut: (() => void) | undefined;
+if (import.meta.env.DEV) {
+  const { registerDevShortcut } = useDevResetStores();
+  cleanupDevShortcut = registerDevShortcut();
+}
+onBeforeUnmount(() => cleanupDevShortcut?.());
 
 // Función para verificar y mostrar modal si no hay liga seleccionada
 const checkLeagueSelection = () => {

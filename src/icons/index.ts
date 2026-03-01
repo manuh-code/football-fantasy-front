@@ -132,6 +132,7 @@ import {
   BiGoogle,
   BiEyeFill,
   BiEyeSlashFill,
+  HiChevronDown,
   HiSolidSparkles,
 } from 'oh-vue-icons/icons'
 
@@ -224,7 +225,7 @@ export const iconList = [
   HiSolidDocumentText,
   HiSolidUserAdd,
   HiSolidPlusCircle,
-
+  HiChevronDown,
   // Navigation icons
   HiSolidArrowLeft,
   HiSolidArrowRight,
