@@ -1,24 +1,24 @@
 <template>
-  <!-- Footer Navigation - Fixed Bottom Tab Bar -->
+  <!-- Footer Navigation — iOS Tab Bar style -->
   <nav 
     v-if="shouldShowMenu"
     aria-label="Main navigation" 
-    class="fixed bottom-0 left-0 right-0 z-[100] bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95"
+    class="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-100 dark:border-gray-800"
   >
-    <div class="flex items-center justify-around px-2 pt-2 pb-2 min-h-[60px]" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem))">
+    <div class="flex items-center justify-around px-1 pt-1.5 pb-1.5" style="padding-bottom: max(0.375rem, env(safe-area-inset-bottom, 0.375rem))">
       <!-- League Overview -->
       <button
         @click="handleTabChange('overview')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
           activeTab === 'overview' 
-            ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
-            : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            ? 'text-blue-500 dark:text-blue-400' 
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
         ]"
         aria-label="League Overview"
       >
-        <v-icon name="hi-solid-information-circle" class="w-6 h-6" />
-        <span class="text-xs font-medium">Overview</span>
+        <v-icon name="hi-solid-information-circle" :class="['w-[22px] h-[22px]', activeTab === 'overview' ? 'scale-110' : '']" />
+        <span class="text-[10px] font-medium leading-tight">Overview</span>
       </button>
 
       <!-- My Team -->
@@ -26,15 +26,15 @@
         v-if="canAccessMemberTabs"
         @click="handleTabChange('myteam')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
           activeTab === 'myteam' 
-            ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' 
-            : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            ? 'text-emerald-500 dark:text-emerald-400' 
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
         ]"
         aria-label="Team"
       >
-        <v-icon name="hi-solid-user-group" class="w-6 h-6" />
-        <span class="text-xs font-medium">Team</span>
+        <v-icon name="hi-solid-user-group" :class="['w-[22px] h-[22px]', activeTab === 'myteam' ? 'scale-110' : '']" />
+        <span class="text-[10px] font-medium leading-tight">Team</span>
       </button>
 
       <!-- Player Statistics -->
@@ -42,15 +42,15 @@
         v-if="canAccessMemberTabs"
         @click="handleTabChange('statistics')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
           activeTab === 'statistics' 
-            ? 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30' 
-            : 'text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            ? 'text-orange-500 dark:text-orange-400' 
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
         ]"
         aria-label="Player Statistics"
       >
-        <v-icon name="hi-solid-chart-bar" class="w-6 h-6" />
-        <span class="text-xs font-medium">Statistics</span>
+        <v-icon name="hi-solid-chart-bar" :class="['w-[22px] h-[22px]', activeTab === 'statistics' ? 'scale-110' : '']" />
+        <span class="text-[10px] font-medium leading-tight">Stats</span>
       </button>
 
       <!-- Matchups -->
@@ -58,15 +58,15 @@
         v-if="canAccessMemberTabs"
         @click="handleTabChange('matchups')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
           activeTab === 'matchups' 
-            ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30' 
-            : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            ? 'text-red-500 dark:text-red-400' 
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
         ]"
         aria-label="Matchups"
       >
-        <v-icon name="gi-crossed-swords" class="w-6 h-6" />
-        <span class="text-xs font-medium">Matchups</span>
+        <v-icon name="gi-crossed-swords" :class="['w-[22px] h-[22px]', activeTab === 'matchups' ? 'scale-110' : '']" />
+        <span class="text-[10px] font-medium leading-tight">Matchups</span>
       </button>
 
       <!-- Management -->
@@ -74,15 +74,15 @@
         v-if="canAccessAdminTabs"
         @click="handleTabChange('management')"
         :class="[
-          'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200',
+          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
           activeTab === 'management' 
-            ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30' 
-            : 'text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            ? 'text-purple-500 dark:text-purple-400' 
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
         ]"
         aria-label="Management"
       >
-        <v-icon name="hi-solid-cog" class="w-6 h-6" />
-        <span class="text-xs font-medium">Management</span>
+        <v-icon name="hi-solid-cog" :class="['w-[22px] h-[22px]', activeTab === 'management' ? 'scale-110' : '']" />
+        <span class="text-[10px] font-medium leading-tight">Manage</span>
       </button>
     </div>
   </nav>

@@ -1,469 +1,229 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
   >
     <!-- Section Header -->
-    <div
-      class="bg-gradient-to-r from-emerald-600 to-green-600 px-4 md:px-6 py-3"
-    >
+    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-          <v-icon name="hi-solid-star" class="w-5 h-5" />
-          Starters
-        </h3>
+        <div class="flex items-center gap-2">
+          <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
+          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Starters</h3>
+        </div>
         <slot name="header-action" />
       </div>
     </div>
 
-    <!-- Starters Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead
-          class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600"
+    <!-- Starters List -->
+    <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
+      <!-- Goalkeeper -->
+      <template v-if="formation?.goalkeeper && formation.goalkeeper.starter > 0">
+        <div
+          v-for="player in goalkeepers"
+          :key="player.football_player.uuid"
+          :data-player-uuid="player.football_player.uuid"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
         >
-          <tr>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center">
+              <v-icon name="hi-solid-trash" class="w-4 h-4 text-white" />
+            </div>
+            <div
+              class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
+              :style="{ transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) }"
+              @touchstart="onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="onSwipeEnd(player.football_player.uuid)"
+              @mousedown="onSwipeStart(player.football_player.uuid, $event)"
             >
-              Position
-            </th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
-            >
-              Player
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-          <!-- Goalkeeper -->
-          <template
-            v-if="
-              formation?.goalkeeper &&
-              formation.goalkeeper.starter > 0
-            "
-          >
-            <tr
-              v-for="player in goalkeepers"
-              :key="player.football_player.uuid"
-              :data-player-uuid="player.football_player.uuid"
-              :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
-            >
-              <td colspan="2" class="p-0">
-                <div class="relative overflow-hidden">
-                  <div
-                    class="absolute inset-y-0 right-0 w-[76px] bg-red-500 flex items-center justify-center"
-                  >
-                    <div class="flex flex-col items-center gap-0.5">
-                      <v-icon name="hi-solid-trash" class="w-5 h-5 text-white" />
-                      <span class="text-[10px] text-white font-medium">Remove</span>
-                    </div>
-                  </div>
-                  <div
-                    class="relative flex items-center bg-white dark:bg-gray-800 swipe-row"
-                    :style="{
-                      transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`,
-                      transition: getSwipeTransition(player.football_player.uuid),
-                    }"
-                    @touchstart="onSwipeStart(player.football_player.uuid, $event)"
-                    @touchmove="onSwipeMove(player.football_player.uuid, $event)"
-                    @touchend="onSwipeEnd(player.football_player.uuid)"
-                    @mousedown="onSwipeStart(player.football_player.uuid, $event)"
-                  >
-                    <div class="px-4 py-4 shrink-0">
-                      <div class="flex items-center gap-2">
-                        <span
-                          class="inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] font-bold uppercase whitespace-nowrap"
-                        >
-                          {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="px-4 py-4 flex-1 min-w-0">
-                      <div class="flex items-center gap-3">
-                        <img
-                          :src="player.football_player.image_path || '/img/default-avatar.svg'"
-                          :alt="player.football_player.display_name"
-                          class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-                        />
-                        <div class="flex-1 min-w-0">
-                          <p class="font-semibold text-gray-900 dark:text-white text-sm md:text-base truncate">
-                            {{ player.football_player.display_name }}
-                          </p>
-                        </div>
-                        <span
-                          class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold"
-                        >
-                          {{ player.fantasy_points ?? 0 }} pts
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] font-bold shrink-0">
+                {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
+              </span>
+              <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
+              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-for="slot in emptyGoalkeeperSlots" :key="`empty-gk-${slot}`"
+          @click="$emit('draftByPosition', 'GOALKEEPER')"
+          class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-400 dark:text-blue-500 text-[10px] font-bold opacity-60 shrink-0">GK</span>
+          <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center shrink-0">
+            <v-icon name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+          </div>
+          <p class="text-[12px] text-gray-400 dark:text-gray-500">Add goalkeeper</p>
+        </div>
+      </template>
 
-            <!-- Empty Goalkeeper slots -->
-            <tr
-              v-for="slot in emptyGoalkeeperSlots"
-              :key="`empty-gk-${slot}`"
-              @click="$emit('draftByPosition', 'GOALKEEPER')"
-              class="bg-gray-50/50 dark:bg-gray-700/20 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150"
+      <!-- Defenders -->
+      <template v-if="formation?.defender && formation.defender.starter > 0">
+        <div
+          v-for="player in defenders"
+          :key="player.football_player.uuid"
+          :data-player-uuid="player.football_player.uuid"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
+        >
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center">
+              <v-icon name="hi-solid-trash" class="w-4 h-4 text-white" />
+            </div>
+            <div
+              class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
+              :style="{ transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) }"
+              @touchstart="onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="onSwipeEnd(player.football_player.uuid)"
+              @mousedown="onSwipeStart(player.football_player.uuid, $event)"
             >
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-400 dark:text-blue-500 text-xs font-bold opacity-50">GK</span>
-                  <span class="text-xs font-medium text-gray-400 dark:text-gray-500 hidden sm:inline">Goalkeeper</span>
-                </div>
-              </td>
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-200 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <v-icon name="hi-solid-plus" class="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <p class="text-sm text-gray-400 dark:text-gray-500 italic">Click to add player</p>
-                </div>
-              </td>
-            </tr>
-          </template>
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold shrink-0">
+                {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
+              </span>
+              <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
+              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-for="slot in emptyDefenderSlots" :key="`empty-def-${slot}`"
+          @click="$emit('draftByPosition', 'DEFENDER')"
+          class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-400 dark:text-green-500 text-[10px] font-bold opacity-60 shrink-0">DF</span>
+          <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center shrink-0">
+            <v-icon name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+          </div>
+          <p class="text-[12px] text-gray-400 dark:text-gray-500">Add defender</p>
+        </div>
+      </template>
 
-          <!-- Defenders -->
-          <template
-            v-if="
-              formation?.defender &&
-              formation.defender.starter > 0
-            "
-          >
-            <tr
-              v-for="player in defenders"
-              :key="player.football_player.uuid"
-              :data-player-uuid="player.football_player.uuid"
-              :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
+      <!-- Midfielders -->
+      <template v-if="formation?.midfielder && formation.midfielder.starter > 0">
+        <div
+          v-for="player in midfielders"
+          :key="player.football_player.uuid"
+          :data-player-uuid="player.football_player.uuid"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
+        >
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center">
+              <v-icon name="hi-solid-trash" class="w-4 h-4 text-white" />
+            </div>
+            <div
+              class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
+              :style="{ transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) }"
+              @touchstart="onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="onSwipeEnd(player.football_player.uuid)"
+              @mousedown="onSwipeStart(player.football_player.uuid, $event)"
             >
-              <td colspan="2" class="p-0">
-                <div class="relative overflow-hidden">
-                  <div class="absolute inset-y-0 right-0 w-[76px] bg-red-500 flex items-center justify-center">
-                    <div class="flex flex-col items-center gap-0.5">
-                      <v-icon name="hi-solid-trash" class="w-5 h-5 text-white" />
-                      <span class="text-[10px] text-white font-medium">Remove</span>
-                    </div>
-                  </div>
-                  <div
-                    class="relative flex items-center bg-white dark:bg-gray-800 swipe-row"
-                    :style="{
-                      transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`,
-                      transition: getSwipeTransition(player.football_player.uuid),
-                    }"
-                    @touchstart="onSwipeStart(player.football_player.uuid, $event)"
-                    @touchmove="onSwipeMove(player.football_player.uuid, $event)"
-                    @touchend="onSwipeEnd(player.football_player.uuid)"
-                    @mousedown="onSwipeStart(player.football_player.uuid, $event)"
-                  >
-                    <div class="px-4 py-4 shrink-0">
-                      <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold uppercase whitespace-nowrap">
-                          {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="px-4 py-4 flex-1 min-w-0">
-                      <div class="flex items-center gap-3">
-                        <img
-                          :src="player.football_player.image_path || '/img/default-avatar.svg'"
-                          :alt="player.football_player.display_name"
-                          class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-                        />
-                        <div class="flex-1 min-w-0">
-                          <p class="font-semibold text-gray-900 dark:text-white text-sm md:text-base truncate">
-                            {{ player.football_player.display_name }}
-                          </p>
-                        </div>
-                        <span class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold">
-                          {{ player.fantasy_points ?? 0 }} pts
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold shrink-0">
+                {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
+              </span>
+              <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
+              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-for="slot in emptyMidfielderSlots" :key="`empty-mid-${slot}`"
+          @click="$emit('draftByPosition', 'MIDFIELDER')"
+          class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-400 dark:text-yellow-500 text-[10px] font-bold opacity-60 shrink-0">MF</span>
+          <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center shrink-0">
+            <v-icon name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+          </div>
+          <p class="text-[12px] text-gray-400 dark:text-gray-500">Add midfielder</p>
+        </div>
+      </template>
 
-            <!-- Empty Defender slots -->
-            <tr
-              v-for="slot in emptyDefenderSlots"
-              :key="`empty-def-${slot}`"
-              @click="$emit('draftByPosition', 'DEFENDER')"
-              class="bg-gray-50/50 dark:bg-gray-700/20 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-150"
+      <!-- Attackers -->
+      <template v-if="formation?.attacker && formation.attacker.starter > 0">
+        <div
+          v-for="player in attackers"
+          :key="player.football_player.uuid"
+          :data-player-uuid="player.football_player.uuid"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
+        >
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center">
+              <v-icon name="hi-solid-trash" class="w-4 h-4 text-white" />
+            </div>
+            <div
+              class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
+              :style="{ transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) }"
+              @touchstart="onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="onSwipeEnd(player.football_player.uuid)"
+              @mousedown="onSwipeStart(player.football_player.uuid, $event)"
             >
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 text-green-400 dark:text-green-500 text-xs font-bold opacity-50">DF</span>
-                  <span class="text-xs font-medium text-gray-400 dark:text-gray-500 hidden sm:inline">Defender</span>
-                </div>
-              </td>
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-200 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <v-icon name="hi-solid-plus" class="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <p class="text-sm text-gray-400 dark:text-gray-500 italic">Click to add player</p>
-                </div>
-              </td>
-            </tr>
-          </template>
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px] font-bold shrink-0">
+                {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
+              </span>
+              <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
+              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-for="slot in emptyAttackerSlots" :key="`empty-att-${slot}`"
+          @click="$emit('draftByPosition', 'ATTACKER')"
+          class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 text-[10px] font-bold opacity-60 shrink-0">FW</span>
+          <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center shrink-0">
+            <v-icon name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+          </div>
+          <p class="text-[12px] text-gray-400 dark:text-gray-500">Add forward</p>
+        </div>
+      </template>
 
-          <!-- Midfielders -->
-          <template
-            v-if="
-              formation?.midfielder &&
-              formation.midfielder.starter > 0
-            "
-          >
-            <tr
-              v-for="player in midfielders"
-              :key="player.football_player.uuid"
-              :data-player-uuid="player.football_player.uuid"
-              :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
+      <!-- Flex -->
+      <template v-if="formation?.flex && formation.flex > 0">
+        <div
+          v-for="player in flexPlayers"
+          :key="player.football_player.uuid"
+          :data-player-uuid="player.football_player.uuid"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
+        >
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center">
+              <v-icon name="hi-solid-trash" class="w-4 h-4 text-white" />
+            </div>
+            <div
+              class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
+              :style="{ transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) }"
+              @touchstart="onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="onSwipeEnd(player.football_player.uuid)"
+              @mousedown="onSwipeStart(player.football_player.uuid, $event)"
             >
-              <td colspan="2" class="p-0">
-                <div class="relative overflow-hidden">
-                  <div class="absolute inset-y-0 right-0 w-[76px] bg-red-500 flex items-center justify-center">
-                    <div class="flex flex-col items-center gap-0.5">
-                      <v-icon name="hi-solid-trash" class="w-5 h-5 text-white" />
-                      <span class="text-[10px] text-white font-medium">Remove</span>
-                    </div>
-                  </div>
-                  <div
-                    class="relative flex items-center bg-white dark:bg-gray-800 swipe-row"
-                    :style="{
-                      transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`,
-                      transition: getSwipeTransition(player.football_player.uuid),
-                    }"
-                    @touchstart="onSwipeStart(player.football_player.uuid, $event)"
-                    @touchmove="onSwipeMove(player.football_player.uuid, $event)"
-                    @touchend="onSwipeEnd(player.football_player.uuid)"
-                    @mousedown="onSwipeStart(player.football_player.uuid, $event)"
-                  >
-                    <div class="px-4 py-4 shrink-0">
-                      <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold uppercase whitespace-nowrap">
-                          {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="px-4 py-4 flex-1 min-w-0">
-                      <div class="flex items-center gap-3">
-                        <img
-                          :src="player.football_player.image_path || '/img/default-avatar.svg'"
-                          :alt="player.football_player.display_name"
-                          class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-                        />
-                        <div class="flex-1 min-w-0">
-                          <p class="font-semibold text-gray-900 dark:text-white text-sm md:text-base truncate">
-                            {{ player.football_player.display_name }}
-                          </p>
-                        </div>
-                        <span class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold">
-                          {{ player.fantasy_points ?? 0 }} pts
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Empty Midfielder slots -->
-            <tr
-              v-for="slot in emptyMidfielderSlots"
-              :key="`empty-mid-${slot}`"
-              @click="$emit('draftByPosition', 'MIDFIELDER')"
-              class="bg-gray-50/50 dark:bg-gray-700/20 cursor-pointer hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-150"
-            >
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-400 dark:text-yellow-500 text-xs font-bold opacity-50">MF</span>
-                  <span class="text-xs font-medium text-gray-400 dark:text-gray-500 hidden sm:inline">Midfielder</span>
-                </div>
-              </td>
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-200 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <v-icon name="hi-solid-plus" class="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <p class="text-sm text-gray-400 dark:text-gray-500 italic">Click to add player</p>
-                </div>
-              </td>
-            </tr>
-          </template>
-
-          <!-- Attackers -->
-          <template
-            v-if="
-              formation?.attacker &&
-              formation.attacker.starter > 0
-            "
-          >
-            <tr
-              v-for="player in attackers"
-              :key="player.football_player.uuid"
-              :data-player-uuid="player.football_player.uuid"
-              :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
-            >
-              <td colspan="2" class="p-0">
-                <div class="relative overflow-hidden">
-                  <div class="absolute inset-y-0 right-0 w-[76px] bg-red-500 flex items-center justify-center">
-                    <div class="flex flex-col items-center gap-0.5">
-                      <v-icon name="hi-solid-trash" class="w-5 h-5 text-white" />
-                      <span class="text-[10px] text-white font-medium">Remove</span>
-                    </div>
-                  </div>
-                  <div
-                    class="relative flex items-center bg-white dark:bg-gray-800 swipe-row"
-                    :style="{
-                      transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`,
-                      transition: getSwipeTransition(player.football_player.uuid),
-                    }"
-                    @touchstart="onSwipeStart(player.football_player.uuid, $event)"
-                    @touchmove="onSwipeMove(player.football_player.uuid, $event)"
-                    @touchend="onSwipeEnd(player.football_player.uuid)"
-                    @mousedown="onSwipeStart(player.football_player.uuid, $event)"
-                  >
-                    <div class="px-4 py-4 shrink-0">
-                      <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px] font-bold uppercase whitespace-nowrap">
-                          {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="px-4 py-4 flex-1 min-w-0">
-                      <div class="flex items-center gap-3">
-                        <img
-                          :src="player.football_player.image_path || '/img/default-avatar.svg'"
-                          :alt="player.football_player.display_name"
-                          class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-                        />
-                        <div class="flex-1 min-w-0">
-                          <p class="font-semibold text-gray-900 dark:text-white text-sm md:text-base truncate">
-                            {{ player.football_player.display_name }}
-                          </p>
-                        </div>
-                        <span class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold">
-                          {{ player.fantasy_points ?? 0 }} pts
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Empty Attacker slots -->
-            <tr
-              v-for="slot in emptyAttackerSlots"
-              :key="`empty-att-${slot}`"
-              @click="$emit('draftByPosition', 'ATTACKER')"
-              class="bg-gray-50/50 dark:bg-gray-700/20 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
-            >
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-400 dark:text-red-500 text-xs font-bold opacity-50">FW</span>
-                  <span class="text-xs font-medium text-gray-400 dark:text-gray-500 hidden sm:inline">Forward</span>
-                </div>
-              </td>
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-200 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <v-icon name="hi-solid-plus" class="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <p class="text-sm text-gray-400 dark:text-gray-500 italic">Click to add player</p>
-                </div>
-              </td>
-            </tr>
-          </template>
-
-          <!-- Flex -->
-          <template
-            v-if="formation?.flex && formation.flex > 0"
-          >
-            <tr
-              v-for="player in flexPlayers"
-              :key="player.football_player.uuid"
-              :data-player-uuid="player.football_player.uuid"
-              :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }]"
-            >
-              <td colspan="2" class="p-0">
-                <div class="relative overflow-hidden">
-                  <div class="absolute inset-y-0 right-0 w-[76px] bg-red-500 flex items-center justify-center">
-                    <div class="flex flex-col items-center gap-0.5">
-                      <v-icon name="hi-solid-trash" class="w-5 h-5 text-white" />
-                      <span class="text-[10px] text-white font-medium">Remove</span>
-                    </div>
-                  </div>
-                  <div
-                    class="relative flex items-center bg-white dark:bg-gray-800 swipe-row"
-                    :style="{
-                      transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`,
-                      transition: getSwipeTransition(player.football_player.uuid),
-                    }"
-                    @touchstart="onSwipeStart(player.football_player.uuid, $event)"
-                    @touchmove="onSwipeMove(player.football_player.uuid, $event)"
-                    @touchend="onSwipeEnd(player.football_player.uuid)"
-                    @mousedown="onSwipeStart(player.football_player.uuid, $event)"
-                  >
-                    <div class="px-4 py-4 shrink-0">
-                      <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-[10px] font-bold uppercase whitespace-nowrap">
-                          {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="px-4 py-4 flex-1 min-w-0">
-                      <div class="flex items-center gap-3">
-                        <img
-                          :src="player.football_player.image_path || '/img/default-avatar.svg'"
-                          :alt="player.football_player.display_name"
-                          class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
-                        />
-                        <div class="flex-1 min-w-0">
-                          <p class="font-semibold text-gray-900 dark:text-white text-sm md:text-base truncate">
-                            {{ player.football_player.display_name }}
-                          </p>
-                        </div>
-                        <span class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold">
-                          {{ player.fantasy_points ?? 0 }} pts
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Empty Flex slots -->
-            <tr
-              v-for="slot in emptyFlexSlots"
-              :key="`empty-flex-${slot}`"
-              @click="$emit('draftByPosition', 'FLEX')"
-              class="bg-gray-50/50 dark:bg-gray-700/20 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-150"
-            >
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-400 dark:text-purple-500 text-xs font-bold opacity-50">FX</span>
-                  <span class="text-xs font-medium text-gray-400 dark:text-gray-500 hidden sm:inline">Flex</span>
-                </div>
-              </td>
-              <td class="px-4 py-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-200 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center">
-                    <v-icon name="hi-solid-plus" class="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <p class="text-sm text-gray-400 dark:text-gray-500 italic">Click to add player</p>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-[10px] font-bold shrink-0">
+                {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
+              </span>
+              <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
+              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-for="slot in emptyFlexSlots" :key="`empty-flex-${slot}`"
+          @click="$emit('draftByPosition', 'FLEX')"
+          class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-400 dark:text-purple-500 text-[10px] font-bold opacity-60 shrink-0">FX</span>
+          <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center shrink-0">
+            <v-icon name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+          </div>
+          <p class="text-[12px] text-gray-400 dark:text-gray-500">Add flex player</p>
+        </div>
+      </template>
     </div>
   </div>
 </template>

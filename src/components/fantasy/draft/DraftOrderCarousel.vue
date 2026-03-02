@@ -1,82 +1,89 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border transition-colors duration-300"
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border transition-colors duration-300"
     :class="
       isDraftComplete
         ? 'border-purple-300 dark:border-purple-700'
         : isMyTurn
           ? 'border-green-300 dark:border-green-700 ring-1 ring-green-200 dark:ring-green-800'
-          : 'border-gray-200 dark:border-gray-700'
+          : 'border-gray-100 dark:border-gray-700/60'
     "
   >
     <!-- Turn Status Banner (top, always visible when draft is active) -->
     <div
       v-if="currentTurn && !isDraftComplete"
-      class="px-4 py-3 flex items-center gap-3 transition-all duration-300 rounded-t-xl"
+      class="transition-all duration-300 rounded-t-2xl"
       :class="bannerGradientClasses"
     >
-      <div
-        class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-white/20 backdrop-blur-sm"
-        :class="isMyTurn ? 'animate-pulse-soft' : ''"
-      >
-        <v-icon
-          :name="isMyTurn ? 'hi-solid-cursor-click' : 'hi-solid-clock'"
-          class="w-5 h-5 text-white"
-        />
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="font-bold text-sm text-white leading-tight">
-          {{
-            timerExpired
-              ? "Time's up!"
-              : isMyTurn
-                ? "Your turn to pick!"
-                : `${currentTurn.user_name}'s turn...`
-          }}
-        </p>
-        <p class="text-xs text-white/80 mt-0.5">
-          Pick #{{ currentTurn.pick }} — Round {{ currentTurn.round }}
-        </p>
+      <!-- Main banner row -->
+      <div class="px-4 pt-3 pb-2 flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-white/20 backdrop-blur-sm"
+          :class="isMyTurn ? 'animate-pulse-soft' : ''"
+        >
+          <v-icon
+            :name="isMyTurn ? 'hi-solid-cursor-click' : 'hi-solid-clock'"
+            class="w-5 h-5 text-white"
+          />
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-sm text-white leading-tight">
+            {{
+              timerExpired
+                ? "Time's up!"
+                : isMyTurn
+                  ? "Your turn to pick!"
+                  : `${currentTurn.user_name}'s turn...`
+            }}
+          </p>
+          <p class="text-xs text-white/80 mt-0.5">
+            Pick #{{ currentTurn.pick }} — Round {{ currentTurn.round }}
+          </p>
+        </div>
+
+        <!-- Large countdown number -->
+        <div
+          v-if="pickTime > 0"
+          class="flex-shrink-0 flex items-center gap-1.5"
+          :class="{ 'animate-shake': timerUrgency === 'critical' && !timerExpired }"
+        >
+          <v-icon name="hi-solid-clock" class="w-4 h-4 text-white/60" />
+          <span
+            class="text-2xl font-black text-white tabular-nums leading-none tracking-tight"
+            :class="{
+              'text-red-200': timerUrgency === 'critical',
+              'text-yellow-200': timerUrgency === 'warning',
+            }"
+          >
+            {{ formattedTime }}
+          </span>
+        </div>
       </div>
 
-      <!-- Circular Timer -->
-      <div
-        v-if="pickTime > 0"
-        class="flex-shrink-0 relative w-11 h-11"
-        :class="{ 'animate-shake': timerUrgency === 'critical' && !timerExpired }"
-      >
-        <svg class="w-11 h-11 -rotate-90" viewBox="0 0 40 40">
-          <!-- Background circle -->
-          <circle
-            cx="20" cy="20" r="17"
-            fill="none"
-            stroke="rgba(255,255,255,0.2)"
-            stroke-width="3"
+      <!-- Countdown progress bar -->
+      <div v-if="pickTime > 0" class="px-4 pb-3">
+        <div class="w-full h-1.5 rounded-full bg-white/20 overflow-hidden">
+          <div
+            class="h-full rounded-full transition-all duration-1000 ease-linear"
+            :class="timerBarColor"
+            :style="{ width: `${timerProgress * 100}%` }"
           />
-          <!-- Progress circle -->
-          <circle
-            cx="20" cy="20" r="17"
-            fill="none"
-            :stroke="timerStrokeColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            :stroke-dasharray="timerCircumference"
-            :stroke-dashoffset="timerDashOffset"
-            class="transition-[stroke-dashoffset] duration-1000 ease-linear"
-          />
-        </svg>
-        <span
-          class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white tabular-nums leading-none"
-        >
-          {{ formattedTime }}
-        </span>
+        </div>
+        <div class="flex items-center justify-between mt-1">
+          <span class="text-[10px] text-white/50 font-medium">
+            {{ timerExpired ? 'Skipping...' : 'Time remaining' }}
+          </span>
+          <span class="text-[10px] text-white/50 font-medium tabular-nums">
+            {{ formattedTime }} / {{ pickTime }}s
+          </span>
+        </div>
       </div>
     </div>
 
     <!-- Draft Complete Banner -->
     <div
       v-else-if="isDraftComplete"
-      class="px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 rounded-t-xl"
+      class="px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 rounded-t-2xl"
     >
       <p class="text-white font-bold text-sm text-center">
         🏆 Draft Complete! All players have been selected.
@@ -84,25 +91,21 @@
     </div>
 
     <!-- Header -->
-    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <div
-            class="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center"
-          >
-            <v-icon
-              name="hi-solid-switch-horizontal"
-              class="w-4 h-4 text-orange-600 dark:text-orange-400"
-            />
-          </div>
+          <v-icon
+            name="hi-solid-switch-horizontal"
+            class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0"
+          />
           <div>
             <h3
-              class="text-sm font-semibold text-gray-900 dark:text-white leading-tight"
+              class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight"
             >
               Draft Order
             </h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-              Round {{ currentRound }} &middot; Pick {{ currentPickInRound }} of
+            <p class="text-[11px] text-gray-500 dark:text-gray-400">
+              Round {{ currentRound }} · Pick {{ currentPickInRound }} of
               {{ totalPicksPerRound }}
             </p>
           </div>
@@ -138,7 +141,7 @@
       <!-- Scroll left button -->
       <button
         v-if="canScrollLeft"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full shadow-md flex items-center justify-center text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-full shadow-sm flex items-center justify-center text-gray-500 dark:text-gray-300 active:bg-gray-50 dark:active:bg-gray-600 transition-colors"
         @click="scrollCarousel('left')"
       >
         <v-icon name="hi-solid-chevron-left" class="w-3.5 h-3.5" />
@@ -222,7 +225,7 @@
       <!-- Scroll right button -->
       <button
         v-if="canScrollRight"
-        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full shadow-md flex items-center justify-center text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-full shadow-sm flex items-center justify-center text-gray-500 dark:text-gray-300 active:bg-gray-50 dark:active:bg-gray-600 transition-colors"
         @click="scrollCarousel('right')"
       >
         <v-icon name="hi-solid-chevron-right" class="w-3.5 h-3.5" />
@@ -232,7 +235,7 @@
     <!-- Your next pick info (only when not your turn and draft is active) -->
     <div
       v-if="currentUserNextPick && !isMyTurn && !isDraftComplete"
-      class="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 border-t border-emerald-100 dark:border-emerald-900/30"
+      class="px-4 py-2.5 bg-emerald-50/80 dark:bg-emerald-900/20 border-t border-gray-100 dark:border-gray-700/60 rounded-b-2xl"
     >
       <p
         class="text-xs text-emerald-700 dark:text-emerald-300 text-center font-medium"
@@ -286,16 +289,9 @@ const timeRemaining = ref(0);
 const timerExpired = ref(false);
 let timerInterval: ReturnType<typeof setInterval> | null = null;
 
-/** Circumference for SVG circle (r=17) */
-const timerCircumference = 2 * Math.PI * 17; // ~106.81
-
 const timerProgress = computed(() => {
   if (!props.pickTime || props.pickTime <= 0) return 1;
   return timeRemaining.value / props.pickTime;
-});
-
-const timerDashOffset = computed(() => {
-  return timerCircumference * (1 - timerProgress.value);
 });
 
 const formattedTime = computed(() => {
@@ -316,11 +312,12 @@ const timerUrgency = computed<"normal" | "warning" | "critical">(() => {
   return "normal";
 });
 
-const timerStrokeColor = computed(() => {
-  if (timerExpired.value) return "rgba(255,255,255,0.3)";
-  if (timerUrgency.value === "critical") return "#ef4444";
-  if (timerUrgency.value === "warning") return "#f59e0b";
-  return "#ffffff";
+/** Color for the progress bar */
+const timerBarColor = computed(() => {
+  if (timerExpired.value) return "bg-white/30";
+  if (timerUrgency.value === "critical") return "bg-red-400";
+  if (timerUrgency.value === "warning") return "bg-yellow-300";
+  return "bg-white";
 });
 
 /** Banner gradient changes color based on timer urgency */

@@ -1,46 +1,43 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-4 md:py-6 pb-20 md:pb-8">
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- Dynamic Content Area with Smooth Transitions -->
       <div class="relative">
         <Transition name="tab-content" mode="out-in" @enter="onEnter" @leave="onLeave">
           <!-- League Overview Content -->
-          <div v-if="activeTab === 'overview'" key="overview" class="animate-fade-in">
+          <div v-if="activeTab === 'overview'" key="overview">
             <FantasyLeagueDetail :uuid="uuid" />
           </div>
 
           <!-- My Team Content -->
-          <div v-else-if="activeTab === 'myteam'" key="myteam" class="animate-fade-in">
+          <div v-else-if="activeTab === 'myteam'" key="myteam">
             <MyFantasyTeamComponent :fantasy-league-uuid="uuid" />
           </div>
 
           <!-- Player Statistics Content -->
-          <div v-else-if="activeTab === 'statistics'" key="statistics" class="animate-fade-in">
-            <!-- Football Player Statistics Menu Component -->
+          <div v-else-if="activeTab === 'statistics'" key="statistics">
             <FootballPlayerStatisticMenu :fantasy-league-uuid="uuid" />
           </div>
 
           <!-- Matchups Content -->
-          <div v-else-if="activeTab === 'matchups'" key="matchups" class="animate-fade-in">
+          <div v-else-if="activeTab === 'matchups'" key="matchups">
             <FantasyLeagueMatchup :fantasy-league-uuid="uuid" />
           </div>
 
           <!-- Management Content -->
-          <div v-else-if="activeTab === 'management'" key="management" class="animate-fade-in">
+          <div v-else-if="activeTab === 'management'" key="management">
             <!-- Loading State -->
-            <div v-if="isLoadingLeague" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-              <p class="text-gray-600 dark:text-gray-400">Cargando datos de gestión...</p>
+            <div v-if="isLoadingLeague" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
+              <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto" animation="spin" />
+              <p class="text-[13px] text-gray-400 dark:text-gray-500 mt-3">Loading management data...</p>
             </div>
             
             <!-- No Scoring Data -->
-            <div v-else-if="!scoringData" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-              <div class="w-20 h-20 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mx-auto mb-6 flex items-center justify-center">
-                <v-icon name="hi-solid-exclamation" class="w-10 h-10 text-yellow-600 dark:text-yellow-400" />
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Sin Reglas de Puntuación</h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                Esta liga aún no tiene reglas de puntuación configuradas.
+            <div v-else-if="!scoringData" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
+              <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+              <h3 class="text-[15px] font-semibold text-gray-900 dark:text-white mb-1">No Scoring Rules</h3>
+              <p class="text-[13px] text-gray-400 dark:text-gray-500">
+                This league doesn't have scoring rules configured yet.
               </p>
             </div>
             
@@ -181,51 +178,24 @@ onMounted(() => {
 /* Tab content transitions */
 .tab-content-enter-active,
 .tab-content-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.2s ease;
 }
 
-.tab-content-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
+.tab-content-enter-from,
 .tab-content-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
 }
 
 .tab-content-enter-to,
 .tab-content-leave-from {
   opacity: 1;
-  transform: translateY(0);
-}
-
-/* Fade in animation for tab content */
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Accessibility: Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-
   .tab-content-enter-active,
-  .tab-content-leave-active,
-  .animate-fade-in {
+  .tab-content-leave-active {
     transition: none !important;
-    animation: none !important;
-    transform: none !important;
   }
 }
 </style>

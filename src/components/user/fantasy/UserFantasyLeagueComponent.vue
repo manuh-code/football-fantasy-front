@@ -1,82 +1,49 @@
 <template>
-  <div class="animate-page-enter space-y-6">
-    <!-- Main Content -->
-    <div>
-      <!-- Loading State -->
-      <div v-if="isLoading" class="text-center py-16">
-        <div
-          class="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"
-        ></div>
-        <p class="text-gray-600 dark:text-gray-400 text-lg">
-          Loading your fantasy leagues...
-        </p>
+  <div class="space-y-4">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="flex items-center justify-center py-16">
+      <v-icon name="pr-spinner" class="w-6 h-6 text-gray-300 dark:text-gray-600" animation="spin" />
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="errorMessage" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-6 text-center">
+      <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+      <p class="text-[13px] text-red-500 dark:text-red-400 mb-4">{{ errorMessage }}</p>
+      <button
+        @click="loadFantasyLeagues"
+        class="px-4 py-1.5 bg-red-500 text-white rounded-full text-[13px] font-medium active:bg-red-600 transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+
+    <!-- Fantasy Leagues List -->
+    <template v-else-if="fantasyLeagues && fantasyLeagues.length > 0">
+      <!-- Section Header -->
+      <div class="px-1">
+        <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white">My Leagues</h2>
+        <p class="text-[12px] text-gray-400 dark:text-gray-500 mt-0.5">{{ fantasyLeagues.length }} league{{ fantasyLeagues.length !== 1 ? 's' : '' }}</p>
       </div>
 
-      <!-- Error State -->
-      <div v-else-if="errorMessage" class="text-center py-16">
-        <div
-          class="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full mx-auto mb-6 flex items-center justify-center"
-        >
-          <v-icon
-            name="hi-solid-exclamation"
-            class="w-10 h-10 text-red-600 dark:text-red-400"
-          />
-        </div>
-        <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-3">
-          Error Loading Leagues
-        </h3>
-        <p class="text-red-700 dark:text-red-300 mb-8">{{ errorMessage }}</p>
-        <button
-          @click="loadFantasyLeagues"
-          class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
-          Try Again
-        </button>
+      <!-- Leagues Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        <FantasyLeagueCard
+          v-for="league in fantasyLeagues"
+          :key="league.uuid"
+          :league="league"
+          :show-join-button="false"
+          @viewDetails="viewLeague"
+        />
       </div>
+    </template>
 
-      <!-- Fantasy Leagues Cards -->
-      <div v-else-if="fantasyLeagues && fantasyLeagues.length > 0">
-        <!-- Section Header -->
-        <div class="mb-6">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            My Leagues
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400">
-            Manage and track your fantasy leagues
-          </p>
-        </div>
-
-        <!-- Leagues Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-          <FantasyLeagueCard
-            v-for="league in fantasyLeagues"
-            :key="league.uuid"
-            :league="league"
-            :show-join-button="false"
-            @viewDetails="viewLeague"
-          />
-        </div>
-
-        <!-- Stats Summary (compact) -->
-      </div>
-
-      <!-- Empty State -->
-      <div v-else class="text-center py-6 mb-4">
-        <div
-          class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center"
-        >
-          <v-icon name="bi-trophy-fill" class="w-12 h-12 text-gray-400" />
-        </div>
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          No Fantasy Leagues Yet
-        </h3>
-        <p
-          class="text-gray-600 dark:text-gray-400 text-base mb-4 max-w-md mx-auto leading-relaxed"
-        >
-          Start your fantasy football journey by creating your own league or
-          joining an existing one below!
-        </p>
-      </div>
+    <!-- Empty State -->
+    <div v-else class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center">
+      <v-icon name="bi-trophy-fill" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
+      <h3 class="text-[15px] font-semibold text-gray-900 dark:text-white mb-1">No Leagues Yet</h3>
+      <p class="text-[13px] text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
+        Create your own league or join an existing one to start playing.
+      </p>
     </div>
   </div>
 </template>
@@ -128,99 +95,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Loading spinner animation */
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Smooth hover animations for action cards */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-4px) scale(1.02);
-  }
-}
-
-/* Pulse animation for icons */
-@keyframes pulse-icon {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-button:hover .w-16 {
-  animation: pulse-icon 0.6s ease-in-out;
-}
-
-/* FAB Transitions */
-.fab-enter-active,
-.fab-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fab-enter-from,
-.fab-leave-to {
-  opacity: 0;
-  transform: scale(0.5) translateY(20px);
-}
-
-/* FAB Menu Transitions */
-.fab-menu-enter-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fab-menu-leave-active {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fab-menu-enter-from {
-  opacity: 0;
-  transform: translateY(10px) scale(0.9);
-}
-
-.fab-menu-leave-to {
-  opacity: 0;
-  transform: translateY(5px) scale(0.95);
-}
-
-/* Rotate animation for main FAB */
-.rotate-45 {
-  transform: rotate(45deg);
-}
-
-.rotate-0 {
-  transform: rotate(0deg);
-}
-
 /* Accessibility: Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .animate-spin,
-  .transition-all,
-  .transition-transform,
-  .transition-colors,
-  .transition-shadow {
+  * {
     transition: none !important;
     transform: none !important;
-    animation: none !important;
-  }
-
-  button:hover .w-16 {
     animation: none !important;
   }
 }

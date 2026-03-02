@@ -5,9 +5,12 @@ import * as Ably from 'ably';
 let ablyInstance: Ably.Realtime | null = null;
 
 function getAblyInstance(): Ably.Realtime {
+    const userStore = useUserStore();
+    const userUuid = userStore.getUserData?.uuid ?? 'anonymous';
+    
     ablyInstance ??= new Ably.Realtime({
         key: import.meta.env.VITE_ABLY_KEY,
-        clientId: "vue-client-" + Math.random().toString(36).substring(2, 8),
+        clientId: userUuid,
     });
     return ablyInstance;
 }
