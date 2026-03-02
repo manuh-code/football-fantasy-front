@@ -164,7 +164,7 @@ export class FantasyLeagueService {
     }
 
     async completeDraft(leagueUuid: string): Promise<ApiResponse<null>> {
-        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/draft/complete`, {
+        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/draft/completed`, {
             fantasy_league_uuid: leagueUuid
         }
         );
