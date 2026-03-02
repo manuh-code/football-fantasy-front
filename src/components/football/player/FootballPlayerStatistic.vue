@@ -1,27 +1,20 @@
 <template>
 
-    <div class="space-y-6">
+    <div class="space-y-4">
         <!-- Filters Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center gap-2 md:gap-3">
-                    <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <v-icon name="bi-funnel-fill" class="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div class="min-w-0">
-                        <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Search Filters</h2>
-                        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">
-                            Filter players by season, team, and statistics
-                        </p>
-                    </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+            <div class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <v-icon name="bi-funnel-fill" class="w-[16px] h-[16px] text-blue-500 dark:text-blue-400 shrink-0" />
+                    <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white">Search Filters</h2>
                 </div>
             </div>
 
-            <div class="p-4 md:p-6">
+            <div class="px-4 pb-4">
                 <form @submit.prevent="() => searchPlayers()"
-                    class="space-y-4">
+                    class="space-y-3">
                     <!-- Filters Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     <!-- Season Selection -->
                     <div>
                         <SearchableSelectComponent
@@ -29,6 +22,7 @@
                             :options="seasons"
                             value-key="uuid"
                             label-key="name"
+                            label="Season"
                             placeholder="Select a season"
                             :disabled="isLoadingSeasons"
                             :loading="isLoadingSeasons"
@@ -37,11 +31,11 @@
                             accent-color="emerald"
                             @change="onSeasonChange"
                         />
-                        <div v-if="isLoadingSeasons" class="mt-1 text-xs text-gray-500">
+                        <div v-if="isLoadingSeasons" class="mt-1 text-[11px] text-gray-400">
                             <v-icon name="pr-spinner" class="w-3 h-3 inline mr-1" animation="spin" />
                             Loading seasons...
                         </div>
-                        <div v-if="seasonError" class="mt-1 text-xs text-red-600 dark:text-red-400">
+                        <div v-if="seasonError" class="mt-1 text-[11px] text-red-500 dark:text-red-400">
                             {{ seasonError }}
                         </div>
                     </div>
@@ -65,11 +59,11 @@
                     <!-- Player Name -->
                     <div>
                         <label for="player-name"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            class="block text-[12px] font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                             Player Name
                         </label>
                         <input id="player-name" v-model="filters.name" type="text" placeholder="Search by player name"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" />
+                            class="w-full px-3 py-2 text-[13px] border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" />
                     </div>
 
                     <!-- Statistic Types -->
@@ -89,7 +83,7 @@
                     </div>
 
                     <!-- Search Buttons -->
-                    <div class="flex flex-col md:flex-row justify-end gap-3">
+                    <div class="flex flex-col md:flex-row justify-end gap-2">
                         <ButtonComponent 
                             type="button" 
                             variant="outline" 
@@ -113,13 +107,13 @@
                     
                     <!-- Current Sort Indicator -->
                     <div v-if="sortBy && sortDirection">
-                        <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm border border-blue-200 dark:border-blue-800">
-                            <v-icon :name="sortDirection === 'asc' ? 'hi-solid-sort-ascending' : 'hi-solid-sort-descending'" class="w-4 h-4" />
-                            <span class="text-xs md:text-sm">Sorted by <strong>{{ formatStatColumnName(sortBy) }}</strong> ({{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }})</span>
+                        <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl text-[12px] border border-blue-100 dark:border-blue-800/50">
+                            <v-icon :name="sortDirection === 'asc' ? 'hi-solid-sort-ascending' : 'hi-solid-sort-descending'" class="w-3.5 h-3.5" />
+                            <span>Sorted by <strong>{{ formatStatColumnName(sortBy) }}</strong> ({{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }})</span>
                             <button @click="sortBy = null; sortDirection = 'desc'; searchPlayers(1)" 
-                                    class="ml-auto text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 transition-colors flex-shrink-0"
+                                    class="ml-auto text-blue-500 active:text-blue-700 transition-colors shrink-0"
                                     title="Clear sorting">
-                                <v-icon name="hi-solid-x" class="w-4 h-4" />
+                                <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
                             </button>
                         </div>
                     </div>
@@ -128,17 +122,14 @@
         </div>
 
         <!-- Results Section -->
-        <div ref="resultsSection" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                    <div class="flex items-center gap-2 md:gap-3">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
-                        </div>
+        <div ref="resultsSection" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+            <div class="px-4 py-3">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <v-icon name="hi-solid-chart-bar" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
                         <div class="min-w-0">
-                            <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Player Statistics</h2>
-                            <p v-if="pagination.total" class="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                            <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white">Player Statistics</h2>
+                            <p v-if="pagination.total" class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums">
                                 {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} players
                             </p>
                         </div>
@@ -146,7 +137,7 @@
                     
                     <!-- Items per page selector -->
                     <div v-if="players.length" class="flex items-center gap-2">
-                        <label for="per-page-select" class="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="per-page-select" class="text-[11px] font-medium text-gray-500 dark:text-gray-400">
                             Show:
                         </label>
                         <SearchableSelectComponent
@@ -158,28 +149,24 @@
                             :searchable="false"
                             :clearable="false"
                             accent-color="gray"
-                            class="w-20 md:w-24"
+                            class="w-20"
                             @change="onPerPageChange"
                         />
-                        <span class="text-xs md:text-sm text-gray-600 dark:text-gray-400">per page</span>
                     </div>
                 </div>
             </div>
 
             <!-- Loading State -->
-            <div v-if="isLoadingPlayers" class="p-6 md:p-8 text-center">
-                <div class="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">Loading player statistics...</p>
+            <div v-if="isLoadingPlayers" class="py-12 text-center">
+                <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto mb-2" animation="spin" />
+                <p class="text-[12px] text-gray-400 dark:text-gray-500">Loading player statistics...</p>
             </div>
 
             <!-- Empty State -->
-            <div v-else-if="!players.length && !isInitialLoad" class="p-6 md:p-8 text-center">
-                <div
-                    class="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <v-icon name="hi-solid-chart-bar" class="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
-                </div>
-                <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No players found</h3>
-                <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">Try adjusting your search filters to find players.</p>
+            <div v-else-if="!players.length && !isInitialLoad" class="py-12 text-center">
+                <v-icon name="hi-solid-chart-bar" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
+                <h3 class="text-[13px] font-medium text-gray-900 dark:text-white mb-1">No players found</h3>
+                <p class="text-[12px] text-gray-400 dark:text-gray-500">Try adjusting your search filters.</p>
             </div>
 
             <!-- Results Table -->
@@ -611,38 +598,14 @@ watch(() => filters.value.statTypes, () => {
 </script>
 
 <style>
-/* Loading spinner animation */
-.animate-spin {
-    animation: spin 1s linear infinite;
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
 }
 
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Responsive table improvements */
 @media (max-width: 1023px) {
     .table-container {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-    }
-}
-
-/* Mobile card hover effects */
-@media (max-width: 767px) {
-    .player-card {
-        transition: all 0.2s ease-in-out;
-    }
-    
-    .player-card:active {
-        transform: scale(0.98);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 }
 </style>

@@ -1,256 +1,162 @@
 <template>
-  <div class="animate-page-enter space-y-6">
+  <div class="space-y-4">
     <!-- Loading State -->
-    <div v-if="isLoading" class="text-center py-16">
-      <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-      <p class="text-gray-600 dark:text-gray-400 text-lg">Loading league details...</p>
+    <div v-if="isLoading" class="flex items-center justify-center py-20">
+      <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600" animation="spin" />
     </div>
 
     <!-- Error State -->
-    <div v-else-if="errorMessage" class="text-center py-16">
-      <div class="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full mx-auto mb-6 flex items-center justify-center">
-        <v-icon name="hi-solid-exclamation" class="w-10 h-10 text-red-600 dark:text-red-400" />
-      </div>
-      <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-3">Error Loading League</h3>
-      <p class="text-red-700 dark:text-red-300 mb-8">{{ errorMessage }}</p>
-      <ButtonComponent
-        variant="outline"
-        size="md"
-        text="Try Again"
-        @click="fetchLeague"
-      />
+    <div v-else-if="errorMessage" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
+      <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+      <p class="text-[13px] text-red-500 dark:text-red-400 mb-4">{{ errorMessage }}</p>
+      <ButtonComponent variant="outline" size="sm" text="Try Again" @click="fetchLeague" />
     </div>
 
     <!-- League Content -->
     <template v-else-if="league">
-      <!-- League Header -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <!-- Hero Section -->
-        <div class="relative h-32 md:h-40">
-          <!-- Background Image or Gradient -->
+      <!-- League Header Card — compact Apple Sports style -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden">
+        <!-- Hero with gradient -->
+        <div class="relative h-28 sm:h-32">
           <div v-if="league.image_path" 
-            class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            :style="{ backgroundImage: `url(${league.image_path})` }">
+            class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${league.image_path})` }">
           </div>
-          <div v-else 
-            class="absolute inset-0 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600">
-          </div>
+          <div v-else class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-600"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
           
-          <!-- Dark overlay -->
-          <div class="absolute inset-0 bg-black/40"></div>
-          
-          <!-- League Info Overlay -->
-          <div class="absolute inset-0 flex items-end">
-            <div class="p-6 text-white w-full">
-              <div class="flex flex-col md:flex-row md:items-end md:justify-between">
-                <div class="flex-1">
-                  <h1 class="text-2xl md:text-3xl font-bold mb-2 drop-shadow-lg">{{ league.name }}</h1>
-                  <div class="flex flex-wrap gap-2">
-                    <span v-if="league.is_private" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm border border-white/30">
-                      <v-icon name="hi-solid-lock-closed" class="w-3 h-3 mr-1" />
-                      Private
-                    </span>
-                    <span v-else class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm border border-white/30">
-                      <v-icon name="hi-solid-globe-alt" class="w-3 h-3 mr-1" />
-                      Public
-                    </span>
-                    <span v-if="league.isAdmin" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/80 backdrop-blur-sm border border-yellow-400/50">
-                      <v-icon name="hi-solid-star" class="w-3 h-3 mr-1" />
-                      Admin
-                    </span>
-                    <span v-else-if="league.isMember" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/80 backdrop-blur-sm border border-blue-400/50">
-                      <v-icon name="hi-solid-user" class="w-3 h-3 mr-1" />
-                      Member
-                    </span>
-                  </div>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="flex gap-2 mt-4 md:mt-0">
-                  <!-- Join/Request Button for non-members -->
-                  <ButtonComponent
-                    v-if="!league.isMember && !league.isAdmin"
-                    variant="primary"
-                    size="sm"
-                    :text="league.is_private ? 'Request to Join' : 'Join League'"
-                    :icon="league.is_private ? 'hi-solid-lock-closed' : 'hi-solid-user'"
-                    @click="handleJoinLeague"
-                  />
-                  
-                  <!-- Admin Management Button -->
-                  <ButtonComponent
-                    v-if="league.isAdmin"
-                    variant="primary"
-                    size="sm"
-                    text="Manage League"
-                    icon="hi-solid-cog"
-                    @click="manageLeague"
-                  />
-                  
-                 
-                </div>
-              </div>
+          <!-- League Name Overlay -->
+          <div class="absolute bottom-0 left-0 right-0 px-4 pb-3">
+            <h1 class="text-[18px] sm:text-[20px] font-bold text-white leading-tight drop-shadow-lg">{{ league.name }}</h1>
+            <div class="flex items-center gap-2 mt-1.5">
+              <span v-if="league.is_private" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/20">
+                <v-icon name="hi-solid-lock-closed" class="w-2.5 h-2.5" /> Private
+              </span>
+              <span v-else class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/20">
+                <v-icon name="hi-solid-globe-alt" class="w-2.5 h-2.5" /> Public
+              </span>
+              <span v-if="league.isAdmin" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-yellow-500/80 backdrop-blur-sm text-white">
+                <v-icon name="hi-solid-star" class="w-2.5 h-2.5" /> Admin
+              </span>
+              <span v-else-if="league.isMember" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/80 backdrop-blur-sm text-white">
+                <v-icon name="hi-solid-user" class="w-2.5 h-2.5" /> Member
+              </span>
             </div>
+          </div>
+        </div>
+
+        <!-- Quick action row -->
+        <div v-if="!league.isMember && !league.isAdmin" class="px-4 py-3 border-t border-gray-100 dark:border-gray-700/60">
+          <ButtonComponent
+            variant="primary"
+            size="sm"
+            :text="league.is_private ? 'Request to Join' : 'Join League'"
+            class="w-full"
+            @click="handleJoinLeague"
+          />
+        </div>
+      </div>
+
+      <!-- Stats Row — compact horizontal -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 px-4 py-3">
+        <div class="grid grid-cols-3 divide-x divide-gray-100 dark:divide-gray-700/60">
+          <div class="text-center px-2">
+            <p class="text-[18px] font-bold text-gray-900 dark:text-white tabular-nums">{{ league.members_count || 0 }}<span class="text-[13px] font-normal text-gray-400">/{{ league.participants_count }}</span></p>
+            <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-0.5">Members</p>
+          </div>
+          <div class="text-center px-2">
+            <p class="text-[18px] font-bold text-gray-900 dark:text-white">
+              <span class="inline-flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Active
+              </span>
+            </p>
+            <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-0.5">Status</p>
+          </div>
+          <div class="text-center px-2">
+            <p class="text-[13px] font-semibold text-gray-900 dark:text-white tabular-nums">{{ formatDate(league.started_at) }}</p>
+            <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-0.5">Start Date</p>
           </div>
         </div>
       </div>
 
-      <!-- League Information Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Main Information -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Description -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <v-icon name="hi-solid-information-circle" class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">League Description</h2>
+      <!-- Description Card -->
+      <div v-if="league.description" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <div class="px-4 py-3">
+          <div class="flex items-center gap-2 mb-2">
+            <v-icon name="hi-solid-information-circle" class="w-[16px] h-[16px] text-blue-400 shrink-0" />
+            <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">About</h3>
+          </div>
+          <p class="text-[13px] text-gray-600 dark:text-gray-400 leading-relaxed">{{ league.description }}</p>
+        </div>
+      </div>
+
+      <!-- Participants Card -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <div class="px-4 py-3">
+          <div class="flex items-center gap-2 mb-3">
+            <v-icon name="hi-solid-user-group" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
+            <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Participants</h3>
+            <span class="text-[11px] text-gray-400 dark:text-gray-500">{{ league.members_count || 0 }} of {{ league.participants_count }}</span>
+          </div>
+          <div v-if="league.participants && league.participants.length > 0" class="space-y-1.5">
+            <div v-for="member in league.participants" :key="member.uuid" 
+              class="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+              <img 
+                :src="member.avatar || '/img/default-avatar.svg'" 
+                :alt="`${member.firstname} ${member.lastname}`"
+                class="w-8 h-8 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-700"
+                @error="handleImageError"
+              />
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+                  {{ member.firstname }} {{ member.lastname }}
+                </p>
               </div>
-            </div>
-            <div class="p-6">
-              <p v-if="league.description" class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                {{ league.description }}
-              </p>
-              <p v-else class="text-gray-500 dark:text-gray-400 italic">
-                No description available for this league.
-              </p>
             </div>
           </div>
-
-          <!-- Participants -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                  <v-icon name="hi-solid-user-group" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <div class="flex-1">
-                  <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Participants</h2>
-                  <p class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ league.members_count || 0 }} of {{ league.participants_count }} members
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="p-6">
-              <div v-if="league.participants && league.participants.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div v-for="member in league.participants" :key="member.uuid" 
-                  class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                  <img 
-                    :src="member.avatar || '/img/default-avatar.svg'" 
-                    :alt="`${member.firstname} ${member.lastname}`"
-                    class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
-                    @error="handleImageError"
-                  />
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {{ member.firstname }} {{ member.lastname }}
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                      League Member
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="text-center py-8">
-                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <v-icon name="hi-solid-user-group" class="w-8 h-8 text-gray-400" />
-                </div>
-                <p class="text-gray-500 dark:text-gray-400">No participants yet</p>
-              </div>
-            </div>
+          <div v-else class="py-6 text-center">
+            <v-icon name="hi-solid-user-group" class="w-6 h-6 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
+            <p class="text-[13px] text-gray-400 dark:text-gray-500">No participants yet</p>
           </div>
         </div>
+      </div>
 
-        <!-- Sidebar Information -->
-        <div class="space-y-6">
-          <!-- League Stats -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                  <v-icon name="hi-solid-chart-bar" class="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">League Info</h3>
-              </div>
-            </div>
-            <div class="p-6 space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Start Date</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ formatDate(league.started_at) }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Members</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ league.members_count || 0 }}/{{ league.participants_count }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Status</span>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
-                  <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1"></div>
-                  Active
-                </span>
-              </div>
-            </div>
+      <!-- Draft Card -->
+      <div v-if="league.draft" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <div class="px-4 py-3">
+          <div class="flex items-center gap-2 mb-3">
+            <v-icon name="hi-solid-calendar" class="w-[16px] h-[16px] text-orange-500 dark:text-orange-400 shrink-0" />
+            <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Draft</h3>
           </div>
-
-          <!-- Draft Information -->
-          <div v-if="league.draft" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                  <v-icon name="hi-solid-calendar" class="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Draft Settings</h3>
-              </div>
+          <div class="space-y-2.5">
+            <div class="flex justify-between items-center">
+              <span class="text-[12px] text-gray-400 dark:text-gray-500">Date</span>
+              <span class="text-[12px] font-medium text-gray-900 dark:text-white tabular-nums">{{ formatDate(league.draft.draft_day) }}</span>
             </div>
-            <div class="p-6 space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Draft Date</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ formatDate(league.draft.draft_day) }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Pick Timer</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ league.draft.pick_time }}s
-                </span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Draft Status</span>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ league.draft.status?.name || 'Not Started' }}
-                </span>
-              </div>
+            <div class="flex justify-between items-center">
+              <span class="text-[12px] text-gray-400 dark:text-gray-500">Pick Timer</span>
+              <span class="text-[12px] font-medium text-gray-900 dark:text-white tabular-nums">{{ league.draft.pick_time }}s</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-[12px] text-gray-400 dark:text-gray-500">Status</span>
+              <span class="text-[12px] font-medium text-gray-900 dark:text-white">{{ league.draft.status?.name || 'Not Started' }}</span>
+            </div>
 
-              <!-- Activate Draft Button (Admin only, when NOT_STARTED and all members joined) -->
-              <div v-if="league.isAdmin && draftStatusValue === 'NOT_STARTED' && league.members_count === league.participants_count" class="pt-2">
-                <ButtonComponent
-                  variant="primary"
-                  size="md"
-                  :text="isActivatingDraft ? 'Activating...' : 'Activate Draft'"
-                  :disabled="isActivatingDraft"
-                  class="w-full"
-                  @click="handleActivateDraft"
-                />
-              </div>
+            <!-- Activate Draft -->
+            <div v-if="league.isAdmin && draftStatusValue === 'NOT_STARTED' && league.members_count === league.participants_count" class="pt-2">
+              <ButtonComponent
+                variant="primary"
+                size="sm"
+                :text="isActivatingDraft ? 'Activating...' : 'Activate Draft'"
+                :disabled="isActivatingDraft"
+                class="w-full"
+                @click="handleActivateDraft"
+              />
+            </div>
 
-              <!-- Enter Draft Button (All users, when draft is ACTIVE) -->
-              <div v-if="draftStatusValue === 'ACTIVE'" class="pt-2">
-                <ButtonComponent
-                  variant="primary"
-                  size="md"
-                  text="Enter Draft"
-                  class="w-full"
-                  @click="goToDraft"
-                />
-              </div>
+            <!-- Enter Draft -->
+            <div v-if="draftStatusValue === 'ACTIVE'" class="pt-2">
+              <ButtonComponent variant="primary" size="sm" text="Enter Draft" class="w-full" @click="goToDraft" />
             </div>
           </div>
         </div>
@@ -463,43 +369,14 @@ watch(() => props.uuid, fetchLeague)
 </script>
 
 <style scoped>
-/* Loading spinner animation */
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Page enter animation */
-.animate-page-enter {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Accessibility: Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .animate-spin,
-  .animate-page-enter,
-  .transition-colors {
+  * {
     transition: none !important;
-    transform: none !important;
     animation: none !important;
   }
 }

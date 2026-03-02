@@ -3,15 +3,15 @@
     <!-- Loading State -->
     <div
       v-if="isLoading && players.length === 0"
-      class="flex items-center justify-center min-h-[400px]"
+      class="flex items-center justify-center min-h-[300px]"
     >
-      <div class="flex flex-col items-center gap-4">
+      <div class="flex flex-col items-center gap-2">
         <v-icon
           name="pr-spinner"
-          class="w-12 h-12 text-blue-600 dark:text-blue-400"
+          class="w-5 h-5 text-gray-300 dark:text-gray-600"
           animation="spin"
         />
-        <p class="text-gray-600 dark:text-gray-400 font-medium">
+        <p class="text-[13px] text-gray-400 dark:text-gray-500">
           Loading your team...
         </p>
       </div>
@@ -20,15 +20,15 @@
     <!-- Loading Rounds State -->
     <div
       v-else-if="isLoadingRounds && rounds.length === 0"
-      class="flex items-center justify-center min-h-[400px]"
+      class="flex items-center justify-center min-h-[300px]"
     >
-      <div class="flex flex-col items-center gap-4">
+      <div class="flex flex-col items-center gap-2">
         <v-icon
           name="pr-spinner"
-          class="w-12 h-12 text-blue-600 dark:text-blue-400"
+          class="w-5 h-5 text-gray-300 dark:text-gray-600"
           animation="spin"
         />
-        <p class="text-gray-600 dark:text-gray-400 font-medium">
+        <p class="text-[13px] text-gray-400 dark:text-gray-500">
           Loading rounds...
         </p>
       </div>
@@ -37,18 +37,18 @@
     <!-- Error State -->
     <div
       v-else-if="error"
-      class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl p-6"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2.5">
         <v-icon
           name="hi-solid-exclamation-circle"
-          class="w-8 h-8 text-red-600 dark:text-red-400"
+          class="w-5 h-5 text-red-500 shrink-0"
         />
         <div>
-          <h3 class="text-lg font-semibold text-red-900 dark:text-red-100">
+          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
             Error loading team
           </h3>
-          <p class="text-sm text-red-700 dark:text-red-300">{{ error }}</p>
+          <p class="text-[12px] text-gray-500 dark:text-gray-400">{{ error }}</p>
         </div>
       </div>
     </div>
@@ -56,20 +56,18 @@
     <!-- No League Selected -->
     <div
       v-else-if="!leagueUuid"
-      class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/30 rounded-xl p-6"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2.5">
         <v-icon
           name="hi-solid-information-circle"
-          class="w-8 h-8 text-yellow-600 dark:text-yellow-400"
+          class="w-5 h-5 text-amber-500 shrink-0"
         />
         <div>
-          <h3
-            class="text-lg font-semibold text-yellow-900 dark:text-yellow-100"
-          >
+          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
             No fantasy league selected
           </h3>
-          <p class="text-sm text-yellow-700 dark:text-yellow-300">
+          <p class="text-[12px] text-gray-500 dark:text-gray-400">
             Please select a fantasy league to view your team.
           </p>
         </div>
@@ -77,9 +75,9 @@
     </div>
 
     <!-- Round Selector -->
-    <div v-else-if="rounds.length > 0" class="mb-6">
+    <div v-else-if="rounds.length > 0" class="mb-4">
       <!-- Team Info Card -->
-      <ShowFantasyTeam v-if="leagueUuid" :league-uuid="leagueUuid" class="mb-4" />
+      <ShowFantasyTeam v-if="leagueUuid" :league-uuid="leagueUuid" class="mb-3" />
 
       <!-- Round Navigation -->
       <RoundSelector
@@ -95,22 +93,22 @@
       />
 
       <!-- Fantasy Team Display -->
-      <div class="mt-6">
+      <div class="mt-4">
         <!-- Starters Section -->
         <StartersTable
           :players="players"
           :formation="league?.formation ?? null"
           :highlighted-player-uuid="highlightedPlayerUuid"
-          class="mb-6"
+          class="mb-4"
           @draft-by-position="handleDraftPlayerByPosition"
         >
           <template #header-action>
             <button
-              @click="goToDraftPlayers"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-medium rounded-lg backdrop-blur-sm transition-all duration-200 border border-white/30 hover:border-white/50"
-              title="View available players to draft"
+              @click="goToSearchPlayers"
+              class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/20 active:bg-white/30 text-white text-[11px] font-medium rounded-lg backdrop-blur-sm transition-all border border-white/30"
+              title="Search and add players to your team"
             >
-              <v-icon name="hi-solid-user-add" class="w-3.5 h-3.5" />
+              <v-icon name="hi-solid-user-add" class="w-3 h-3" />
               <span class="hidden sm:inline">Add Players</span>
               <span class="sm:hidden">Add</span>
             </button>
@@ -124,26 +122,25 @@
           :highlighted-player-uuid="highlightedPlayerUuid"
           @draft-by-position="handleDraftPlayerByPosition"
         />
+
       </div>
     </div>
 
     <!-- No Rounds Available -->
     <div
       v-else-if="!isLoadingRounds && rounds.length === 0"
-      class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/30 rounded-xl p-6"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2.5">
         <v-icon
           name="hi-solid-information-circle"
-          class="w-8 h-8 text-yellow-600 dark:text-yellow-400"
+          class="w-5 h-5 text-amber-500 shrink-0"
         />
         <div>
-          <h3
-            class="text-lg font-semibold text-yellow-900 dark:text-yellow-100"
-          >
+          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
             No rounds available
           </h3>
-          <p class="text-sm text-yellow-700 dark:text-yellow-300">
+          <p class="text-[12px] text-gray-500 dark:text-gray-400">
             There are no rounds configured for this fantasy league yet.
           </p>
         </div>
@@ -250,25 +247,19 @@ function handleGoToLeagues() {
   router.push({ name: "userFantasyLeague" });
 }
 
-function goToDraftPlayers() {
-  if (leagueUuid.value) {
-    router.push({
-      name: "playersToDraft",
-      params: { uuid: leagueUuid.value },
-    });
-  }
+/**
+ * Navigate to the dedicated search players page.
+ */
+function goToSearchPlayers() {
+  if (!leagueUuid.value) return;
+  router.push({
+    name: 'searchPlayerFantasy',
+    params: { uuid: leagueUuid.value },
+  });
 }
 
 function handleDraftPlayerByPosition(position: string) {
-  if (!leagueUuid.value) return;
-  router.push({
-    name: "playersToDraft",
-    params: { uuid: leagueUuid.value },
-    query: {
-      position: position === "BENCH" || position === "FLEX" ? "ALL" : position,
-      slotType: position,
-    },
-  });
+  goToSearchPlayers();
 }
 
 /**
@@ -314,17 +305,10 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Smooth transitions */
-@media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: reduce) {
   * {
-    transition-duration: 0.2s;
-  }
-}
-
-/* Responsive table */
-@media (max-width: 640px) {
-  table {
-    font-size: 0.875rem;
+    transition: none !important;
+    animation: none !important;
   }
 }
 </style>

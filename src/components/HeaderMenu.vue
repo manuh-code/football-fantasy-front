@@ -1,20 +1,19 @@
 <template>
-  <!-- Menú superior - siempre visible -->
-  <nav aria-label="Main navigation" class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200 safe-area-top">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-4 h-14 sm:h-16">
-      <!-- Left side - Logo/Brand (clickable to gaming) -->
+  <!-- Top Navigation — iOS / Apple Sports style -->
+  <nav aria-label="Main navigation" class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800 safe-area-top">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 h-12 sm:h-14">
+      <!-- Left side - Logo/Brand -->
       <button
         @click="handleGoGaming"
-        class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 group"
+        class="flex items-center gap-2 -ml-1 px-1.5 py-1 rounded-xl active:bg-gray-100 dark:active:bg-gray-800 transition-colors duration-150 focus:outline-none group"
         aria-label="Go to games"
         title="Go to Games"
       >
-        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-          <v-icon name="hi-solid-lightning-bolt" class="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[10px] flex items-center justify-center">
+          <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
         </div>
         <div class="hidden sm:flex flex-col items-start">
-          <span class="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-tight">Fantasy MX</span>
-          <span class="text-xs text-gray-500 dark:text-gray-400 leading-tight">Football</span>
+          <span class="text-[15px] font-bold text-gray-900 dark:text-white leading-tight tracking-tight">Fantasy MX</span>
         </div>
       </button>
 
@@ -22,12 +21,12 @@
       <div class="flex-1"></div>
 
       <!-- Right side - User Avatar -->
-      <div class="flex items-center gap-2 sm:gap-3">
+      <div class="flex items-center gap-2.5">
         <!-- Login Button (when not authenticated) -->
         <button
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
-          class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg font-medium text-sm sm:text-base transform hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-[13px] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           aria-label="Login"
         >
           Login
@@ -37,7 +36,7 @@
         <button
           v-if="isAuthenticatedRef"
           @click="handleViewProfile"
-          class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-100 dark:ring-gray-700 hover:ring-blue-500/50 dark:hover:ring-blue-400/50 transition-all duration-150 focus:outline-none active:scale-95"
           :title="`Go to ${userName} profile`"
           aria-label="Go to profile"
         >
@@ -49,7 +48,7 @@
           />
           <div 
             v-else 
-            class="w-full h-full flex items-center justify-center bg-blue-600 dark:bg-blue-700 text-white text-xs sm:text-sm font-semibold"
+            class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-[11px] font-bold"
           >
             {{ userInitials }}
           </div>

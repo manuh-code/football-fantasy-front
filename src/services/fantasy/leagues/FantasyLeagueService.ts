@@ -76,12 +76,20 @@ export class FantasyLeagueService {
         throw new Error('Failed to fetch players to draft');
     }
 
-    async addPlayer(payload: FantasyAddPlayerPayload): Promise<ApiResponse<null>> {
+    async pickerPlayer(payload: FantasyAddPlayerPayload): Promise<ApiResponse<null>> {
         const response = await this.api.post<ApiResponse<null>>(`fantasy/leagues/draft/pick/`, payload);
         if (response.data.code === 200) {
             return response.data;
         }
         throw new Error('Failed to add player');
+    }
+
+    async addPlayer(payload: FantasyAddPlayerPayload): Promise<ApiResponse<null>> {
+        const response = await this.api.post<ApiResponse<null>>(`fantasy/leagues/add/player`, payload);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to select player');
     }
 
     async addTeam(payload: FantasyUserTeamPayload): Promise<ApiResponse<FantasyTeamData>> {
@@ -153,6 +161,17 @@ export class FantasyLeagueService {
             return response.data;
         }
         throw new Error('Failed to activate draft');
+    }
+
+    async completeDraft(leagueUuid: string): Promise<ApiResponse<null>> {
+        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/draft/complete`, {
+            fantasy_league_uuid: leagueUuid
+        }
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to complete draft');
     }
 
     async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<DraftTurn | null> {

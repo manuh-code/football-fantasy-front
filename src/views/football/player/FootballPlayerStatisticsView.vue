@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-24 md:pb-8">
-    <!-- Back to League Button (if coming from a league) -->
-    <div v-if="returnPath" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-950 pb-24 md:pb-8">
+    <!-- Back to League Button -->
+    <div v-if="returnPath" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 mb-2">
       <button
         @click="goBackToLeague"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-gray-600 dark:text-gray-400 rounded-lg active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
       >
-        <v-icon name="hi-solid-arrow-left" class="w-4 h-4" />
-        <span class="text-sm font-medium">Back to League Details</span>
+        <v-icon name="hi-solid-arrow-left" class="w-3.5 h-3.5" />
+        Back to League
       </button>
     </div>
     
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
       <FootballPlayerStatistic />
     </div>
   </div>

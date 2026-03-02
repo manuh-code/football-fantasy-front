@@ -169,6 +169,16 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/fantasy/league/:uuid/search-players',
+    name: 'searchPlayerFantasy',
+    component: () => import(/* webpackChunkName: "search-player-fantasy" */ '@/views/user/fantasy/SearchPlayerFantasyView.vue'),
+    meta: {
+      title: 'Search Players - Football Fantasy',
+      description: 'Search and add players to your fantasy team',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/fantasy/league/join',
     name: 'joinFantasyLeague',
     // Route level code-splitting for better performance

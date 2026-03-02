@@ -1,10 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-24 md:pb-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-4 md:py-8 pb-24 md:pb-8">
     <div class="container mx-auto px-4 max-w-7xl">
-      <!-- My Fantasy Team Component -->
-      <div class="animate-page-enter">
-        <MyFantasyTeamComponent />
-      </div>
+      <MyFantasyTeamComponent />
     </div>
   </div>
 </template>
@@ -15,21 +12,3 @@ import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamCompo
 // Set page title
 document.title = 'My Fantasy Team - Football Fantasy'
 </script>
-
-<style scoped>
-/* Animación de entrada */
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-page-enter {
-  animation: page-enter 0.3s ease-out;
-}
-</style>

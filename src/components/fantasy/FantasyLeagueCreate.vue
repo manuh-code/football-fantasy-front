@@ -1,25 +1,21 @@
 <template>
-    <div class="animate-page-enter grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Main Form -->
         <div class="lg:col-span-2">
-            <form @submit.prevent="handleSubmit" class="space-y-6">
+            <form @submit.prevent="handleSubmit" class="space-y-4">
                 <!-- League Information Section -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
                     <!-- Section Header -->
-                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                                <v-icon name="bi-trophy-fill" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Fantasy League</h2>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Quick setup for your fantasy league</p>
-                            </div>
+                    <div class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <v-icon name="bi-trophy-fill" class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0" />
+                            <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white">Create Fantasy League</h2>
+                            <span class="text-[11px] text-gray-400 dark:text-gray-500">Quick setup</span>
                         </div>
                     </div>
 
                     <!-- Form Fields -->
-                    <div class="p-6 space-y-6">
+                    <div class="px-4 pb-4 space-y-4">
                         <!-- League Name -->
                         <div>
                             <FormInput
@@ -41,8 +37,8 @@
                                 :error="getFieldError('password')"
                                 :disabled="isLoading"
                             />
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                This password will be required for others to join your league
+                            <p class="mt-1 text-[11px] text-gray-400 dark:text-gray-500">
+                                Required for others to join your league
                             </p>
                         </div>
 
@@ -59,20 +55,17 @@
                                 :disabled="isLoading || isLoadingOptions"
                                 :required="true"
                             />
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Choose how many participants can join this league
-                            </p>
                         </div>
 
                         <!-- Form Actions -->
-                        <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col sm:flex-row gap-3 pt-3 border-t border-gray-100 dark:border-gray-700/60">
                             <ButtonComponent
                                 type="submit"
                                 :loading="isLoading"
                                 :disabled="!isFormValid"
                                 class="flex-1 sm:flex-none"
                             >
-                                <v-icon name="hi-solid-plus" class="w-4 h-4 mr-2" />
+                                <v-icon name="hi-solid-plus" class="w-4 h-4 mr-1.5" />
                                 Create League
                             </ButtonComponent>
                             <ButtonComponent
@@ -89,108 +82,79 @@
             </form>
         </div>
 
-        <!-- League Creation Sidebar -->
-        <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <!-- Sidebar Header -->
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Quick Setup</h3>
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-4">
+            <!-- Quick Setup Info -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+                <div class="px-4 py-3">
+                    <div class="flex items-center gap-2 mb-3">
+                        <v-icon name="hi-solid-information-circle" class="w-[16px] h-[16px] text-blue-400 shrink-0" />
+                        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Quick Setup</h3>
                     </div>
-                </div>
-
-                <!-- Sidebar Content -->
-                <div class="p-6 space-y-4">
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-check" class="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                                <v-icon name="hi-solid-check" class="w-2.5 h-2.5 text-emerald-500" />
+                            </span>
+                            <div>
+                                <p class="text-[12px] font-medium text-gray-900 dark:text-white">Simplified Creation</p>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500">Only 3 fields to start quickly</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Simplified Creation</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Only 2 fields to start your league quickly</p>
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                                <v-icon name="hi-solid-lock-closed" class="w-2.5 h-2.5 text-blue-500" />
+                            </span>
+                            <div>
+                                <p class="text-[12px] font-medium text-gray-900 dark:text-white">Private by Default</p>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500">Password required to join</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-lock-closed" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Private by Default</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Your league will be private and require a password to join</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-cog" class="w-3 h-3 text-purple-600 dark:text-purple-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Automatic Configuration</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Standard fantasy settings will be applied automatically</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <v-icon name="hi-solid-users" class="w-3 h-3 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Ready to Invite</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Share your league password with friends to get started</p>
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                                <v-icon name="hi-solid-cog" class="w-2.5 h-2.5 text-purple-500" />
+                            </span>
+                            <div>
+                                <p class="text-[12px] font-medium text-gray-900 dark:text-white">Auto Configuration</p>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500">Standard settings applied automatically</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Form Progress -->
-            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Form Progress</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+                <div class="px-4 py-3">
+                    <div class="flex items-center gap-2 mb-3">
+                        <v-icon name="hi-solid-chart-bar" class="w-[16px] h-[16px] text-emerald-500 shrink-0" />
+                        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Progress</h3>
+                        <span class="ml-auto text-[11px] font-semibold tabular-nums" :class="isFormValid ? 'text-emerald-500' : 'text-gray-400'">
+                            {{ Math.round((completedFields / 3) * 100) }}%
+                        </span>
                     </div>
-                </div>
-
-                <div class="p-6">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">League Name</span>
-                            <span class="text-xs font-medium" :class="formData.name.trim() ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ formData.name.trim() ? 'Complete' : 'Pending' }}
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Password</span>
-                            <span class="text-xs font-medium" :class="formData.password.trim() ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ formData.password.trim() ? 'Complete' : 'Pending' }}
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Participants</span>
-                            <span class="text-xs font-medium" :class="formData.participants_count !== null ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ formData.participants_count !== null ? 'Complete' : 'Pending' }}
-                            </span>
-                        </div>
+                    <!-- Progress bar -->
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-3">
+                        <div 
+                            class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300"
+                            :style="{ width: `${Math.round((completedFields / 3) * 100)}%` }"
+                        ></div>
                     </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">Overall Progress</span>
-                            <span class="text-sm font-medium" :class="isFormValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ Math.round((completedFields / 3) * 100) }}%
-                            </span>
+                            <span class="text-[12px] text-gray-500 dark:text-gray-400">League Name</span>
+                            <v-icon v-if="formData.name.trim()" name="hi-solid-check-circle" class="w-3.5 h-3.5 text-emerald-500" />
+                            <span v-else class="w-3.5 h-3.5 rounded-full border-2 border-gray-200 dark:border-gray-600 inline-block"></span>
                         </div>
-                        <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div 
-                                class="bg-emerald-600 h-2 rounded-full transition-all duration-300"
-                                :style="{ width: `${Math.round((completedFields / 3) * 100)}%` }"
-                            ></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[12px] text-gray-500 dark:text-gray-400">Password</span>
+                            <v-icon v-if="formData.password.trim()" name="hi-solid-check-circle" class="w-3.5 h-3.5 text-emerald-500" />
+                            <span v-else class="w-3.5 h-3.5 rounded-full border-2 border-gray-200 dark:border-gray-600 inline-block"></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[12px] text-gray-500 dark:text-gray-400">Participants</span>
+                            <v-icon v-if="formData.participants_count !== null" name="hi-solid-check-circle" class="w-3.5 h-3.5 text-emerald-500" />
+                            <span v-else class="w-3.5 h-3.5 rounded-full border-2 border-gray-200 dark:border-gray-600 inline-block"></span>
                         </div>
                     </div>
                 </div>
@@ -311,19 +275,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Custom styles for better UX */
-.animate-page-enter {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
 }
 </style>

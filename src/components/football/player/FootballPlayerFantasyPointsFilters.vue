@@ -1,23 +1,16 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex items-center gap-2 md:gap-3">
-        <div class="w-8 h-8 md:w-10 md:h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-          <v-icon name="hi-solid-lightning-bolt" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
-        </div>
-        <div class="min-w-0">
-          <h2 class="text-base md:text-xl font-semibold text-gray-900 dark:text-white truncate">Fantasy Points Filters</h2>
-          <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">
-            Choose teams and stages to analyse league fantasy points.
-          </p>
-        </div>
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+    <div class="px-4 py-3">
+      <div class="flex items-center gap-2">
+        <v-icon name="hi-solid-lightning-bolt" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
+        <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white">Fantasy Points Filters</h2>
       </div>
     </div>
 
-    <div class="p-4 md:p-6">
-      <form @submit.prevent="emit('search')" class="space-y-4">
+    <div class="px-4 pb-4">
+      <form @submit.prevent="emit('search')" class="space-y-3">
         <!-- Filters Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <!-- Teams -->
         <div>
           <MultiselectComponent
@@ -69,22 +62,22 @@
 
         <!-- Initial state -->
         <div v-if="disabled && isInitializing">
-          <div class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
-            <v-icon name="pr-spinner" class="w-3 h-3 mr-2" animation="spin" />
+          <div class="px-3 py-2 text-[12px] text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-dashed border-gray-200 dark:border-gray-600">
+            <v-icon name="pr-spinner" class="w-3 h-3 mr-1.5" animation="spin" />
             Preparing league data…
           </div>
         </div>
 
         <!-- Message when there is no active season -->
         <div v-else-if="disabled && !isInitializing">
-          <div class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-700">
-            <v-icon name="hi-solid-information-circle" class="w-4 h-4 mr-2 text-amber-600 dark:text-amber-400" />
-            This league does not have an active season to query fantasy points.
+          <div class="px-3 py-2 text-[12px] text-gray-500 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-100 dark:border-amber-700/50">
+            <v-icon name="hi-solid-information-circle" class="w-3.5 h-3.5 mr-1.5 text-amber-500 dark:text-amber-400" />
+            This league does not have an active season.
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="flex flex-col md:flex-row justify-end gap-3">
+        <div class="flex flex-col md:flex-row justify-end gap-2">
           <ButtonComponent
             type="button"
             variant="outline"

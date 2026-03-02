@@ -21,17 +21,13 @@
         <div class="flex-1 flex flex-col overflow-hidden min-w-0">
           <!-- Header -->
           <div
-            class="flex items-center justify-between px-3 py-2.5 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-emerald-600 to-green-600 shrink-0"
+            class="flex items-center justify-between px-3 py-2.5 border-b border-gray-100 dark:border-gray-700/60 bg-white dark:bg-gray-900 shrink-0"
           >
             <div class="flex items-center gap-2 min-w-0">
-              <div
-                class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0"
-              >
-                <v-icon name="ri-team-line" class="w-4 h-4 text-white" />
-              </div>
+              <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
               <h2
                 v-if="desktopState !== 'peek'"
-                class="text-sm font-bold text-white truncate"
+                class="text-[13px] font-semibold text-gray-900 dark:text-white truncate"
               >
                 My Team
               </h2>
@@ -40,7 +36,7 @@
             <!-- State badge -->
             <span
               v-if="refreshKey > 0 && desktopState !== 'peek'"
-              class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-pulse shrink-0"
+              class="w-2 h-2 bg-amber-400 rounded-full animate-pulse shrink-0"
             />
           </div>
 
@@ -51,7 +47,7 @@
           >
             <v-icon
               name="pr-spinner"
-              class="w-8 h-8 text-emerald-500"
+              class="w-5 h-5 text-gray-300 dark:text-gray-600"
               animation="spin"
             />
           </div>
@@ -79,7 +75,7 @@
 
         <!-- Drag handle (right edge) -->
         <div
-          class="w-5 flex items-center justify-center cursor-col-resize shrink-0 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-l border-gray-200 dark:border-gray-700 select-none"
+          class="w-5 flex items-center justify-center cursor-col-resize shrink-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-l border-gray-100 dark:border-gray-700/60 select-none"
           @mousedown.prevent="onDesktopDragStart"
           @click="toggleDesktop"
         >
@@ -126,14 +122,10 @@
           @click="toggleMobile"
         >
           <div class="flex items-center gap-2">
-            <div
-              class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center"
-            >
-              <v-icon name="ri-team-line" class="w-4 h-4 text-white" />
-            </div>
+            <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
             <div>
               <h3
-                class="text-sm font-bold text-gray-900 dark:text-white leading-tight"
+                class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight"
               >
                 My Team
               </h3>
@@ -173,7 +165,7 @@
         >
           <v-icon
             name="pr-spinner"
-            class="w-8 h-8 text-emerald-500"
+            class="w-5 h-5 text-gray-300 dark:text-gray-600"
             animation="spin"
           />
         </div>
