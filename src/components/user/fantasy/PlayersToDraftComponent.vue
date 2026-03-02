@@ -713,15 +713,17 @@ watch(isMyTurn, (newVal, oldVal) => {
 });
 
 // 6. Watch: notificar cuando el draft se completa
-watch(isDraftComplete, (newVal) => {
-  if (newVal) {
-    toast.info(
-      "Draft Complete!",
-      "All players have been selected. Check your team! 🏆",
-      { duration: 8000 },
-    );
+// Cuando el draft se completa, persistir en BD
+watch(isDraftComplete, async (isComplete) => {
+  if (isComplete && leagueUuid.value) {
+    try {
+      await fantasyLeagueService.completeDraft(leagueUuid.value)
+      toast.success('Draft Completed!', 'All picks have been made. The draft is now complete. 🎉')
+    } catch (error) {
+      console.error('[Draft] Error completing draft:', error)
+    }
   }
-});
+})
 
 // Router
 const route = useRoute();
