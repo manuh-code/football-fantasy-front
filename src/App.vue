@@ -1,5 +1,8 @@
 <template>
-  <div id="app" class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+  <div
+    id="app"
+    class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200"
+  >
     <!-- Swipe Navigation Indicator -->
     <transition name="swipe-indicator">
       <div
@@ -10,8 +13,18 @@
         }"
       >
         <div class="swipe-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </div>
       </div>
@@ -24,12 +37,19 @@
     <div
       class="app-content"
       :style="{
-        transform: swipeNav.isActive.value ? `translateX(${swipeNav.getTransform()}px)` : 'translateX(0)',
-        transition: swipeNav.isActive.value ? 'none' : 'transform 0.3s ease-out',
+        transform: swipeNav.isActive.value
+          ? `translateX(${swipeNav.getTransform()}px)`
+          : 'translateX(0)',
+        transition: swipeNav.isActive.value
+          ? 'none'
+          : 'transform 0.3s ease-out',
       }"
     >
       <!-- Global Football League Selection Modal -->
-      <FootballLeagueSelectionModal :isVisible="showLeagueModal" @close="showLeagueModal = false" />
+      <FootballLeagueSelectionModal
+        :isVisible="showLeagueModal"
+        @close="showLeagueModal = false"
+      />
 
       <main class="flex-1 pb-24 main-content-safe">
         <router-view />
@@ -45,28 +65,29 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
-import HeaderMenu from '@/components/HeaderMenu.vue'
-import { ToastContainer, FooterMenu } from '@/components/ui'
-import FootballLeagueSelectionModal from '@/components/football/leagues/FootballLeagueSelectionModal.vue'
-import { useThemeStore } from './store/theme'
-import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
-import { useSwipeNavigation } from '@/composables'
+import HeaderMenu from "@/components/HeaderMenu.vue";
+import { ToastContainer, FooterMenu } from "@/components/ui";
+import FootballLeagueSelectionModal from "@/components/football/leagues/FootballLeagueSelectionModal.vue";
+import { useThemeStore } from "./store/theme";
+import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
+import { useSwipeNavigation, useToast } from "@/composables";
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
-import { useDevResetStores } from '@/composables/useDevResetStores';
-
-
-
+import { useDevResetStores } from "@/composables/useDevResetStores";
+import { usePushNotifications } from "./composables/usePushNotifications";
 
 const themeStore = useThemeStore();
-const store = useFootballLeagueStore()
-const router = useRouter()
-const showLeagueModal = ref(false)
+const store = useFootballLeagueStore();
+const router = useRouter();
+const showLeagueModal = ref(false);
+const { requestPermissionAndRegister, onForegroundMessage } =
+  usePushNotifications();
+const toast = useToast();
 
 // Initialize swipe navigation
-const swipeNav = useSwipeNavigation()
+const swipeNav = useSwipeNavigation();
 
 // Dev tools: Ctrl+Shift+K to reset all stores (dev mode only)
 let cleanupDevShortcut: (() => void) | undefined;
@@ -79,46 +100,85 @@ onBeforeUnmount(() => cleanupDevShortcut?.());
 // Función para verificar y mostrar modal si no hay liga seleccionada
 const checkLeagueSelection = () => {
   if (!store.existLeague()) {
-    showLeagueModal.value = true
+    showLeagueModal.value = true;
   }
-}
+};
 
-onMounted(() => {
+onMounted(async () => {
   FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
   // Initialize theme on app mount
-  themeStore.initTheme()
+  themeStore.initTheme();
   // Show league selection modal when no league is selected
-  checkLeagueSelection()
-})
+  checkLeagueSelection();
+
+  // Registrar push notifications
+  await requestPermissionAndRegister();
+
+  // Escuchar mensajes en foreground
+  onForegroundMessage((payload) => {
+    const { title, body } = payload.notification || {};
+    const data = payload.data || {};
+
+    // Mostrar toast en la app
+    toast.info(title || "¡Notificación!", body || "");
+
+    // Si es una activación de draft, podrías forzar refresh del componente
+    if (data.type === "draft_activated") {
+      // Opcional: navegar directamente
+      // router.push(`/fantasy/league/${data.league_uuid}/draft`)
+    }
+  });
+  navigator.serviceWorker?.addEventListener("message", (event) => {
+    if (event.data?.type === "NOTIFICATION_CLICK") {
+      const { url } = event.data;
+      if (url) {
+        router.push(url);
+      }
+    }
+  });
+});
+
 
 // Watcher para cuando se selecciona una liga
 watch(
   () => store.getLeague,
   (newLeague) => {
-    if (newLeague) showLeagueModal.value = false
-  }
-)
+    if (newLeague) showLeagueModal.value = false;
+  },
+);
 
 // Watcher para cambios de ruta - verificar liga seleccionada
 watch(
   () => router.currentRoute.value.path,
   () => {
     // Verificar si hay liga seleccionada cada vez que cambie de ruta
-    checkLeagueSelection()
-  }
-)
+    checkLeagueSelection();
+  },
+);
 </script>
-
 
 <style lang="scss">
 // Import Inter font from Google Fonts
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 #app {
-  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  font-family:
+    "Inter",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'rlig' 1, 'calt' 1;
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
   position: relative;
   overflow-x: hidden;
 }
@@ -148,10 +208,14 @@ body,
 
 // Main content padding that accounts for header + safe area
 .main-content-safe {
-  padding-top: calc(3.5rem + env(safe-area-inset-top, 0px)); // 56px (h-14) + safe area
+  padding-top: calc(
+    3.5rem + env(safe-area-inset-top, 0px)
+  ); // 56px (h-14) + safe area
 
   @media (min-width: 640px) {
-    padding-top: calc(4rem + env(safe-area-inset-top, 0px)); // 64px (h-16) + safe area
+    padding-top: calc(
+      4rem + env(safe-area-inset-top, 0px)
+    ); // 64px (h-16) + safe area
   }
 }
 
@@ -168,7 +232,7 @@ body,
   pointer-events: none;
   z-index: 9999;
   background: linear-gradient(to right, rgba(59, 130, 246, 0.1), transparent);
-  
+
   .swipe-icon {
     width: 40px;
     height: 40px;
@@ -179,7 +243,7 @@ body,
     border-radius: 50%;
     color: white;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    
+
     svg {
       width: 24px;
       height: 24px;

@@ -622,6 +622,7 @@ import DraftOrderCarousel from "@/components/fantasy/draft/DraftOrderCarousel.vu
 import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
 import { useToast } from "@/composables/useToast";
 import { useDraftChannel } from "@/composables/useDraftChannel";
+import { useDraftTimer } from "@/composables/useDraftTimer";
 import { useUserStore } from "@/store"; // ya lo tienes en useAblyBroadcast
 
 const userStore = useUserStore();
@@ -751,101 +752,24 @@ let observer: IntersectionObserver | null = null;
 // Composables
 const toast = useToast();
 
-// ═══════════ STANDALONE DRAFT TIMER (independent of carousel) ═══════════
-const draftTimeRemaining = ref(0);
-const draftTimerExpired = ref(false);
-let draftTimerInterval: ReturnType<typeof setInterval> | null = null;
+// ═══════════ DRAFT TIMER (via composable – default 60s per turn) ═══════════
+const pickTimeFromLeague = computed(() => league.value?.draft?.pick_time ?? 0);
 
-const draftPickTime = computed(() => league.value?.draft?.pick_time ?? 0);
-
-const draftFormattedTime = computed(() => {
-  const t = draftTimeRemaining.value;
-  if (t <= 0) return "0";
-  if (t >= 60) {
-    const m = Math.floor(t / 60);
-    const s = t % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
-  }
-  return String(t);
-});
-
-const draftTimerProgress = computed(() => {
-  if (!draftPickTime.value || draftPickTime.value <= 0) return 0;
-  return draftTimeRemaining.value / draftPickTime.value;
-});
-
-const draftTimerUrgency = computed<"normal" | "warning" | "critical">(() => {
-  const pct = draftTimerProgress.value;
-  if (pct <= 0.15) return "critical";
-  if (pct <= 0.35) return "warning";
-  return "normal";
-});
-
-const draftTimerBarColor = computed(() => {
-  if (draftTimerUrgency.value === "critical") return "bg-red-400";
-  if (draftTimerUrgency.value === "warning") return "bg-yellow-300";
-  return "bg-white/80";
-});
-
-const draftTimerBannerClass = computed(() => {
-  if (draftTimerExpired.value) {
-    return "bg-gradient-to-r from-gray-600 to-gray-700";
-  }
-  if (draftTimerUrgency.value === "critical") {
-    return isMyTurn.value
-      ? "bg-gradient-to-r from-red-600 to-red-700 ring-2 ring-red-400 ring-offset-2 dark:ring-offset-gray-900"
-      : "bg-gradient-to-r from-red-500 to-orange-500";
-  }
-  if (draftTimerUrgency.value === "warning") {
-    return isMyTurn.value
-      ? "bg-gradient-to-r from-amber-500 to-orange-500 ring-2 ring-amber-400 ring-offset-2 dark:ring-offset-gray-900"
-      : "bg-gradient-to-r from-amber-500 to-yellow-500";
-  }
-  return isMyTurn.value
-    ? "bg-gradient-to-r from-emerald-500 to-teal-500 ring-2 ring-emerald-400 ring-offset-2 dark:ring-offset-gray-900"
-    : "bg-gradient-to-r from-blue-500 to-indigo-500";
-});
-
-function startDraftTimer() {
-  stopDraftTimer();
-  draftTimerExpired.value = false;
-  if (!draftPickTime.value || draftPickTime.value <= 0 || isDraftComplete.value || !currentTurn.value) return;
-  draftTimeRemaining.value = draftPickTime.value;
-  draftTimerInterval = setInterval(() => {
-    draftTimeRemaining.value--;
-    if (draftTimeRemaining.value <= 0) {
-      draftTimeRemaining.value = 0;
-      draftTimerExpired.value = true;
-      stopDraftTimer();
-      handleTimerExpired();
-    }
-  }, 1000);
-}
-
-function stopDraftTimer() {
-  if (draftTimerInterval) {
-    clearInterval(draftTimerInterval);
-    draftTimerInterval = null;
-  }
-}
-
-// Restart timer whenever the current turn changes
-watch(
+const {
+  expired: draftTimerExpired,
+  duration: draftPickTime,
+  formattedTime: draftFormattedTime,
+  progress: draftTimerProgress,
+  urgency: draftTimerUrgency,
+  barColor: draftTimerBarColor,
+  bannerClass: draftTimerBannerClass,
+} = useDraftTimer(
+  pickTimeFromLeague,
   currentTurn,
-  (newTurn) => {
-    if (newTurn && !isDraftComplete.value) {
-      startDraftTimer();
-    } else {
-      stopDraftTimer();
-    }
-  },
-  { immediate: true },
+  isDraftComplete,
+  isMyTurn,
+  handleTimerExpired,
 );
-
-// Stop timer when draft completes
-watch(isDraftComplete, (done) => {
-  if (done) stopDraftTimer();
-});
 // ═══════════ END DRAFT TIMER ═══════════
 
 // Computed
@@ -1273,7 +1197,6 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  stopDraftTimer();
   if (observer) {
     observer.disconnect();
   }
