@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { getToken, onMessage } from 'firebase/messaging'
 import { getFirebaseMessaging } from '@/firebase/config'
 import { useApiFantasy } from '@/composables/useApiFantasy'
+import { getDeviceUuid } from '@/utils/deviceUuid'
 
 const fcmToken = ref<string | null>(null)
 const isPermissionGranted = ref(false)
@@ -12,6 +13,7 @@ export function usePushNotifications() {
 
   /**
    * Solicita permiso de notificaciones y registra el token en el backend.
+   * Funciona tanto para usuarios anónimos como autenticados.
    */
   async function requestPermissionAndRegister(): Promise<string | null> {
     if (isRegistering.value) return fcmToken.value
@@ -53,9 +55,10 @@ export function usePushNotifications() {
 
       fcmToken.value = token
 
-      // 5. Enviar token al backend
+      // 5. Enviar token al backend CON device_uuid (soporta anónimos)
       await apiFantasyInstance.post('fcm-token', {
         token,
+        device_uuid: getDeviceUuid(),
         device_name: 'web',
       })
 
@@ -66,6 +69,21 @@ export function usePushNotifications() {
       return null
     } finally {
       isRegistering.value = false
+    }
+  }
+
+  /**
+   * Vincula los tokens del dispositivo al usuario tras el login.
+   * Llama al endpoint autenticado /user/fcm-token/claim.
+   */
+  async function claimTokensForUser(): Promise<void> {
+    try {
+      await apiFantasyInstance.post('user/fcm-token/claim', {
+        device_uuid: getDeviceUuid(),
+      })
+      console.log('FCM tokens claimed for authenticated user')
+    } catch (error) {
+      console.error('Error claiming FCM tokens:', error)
     }
   }
 
@@ -84,13 +102,17 @@ export function usePushNotifications() {
 
   /**
    * Elimina el token del backend (para logout).
+   * NO elimina el device_uuid — el dispositivo puede recibir notificaciones anónimas.
    */
   async function unregisterToken(): Promise<void> {
     if (!fcmToken.value) return
 
     try {
       await apiFantasyInstance.delete('fcm-token', {
-        data: { token: fcmToken.value },
+        data: {
+          token: fcmToken.value,
+          device_uuid: getDeviceUuid(),
+        },
       })
       fcmToken.value = null
     } catch (error) {
@@ -102,6 +124,7 @@ export function usePushNotifications() {
     fcmToken,
     isPermissionGranted,
     requestPermissionAndRegister,
+    claimTokensForUser,
     onForegroundMessage,
     unregisterToken,
   }
