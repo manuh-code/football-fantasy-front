@@ -25,11 +25,14 @@
       <button
         v-if="canAccessMemberTabs"
         @click="handleTabChange('myteam')"
+        :disabled="leagueDetailStore.isDraftNotStarted"
         :class="[
           'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'myteam' 
-            ? 'text-emerald-500 dark:text-emerald-400' 
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
+          leagueDetailStore.isDraftNotStarted
+            ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50'
+            : activeTab === 'myteam' 
+              ? 'text-emerald-500 dark:text-emerald-400' 
+              : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
         ]"
         aria-label="Team"
       >
