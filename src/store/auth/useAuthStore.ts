@@ -3,6 +3,7 @@ import { getLoginService } from "@/services/login/LoginService";
 import { LoginPayload } from "@/interfaces/login/LoginPayload";
 import { LoginResponse } from "@/interfaces/login/LoginResponse";
 import { useUserStore } from "../user/useUserStore";
+import { usePushNotifications } from "@/composables/usePushNotifications";
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
@@ -57,9 +58,12 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async logout(): Promise<void> {
+      const { unregisterToken } = usePushNotifications();
       const response = await getLoginService().logout();
       if (response.code === 200) {
         this.clearAuth();
+        await unregisterToken()
+
       }
     },
   },

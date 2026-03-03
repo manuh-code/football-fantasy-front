@@ -9,13 +9,24 @@ const updateSW = registerSW({
   },
   onOfflineReady() {
     // App ready to work offline.
-    
+
   },
-  onRegistered() {
-    // SW Registered
+  onRegistered(registration) {
+    console.log('PWA SW registered')
+
+    // Registrar el SW de Firebase Messaging
+    if (registration && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+        scope: '/firebase-cloud-messaging-push-scope',
+      }).then((firebaseRegistration) => {
+        console.log('Firebase Messaging SW registered')
+      }).catch((error) => {
+        console.error('Firebase Messaging SW registration failed:', error)
+      })
+    }
   },
-  onRegisterError() {
-    // SW registration error
+  onRegisterError(error) {
+    console.error('SW registration error:', error)
   }
 })
 
