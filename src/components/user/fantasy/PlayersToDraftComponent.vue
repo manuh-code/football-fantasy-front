@@ -623,7 +623,10 @@ import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
 import { useToast } from "@/composables/useToast";
 import { useDraftChannel } from "@/composables/useDraftChannel";
 import { useDraftTimer } from "@/composables/useDraftTimer";
-import { useUserStore } from "@/store"; // ya lo tienes en useAblyBroadcast
+import { useFantasyRounds } from "@/composables/useFantasyRounds";
+import { useUserStore } from "@/store";
+import type { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import type { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 
 const userStore = useUserStore();
 
@@ -679,13 +682,16 @@ onAutoSkip(async (turnUserName: string) => {
 });
 
 // 3. Registrar callbacks
-// Cuando otro usuario pickea → eliminar el jugador de la lista local
+// Cuando otro usuario pickea → eliminar localmente y recargar la lista completa
 onPlayerPicked((payload) => {
+  // Remove player immediately from local list (optimistic)
   players.value = players.value.filter(
     (p) => p.player.uuid !== payload.player_uuid,
   );
   // Refresh team drawer data (useful if drawer is open)
   teamRefreshKey.value++;
+  // Reload full player list to stay in sync across all draft rooms
+  loadPlayers(false);
 });
 
 // Cuando el admin activa el draft estando ya en la sala
@@ -743,14 +749,64 @@ const addingPlayers = ref<Set<string>>(new Set());
 const selectedPosition = ref<string>("ALL");
 const selectedTeam = ref<string>("ALL");
 const teams = ref<FootballTeamResponse[]>([]);
-const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
+const myTeamPlayers = ref<FantasyFootballPlayersResponse[]>([]);
 const showTeamDrawer = ref(false);
 const teamRefreshKey = ref(0);
 let observer: IntersectionObserver | null = null;
 
 // Composables
 const toast = useToast();
+
+// ═══════════ FANTASY ROUNDS (needed to load my roster) ═══════════
+const { selectedRoundUuid, loadRounds } = useFantasyRounds(
+  () => leagueUuid.value,
+);
+
+// ═══════════ SLOT TYPE AUTO-DETECTION (STARTER → FLEX → BENCH) ═══════════
+
+/** Total starter slots from formation (GK + DF + MF + FW) */
+const totalStarterSlots = computed(() => {
+  const f = league.value?.formation;
+  if (!f) return 0;
+  return (
+    (f.goalkeeper?.starter ?? 0) +
+    (f.defender?.starter ?? 0) +
+    (f.midfielder?.starter ?? 0) +
+    (f.attacker?.starter ?? 0)
+  );
+});
+
+/** Total flex slots from formation */
+const totalFlexSlots = computed(() => league.value?.formation?.flex ?? 0);
+
+/** Total bench slots from formation */
+const totalBenchSlots = computed(() => league.value?.formation?.bench ?? 0);
+
+/** Count starters already picked (is_starter=true, is_flex=false) */
+const pickedStarters = computed(() =>
+  myTeamPlayers.value.filter((p) => p.is_starter && !p.is_flex).length,
+);
+
+/** Count flex already picked (is_flex=true) */
+const pickedFlex = computed(() =>
+  myTeamPlayers.value.filter((p) => p.is_flex).length,
+);
+
+/** Count bench already picked (is_starter=false, is_flex=false) */
+const pickedBench = computed(() =>
+  myTeamPlayers.value.filter((p) => !p.is_starter && !p.is_flex).length,
+);
+
+/**
+ * Auto-detect the current slot type based on how many players the user has picked.
+ * Order: fill all starters → fill all flex → fill bench.
+ */
+const currentSlotType = computed<'STARTER' | 'FLEX' | 'BENCH'>(() => {
+  if (pickedStarters.value < totalStarterSlots.value) return 'STARTER';
+  if (pickedFlex.value < totalFlexSlots.value) return 'FLEX';
+  return 'BENCH';
+});
 
 // ═══════════ DRAFT TIMER (via composable – default 60s per turn) ═══════════
 const pickTimeFromLeague = computed(() => league.value?.draft?.pick_time ?? 0);
@@ -898,6 +954,25 @@ function isAddingPlayer(playerUuid: string): boolean {
   return addingPlayers.value.has(playerUuid);
 }
 
+/**
+ * Load the current user's roster for this league.
+ * Used to auto-detect the next slot type (STARTER → FLEX → BENCH).
+ */
+async function loadMyTeamPlayers() {
+  if (!leagueUuid.value || !selectedRoundUuid.value) return;
+  try {
+    const payload: FantasyFootballLineupPayload = {
+      fantasy_round_uuid: selectedRoundUuid.value,
+    };
+    myTeamPlayers.value = await userStore.getFantasyFootballPlayersByLeagueUuid(
+      leagueUuid.value,
+      payload,
+    );
+  } catch (err: unknown) {
+    console.error('Error loading my team players:', err);
+  }
+}
+
 async function loadLeague() {
   if (!leagueUuid.value) {
     return;
@@ -1013,25 +1088,35 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   addingPlayers.value.add(player.player.uuid);
 
   try {
+    // Determine slot flags automatically based on roster state
+    const slotNow = currentSlotType.value;
     const payload: FantasyAddPlayerPayload = {
       fantasy_league_uuid: leagueUuid.value,
       player_uuid: player.player.uuid,
       position_uuid: player.position.uuid,
-      is_flex: slotType.value === "FLEX",
-      is_starter: slotType.value !== "BENCH",
+      is_flex: slotNow === 'FLEX',
+      is_starter: slotNow !== 'BENCH',
     };
 
-    await fantasyLeagueService.addPlayer(payload);
+    // Use draft pick endpoint (advances turn + broadcasts via Ably)
+    await fantasyLeagueService.pickerPlayer(payload);
 
     toast.success(
-      "Player added successfully",
+      "Player drafted!",
       `${player.player.display_name} has been added to your team`,
       { duration: 3000 },
     );
 
+    // Remove picked player locally (optimistic)
     players.value = players.value.filter(
       (p) => p.player.uuid !== player.player.uuid,
     );
+
+    // Reload full player list to stay in sync
+    await loadPlayers(false);
+
+    // Reload roster so slot type auto-detection stays accurate
+    await loadMyTeamPlayers();
 
     // Refresh team drawer and briefly show it
     teamRefreshKey.value++;
@@ -1159,7 +1244,7 @@ function setupIntersectionObserver() {
 // Lifecycle
 onMounted(async () => {
   await loadLeague();
-  await loadTeams();
+  await Promise.all([loadTeams(), loadRounds()]);
 
   // Check if there's a position filter in query params
   const positionFromQuery = route.query.position as string;
@@ -1172,13 +1257,10 @@ onMounted(async () => {
     selectedPosition.value = positionFromQuery;
   }
 
-  // Check if there's a slot type in query params (BENCH, FLEX, or a starter position)
-  const slotTypeFromQuery = route.query.slotType as string;
-  if (slotTypeFromQuery) {
-    slotType.value = slotTypeFromQuery;
-  }
-
   await loadPlayers();
+
+  // Load user's current roster for auto slot detection
+  await loadMyTeamPlayers();
 
   // Mark initial load as complete
   initialLoadComplete.value = true;

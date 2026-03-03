@@ -13,6 +13,10 @@ export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', ()
   // Getters
   const isMember = computed(() => currentLeague.value?.isMember === true)
   const isAdmin = computed(() => currentLeague.value?.isAdmin === true)
+  const draftStatus = computed(() =>
+    (currentLeague.value?.draft?.status?.value || '').toUpperCase()
+  )
+  const isDraftNotStarted = computed(() => draftStatus.value === 'NOT_STARTED')
 
   // Actions
   function setCurrentLeague(league: FantasyLeaguesResponse | null) {
@@ -27,6 +31,8 @@ export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', ()
     currentLeague,
     isMember,
     isAdmin,
+    draftStatus,
+    isDraftNotStarted,
     setCurrentLeague,
     clearCurrentLeague,
   }
