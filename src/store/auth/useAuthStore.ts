@@ -35,8 +35,10 @@ export const useAuthStore = defineStore("auth", {
     async login(payload: LoginPayload): Promise<LoginResponse> {
       const userStore = useUserStore();
       const response = await getLoginService().login(payload);
+      const { claimTokensForUser } = usePushNotifications();
       this.setToken(response.token);
       userStore.setUserDataFromApi();
+      await claimTokensForUser();
       return response;
     },
 
@@ -52,9 +54,10 @@ export const useAuthStore = defineStore("auth", {
     async loginWithGoogle(queryParams: string): Promise<void> {
       const userStore = useUserStore();
       const response = await getLoginService().loginWithGoogle(queryParams);
+      const { claimTokensForUser } = usePushNotifications();
       this.setToken(response.token);
-
       userStore.setUserDataFromApi();
+      await claimTokensForUser();
     },
 
     async logout(): Promise<void> {

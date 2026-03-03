@@ -112,12 +112,15 @@ onMounted(async () => {
   checkLeagueSelection();
 
   // Registrar push notifications
+
   await requestPermissionAndRegister();
 
   // Escuchar mensajes en foreground
   onForegroundMessage((payload) => {
     const { title, body } = payload.notification || {};
     const data = payload.data || {};
+
+    console.log("Push received in foreground:", payload);
 
     // Mostrar toast en la app
     toast.info(title || "¡Notificación!", body || "");
@@ -137,7 +140,6 @@ onMounted(async () => {
     }
   });
 });
-
 
 // Watcher para cuando se selecciona una liga
 watch(
