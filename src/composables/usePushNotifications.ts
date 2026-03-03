@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { getToken, onMessage } from 'firebase/messaging'
 import { getFirebaseMessaging } from '@/firebase/config'
@@ -26,13 +26,28 @@ export function usePushNotifications() {
     // Si ya existe un token registrado en el store, evitar llamar al backend de nuevo
     if (notificationsStore.isTokenRegistered && notificationsStore.fcmToken) {
       isPermissionGranted.value = true
+      isRegistering.value = false
       return notificationsStore.fcmToken
     }
 
     try {
-      // 1. Solicitar permiso al usuario
-      const permission = await Notification.requestPermission()
+      // 1. Verificar que la API de Notification está disponible
+      //    En algunos navegadores móviles (Safari iOS PWA) puede no existir
+      if (!('Notification' in globalThis)) {
+        console.warn('Notification API not available in this browser/context')
+        return null
+      }
 
+      // 2. Solicitar permiso al usuario
+      let permission: NotificationPermission
+      try {
+        permission = await Notification.requestPermission()
+      } catch {
+        // Fallback: algunos navegadores no soportan la versión Promise
+        permission = Notification.permission
+      }
+
+      console.log('Notification permission:', permission)
 
       if (permission !== 'granted') {
         console.warn('Push notification permission denied')
@@ -42,53 +57,77 @@ export function usePushNotifications() {
 
       isPermissionGranted.value = true
 
-      // 2. Obtener instancia de Firebase Messaging
-      const messaging = await getFirebaseMessaging();
+      // 3. Obtener instancia de Firebase Messaging
+      const messaging = await getFirebaseMessaging()
 
       if (!messaging) {
         console.error('Firebase Messaging is not available')
         return null
       }
 
-      // 3. Registrar el Service Worker explícitamente
-      const swRegistration = await navigator.serviceWorker.register(
-        '/firebase-messaging-sw.js',
-        { scope: '/firebase-cloud-messaging-push-scope' }
-      )
+      // 4. Registrar el Service Worker de Firebase explícitamente
+      //    Reutiliza el registro existente si ya fue registrado por el PWA SW
+      let swRegistration: ServiceWorkerRegistration
+      try {
+        swRegistration = await navigator.serviceWorker.register(
+          '/firebase-messaging-sw.js',
+          { scope: '/firebase-cloud-messaging-push-scope' }
+        )
+      } catch (swError) {
+        console.error('Failed to register Firebase SW:', swError)
+        return null
+      }
+
       console.log('Service Worker registration successful with scope:', swRegistration.scope)
 
-      // Wait for the specific registration to be active (not navigator.serviceWorker.ready,
-      // which waits for the SW controlling the current page — a different scope)
+      // Wait for the specific registration to be active with a timeout
+      // to prevent hanging forever on mobile devices
       await new Promise<void>((resolve) => {
         if (swRegistration.active) {
           resolve()
           return
         }
+
         const sw = swRegistration.installing || swRegistration.waiting
         if (sw) {
-          sw.addEventListener('statechange', () => {
-            if (sw.state === 'activated') resolve()
-          })
+          const onStateChange = () => {
+            if (sw.state === 'activated') {
+              sw.removeEventListener('statechange', onStateChange)
+              resolve()
+            }
+          }
+          sw.addEventListener('statechange', onStateChange)
         } else {
           resolve()
         }
+
+        // Safety timeout: don't wait more than 10 seconds
+        setTimeout(() => resolve(), 10_000)
       })
 
-      console.log('Service Worker registered for push notifications')
+      console.log('Service Worker active for push notifications')
 
-      // 4. Obtener FCM token
-      const token = await getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-        serviceWorkerRegistration: swRegistration,
-      })
+      // 5. Obtener FCM token
+      let token: string | undefined
+      try {
+        token = await getToken(messaging, {
+          vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+          serviceWorkerRegistration: swRegistration,
+        })
+      } catch (tokenError) {
+        console.error('getToken() failed:', tokenError)
+        return null
+      }
 
       if (!token) {
         console.warn('No FCM token received')
         return null
       }
 
-      // 5. Enviar token al backend solo si cambió respecto al token guardado
-      if (token !== notificationsStore.fcmToken) {
+      // 6. Enviar token al backend solo si cambió respecto al token guardado
+      if (token === notificationsStore.fcmToken) {
+        console.log('FCM token unchanged, skipping backend registration')
+      } else {
         await apiFantasyInstance.post('fcm-token', {
           token,
           device_uuid: getDeviceUuid(),
@@ -96,8 +135,6 @@ export function usePushNotifications() {
         })
         notificationsStore.setToken(token)
         console.log('FCM token registered successfully')
-      } else {
-        console.log('FCM token unchanged, skipping backend registration')
       }
 
       return token
