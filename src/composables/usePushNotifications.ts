@@ -1,27 +1,38 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { getToken, onMessage } from 'firebase/messaging'
 import { getFirebaseMessaging } from '@/firebase/config'
 import { useApiFantasy } from '@/composables/useApiFantasy'
 import { getDeviceUuid } from '@/utils/deviceUuid'
+import { useNotificationsStore } from '@/store/notifications'
 
-const fcmToken = ref<string | null>(null)
 const isPermissionGranted = ref(false)
 const isRegistering = ref(false)
 
 export function usePushNotifications() {
   const { apiFantasyInstance } = useApiFantasy()
+  const notificationsStore = useNotificationsStore()
+  const { fcmToken } = storeToRefs(notificationsStore)
 
   /**
    * Solicita permiso de notificaciones y registra el token en el backend.
    * Funciona tanto para usuarios anónimos como autenticados.
    */
   async function requestPermissionAndRegister(): Promise<string | null> {
-    if (isRegistering.value) return fcmToken.value
+
+    if (isRegistering.value) return notificationsStore.fcmToken
     isRegistering.value = true
+
+    // Si ya existe un token registrado en el store, evitar llamar al backend de nuevo
+    if (notificationsStore.isTokenRegistered && notificationsStore.fcmToken) {
+      isPermissionGranted.value = true
+      return notificationsStore.fcmToken
+    }
 
     try {
       // 1. Solicitar permiso al usuario
       const permission = await Notification.requestPermission()
+
 
       if (permission !== 'granted') {
         console.warn('Push notification permission denied')
@@ -32,15 +43,38 @@ export function usePushNotifications() {
       isPermissionGranted.value = true
 
       // 2. Obtener instancia de Firebase Messaging
-      const messaging = await getFirebaseMessaging()
-      if (!messaging) return null
+      const messaging = await getFirebaseMessaging();
+
+      if (!messaging) {
+        console.error('Firebase Messaging is not available')
+        return null
+      }
 
       // 3. Registrar el Service Worker explícitamente
       const swRegistration = await navigator.serviceWorker.register(
         '/firebase-messaging-sw.js',
         { scope: '/firebase-cloud-messaging-push-scope' }
       )
-      await navigator.serviceWorker.ready
+      console.log('Service Worker registration successful with scope:', swRegistration.scope)
+
+      // Wait for the specific registration to be active (not navigator.serviceWorker.ready,
+      // which waits for the SW controlling the current page — a different scope)
+      await new Promise<void>((resolve) => {
+        if (swRegistration.active) {
+          resolve()
+          return
+        }
+        const sw = swRegistration.installing || swRegistration.waiting
+        if (sw) {
+          sw.addEventListener('statechange', () => {
+            if (sw.state === 'activated') resolve()
+          })
+        } else {
+          resolve()
+        }
+      })
+
+      console.log('Service Worker registered for push notifications')
 
       // 4. Obtener FCM token
       const token = await getToken(messaging, {
@@ -53,16 +87,19 @@ export function usePushNotifications() {
         return null
       }
 
-      fcmToken.value = token
+      // 5. Enviar token al backend solo si cambió respecto al token guardado
+      if (token !== notificationsStore.fcmToken) {
+        await apiFantasyInstance.post('fcm-token', {
+          token,
+          device_uuid: getDeviceUuid(),
+          device_name: 'web',
+        })
+        notificationsStore.setToken(token)
+        console.log('FCM token registered successfully')
+      } else {
+        console.log('FCM token unchanged, skipping backend registration')
+      }
 
-      // 5. Enviar token al backend CON device_uuid (soporta anónimos)
-      await apiFantasyInstance.post('fcm-token', {
-        token,
-        device_uuid: getDeviceUuid(),
-        device_name: 'web',
-      })
-
-      console.log('FCM token registered successfully')
       return token
     } catch (error) {
       console.error('Error registering push notifications:', error)
@@ -105,16 +142,16 @@ export function usePushNotifications() {
    * NO elimina el device_uuid — el dispositivo puede recibir notificaciones anónimas.
    */
   async function unregisterToken(): Promise<void> {
-    if (!fcmToken.value) return
+    if (!notificationsStore.fcmToken) return
 
     try {
       await apiFantasyInstance.delete('fcm-token', {
         data: {
-          token: fcmToken.value,
+          token: notificationsStore.fcmToken,
           device_uuid: getDeviceUuid(),
         },
       })
-      fcmToken.value = null
+      notificationsStore.clearToken()
     } catch (error) {
       console.error('Error removing FCM token:', error)
     }
