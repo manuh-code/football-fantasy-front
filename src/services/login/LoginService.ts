@@ -17,6 +17,7 @@ export class LoginService {
   private lastValidatedToken: string | null = null;
   private lastValidationResult = false;
   private lastValidationTime = 0;
+  private pendingValidation: Promise<boolean> | null = null;
   private static readonly VALIDATION_CACHE_MS = 5 * 60 * 1000; // 5 minutes
 
   constructor() {
@@ -66,6 +67,7 @@ export class LoginService {
     if (!token) {
       this.lastValidatedToken = null;
       this.lastValidationResult = false;
+      this.pendingValidation = null;
       return false;
     }
 
@@ -79,6 +81,20 @@ export class LoginService {
       return true;
     }
 
+    // Deduplicate concurrent calls: reuse the in-flight promise
+    if (this.pendingValidation) {
+      return this.pendingValidation;
+    }
+
+    this.pendingValidation = this.validateToken(token);
+    try {
+      return await this.pendingValidation;
+    } finally {
+      this.pendingValidation = null;
+    }
+  }
+
+  private async validateToken(token: string): Promise<boolean> {
     try {
       const response = await this.api.get<ApiResponse<null>>('auth/validate', {
         headers: {
@@ -88,7 +104,7 @@ export class LoginService {
       const isValid = response.data.code === 200;
       this.lastValidatedToken = token;
       this.lastValidationResult = isValid;
-      this.lastValidationTime = now;
+      this.lastValidationTime = Date.now();
       return isValid;
     } catch {
       // If token exists but API call fails (network error, timeout),

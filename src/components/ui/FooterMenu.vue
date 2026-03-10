@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useFantasyLeagueDetailStore } from '@/store/fantasy/useFantasyLeagueDetailStore'
 import { useRoute, useRouter } from 'vue-router'
@@ -125,12 +125,7 @@ const shouldShowMenu = computed(() => {
   return fantasyRoutes.includes(route.name as string)
 })
 
-// Check authentication status on mount
-onMounted(async () => {
-  isAuthenticatedRef.value = await authStore.isAuthenticated()
-})
-
-// Watch for token changes to update authentication status
+// Watch for token changes to update authentication status (immediate covers mount)
 watch(() => authStore.token, async (newToken) => {
   if (newToken) {
     isAuthenticatedRef.value = await authStore.isAuthenticated()

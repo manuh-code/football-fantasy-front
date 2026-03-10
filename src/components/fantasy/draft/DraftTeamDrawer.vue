@@ -95,14 +95,14 @@
         <div
           v-if="mobileState === 'full'"
           class="fixed inset-0 bg-black/30 z-40"
-          @click="mobileState = 'half'; mobileCurrentDragHeight = null"
+          @click="mobileState = 'half'; mobileTranslateY = null"
         />
       </Transition>
 
       <!-- Bottom Sheet -->
       <div
         ref="mobileSheetRef"
-        class="fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col will-change-transform"
+        class="fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col mobile-sheet"
         :style="mobileSheetStyle"
         @touchstart.passive="onMobileTouchStart"
         @touchmove.passive="onMobileTouchMove"
@@ -110,7 +110,7 @@
       >
         <!-- Drag Handle -->
         <div
-          class="flex flex-col items-center pt-2 pb-1 cursor-grab active:cursor-grabbing shrink-0"
+          class="flex flex-col items-center pt-2 pb-1 cursor-grab active:cursor-grabbing shrink-0 touch-none"
           @click="toggleMobile"
         >
           <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
@@ -118,7 +118,7 @@
 
         <!-- Peek Header (always visible) -->
         <div
-          class="flex items-center justify-between px-4 py-2 shrink-0"
+          class="flex items-center justify-between px-4 py-2 shrink-0 touch-none"
           @click="toggleMobile"
         >
           <div class="flex items-center gap-2">
@@ -223,6 +223,9 @@ const MOBILE_FULL_VH = 88;
 const DESKTOP_PEEK_PX = 56;
 const DESKTOP_HALF_PX = 360;
 const DESKTOP_FULL_PX = 480;
+
+// Fling velocity threshold (px/ms) — lower = more sensitive
+const FLING_VELOCITY_THRESHOLD = 0.4;
 
 interface Props {
   /** Whether the drawer is visible (used for auto-expand on mobile) */
@@ -337,7 +340,7 @@ const desktopSheetStyle = computed(() => {
     width: `${width}px`,
     transition: isDesktopDragging.value
       ? "none"
-      : "width 0.35s cubic-bezier(0.32, 0.72, 0, 1)",
+      : "width 0.28s cubic-bezier(0.25, 1, 0.5, 1)",
   };
 });
 
@@ -371,14 +374,24 @@ function onDesktopDragStart(e: MouseEvent) {
   document.body.style.cursor = "col-resize";
 }
 
+let _desktopRafId: number | null = null;
+let _desktopLastClientX = 0;
+
 function onDesktopDragMove(e: MouseEvent) {
   if (!isDesktopDragging.value) return;
-  const deltaX = e.clientX - desktopDragStartX.value;
-  const newWidth = Math.max(
-    DESKTOP_PEEK_PX,
-    Math.min(desktopDragStartWidth.value + deltaX, DESKTOP_FULL_PX),
-  );
-  desktopCurrentDragWidth.value = newWidth;
+  _desktopLastClientX = e.clientX;
+
+  if (_desktopRafId !== null) return;
+  _desktopRafId = requestAnimationFrame(() => {
+    _desktopRafId = null;
+    if (!isDesktopDragging.value) return;
+    const deltaX = _desktopLastClientX - desktopDragStartX.value;
+    const newWidth = Math.max(
+      DESKTOP_PEEK_PX,
+      Math.min(desktopDragStartWidth.value + deltaX, DESKTOP_FULL_PX),
+    );
+    desktopCurrentDragWidth.value = newWidth;
+  });
 }
 
 function onDesktopDragEnd() {
@@ -388,6 +401,11 @@ function onDesktopDragEnd() {
   document.removeEventListener("mouseup", onDesktopDragEnd);
   document.body.style.userSelect = "";
   document.body.style.cursor = "";
+
+  if (_desktopRafId !== null) {
+    cancelAnimationFrame(_desktopRafId);
+    _desktopRafId = null;
+  }
 
   const width =
     desktopCurrentDragWidth.value ??
@@ -410,10 +428,12 @@ function onDesktopDragEnd() {
   desktopCurrentDragWidth.value = null;
 }
 
-// Cleanup desktop drag listeners on unmount
+// Cleanup listeners and pending rAFs on unmount
 onUnmounted(() => {
   document.removeEventListener("mousemove", onDesktopDragMove);
   document.removeEventListener("mouseup", onDesktopDragEnd);
+  if (_mobileRafId !== null) cancelAnimationFrame(_mobileRafId);
+  if (_desktopRafId !== null) cancelAnimationFrame(_desktopRafId);
 });
 
 // ==================== MOBILE: Bottom sheet ====================
@@ -421,9 +441,16 @@ const mobileSheetRef = ref<HTMLElement | null>(null);
 const mobileContentRef = ref<HTMLElement | null>(null);
 const mobileState = ref<SheetState>("peek");
 const isMobileDragging = ref(false);
-const mobileDragStartY = ref(0);
-const mobileDragStartHeight = ref(0);
-const mobileCurrentDragHeight = ref<number | null>(null);
+const mobileTranslateY = ref<number | null>(null);
+
+// Performance: plain variables for rAF throttling and velocity tracking
+let _mobileRafId: number | null = null;
+let _mobileLastY = 0;
+let _mobileLastTime = 0;
+let _mobileVelocity = 0;
+let _mobileTouchStartY = 0;
+let _mobileDragCommitted = false;
+const MOBILE_DRAG_DEAD_ZONE = 8; // px before drag is committed
 
 function getMobileHeightForState(state: SheetState): number {
   const vh = window.innerHeight;
@@ -437,16 +464,28 @@ function getMobileHeightForState(state: SheetState): number {
   }
 }
 
+// The sheet is always at full possible height, but positioned via translateY
+const mobileMaxHeight = computed(() => {
+  if (!isMobile.value) return 0;
+  return (MOBILE_FULL_VH / 100) * window.innerHeight;
+});
+
 const mobileSheetStyle = computed(() => {
   if (!isMobile.value) return {};
-  const height =
-    mobileCurrentDragHeight.value ??
-    getMobileHeightForState(mobileState.value);
+
+  const maxH = mobileMaxHeight.value;
+  const targetH = getMobileHeightForState(mobileState.value);
+  // translateY: offset from bottom. 0 = fully shown at maxH, positive = pushed down
+  const stateOffset = maxH - targetH;
+  const translateY = mobileTranslateY.value ?? stateOffset;
+
   return {
-    height: `${height}px`,
+    height: `${maxH}px`,
+    transform: `translateY(${translateY}px)`,
+    willChange: isMobileDragging.value ? "transform" : "auto",
     transition: isMobileDragging.value
       ? "none"
-      : "height 0.35s cubic-bezier(0.32, 0.72, 0, 1)",
+      : "transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)",
   };
 });
 
@@ -463,10 +502,11 @@ function toggleMobile() {
       mobileState.value = "peek";
       break;
   }
-  mobileCurrentDragHeight.value = null;
+  mobileTranslateY.value = null;
 }
 
 function onMobileTouchStart(e: TouchEvent) {
+  // If content is scrolled, don't start dragging
   if (
     mobileContentRef.value &&
     mobileContentRef.value.scrollTop > 0 &&
@@ -475,54 +515,108 @@ function onMobileTouchStart(e: TouchEvent) {
     return;
   }
   const touch = e.touches[0];
-  mobileDragStartY.value = touch.clientY;
-  mobileDragStartHeight.value =
-    mobileCurrentDragHeight.value ??
-    getMobileHeightForState(mobileState.value);
+  _mobileTouchStartY = touch.clientY;
+  _mobileDragCommitted = false;
+
+  // Initialize velocity tracking
+  _mobileLastY = touch.clientY;
+  _mobileLastTime = performance.now();
+  _mobileVelocity = 0;
+
+  // Pre-mark dragging so touchmove can process
   isMobileDragging.value = true;
 }
 
 function onMobileTouchMove(e: TouchEvent) {
   if (!isMobileDragging.value) return;
   const touch = e.touches[0];
-  const deltaY = mobileDragStartY.value - touch.clientY;
-  const newHeight = Math.max(
-    MOBILE_PEEK_PX,
-    Math.min(
-      mobileDragStartHeight.value + deltaY,
-      (MOBILE_FULL_VH / 100) * window.innerHeight,
-    ),
-  );
-  mobileCurrentDragHeight.value = newHeight;
+  const now = performance.now();
+
+  // Dead zone: ignore small movements to prevent jitter on taps
+  if (!_mobileDragCommitted) {
+    if (Math.abs(touch.clientY - _mobileTouchStartY) < MOBILE_DRAG_DEAD_ZONE) {
+      return;
+    }
+    _mobileDragCommitted = true;
+  }
+
+  // Track velocity on every event for accuracy (positive = swipe up)
+  const dt = now - _mobileLastTime;
+  if (dt > 0) {
+    _mobileVelocity = (_mobileLastY - touch.clientY) / dt;
+  }
+  _mobileLastY = touch.clientY;
+  _mobileLastTime = now;
+
+  // Throttle DOM updates to animation frames for 60fps
+  if (_mobileRafId !== null) return;
+  _mobileRafId = requestAnimationFrame(() => {
+    _mobileRafId = null;
+    if (!isMobileDragging.value) return;
+
+    const maxH = mobileMaxHeight.value;
+    const currentStateH = getMobileHeightForState(mobileState.value);
+    const startOffset = maxH - currentStateH;
+    // deltaY > 0 = finger moved up = sheet expands = translateY decreases
+    const deltaY = _mobileTouchStartY - _mobileLastY;
+    const newTranslate = Math.max(
+      0,
+      Math.min(startOffset - deltaY, maxH - MOBILE_PEEK_PX),
+    );
+    mobileTranslateY.value = newTranslate;
+  });
 }
 
 function onMobileTouchEnd() {
   if (!isMobileDragging.value) return;
   isMobileDragging.value = false;
 
-  const height =
-    mobileCurrentDragHeight.value ??
-    getMobileHeightForState(mobileState.value);
-  const vh = window.innerHeight;
-
-  const peekH = MOBILE_PEEK_PX;
-  const halfH = (MOBILE_HALF_VH / 100) * vh;
-  const fullH = (MOBILE_FULL_VH / 100) * vh;
-
-  const peekDist = Math.abs(height - peekH);
-  const halfDist = Math.abs(height - halfH);
-  const fullDist = Math.abs(height - fullH);
-  const minDist = Math.min(peekDist, halfDist, fullDist);
-
-  if (minDist === peekDist) {
-    mobileState.value = "peek";
-  } else if (minDist === halfDist) {
-    mobileState.value = "half";
-  } else {
-    mobileState.value = "full";
+  // Cancel any pending rAF
+  if (_mobileRafId !== null) {
+    cancelAnimationFrame(_mobileRafId);
+    _mobileRafId = null;
   }
 
-  mobileCurrentDragHeight.value = null;
+  // If drag wasn't committed (just a tap), do nothing
+  if (!_mobileDragCommitted) {
+    mobileTranslateY.value = null;
+    return;
+  }
+
+  const maxH = mobileMaxHeight.value;
+  const currentTranslate = mobileTranslateY.value ?? (maxH - getMobileHeightForState(mobileState.value));
+  // Convert translateY back to effective height for snapping
+  const effectiveHeight = maxH - currentTranslate;
+
+  const peekH = MOBILE_PEEK_PX;
+  const halfH = (MOBILE_HALF_VH / 100) * window.innerHeight;
+  const fullH = (MOBILE_FULL_VH / 100) * window.innerHeight;
+
+  let newState: SheetState;
+
+  // Velocity-based snapping: fling in a direction snaps to next state
+  if (Math.abs(_mobileVelocity) > FLING_VELOCITY_THRESHOLD) {
+    if (_mobileVelocity > 0) {
+      // Swiping up → expand
+      newState = effectiveHeight < halfH ? "half" : "full";
+    } else {
+      // Swiping down → collapse
+      newState = effectiveHeight > halfH ? "half" : "peek";
+    }
+  } else {
+    // Slow drag → snap to nearest state
+    const peekDist = Math.abs(effectiveHeight - peekH);
+    const halfDist = Math.abs(effectiveHeight - halfH);
+    const fullDist = Math.abs(effectiveHeight - fullH);
+    const minDist = Math.min(peekDist, halfDist, fullDist);
+
+    if (minDist === peekDist) newState = "peek";
+    else if (minDist === halfDist) newState = "half";
+    else newState = "full";
+  }
+
+  mobileState.value = newState;
+  mobileTranslateY.value = null;
 }
 
 // Auto-expand mobile sheet when modelValue changes
@@ -531,7 +625,7 @@ watch(
   (newVal) => {
     if (isMobile.value && newVal && mobileState.value === "peek") {
       mobileState.value = "half";
-      mobileCurrentDragHeight.value = null;
+      mobileTranslateY.value = null;
     }
   },
 );
@@ -542,7 +636,7 @@ watch(
   () => {
     if (isMobile.value && mobileState.value === "peek") {
       mobileState.value = "half";
-      mobileCurrentDragHeight.value = null;
+      mobileTranslateY.value = null;
     }
   },
 );
@@ -557,5 +651,12 @@ watch(
 .backdrop-enter-from,
 .backdrop-leave-to {
   opacity: 0;
+}
+
+/* Mobile sheet: GPU-composited layer */
+.mobile-sheet {
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  backface-visibility: hidden;
 }
 </style>

@@ -61,7 +61,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
@@ -71,12 +71,7 @@ const router = useRouter()
 // Computed properties for authentication
 const isAuthenticatedRef = ref(false)
 
-// Check authentication status on mount
-onMounted(async () => {
-  isAuthenticatedRef.value = await authStore.isAuthenticated()
-})
-
-// Watch for token changes to update authentication status
+// Watch for token changes to update authentication status (immediate covers mount)
 watch(() => authStore.token, async (newToken) => {
   if (newToken) {
     isAuthenticatedRef.value = await authStore.isAuthenticated()
