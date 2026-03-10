@@ -4,10 +4,10 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between px-4 h-12 sm:h-14">
       <!-- Left side - Logo/Brand -->
       <button
-        @click="handleGoGaming"
+        @click="handleGoHome"
         class="flex items-center gap-2 -ml-1 px-1.5 py-1 rounded-xl active:bg-gray-100 dark:active:bg-gray-800 transition-colors duration-150 focus:outline-none group"
-        aria-label="Go to games"
-        title="Go to Games"
+        aria-label="Go to home"
+        title="Go to Home"
       >
         <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[10px] flex items-center justify-center">
           <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
@@ -61,7 +61,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
@@ -71,12 +71,7 @@ const router = useRouter()
 // Computed properties for authentication
 const isAuthenticatedRef = ref(false)
 
-// Check authentication status on mount
-onMounted(async () => {
-  isAuthenticatedRef.value = await authStore.isAuthenticated()
-})
-
-// Watch for token changes to update authentication status
+// Watch for token changes to update authentication status (immediate covers mount)
 watch(() => authStore.token, async (newToken) => {
   if (newToken) {
     isAuthenticatedRef.value = await authStore.isAuthenticated()
@@ -109,9 +104,9 @@ function handleLogin() {
   router.push({name: 'login'})
 }
 
-function handleGoGaming() {
-  if (router.currentRoute.value.name === 'gaming') return
-  router.push({ name: 'gaming' }).catch(() => {})
+function handleGoHome() {
+  if (router.currentRoute.value.name === 'home') return
+  router.push({ name: 'home' }).catch(() => {})
 }
 
 function handleViewProfile() {

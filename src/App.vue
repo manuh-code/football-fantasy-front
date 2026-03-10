@@ -185,11 +185,15 @@ watch(
   overflow-x: hidden;
 }
 
-// Ensure the app takes full height
+// Ensure the app takes full height (min-height so scroll stays on window)
 html,
-body,
+body {
+  min-height: 100%;
+  margin: 0;
+}
 #app {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 // App content wrapper

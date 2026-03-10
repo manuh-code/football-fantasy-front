@@ -76,6 +76,8 @@ import { ref, computed, onMounted, defineAsyncComponent, watch } from "vue";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import { footballLeagueService } from "@/services/football/league/FootballLeagueService";
 import { SearchableSelectComponent } from "@/components/ui";
+import { useToast } from "@/composables/useToast";
+import { getActivePinia, type Pinia, type Store } from "pinia";
 import type { FootballStageLeagueResponse } from "@/interfaces/football/league/stage/FootballStageLeagueResponse";
 
 // Lazy-load heavy components
@@ -83,6 +85,7 @@ const FixturesByStageAndCurrentRound = defineAsyncComponent(() => import('@/comp
 const LeagueStanding = defineAsyncComponent(() => import('@/components/football/leagues/LeagueStanding.vue'))
 
 const store = useFootballLeagueStore();
+const { error: showError } = useToast();
 
 const hasLeague = computed(() => store.existLeague());
 const leagueName = computed(() => store.getLeague?.name ?? 'League');
@@ -106,7 +109,45 @@ const currentSeasonLabel = computed(() => {
 });
 
 /**
+ * Check if the error is a 404 response.
+ */
+const is404Error = (e: unknown): boolean => {
+  const err = e as Record<string, unknown>;
+  return err?.status === 404 || (err?.response as Record<string, unknown>)?.status === 404;
+};
+
+/**
+ * Reset all Pinia stores, clear localStorage, and reload to show league selection modal.
+ */
+const resetStoresAndShowLeagueModal = () => {
+  const pinia = getActivePinia() as Pinia & { _s: Map<string, Store> };
+  if (pinia) {
+    pinia._s.forEach((s) => {
+      try {
+        s.$reset();
+      } catch {
+        const emptyState: Record<string, null> = {};
+        Object.keys(s.$state).forEach((key) => { emptyState[key] = null; });
+        s.$patch(emptyState);
+      }
+    });
+  }
+  // Clear persisted data
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key) keys.push(key);
+  }
+  keys.forEach((key) => localStorage.removeItem(key));
+
+  showError('League not found', 'Please select a new league to continue.');
+  // Reload so App.vue shows the league selection modal
+  globalThis.location.reload();
+};
+
+/**
  * Fetch stages for the current league and auto-select the current one.
+ * On 404: retries once. If still fails, resets all stores and shows league modal.
  */
 const fetchStages = async () => {
   const leagueUuid = store.getFootballLeagueUuid();
@@ -126,7 +167,25 @@ const fetchStages = async () => {
       selectedSeasonUuid.value = currentStage.seasonUuid;
     }
   } catch (e) {
-    console.error("Error loading stages:", e);
+    if (is404Error(e)) {
+      // Retry once
+      try {
+        const res = await footballLeagueService.getStage(leagueUuid);
+        if (Array.isArray(res) && res.length > 0) {
+          stages.value = res;
+          const currentStage = res.find((s) => s.isCurrent === true) || res[0];
+          selectedStageUuid.value = currentStage.stageUuid;
+          selectedSeasonUuid.value = currentStage.seasonUuid;
+        }
+      } catch (_retryError: unknown) {
+        // Second attempt failed — reset everything and show league modal
+        console.error('Retry failed for getStage:', _retryError);
+        resetStoresAndShowLeagueModal();
+        return;
+      }
+    } else {
+      console.error("Error loading stages:", e);
+    }
   } finally {
     loadingStages.value = false;
   }

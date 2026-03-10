@@ -277,4 +277,13 @@ router.beforeEach(async (to, from, next) => {
   next();
 })
 
+// Scroll to top on every navigation
+router.afterEach((to, from) => {
+  // Skip if navigating to same route (e.g. query changes)
+  if (to.path === from.path) return;
+  window.scrollTo({ top: 0, left: 0 });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+})
+
 export default router
