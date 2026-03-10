@@ -4,8 +4,10 @@
       <HomeComponent />
     </div>
   </div>
+  <HomeMenu />
 </template>
 
 <script lang="ts" setup>
 import HomeComponent from "@/components/HomeComponent.vue";
+import HomeMenu from "@/components/home/HomeMenu.vue";
 </script>
