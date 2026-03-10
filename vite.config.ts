@@ -124,7 +124,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['vue', 'vue-router', 'pinia'],
-          icons: ['oh-vue-icons'],
+          icons: ['oh-vue-icons']
         }
       }
     }

@@ -190,6 +190,54 @@ themeStore.setTheme('light')
 themeStore.toggleTheme()
 ```
 
+## 🚀 Despliegue en Producción
+
+Este proyecto incluye despliegue automático con **GitHub Actions** y **Docker**.
+
+### Despliegue automático (CI/CD)
+
+Cada push a la rama `main` despliega automáticamente a producción:
+
+1. **GitHub Actions** construye la imagen Docker
+2. Sube la imagen a **GitHub Container Registry**
+3. Conecta al servidor VPS vía SSH
+4. Descarga y despliega con **Docker Compose**
+5. Tu app está en **https://fantasymx.cloud** 🎉
+
+### Configuración rápida
+
+```bash
+# 1. En tu servidor VPS
+wget https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/setup-vps.sh
+chmod +x setup-vps.sh
+./setup-vps.sh
+
+# 2. Configura secretos en GitHub (Settings → Secrets)
+VPS_HOST, VPS_USERNAME, VPS_SSH_KEY, VPS_TARGET
+
+# 3. Push a main y listo!
+git push origin main
+```
+
+### Documentación completa
+
+- 📖 [Guía rápida de despliegue](QUICKSTART_DEPLOY.md)
+- 📚 [Documentación completa](DEPLOYMENT.md)
+- 🐳 [Dockerfile](Dockerfile) y [docker-compose.yml](docker-compose.yml)
+
+### Despliegue manual
+
+```bash
+# Desarrollo local
+npm run dev
+
+# Build para producción
+npm run build
+
+# Con Docker
+docker-compose up -d
+```
+
 ## 🧪 Testing
 
 El proyecto está preparado para testing con:
