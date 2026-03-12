@@ -58,7 +58,36 @@
     </div>
 
     <!-- Players Content -->
-    <div v-else-if="initialLoadComplete" class="space-y-4">
+    <div
+      v-else-if="initialLoadComplete"
+      class="space-y-4 relative"
+      :class="{ 'max-h-[70vh] overflow-hidden': props.disabled }"
+    >
+
+      <!-- Disabled Overlay (waiting for turn) -->
+      <div
+        v-if="props.disabled"
+        class="absolute inset-0 z-20 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl"
+      >
+        <div class="sticky top-0 h-[70vh] flex items-center justify-center">
+          <div class="flex flex-col items-center gap-4 px-8 py-7 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200/80 dark:border-gray-700/80 mx-4 max-w-sm w-full">
+            <div class="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <v-icon
+                name="hi-solid-clock"
+                class="w-7 h-7 text-amber-500 dark:text-amber-400 animate-pulse"
+              />
+            </div>
+            <div class="text-center space-y-1">
+              <p class="text-[16px] font-bold text-gray-800 dark:text-gray-100">
+                Waiting for your turn...
+              </p>
+              <p class="text-[13px] text-gray-400 dark:text-gray-500">
+                You can pick a player when it's your turn.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Position Filters (iOS-style pills) -->
       <div class="px-1">
@@ -67,7 +96,8 @@
             v-for="filter in positionFilters"
             :key="filter.code"
             @click="handleFilterChange(filter.code)"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.96] shrink-0"
+            :disabled="props.disabled"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.96] shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
             :class="[
               selectedPosition === filter.code
                 ? filter.activeClasses + ' shadow-sm'
@@ -127,6 +157,7 @@
                 accent-color="indigo"
                 default-image="/img/default-team.svg"
                 no-results-text="No teams found for"
+                :disabled="props.disabled"
                 @change="onTeamFilterChange"
               />
             </div>
@@ -234,7 +265,11 @@
                   <th class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">GP</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-700/60">
+              <TransitionGroup
+                tag="tbody"
+                name="player-row"
+                class="divide-y divide-gray-100 dark:divide-gray-700/60"
+              >
                 <tr
                   v-for="player in players"
                   :key="player.player.uuid"
@@ -244,8 +279,8 @@
                   <td class="px-3 py-2.5">
                     <button
                       @click="handleAddPlayer(player)"
-                      :disabled="isAddingPlayer(player.player.uuid)"
-                      class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90"
+                      :disabled="props.disabled || isAddingPlayer(player.player.uuid)"
+                      class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                       :class="[isAddingPlayer(player.player.uuid) ? 'opacity-50 cursor-not-allowed' : '']"
                     >
                       <v-icon
@@ -321,12 +356,16 @@
                     </span>
                   </td>
                 </tr>
-              </tbody>
+              </TransitionGroup>
             </table>
           </div>
 
           <!-- Mobile Cards -->
-          <div class="md:hidden divide-y divide-gray-100 dark:divide-gray-700/60">
+          <TransitionGroup
+            tag="div"
+            name="player-card"
+            class="md:hidden divide-y divide-gray-100 dark:divide-gray-700/60"
+          >
             <div
               v-for="player in players"
               :key="player.player.uuid"
@@ -336,8 +375,8 @@
                 <!-- Select Button -->
                 <button
                   @click="handleAddPlayer(player)"
-                  :disabled="isAddingPlayer(player.player.uuid)"
-                  class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90"
+                  :disabled="props.disabled || isAddingPlayer(player.player.uuid)"
+                  class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                   :class="[isAddingPlayer(player.player.uuid) ? 'opacity-50 cursor-not-allowed' : '']"
                 >
                   <v-icon
@@ -393,7 +432,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </TransitionGroup>
         </div>
 
         <!-- Loading More Indicator -->
@@ -478,9 +517,14 @@ import { useToast } from "@/composables/useToast";
 
 interface Props {
   fantasyLeagueUuid?: string;
+  mode?: 'add' | 'draft';
+  disabled?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  mode: 'add',
+  disabled: false,
+});
 
 const emit = defineEmits<{
   /** Emitted after a player is successfully added */
@@ -659,29 +703,47 @@ function handleFilterChange(position: string) {
 }
 
 /**
- * Add a player to the team using the addPlayer service method (no draft logic).
+ * Add or pick a player depending on the current mode.
  */
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
-  if (!leagueUuid.value || isAddingPlayer(player.player.uuid)) return;
+  if (props.disabled || !leagueUuid.value || isAddingPlayer(player.player.uuid)) return;
 
   addingPlayers.value.add(player.player.uuid);
 
   try {
-    const payload: FantasyAddPlayerPayload = {
-      fantasy_league_uuid: leagueUuid.value,
-      player_uuid: player.player.uuid,
-      position_uuid: player.position.uuid,
-      is_flex: slotType.value === "FLEX",
-      is_starter: slotType.value !== "BENCH",
-    };
+    if (props.mode === 'draft') {
+      const payload: FantasyAddPlayerPayload = {
+        fantasy_league_uuid: leagueUuid.value,
+        player_uuid: player.player.uuid,
+        position_uuid: player.position.uuid,
+        is_flex: null,
+        is_starter: null,
+      };
 
-    await fantasyLeagueService.addPlayer(payload);
+      await fantasyLeagueService.pickerPlayer(payload);
 
-    toast.success(
-      "Player added successfully",
-      `${player.player.display_name} has been added to your team`,
-      { duration: 3000 },
-    );
+      toast.success(
+        "Player picked",
+        `${player.player.display_name} has been drafted`,
+        { duration: 3000 },
+      );
+    } else {
+      const payload: FantasyAddPlayerPayload = {
+        fantasy_league_uuid: leagueUuid.value,
+        player_uuid: player.player.uuid,
+        position_uuid: player.position.uuid,
+        is_flex: slotType.value === "FLEX",
+        is_starter: slotType.value !== "BENCH",
+      };
+
+      await fantasyLeagueService.addPlayer(payload);
+
+      toast.success(
+        "Player added successfully",
+        `${player.player.display_name} has been added to your team`,
+        { duration: 3000 },
+      );
+    }
 
     // Remove from the local list
     players.value = players.value.filter(
@@ -843,6 +905,15 @@ onUnmounted(() => {
     observer.disconnect();
   }
 });
+
+/** Remove a player from the list by UUID (called from parent via ref) */
+function removePlayerByUuid(playerUuid: string) {
+  players.value = players.value.filter(
+    (p) => p.player.uuid !== playerUuid,
+  );
+}
+
+defineExpose({ removePlayerByUuid });
 </script>
 
 <style scoped>
@@ -860,5 +931,50 @@ onUnmounted(() => {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ── Desktop table row animations ── */
+.player-row-enter-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.player-row-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.player-row-enter-from {
+  opacity: 0;
+  transform: translateX(-12px);
+}
+.player-row-leave-to {
+  opacity: 0;
+  transform: translateX(30px) scale(0.96);
+}
+.player-row-move {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Mobile card animations ── */
+.player-card-enter-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.player-card-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.player-card-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.player-card-leave-to {
+  opacity: 0;
+  transform: translateX(40px) scale(0.95);
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+.player-card-move {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>

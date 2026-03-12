@@ -1,5 +1,6 @@
 import { ref, onUnmounted } from 'vue'
 import { useAblyBroadcast } from './broadcast/useAblyBroadcast'
+import { FootballPlayerResponse } from '@/interfaces/football/player/FootballPlayerResponse'
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -13,8 +14,10 @@ export interface DraftTurn {
 
 export interface PlayerPickedPayload {
   picked_by_user_uuid: string
-  football_player_id: number
   player_uuid: string | null
+  is_starter: boolean | null
+  is_flex: boolean | null
+  player: FootballPlayerResponse | null
 }
 
 export interface TurnChangedPayload {

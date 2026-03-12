@@ -107,6 +107,9 @@
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
               Round {{ currentRound }} · Pick {{ currentPickInRound }} of
               {{ totalPicksPerRound }}
+              <span v-if="totalParticipants > 0" class="ml-1">
+                · <span class="text-green-500">●</span> {{ onlineCount }}/{{ totalParticipants }} online
+              </span>
             </p>
           </div>
         </div>
@@ -200,15 +203,17 @@
               ></div>
             </div>
 
-            <!-- Current user indicator dot -->
+            <!-- Online/Offline presence indicator -->
             <div
-              v-if="isCurrentUser(pick.user.uuid)"
-              class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 z-20 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800"
+              class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 z-20 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 transition-colors duration-300"
               :class="
-                isActivePick(pick)
-                  ? 'bg-green-500 animate-pulse'
-                  : 'bg-emerald-500'
+                isUserOnline(pick.user.uuid)
+                  ? isActivePick(pick)
+                    ? 'bg-green-500 animate-pulse'
+                    : 'bg-green-500'
+                  : 'bg-gray-400 dark:bg-gray-600'
               "
+              :title="isUserOnline(pick.user.uuid) ? 'Online' : 'Offline'"
             ></div>
           </div>
 
@@ -257,6 +262,7 @@ import { ref, computed, nextTick, watch, onUnmounted } from "vue";
 import { useUserStore } from "@/store";
 import type { FantasyDraftOrderResponse } from "@/interfaces/fantasy/draft/FantasyDraftOrderResponse";
 import type { DraftTurn } from "@/composables/useDraftChannel";
+import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
 interface Props {
   draftOrder: FantasyDraftOrderResponse[];
@@ -264,6 +270,8 @@ interface Props {
   isDraftComplete?: boolean;
   isMyTurn?: boolean;
   pickTime?: number;
+  onlineUserUuids?: string[];
+  participants?: UserDataInterface[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -271,6 +279,8 @@ const props = withDefaults(defineProps<Props>(), {
   isDraftComplete: false,
   isMyTurn: false,
   pickTime: 0,
+  onlineUserUuids: () => [],
+  participants: () => [],
 });
 
 const emit = defineEmits<{
@@ -368,9 +378,22 @@ function stopTimer() {
 // ── Core logic ──────────────────────────────────────────────────
 
 /** Check if a user is the authenticated user */
-function isCurrentUser(userUuid: string): boolean {
+function isCurrentUser(userUuid: string | null): boolean {
+  if (!userUuid) return false;
   return userStore.getUserData?.uuid === userUuid;
 }
+
+/** Check if a user is currently online in the draft room */
+function isUserOnline(userUuid: string | null): boolean {
+  if (!userUuid) return false;
+  return props.onlineUserUuids.includes(userUuid);
+}
+
+/** Total online participants */
+const onlineCount = computed(() => props.onlineUserUuids.length);
+
+/** Total participants in the league */
+const totalParticipants = computed(() => props.participants.length);
 
 /** Check if this pick is the currently active turn */
 function isActivePick(pick: FantasyDraftOrderResponse): boolean {

@@ -1,4 +1,5 @@
 import { CountryResponse } from "@/interfaces/country/CountryResponse";
+import { TypeResponse } from "../type/TypeResponse";
 
 
 export interface FootballPlayerResponse {
@@ -12,5 +13,6 @@ export interface FootballPlayerResponse {
     weight: number;
     date_of_birth: string;
     gender: string;
-    country: CountryResponse;
+    country: CountryResponse | null; 
+    position: TypeResponse | null;
 }

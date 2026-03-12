@@ -2,12 +2,12 @@ import { FootballLeagueResponse } from "../football/league/FootballLeagueRespons
 import { FootballTeamResponse } from "../football/team/FootballTeamResponse";
 
 export interface UserDataInterface {
-    uuid: string;
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone: string;
-    avatar: string;
+    uuid: string | null;
+    firstname: string | null;
+    lastname: string | null;
+    email: string | null;
+    phone: string | null;
+    avatar: string | null;
     favoriteFootballTeam: FootballTeamResponse | null;
     football_league: FootballLeagueResponse | null;
 }

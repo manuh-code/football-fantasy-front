@@ -244,6 +244,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
+  "width-change": [width: number];
 }>();
 
 const { isMobile } = useBreakpoints();
@@ -310,6 +311,11 @@ watch(
 onMounted(async () => {
   await loadLeague();
   await loadRounds();
+
+  // Emit initial desktop width
+  if (!isMobile.value) {
+    emit("width-change", getDesktopWidthForState(desktopState.value));
+  }
 });
 
 // ==================== DESKTOP: Left-side draggable sheet ====================
@@ -342,6 +348,13 @@ const desktopSheetStyle = computed(() => {
       ? "none"
       : "width 0.28s cubic-bezier(0.25, 1, 0.5, 1)",
   };
+});
+
+// Emit desktop width when state changes so the parent can offset content
+watch(desktopState, (newState) => {
+  if (!isMobile.value) {
+    emit("width-change", getDesktopWidthForState(newState));
+  }
 });
 
 function toggleDesktop() {
