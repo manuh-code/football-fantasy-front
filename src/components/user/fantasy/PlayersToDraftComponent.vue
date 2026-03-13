@@ -10,7 +10,7 @@
       :current-turn="currentTurn"
       :is-draft-complete="isDraftComplete"
       :is-my-turn="isMyTurn"
-      :pick-time="currentTurn?.pick_timer ?? league?.draft?.pick_time ?? 0"
+      :pick-time="currentTurn?.pick_timer ?? 0"
       :time-remaining="timeRemaining"
       :timer-expired="timerExpired"
       :timer-progress="timerProgress"
