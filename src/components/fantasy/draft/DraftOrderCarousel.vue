@@ -258,7 +258,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, watch, onUnmounted } from "vue";
+import { ref, computed, nextTick, watch } from "vue";
 import { useUserStore } from "@/store";
 import type { FantasyDraftOrderResponse } from "@/interfaces/fantasy/draft/FantasyDraftOrderResponse";
 import type { DraftTurn } from "@/composables/useDraftChannel";
@@ -272,6 +272,11 @@ interface Props {
   pickTime?: number;
   onlineUserUuids?: string[];
   participants?: UserDataInterface[];
+  timeRemaining?: number;
+  timerExpired?: boolean;
+  timerProgress?: number;
+  formattedTime?: string;
+  timerUrgency?: 'normal' | 'warning' | 'critical';
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -281,6 +286,11 @@ const props = withDefaults(defineProps<Props>(), {
   pickTime: 0,
   onlineUserUuids: () => [],
   participants: () => [],
+  timeRemaining: 0,
+  timerExpired: false,
+  timerProgress: 1,
+  formattedTime: '0:00',
+  timerUrgency: 'normal',
 });
 
 const emit = defineEmits<{
@@ -294,53 +304,27 @@ const canScrollRight = ref(false);
 const currentRound = ref(1);
 const pickRefs = ref<Map<number, HTMLElement>>(new Map());
 
-// ── Timer state ─────────────────────────────────────────────────
-const timeRemaining = ref(0);
-const timerExpired = ref(false);
-let timerInterval: ReturnType<typeof setInterval> | null = null;
-
-const timerProgress = computed(() => {
-  if (!props.pickTime || props.pickTime <= 0) return 1;
-  return timeRemaining.value / props.pickTime;
-});
-
-const formattedTime = computed(() => {
-  const total = Math.max(0, timeRemaining.value);
-  const mins = Math.floor(total / 60);
-  const secs = total % 60;
-  if (mins > 0) {
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  }
-  return `${secs}`;
-});
-
-const timerUrgency = computed<"normal" | "warning" | "critical">(() => {
-  if (!props.pickTime || props.pickTime <= 0) return "normal";
-  const pct = timeRemaining.value / props.pickTime;
-  if (pct <= 0.2) return "critical";
-  if (pct <= 0.4) return "warning";
-  return "normal";
-});
+// ── Timer state (received as props from parent) ──────────────────
 
 /** Color for the progress bar */
 const timerBarColor = computed(() => {
-  if (timerExpired.value) return "bg-white/30";
-  if (timerUrgency.value === "critical") return "bg-red-400";
-  if (timerUrgency.value === "warning") return "bg-yellow-300";
+  if (props.timerExpired) return "bg-white/30";
+  if (props.timerUrgency === "critical") return "bg-red-400";
+  if (props.timerUrgency === "warning") return "bg-yellow-300";
   return "bg-white";
 });
 
 /** Banner gradient changes color based on timer urgency */
 const bannerGradientClasses = computed(() => {
-  if (timerExpired.value) {
+  if (props.timerExpired) {
     return "bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700";
   }
-  if (timerUrgency.value === "critical") {
+  if (props.timerUrgency === "critical") {
     return props.isMyTurn
       ? "bg-gradient-to-r from-red-500 to-orange-500 dark:from-red-600 dark:to-orange-600"
       : "bg-gradient-to-r from-red-400 to-orange-400 dark:from-red-500 dark:to-orange-500";
   }
-  if (timerUrgency.value === "warning") {
+  if (props.timerUrgency === "warning") {
     return props.isMyTurn
       ? "bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
       : "bg-gradient-to-r from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500";
@@ -349,31 +333,6 @@ const bannerGradientClasses = computed(() => {
     ? "bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600"
     : "bg-gradient-to-r from-yellow-400 to-amber-500 dark:from-yellow-500 dark:to-amber-600";
 });
-
-function startTimer() {
-  stopTimer();
-  timerExpired.value = false;
-  if (!props.pickTime || props.pickTime <= 0 || props.isDraftComplete || !props.currentTurn) return;
-
-  timeRemaining.value = props.pickTime;
-
-  timerInterval = setInterval(() => {
-    timeRemaining.value--;
-    if (timeRemaining.value <= 0) {
-      timeRemaining.value = 0;
-      timerExpired.value = true;
-      stopTimer();
-      emit("time-expired");
-    }
-  }, 1000);
-}
-
-function stopTimer() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
-}
 
 // ── Core logic ──────────────────────────────────────────────────
 
@@ -589,28 +548,16 @@ watch(currentRoundPicks, () => {
   nextTick(() => updateScrollState());
 });
 
-/** Auto-navigate and restart timer when currentTurn changes (real-time via Ably) */
+/** Auto-navigate when currentTurn changes (real-time via Ably) */
 watch(
   () => props.currentTurn,
   () => {
     navigateToCurrentTurn();
-    startTimer();
   },
   { immediate: true },
 );
 
-/** Stop timer when draft is complete */
-watch(
-  () => props.isDraftComplete,
-  (val) => {
-    if (val) stopTimer();
-  },
-);
-
 // ── Cleanup ─────────────────────────────────────────────────────
-onUnmounted(() => {
-  stopTimer();
-});
 </script>
 
 <style scoped>

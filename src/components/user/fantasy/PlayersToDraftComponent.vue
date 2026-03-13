@@ -10,7 +10,12 @@
       :current-turn="currentTurn"
       :is-draft-complete="isDraftComplete"
       :is-my-turn="isMyTurn"
-      :pick-time="0"
+      :pick-time="currentTurn?.pick_timer ?? league?.draft?.pick_time ?? 0"
+      :time-remaining="timeRemaining"
+      :timer-expired="timerExpired"
+      :timer-progress="timerProgress"
+      :formatted-time="formattedTime"
+      :timer-urgency="timerUrgency"
       :online-user-uuids="onlineUserUuids"
       :participants="league.participants ?? []"
     />
@@ -38,6 +43,7 @@ import { useUserStore, useFantasyLeagueDetailStore } from "@/store";
 import { useBreakpoints } from "@/composables/useMediaQuery";
 import { onMounted, onUnmounted, ref, computed, watch } from "vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
+import { useDraftTimer } from "@/composables/useDraftTimer";
 import DraftOrderCarousel from "@/components/fantasy/draft/DraftOrderCarousel.vue";
 import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
 import SearchPlayerFantasy from "@/components/user/fantasy/SearchPlayerFantasy.vue";
@@ -70,6 +76,34 @@ const isMyTurn = computed(
   () => currentTurn.value?.user_uuid === userData?.uuid,
 );
 
+const {
+  timeRemaining,
+  timerExpired,
+  timerProgress,
+  formattedTime,
+  timerUrgency,
+  syncWithTurn,
+} = useDraftTimer();
+
+// Fallback: if timer expires on client and it's my turn, call skip after 3s delay
+let skipFallbackTimeout: ReturnType<typeof setTimeout> | null = null;
+
+watch(timerExpired, (expired) => {
+  if (skipFallbackTimeout) {
+    clearTimeout(skipFallbackTimeout);
+    skipFallbackTimeout = null;
+  }
+  if (expired && isMyTurn.value) {
+    skipFallbackTimeout = setTimeout(async () => {
+      try {
+        await fantasyLeagueService.skipDraftTurn(props.fantasyLeagueUuid);
+      } catch (e) {
+        console.error('[Draft] Fallback skip failed:', e);
+      }
+    }, 3000);
+  }
+});
+
 /** Sync the online users list from current presence members */
 function syncOnlineMembers() {
   channel.presence.get((err, members) => {
@@ -98,6 +132,7 @@ onMounted(async () => {
     currentTurn.value = await fantasyLeagueService.getCurrentDraftTurn(
       props.fantasyLeagueUuid,
     );
+    syncWithTurn(currentTurn.value);
   }
 
   // Someone enters
@@ -139,12 +174,14 @@ onMounted(async () => {
       currentTurn.value = await fantasyLeagueService.getCurrentDraftTurn(
         props.fantasyLeagueUuid,
       );
+      syncWithTurn(currentTurn.value);
     }
   });
 
   channel.subscribe("turn.changed", (message) => {
     const payload = message.data as TurnChangedPayload;
     currentTurn.value = payload.next_turn;
+    syncWithTurn(payload.next_turn);
     if (payload.is_draft_complete) {
       league.value = league.value ? { ...league.value, draft: league.value.draft ? { ...league.value.draft, status: { ...league.value.draft.status, value: 'completed' } } : league.value.draft } : null;
     }
@@ -184,6 +221,7 @@ watch(() => props.draftActive, async (isActive, wasActive) => {
       currentTurn.value = await fantasyLeagueService.getCurrentDraftTurn(
         props.fantasyLeagueUuid,
       );
+      syncWithTurn(currentTurn.value);
     }
   }
 });
