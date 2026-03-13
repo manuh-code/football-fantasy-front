@@ -10,6 +10,9 @@ export interface DraftTurn {
   pick_in_round: number
   user_uuid: string
   user_name: string
+  // Timer synchronization data from backend
+  turn_started_at: string | null   // ISO 8601 UTC timestamp
+  pick_timer: number               // seconds configured for the draft (e.g., 120)
 }
 
 export interface PlayerPickedPayload {
