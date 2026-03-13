@@ -154,8 +154,7 @@ const handleLeagueSaved = () => {
   fetchLeagueData()
 }
 
-// Clear store when leaving the view
-onUnmounted(() => leagueDetailStore.clearCurrentLeague())
+// Store persists across routes — no clearing on unmount
 
 // Transition event handlers
 const onEnter = (el: Element) => {

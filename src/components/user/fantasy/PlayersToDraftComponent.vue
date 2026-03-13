@@ -1,5 +1,6 @@
 <template>
   <div
+    v-show="draftActive"
     class="space-y-4 transition-[margin] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]"
     :style="{ marginLeft: !isMobile ? `${drawerWidth}px` : undefined }"
   >
@@ -33,9 +34,9 @@
 
 <script setup lang="ts">
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
-import { useUserStore } from "@/store";
+import { useUserStore, useFantasyLeagueDetailStore } from "@/store";
 import { useBreakpoints } from "@/composables/useMediaQuery";
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { onMounted, onUnmounted, ref, computed, watch } from "vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import DraftOrderCarousel from "@/components/fantasy/draft/DraftOrderCarousel.vue";
 import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
@@ -45,11 +46,13 @@ import type { DraftTurn, TurnChangedPayload, PlayerPickedPayload } from "@/compo
 
 const props = defineProps<{
   fantasyLeagueUuid: string;
+  draftActive?: boolean;
 }>();
 
 const { ably, draftFantasyLeagueChannel } = useAblyBroadcast();
 const channel = draftFantasyLeagueChannel(props.fantasyLeagueUuid);
 const userData = useUserStore().userData;
+const leagueDetailStore = useFantasyLeagueDetailStore();
 const { isMobile } = useBreakpoints();
 
 const league = ref<FantasyLeaguesResponse | null>(null);
@@ -88,9 +91,10 @@ onMounted(async () => {
   league.value = await fantasyLeagueService.showFantasyLeague(
     props.fantasyLeagueUuid,
   );
+  leagueDetailStore.setCurrentLeague(league.value);
 
-  // Load current draft turn
-  if (!isDraftComplete.value) {
+  // Load current draft turn only if draft is already active
+  if (props.draftActive && !isDraftComplete.value) {
     currentTurn.value = await fantasyLeagueService.getCurrentDraftTurn(
       props.fantasyLeagueUuid,
     );
@@ -123,6 +127,21 @@ onMounted(async () => {
     avatar: userData?.avatar,
   });
 
+  channel.subscribe("draft.activated", async () => {
+    // Reload league data with updated draft status
+    league.value = await fantasyLeagueService.showFantasyLeague(
+      props.fantasyLeagueUuid,
+    );
+    leagueDetailStore.setCurrentLeague(league.value);
+
+    // Load the first draft turn
+    if (!isDraftComplete.value) {
+      currentTurn.value = await fantasyLeagueService.getCurrentDraftTurn(
+        props.fantasyLeagueUuid,
+      );
+    }
+  });
+
   channel.subscribe("turn.changed", (message) => {
     const payload = message.data as TurnChangedPayload;
     currentTurn.value = payload.next_turn;
@@ -150,6 +169,22 @@ onUnmounted(() => {
   if (channel) {
     channel.presence.leave();
     channel.detach();
+  }
+});
+
+// When draftActive changes to true, reload league data to get draft_order
+watch(() => props.draftActive, async (isActive, wasActive) => {
+  if (isActive && !wasActive) {
+    league.value = await fantasyLeagueService.showFantasyLeague(
+      props.fantasyLeagueUuid,
+    );
+    leagueDetailStore.setCurrentLeague(league.value);
+
+    if (!isDraftComplete.value) {
+      currentTurn.value = await fantasyLeagueService.getCurrentDraftTurn(
+        props.fantasyLeagueUuid,
+      );
+    }
   }
 });
 </script>
