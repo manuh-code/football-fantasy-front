@@ -197,25 +197,27 @@
             v-if="league.participants && league.participants.length > 0"
             class="space-y-1.5"
           >
-            <div
-              v-for="member in league.participants"
-              :key="member.uuid"
-              class="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
-            >
-              <img
-                :src="member.avatar || '/img/default-avatar.svg'"
-                :alt="`${member.firstname} ${member.lastname}`"
-                class="w-8 h-8 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-700"
-                @error="handleImageError"
-              />
-              <div class="flex-1 min-w-0">
-                <p
-                  class="text-[13px] font-medium text-gray-900 dark:text-white truncate"
-                >
-                  {{ member.firstname }} {{ member.lastname }}
-                </p>
+            <TransitionGroup name="participant-join">
+              <div
+                v-for="member in league.participants"
+                :key="member.uuid!"
+                class="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+              >
+                <img
+                  :src="member.avatar || '/img/default-avatar.svg'"
+                  :alt="`${member.firstname} ${member.lastname}`"
+                  class="w-8 h-8 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-700"
+                  @error="handleImageError"
+                />
+                <div class="flex-1 min-w-0">
+                  <p
+                    class="text-[13px] font-medium text-gray-900 dark:text-white truncate"
+                  >
+                    {{ member.firstname }} {{ member.lastname }}
+                  </p>
+                </div>
               </div>
-            </div>
+            </TransitionGroup>
           </div>
           <div v-else class="py-6 text-center">
             <v-icon
@@ -273,27 +275,8 @@
               >
             </div>
 
-            <!-- Activate Draft -->
-            <div
-              v-if="
-                league.isAdmin &&
-                draftStatusValue === 'NOT_STARTED' &&
-                league.members_count === league.participants_count
-              "
-              class="pt-2"
-            >
-              <ButtonComponent
-                variant="primary"
-                size="sm"
-                :text="isActivatingDraft ? 'Activating...' : 'Activate Draft'"
-                :disabled="isActivatingDraft"
-                class="w-full"
-                @click="handleActivateDraft"
-              />
-            </div>
-
             <!-- Enter Draft -->
-            <div v-if="draftStatusValue === 'ACTIVE'" class="pt-2">
+            <div class="pt-2">
               <ButtonComponent
                 variant="primary"
                 size="sm"
@@ -337,6 +320,7 @@ import JoinLeagueModal from "@/components/fantasy/JoinLeagueModal.vue";
 import CreateTeamModal from "@/components/fantasy/team/CreateTeamModal.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
+import type { UserDataInterface } from "@/interfaces/user/userInterface";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 
 // Props
@@ -351,7 +335,7 @@ const router = useRouter();
 const toast = useToast();
 const validationStore = useValidationStore();
 const leagueDetailStore = useFantasyLeagueDetailStore();
-const { draftFantasyLeagueChannel } = useAblyBroadcast();
+const { fantasyLeagueChannel } = useAblyBroadcast();
 
 // State
 const league = ref<FantasyLeaguesResponse | null>(null);
@@ -363,7 +347,6 @@ const isJoining = ref(false);
 const isActivatingDraft = ref(false);
 const isDraftActivatedViaAbly = ref(false);
 
-let ablyChannel: ReturnType<typeof draftFantasyLeagueChannel> | null = null;
 
 // Show create team modal based on API response
 watch(
@@ -532,50 +515,56 @@ const closeJoinModal = () => {
   validationStore.clearFieldError("password");
 };
 
-function subscribeToAblyDraftChannel() {
+let leagueChannel: ReturnType<typeof fantasyLeagueChannel> | null = null;
+
+function subscribeToLeagueChannel() {
+  unsubscribeFromLeagueChannel();
   if (!props.uuid) return;
-
-  ablyChannel = draftFantasyLeagueChannel(props.uuid);
-
-  ablyChannel.subscribe("draft.activated", (msg: { data: unknown }) => {
-    const payload = msg.data as { league_uuid: string; initial_turn: any };
-
-    console.log("🔔 Draft activated via Ably:", payload);
-
-    // Marcar que el draft fue activado
-    isDraftActivatedViaAbly.value = true;
-
-    // Mostrar toast de notificación
-    toast.success(
-      "¡Draft Activado!",
-      `El draft de "${league.value?.name}" ha comenzado. ¡Entra ahora!`,
-    );
+  leagueChannel = fantasyLeagueChannel(props.uuid);
+  leagueChannel.subscribe("league.joined", (message) => {
+    const user = message.data as UserDataInterface;
+    if (!user?.uuid) return;
+    // Update both local ref and shared store
+    if (league.value) {
+      const alreadyExists = league.value.participants?.some(
+        (p) => p.uuid === user.uuid
+      );
+      if (!alreadyExists) {
+        league.value = {
+          ...league.value,
+          participants: [...(league.value.participants ?? []), user],
+          members_count: (league.value.members_count ?? 0) + 1,
+        };
+        leagueDetailStore.setCurrentLeague(league.value);
+      }
+    }
   });
 }
 
-function unsubscribeFromAblyDraftChannel() {
-  if (ablyChannel) {
-    ablyChannel.unsubscribe("draft.activated");
-    ablyChannel = null;
+function unsubscribeFromLeagueChannel() {
+  if (leagueChannel) {
+    leagueChannel.unsubscribe();
+    leagueChannel.detach();
+    leagueChannel = null;
   }
 }
 
 // Lifecycle
 onMounted(() => {
   fetchLeague();
-  subscribeToAblyDraftChannel();
+  subscribeToLeagueChannel();
 });
 onUnmounted(() => {
-  unsubscribeFromAblyDraftChannel();
+  unsubscribeFromLeagueChannel();
 });
 
 watch(
   () => props.uuid,
   () => {
-    unsubscribeFromAblyDraftChannel();
+    
     fetchLeague();
     isDraftActivatedViaAbly.value = false;
-    subscribeToAblyDraftChannel();
+    subscribeToLeagueChannel();
   },
 );
 </script>
@@ -583,6 +572,25 @@ watch(
 <style scoped>
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Participant join animation — fade + slide up */
+.participant-join-enter-active {
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.participant-join-leave-active {
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.participant-join-enter-from {
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+}
+.participant-join-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+}
+.participant-join-move {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Accessibility: Respect user's motion preferences */

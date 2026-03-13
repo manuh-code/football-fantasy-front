@@ -26,6 +26,7 @@ export function useAblyBroadcast() {
 
     const inPlayChannel = channel('inplay-channel_' + userStore.getTimezone);
     const draftFantasyLeagueChannel = (leagueUuid: string) => channel(`draft-${leagueUuid}`);
+    const fantasyLeagueChannel = (leagueUuid: string) => channel(`fantasy-league-${leagueUuid}`);
 
-    return { ably, channel, inPlayChannel, draftFantasyLeagueChannel }
+    return { ably, channel, inPlayChannel, draftFantasyLeagueChannel, fantasyLeagueChannel }
 }

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
+import type { UserDataInterface } from '@/interfaces/user/userInterface'
 
 /**
  * Store for the currently viewed fantasy league detail.
@@ -17,6 +18,11 @@ export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', ()
     (currentLeague.value?.draft?.status?.value || '').toUpperCase()
   )
   const isDraftNotStarted = computed(() => draftStatus.value === 'NOT_STARTED')
+  const canActivateDraft = computed(() =>
+    isAdmin.value &&
+    isDraftNotStarted.value &&
+    currentLeague.value?.members_count === currentLeague.value?.participants_count
+  )
 
   // Actions
   function setCurrentLeague(league: FantasyLeaguesResponse | null) {
@@ -27,13 +33,29 @@ export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', ()
     currentLeague.value = null
   }
 
+  function addParticipant(user: UserDataInterface) {
+    if (!currentLeague.value) return
+    const alreadyExists = currentLeague.value.participants?.some(
+      (p) => p.uuid === user.uuid
+    )
+    if (alreadyExists) return
+
+    currentLeague.value = {
+      ...currentLeague.value,
+      participants: [...(currentLeague.value.participants ?? []), user],
+      members_count: (currentLeague.value.members_count ?? 0) + 1,
+    }
+  }
+
   return {
     currentLeague,
     isMember,
     isAdmin,
     draftStatus,
     isDraftNotStarted,
+    canActivateDraft,
     setCurrentLeague,
     clearCurrentLeague,
+    addParticipant,
   }
 })
