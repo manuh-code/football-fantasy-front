@@ -178,12 +178,39 @@ onMounted(async () => {
     }
   });
 
-  channel.subscribe("turn.changed", (message) => {
+  channel.subscribe("turn.changed", async (message) => {
     const payload = message.data as TurnChangedPayload;
-    currentTurn.value = payload.next_turn;
-    syncWithTurn(payload.next_turn);
-    if (payload.is_draft_complete) {
-      league.value = league.value ? { ...league.value, draft: league.value.draft ? { ...league.value.draft, status: { ...league.value.draft.status, value: 'completed' } } : league.value.draft } : null;
+
+    if (payload.is_draft_complete && !payload.next_turn) {
+      // Double-check with the backend before marking draft as completed
+      try {
+        const verifyTurn = await fantasyLeagueService.getCurrentDraftTurn(
+          props.fantasyLeagueUuid,
+        );
+        if (verifyTurn) {
+          // Backend still has an active turn → draft is NOT completed (false positive)
+          currentTurn.value = verifyTurn;
+          syncWithTurn(verifyTurn);
+          return;
+        }
+      } catch (e) {
+        console.error('[Draft] Error verifying draft completion:', e);
+      }
+      // Draft is truly completed
+      league.value = league.value
+        ? {
+            ...league.value,
+            draft: league.value.draft
+              ? {
+                  ...league.value.draft,
+                  status: { ...league.value.draft.status, value: 'completed' },
+                }
+              : league.value.draft,
+          }
+        : null;
+    } else {
+      currentTurn.value = payload.next_turn;
+      syncWithTurn(payload.next_turn);
     }
   });
 
