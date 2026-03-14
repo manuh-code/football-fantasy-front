@@ -182,29 +182,24 @@ onMounted(async () => {
     const payload = message.data as TurnChangedPayload;
 
     if (payload.is_draft_complete && !payload.next_turn) {
-      // Double-check with the backend before marking draft as completed
+      // Double-check with backend before marking draft as complete
       try {
-        const verifyTurn = await fantasyLeagueService.getCurrentDraftTurn(
-          props.fantasyLeagueUuid,
-        );
-        if (verifyTurn) {
-          // Backend still has an active turn → draft is NOT completed (false positive)
-          currentTurn.value = verifyTurn;
-          syncWithTurn(verifyTurn);
+        const verifyTurn = await fantasyLeagueService.getCurrentDraftTurn(props.fantasyLeagueUuid);
+        if (verifyTurn && (verifyTurn as DraftTurn).user_uuid) {
+          // Backend still has an active turn - not actually complete (false positive)
+          currentTurn.value = verifyTurn as DraftTurn;
+          syncWithTurn(verifyTurn as DraftTurn);
           return;
         }
-      } catch (e) {
-        console.error('[Draft] Error verifying draft completion:', e);
+      } catch (error: unknown) {
+        console.error('[Draft] Verification of draft completion failed for league:', props.fantasyLeagueUuid, error);
       }
-      // Draft is truly completed
+      // Truly completed
       league.value = league.value
         ? {
             ...league.value,
             draft: league.value.draft
-              ? {
-                  ...league.value.draft,
-                  status: { ...league.value.draft.status, value: 'completed' },
-                }
+              ? { ...league.value.draft, status: { ...league.value.draft.status, value: 'completed' } }
               : league.value.draft,
           }
         : null;
