@@ -85,22 +85,29 @@ const {
   syncWithTurn,
 } = useDraftTimer();
 
-// Fallback: if timer expires on client and it's my turn, call skip after 3s delay
+// Fallback: if timer expires on client, any user in the room can call skip.
+// The user whose turn expired gets priority (shorter delay), others use a
+// longer randomized delay to avoid thundering-herd API calls.
 let skipFallbackTimeout: ReturnType<typeof setTimeout> | null = null;
 
-watch(timerExpired, (expired) => {
+function clearSkipFallback() {
   if (skipFallbackTimeout) {
     clearTimeout(skipFallbackTimeout);
     skipFallbackTimeout = null;
   }
-  if (expired && isMyTurn.value) {
+}
+
+watch(timerExpired, (expired) => {
+  clearSkipFallback();
+  if (expired && !isDraftComplete.value) {
+    const delay = isMyTurn.value ? 3000 : 5000 + Math.random() * 3000;
     skipFallbackTimeout = setTimeout(async () => {
       try {
         await fantasyLeagueService.skipDraftTurn(props.fantasyLeagueUuid);
       } catch (e) {
-        console.error('[Draft] Fallback skip failed:', e);
+        console.error(`[Draft] Fallback skip failed (isMyTurn: ${isMyTurn.value}):`, e);
       }
-    }, 3000);
+    }, delay);
   }
 });
 
@@ -179,6 +186,7 @@ onMounted(async () => {
   });
 
   channel.subscribe("turn.changed", async (message) => {
+    clearSkipFallback();
     const payload = message.data as TurnChangedPayload;
 
     if (payload.is_draft_complete && !payload.next_turn) {
@@ -225,6 +233,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  clearSkipFallback();
   if (channel) {
     channel.presence.leave();
     channel.detach();
