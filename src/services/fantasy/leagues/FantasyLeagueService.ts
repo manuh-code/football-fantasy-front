@@ -14,7 +14,7 @@ import { FantasyUserTeamPayload } from "@/interfaces/fantasy/team/FantasyUserTea
 import { FantasyTeamData } from "@/interfaces/fantasy/team/FantasyUserTeamResponse";
 import { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse";
 import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/FantasyParticipanCountResponse";
-import { DraftTurn } from "@/composables/useDraftChannel";
+
 
 export class FantasyLeagueService {
     private readonly api;
@@ -174,14 +174,6 @@ export class FantasyLeagueService {
         throw new Error('Failed to complete draft');
     }
 
-    async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<DraftTurn | null> {
-        const response = await this.api.get(`/fantasy/leagues/draft/turn/${fantasyLeagueUuid}`);
-        if (response.data.code === 200) {
-            return response.data.data as DraftTurn | null;
-        }
-        throw new Error('Failed to fetch current draft turn');
-    }
-
     /**
      * Skip the current draft turn (timer expired).
      * The backend advances to the next turn and broadcasts via Ably.
@@ -195,6 +187,28 @@ export class FantasyLeagueService {
             return response.data;
         }
         throw new Error('Failed to skip draft turn');
+    }
+
+    async draftState(draftUuid: string): Promise<ApiResponse<any>> {
+        const response = await this.api.get<ApiResponse<any>>(`fantasy/leagues/draft/${draftUuid}/state`);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to fetch draft state');
+    }
+
+    /**
+     * Get the current active draft turn for a league.
+     * Returns the DraftTurn object with user_uuid, pick, round, pick_timer, turn_started_at, etc.
+     */
+    async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<any> {
+        const response = await this.api.get<ApiResponse<any>>(
+            `fantasy/leagues/draft/${fantasyLeagueUuid}/current-turn`
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch current draft turn');
     }
 }
 

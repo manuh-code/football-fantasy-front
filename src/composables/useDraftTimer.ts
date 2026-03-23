@@ -4,78 +4,84 @@ import type { DraftTurn } from './useDraftChannel'
 export function useDraftTimer() {
   const timeRemaining = ref(0)
   const timerExpired = ref(false)
-  let intervalId: ReturnType<typeof setInterval> | null = null
-  let currentTurnStartedAt: Date | null = null
-  let currentPickTimer = 0
+  const totalDuration = ref(60)
+  let interval: ReturnType<typeof setInterval> | null = null
 
-  function calculateRemaining(): number {
-    if (!currentTurnStartedAt || currentPickTimer <= 0) return 0
-    const now = Date.now()
-    const started = currentTurnStartedAt.getTime()
-    const elapsed = Math.floor((now - started) / 1000)
-    return Math.max(0, currentPickTimer - elapsed)
-  }
+  // ── Derived state ─────────────────────────────────────────────
 
-  function tick() {
-    const remaining = calculateRemaining()
-    timeRemaining.value = remaining
-    if (remaining <= 0) {
-      timerExpired.value = true
-      stopTimer()
-    }
-  }
-
-  function startInterval() {
-    stopTimer()
-    timerExpired.value = false
-    tick()
-    intervalId = setInterval(tick, 1000)
-  }
-
-  function stopTimer() {
-    if (intervalId) {
-      clearInterval(intervalId)
-      intervalId = null
-    }
-  }
-
-  function syncWithTurn(turn: DraftTurn | null) {
-    stopTimer()
-    if (!turn || !turn.turn_started_at || !turn.pick_timer) {
-      timeRemaining.value = 0
-      timerExpired.value = false
-      currentTurnStartedAt = null
-      currentPickTimer = 0
-      return
-    }
-    currentTurnStartedAt = new Date(turn.turn_started_at)
-    currentPickTimer = turn.pick_timer
-    startInterval()
-  }
-
+  /** Progress from 1 (full) to 0 (expired) */
   const timerProgress = computed(() => {
-    if (currentPickTimer <= 0) return 1
-    return timeRemaining.value / currentPickTimer
+    if (totalDuration.value <= 0) return 1
+    return Math.max(0, Math.min(1, timeRemaining.value / totalDuration.value))
   })
 
+  /** Formatted time string (e.g. "0:45") */
   const formattedTime = computed(() => {
-    const total = timeRemaining.value
-    const minutes = Math.floor(total / 60)
-    const seconds = total % 60
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+    const secs = Math.max(0, Math.ceil(timeRemaining.value))
+    const m = Math.floor(secs / 60)
+    const s = secs % 60
+    return `${m}:${String(s).padStart(2, '0')}`
   })
 
+  /** Urgency level based on remaining percentage */
   const timerUrgency = computed<'normal' | 'warning' | 'critical'>(() => {
-    if (currentPickTimer <= 0) return 'normal'
-    const ratio = timeRemaining.value / currentPickTimer
-    if (ratio <= 0.15 || timeRemaining.value <= 10) return 'critical'
-    if (ratio <= 0.35 || timeRemaining.value <= 30) return 'warning'
+    if (timerExpired.value) return 'critical'
+    const pct = timerProgress.value
+    if (pct <= 0.2) return 'critical'
+    if (pct <= 0.4) return 'warning'
     return 'normal'
   })
 
-  onUnmounted(() => {
-    stopTimer()
-  })
+  // ── Core methods ──────────────────────────────────────────────
+
+  /**
+   * Start the countdown from a server-provided Unix timestamp.
+   * @param turnStartedAt  Unix timestamp (float, e.g. 1710000000.483)
+   * @param duration       Turn duration in seconds (default: 60)
+   */
+  function startFrom(turnStartedAt: number, duration = 60) {
+    stop()
+    totalDuration.value = duration
+    timerExpired.value = false
+
+    // Update 4 times per second for fluid UI
+    interval = setInterval(() => {
+      const elapsed = Date.now() / 1000 - turnStartedAt
+      const remaining = duration - elapsed
+
+      if (remaining <= 0) {
+        timeRemaining.value = 0
+        timerExpired.value = true
+        stop()
+        return
+      }
+
+      timeRemaining.value = remaining
+    }, 250)
+  }
+
+  /**
+   * Sync timer state from a DraftTurn object.
+   * Extracts turn_started_at and pick_timer to start countdown.
+   */
+  function syncWithTurn(turn: DraftTurn | null) {
+    if (!turn?.turn_started_at || !turn?.pick_timer) {
+      stop()
+      timeRemaining.value = 0
+      timerExpired.value = false
+      return
+    }
+    startFrom(turn.turn_started_at, turn.pick_timer)
+  }
+
+  function stop() {
+    if (interval) {
+      clearInterval(interval)
+      interval = null
+    }
+  }
+
+  onUnmounted(stop)
 
   return {
     timeRemaining,
@@ -83,7 +89,8 @@ export function useDraftTimer() {
     timerProgress,
     formattedTime,
     timerUrgency,
-    stopTimer,
+    startFrom,
     syncWithTurn,
+    stop,
   }
 }
