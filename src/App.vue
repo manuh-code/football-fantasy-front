@@ -182,7 +182,7 @@ watch(
     "rlig" 1,
     "calt" 1;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 // Ensure the app takes full height (min-height so scroll stays on window)

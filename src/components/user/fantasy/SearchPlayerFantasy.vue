@@ -267,7 +267,7 @@
               </thead>
               <TransitionGroup
                 tag="tbody"
-                name="player-row"
+                :name="animateRemoval ? 'player-row' : undefined"
                 class="divide-y divide-gray-100 dark:divide-gray-700/60"
               >
                 <tr
@@ -363,7 +363,7 @@
           <!-- Mobile Cards -->
           <TransitionGroup
             tag="div"
-            name="player-card"
+            :name="animateRemoval ? 'player-card' : undefined"
             class="md:hidden divide-y divide-gray-100 dark:divide-gray-700/60"
           >
             <div
@@ -553,6 +553,7 @@ const selectedTeam = ref<string>("ALL");
 const teams = ref<FootballTeamResponse[]>([]);
 const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
+const animateRemoval = ref(false);
 let observer: IntersectionObserver | null = null;
 
 // Computed
@@ -745,10 +746,12 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       );
     }
 
-    // Remove from the local list
+    // Remove from the local list with animation
+    animateRemoval.value = true;
     players.value = players.value.filter(
       (p) => p.player.uuid !== player.player.uuid,
     );
+    setTimeout(() => { animateRemoval.value = false; }, 500);
 
     emit("player-added", player);
   } catch (err: unknown) {
@@ -908,9 +911,11 @@ onUnmounted(() => {
 
 /** Remove a player from the list by UUID (called from parent via ref) */
 function removePlayerByUuid(playerUuid: string) {
+  animateRemoval.value = true;
   players.value = players.value.filter(
     (p) => p.player.uuid !== playerUuid,
   );
+  setTimeout(() => { animateRemoval.value = false; }, 500);
 }
 
 defineExpose({ removePlayerByUuid });

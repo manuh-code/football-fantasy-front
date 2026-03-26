@@ -14,8 +14,8 @@
       <!-- Left Side Sheet -->
       <div
         ref="desktopSheetRef"
-        class="fixed top-0 left-0 bottom-0 z-50 bg-white dark:bg-gray-900 shadow-[4px_0_24px_rgba(0,0,0,0.12)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.4)] flex flex-row will-change-[width]"
-        :style="desktopSheetStyle"
+        class="fixed left-0 bottom-0 z-50 bg-white dark:bg-gray-900 shadow-[4px_0_24px_rgba(0,0,0,0.12)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.4)] flex flex-row will-change-[width]"
+        :style="[desktopSheetStyle, { top: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }]"
       >
         <!-- Content area -->
         <div class="flex-1 flex flex-col overflow-hidden min-w-0">

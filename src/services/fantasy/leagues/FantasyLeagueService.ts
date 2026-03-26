@@ -14,6 +14,7 @@ import { FantasyUserTeamPayload } from "@/interfaces/fantasy/team/FantasyUserTea
 import { FantasyTeamData } from "@/interfaces/fantasy/team/FantasyUserTeamResponse";
 import { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse";
 import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/FantasyParticipanCountResponse";
+import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
 
 
 export class FantasyLeagueService {
@@ -209,6 +210,26 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch current draft turn');
+    }
+
+    async getTurnInfo(fantasyLeagueUuid: string): Promise<FantasyDraftTurnStarted> {
+        const response = await this.api.get<ApiResponse<FantasyDraftTurnStarted>>(
+            `fantasy/leagues/draft/${fantasyLeagueUuid}/turn-info`
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch turn info');
+    }
+
+    async getDraftPlayerPicked(fantasyLeagueUuid: string): Promise<FantasyDraftPlayerPicked[]> {
+        const response = await this.api.get<ApiResponse<FantasyDraftPlayerPicked[]>>(
+            `fantasy/leagues/draft/${fantasyLeagueUuid}/players/picked`
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch picked players');
     }
 }
 
