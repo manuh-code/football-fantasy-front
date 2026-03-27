@@ -5,7 +5,7 @@ import { FantasyDraftOrderResponse } from "./FantasyDraftOrderResponse";
 export interface FantasyDraftResponse {
     uuid: string,
     draft_day: string,
-    pick_time: number,
+    pick_timer: number,
     status: FantasyCatalogResponse;
     draft_order: FantasyDraftOrderResponse[] | null;
 }

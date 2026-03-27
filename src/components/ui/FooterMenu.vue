@@ -21,6 +21,16 @@
         <span class="text-[10px] font-medium leading-tight">Overview</span>
       </button>
 
+      <!-- My Leagues -->
+      <button
+        @click="goToMyLeagues"
+        class="flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150 text-gray-400 dark:text-gray-500 active:text-gray-600"
+        aria-label="My Leagues"
+      >
+        <v-icon name="bi-trophy-fill" class="w-[22px] h-[22px]" />
+        <span class="text-[10px] font-medium leading-tight">Leagues</span>
+      </button>
+
       <!-- My Team -->
       <button
         v-if="canAccessMemberTabs"
@@ -149,6 +159,10 @@ function handleTabChange(tab: string) {
       query: { ...route.query, tab }
     })
   }
+}
+
+function goToMyLeagues() {
+  router.push({ name: 'userFantasyLeague' })
 }
 </script>
 

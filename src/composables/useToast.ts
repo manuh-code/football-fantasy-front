@@ -5,6 +5,7 @@ export interface ToastMessage {
   type: 'success' | 'error' | 'warning' | 'info'
   title: string
   message?: string
+  image?: string
   duration?: number
   actions?: Array<{
     label: string

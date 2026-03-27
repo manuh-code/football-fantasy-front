@@ -1,171 +1,101 @@
-import { ref, onUnmounted } from 'vue'
+
+
+import { onUnmounted } from 'vue'
+import type { Types } from 'ably'
 import { useAblyBroadcast } from './broadcast/useAblyBroadcast'
-import { FootballPlayerResponse } from '@/interfaces/football/player/FootballPlayerResponse'
 
-// ── Types ─────────────────────────────────────────────────────────
+// ── Types for draft events ─────────────────────────────────────
 
+/** Represents the current draft turn state from the backend */
 export interface DraftTurn {
-  pick: number
-  round: number
-  pick_in_round: number
-  user_uuid: string
-  user_name: string
-  // Timer synchronization data from backend
-  turn_started_at: string | null   // ISO 8601 UTC timestamp
-  pick_timer: number               // seconds configured for the draft (e.g., 120)
+    user_uuid:       string
+    user_name:       string
+    pick:            number
+    round:           number
+    pick_in_round:   number
+    pick_timer:      number    // Duration in seconds for this turn
+    turn_started_at: number    // Unix timestamp (float) when turn began
 }
 
-export interface PlayerPickedPayload {
-  picked_by_user_uuid: string
-  player_uuid: string | null
-  is_starter: boolean | null
-  is_flex: boolean | null
-  player: FootballPlayerResponse | null
-}
-
+/** Payload for the turn.changed event */
 export interface TurnChangedPayload {
-  next_turn: DraftTurn | null
-  is_draft_complete: boolean
+    next_turn:         DraftTurn | null
+    is_draft_complete: boolean
+}
+
+/** Payload for the player.picked event */
+export interface PlayerPickedPayload {
+    player_uuid:         string
+    picked_by_user_uuid: string
+    pick:                number
+    round:               number
+}
+
+/** Payload for the draft.activated event */
+export interface DraftActivatedPayload {
+    fantasy_league_uuid: string
+}
+
+// ── Legacy event payloads (kept for backward compatibility) ─────
+
+export interface TurnStartedPayload {
+    pick:             number
+    round:            number
+    user_id:          number
+    turn_started_at:  number
+    duration_seconds: number
+}
+
+export interface PlayerSelectedPayload {
+    pick:        number
+    round:       number
+    user_id:     number
+    player_id:   number
+    player_name: string
+    picked_at:   string
 }
 
 export interface TurnSkippedPayload {
-  skipped_user_uuid: string
-  skipped_user_name: string
-  pick: number
+    pick:    number
+    user_id: number
 }
 
-// ── Track active subscriptions per channel to prevent duplicates ──
-const activeChannels = new Set<string>()
+// ── Channel composable ─────────────────────────────────────────
 
-// ── Composable ────────────────────────────────────────────────────
+type DraftEvent =
+    | 'draft.activated'
+    | 'turn.changed'
+    | 'player.picked'
+    | 'turn.started'
+    | 'player.selected'
+    | 'turn.skipped'
+    | 'draft.finished'
+    | 'draft.started'
 
-export function useDraftChannel(fantasyLeagueUuid: string, currentUserUuid: string) {
-  // Reactive state
-  const currentTurn = ref<DraftTurn | null>(null)
-  const isMyTurn = ref(false)
-  const isDraftComplete = ref(false)
-  const { draftFantasyLeagueChannel } = useAblyBroadcast()
+export function useDraftChannel(draftUuid: string) {
+    const { ably } = useAblyBroadcast()
 
-  // Reuse existing Ably channel (singleton connection)
-  const channelName = `draft-${fantasyLeagueUuid}`
-  const channel = draftFantasyLeagueChannel(fantasyLeagueUuid)
+    const channel = ably.channels.get(`draft-${draftUuid}`)
 
-  // Prevent duplicate subscriptions (e.g. HMR, re-mounts)
-  const isAlreadySubscribed = activeChannels.has(channelName)
+    function on(event: 'draft.activated',  cb: (data: DraftActivatedPayload) => void): void
+    function on(event: 'turn.changed',     cb: (data: TurnChangedPayload)    => void): void
+    function on(event: 'player.picked',    cb: (data: PlayerPickedPayload)   => void): void
+    function on(event: 'turn.started',     cb: (data: TurnStartedPayload)    => void): void
+    function on(event: 'player.selected',  cb: (data: PlayerSelectedPayload) => void): void
+    function on(event: 'turn.skipped',     cb: (data: TurnSkippedPayload)    => void): void
+    function on(event: 'draft.finished',   cb: (data: any)                   => void): void
+    function on(event: 'draft.started',    cb: (data: any)                   => void): void
+    function on(event: string, cb: (data: any) => void): void {
+        channel.subscribe(event, (msg: Types.Message) => cb(msg.data))
+    }
 
-  // ── Optional callbacks for the component ──────────────────────
-  let onPlayerPickedCb: ((payload: PlayerPickedPayload) => void) | null = null
-  let onDraftActivatedCb: ((initialTurn: DraftTurn | null) => void) | null = null
-  let onTurnSkippedCb: ((payload: TurnSkippedPayload) => void) | null = null
-  let onAutoSkipCb: ((turnUserName: string) => void) | null = null
+    function off(event?: string) {
+        event ? channel.unsubscribe(event) : channel.unsubscribe()
+    }
 
-
-  // ── Subscriptions (only if not already active) ────────────────
-
-  if (!isAlreadySubscribed) {
-    activeChannels.add(channelName)
-
-    channel.presence.enter({ user_uuid: currentUserUuid })
-
-    // 1. Player picked → component removes it from list
-    channel.subscribe('player.picked', (msg: { data: unknown }) => {
-      const payload = msg.data as PlayerPickedPayload
-
-      // Skip if the current user triggered this pick (already handled locally)
-      if (payload.picked_by_user_uuid === currentUserUuid) return
-
-      onPlayerPickedCb?.(payload)
+    onUnmounted(() => {
+        channel.unsubscribe()
     })
 
-    // 2. Turn changed → update who can pick
-    channel.subscribe('turn.changed', (msg: { data: unknown }) => {
-      const payload = msg.data as TurnChangedPayload
-      currentTurn.value = payload.next_turn
-      isDraftComplete.value = payload.is_draft_complete
-      isMyTurn.value = payload.next_turn?.user_uuid === currentUserUuid
-
-      // Auto-skip: if the new turn user is not present in the channel, notify
-      if (
-        payload.next_turn &&
-        !payload.is_draft_complete &&
-        payload.next_turn.user_uuid !== currentUserUuid &&
-        onAutoSkipCb
-      ) {
-        channel.presence.get((err, members) => {
-          if (err || !members) {
-            console.error('[Draft] Error checking presence for auto-skip:', err)
-            return
-          }
-          const turnUserUuid = payload.next_turn!.user_uuid
-          const isPresent = members.some((m) => (m.data as { user_uuid?: string })?.user_uuid === turnUserUuid)
-          if (!isPresent) {
-            onAutoSkipCb?.(payload.next_turn!.user_name)
-          }
-        })
-      }
-    })
-
-    // 3. Draft activated (when admin activates while user is already in the room)
-    channel.subscribe('draft.activated', (msg: { data: unknown }) => {
-      const payload = msg.data as { league_uuid: string; initial_turn: DraftTurn | null }
-      currentTurn.value = payload.initial_turn
-      isMyTurn.value = payload.initial_turn?.user_uuid === currentUserUuid
-      onDraftActivatedCb?.(payload.initial_turn)
-    })
-
-    // 4. Turn skipped → notify that a turn was skipped
-    channel.subscribe('turn.skipped', (msg: { data: unknown }) => {
-      const payload = msg.data as TurnSkippedPayload
-      onTurnSkippedCb?.(payload)
-    })
-  }
-
-  // ── Methods ───────────────────────────────────────────────────
-
-  /** Register callback for when a turn is skipped */
-  function onTurnSkipped(cb: (payload: TurnSkippedPayload) => void) {
-    onTurnSkippedCb = cb
-  }
-
-  /** Set the turn on initial load (via REST) */
-  function setInitialTurn(turn: DraftTurn | null) {
-    currentTurn.value = turn
-    isMyTurn.value = turn?.user_uuid === currentUserUuid
-  }
-
-  /** Register callback for when a player is picked */
-  function onPlayerPicked(cb: (payload: PlayerPickedPayload) => void) {
-    onPlayerPickedCb = cb
-  }
-
-  /** Register callback for when the draft is activated */
-  function onDraftActivated(cb: (initialTurn: DraftTurn | null) => void) {
-    onDraftActivatedCb = cb
-  }
-
-  /** Register callback for auto-skipping a disconnected user's turn */
-  function onAutoSkip(cb: (turnUserName: string) => void) {
-    onAutoSkipCb = cb
-  }
-
-  // ── Cleanup on component unmount ──────────────────────────────
-  onUnmounted(() => {
-    channel.presence.leave()
-    channel.unsubscribe('player.picked')
-    channel.unsubscribe('turn.changed')
-    channel.unsubscribe('draft.activated')
-    channel.unsubscribe('turn.skipped')
-    activeChannels.delete(channelName)
-  })
-
-  return {
-    currentTurn,
-    isMyTurn,
-    isDraftComplete,
-    setInitialTurn,
-    onPlayerPicked,
-    onDraftActivated,
-    onTurnSkipped,
-    onAutoSkip,
-  }
+    return { channel, on, off }
 }

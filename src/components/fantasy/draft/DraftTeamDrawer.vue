@@ -14,8 +14,8 @@
       <!-- Left Side Sheet -->
       <div
         ref="desktopSheetRef"
-        class="fixed top-0 left-0 bottom-0 z-50 bg-white dark:bg-gray-900 shadow-[4px_0_24px_rgba(0,0,0,0.12)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.4)] flex flex-row will-change-[width]"
-        :style="desktopSheetStyle"
+        class="fixed left-0 bottom-0 z-50 bg-white dark:bg-gray-900 shadow-[4px_0_24px_rgba(0,0,0,0.12)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.4)] flex flex-row will-change-[width]"
+        :style="[desktopSheetStyle, { top: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }]"
       >
         <!-- Content area -->
         <div class="flex-1 flex flex-col overflow-hidden min-w-0">
@@ -99,10 +99,10 @@
         />
       </Transition>
 
-      <!-- Bottom Sheet -->
+      <!-- Bottom Sheet (offset above MenuDraft) -->
       <div
         ref="mobileSheetRef"
-        class="fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col mobile-sheet"
+        class="fixed inset-x-0 bottom-[52px] z-50 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col mobile-sheet"
         :style="mobileSheetStyle"
         @touchstart.passive="onMobileTouchStart"
         @touchmove.passive="onMobileTouchMove"
@@ -225,7 +225,70 @@ const DESKTOP_HALF_PX = 360;
 const DESKTOP_FULL_PX = 480;
 
 // Fling velocity threshold (px/ms) — lower = more sensitive
-const FLING_VELOCITY_THRESHOLD = 0.4;
+const FLING_VELOCITY_THRESHOLD = 0.3;
+
+// iOS-style spring curve (matches UIKit default)
+const IOS_SPRING_BEZIER = 'cubic-bezier(0.32, 0.72, 0, 1)';
+
+// Dynamic duration bounds (ms)
+const SNAP_DURATION_MIN = 260;
+const SNAP_DURATION_MAX = 500;
+
+/**
+ * Compute a dynamic snap duration based on remaining distance and release velocity.
+ * Faster flings → shorter duration; longer distances → longer duration.
+ */
+function computeSnapDuration(distance: number, velocity: number): number {
+  const absVel = Math.abs(velocity);
+  // Base duration proportional to distance, reduced by velocity
+  const base = Math.min(SNAP_DURATION_MAX, Math.max(SNAP_DURATION_MIN, distance * 0.8));
+  const factor = absVel > 0.5 ? Math.max(0.4, 1 - absVel * 0.3) : 1;
+  return Math.round(Math.min(SNAP_DURATION_MAX, Math.max(SNAP_DURATION_MIN, base * factor)));
+}
+
+/**
+ * Rubber-band damping: past the boundary, movement is exponentially reduced.
+ * Mimics iOS overscroll resistance.
+ */
+function rubberBand(offset: number, dimension: number): number {
+  const c = 0.55;
+  return (1 - (1 / ((offset * c / dimension) + 1))) * dimension;
+}
+
+/**
+ * Clamp value between min/max with rubber-band resistance at boundaries.
+ */
+function rubberClamp(value: number, min: number, max: number, dimension: number): number {
+  if (value < min) return min - rubberBand(min - value, dimension);
+  if (value > max) return max + rubberBand(value - max, dimension);
+  return value;
+}
+
+/**
+ * Determine snap state based on velocity or nearest threshold.
+ * Works for both mobile (heights) and desktop (widths).
+ */
+function resolveSnapState(
+  value: number,
+  velocity: number,
+  peekVal: number,
+  halfVal: number,
+  fullVal: number,
+): SheetState {
+  if (Math.abs(velocity) > FLING_VELOCITY_THRESHOLD) {
+    if (velocity > 0) {
+      return value < halfVal ? 'half' : 'full';
+    }
+    return value > halfVal ? 'half' : 'peek';
+  }
+  const peekDist = Math.abs(value - peekVal);
+  const halfDist = Math.abs(value - halfVal);
+  const fullDist = Math.abs(value - fullVal);
+  const minDist = Math.min(peekDist, halfDist, fullDist);
+  if (minDist === peekDist) return 'peek';
+  if (minDist === halfDist) return 'half';
+  return 'full';
+}
 
 interface Props {
   /** Whether the drawer is visible (used for auto-expand on mobile) */
@@ -337,6 +400,8 @@ function getDesktopWidthForState(state: SheetState): number {
   }
 }
 
+const desktopSnapTransition = ref('');
+
 const desktopSheetStyle = computed(() => {
   if (isMobile.value) return {};
   const width =
@@ -345,8 +410,8 @@ const desktopSheetStyle = computed(() => {
   return {
     width: `${width}px`,
     transition: isDesktopDragging.value
-      ? "none"
-      : "width 0.28s cubic-bezier(0.25, 1, 0.5, 1)",
+      ? 'none'
+      : (desktopSnapTransition.value || `width ${SNAP_DURATION_MIN}ms ${IOS_SPRING_BEZIER}`),
   };
 });
 
@@ -359,17 +424,18 @@ watch(desktopState, (newState) => {
 
 function toggleDesktop() {
   if (isDesktopDragging.value) return;
+  const currentW = getDesktopWidthForState(desktopState.value);
+  let nextState: SheetState;
   switch (desktopState.value) {
-    case "peek":
-      desktopState.value = "half";
-      break;
-    case "half":
-      desktopState.value = "full";
-      break;
-    case "full":
-      desktopState.value = "peek";
-      break;
+    case 'peek': nextState = 'half'; break;
+    case 'half': nextState = 'full'; break;
+    case 'full': nextState = 'peek'; break;
+    default: nextState = 'half';
   }
+  const targetW = getDesktopWidthForState(nextState);
+  const dur = computeSnapDuration(Math.abs(targetW - currentW), 0);
+  desktopSnapTransition.value = `width ${dur}ms ${IOS_SPRING_BEZIER}`;
+  desktopState.value = nextState;
   desktopCurrentDragWidth.value = null;
 }
 
@@ -379,41 +445,49 @@ function onDesktopDragStart(e: MouseEvent) {
   desktopDragStartWidth.value =
     desktopCurrentDragWidth.value ??
     getDesktopWidthForState(desktopState.value);
+  _desktopLastClientX = e.clientX;
+  _desktopLastTime = performance.now();
+  _desktopVelocity = 0;
 
-  document.addEventListener("mousemove", onDesktopDragMove);
-  document.addEventListener("mouseup", onDesktopDragEnd);
-  // Prevent text selection while dragging
-  document.body.style.userSelect = "none";
-  document.body.style.cursor = "col-resize";
+  document.addEventListener('mousemove', onDesktopDragMove);
+  document.addEventListener('mouseup', onDesktopDragEnd);
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'col-resize';
 }
 
 let _desktopRafId: number | null = null;
 let _desktopLastClientX = 0;
+let _desktopLastTime = 0;
+let _desktopVelocity = 0;
 
 function onDesktopDragMove(e: MouseEvent) {
   if (!isDesktopDragging.value) return;
+  // Velocity tracking
+  const now = performance.now();
+  const dt = now - _desktopLastTime;
+  if (dt > 0 && _desktopLastClientX !== 0) {
+    _desktopVelocity = (e.clientX - _desktopLastClientX) / dt;
+  }
   _desktopLastClientX = e.clientX;
+  _desktopLastTime = now;
 
   if (_desktopRafId !== null) return;
   _desktopRafId = requestAnimationFrame(() => {
     _desktopRafId = null;
     if (!isDesktopDragging.value) return;
     const deltaX = _desktopLastClientX - desktopDragStartX.value;
-    const newWidth = Math.max(
-      DESKTOP_PEEK_PX,
-      Math.min(desktopDragStartWidth.value + deltaX, DESKTOP_FULL_PX),
-    );
-    desktopCurrentDragWidth.value = newWidth;
+    const raw = desktopDragStartWidth.value + deltaX;
+    desktopCurrentDragWidth.value = rubberClamp(raw, DESKTOP_PEEK_PX, DESKTOP_FULL_PX, DESKTOP_FULL_PX);
   });
 }
 
 function onDesktopDragEnd() {
   if (!isDesktopDragging.value) return;
   isDesktopDragging.value = false;
-  document.removeEventListener("mousemove", onDesktopDragMove);
-  document.removeEventListener("mouseup", onDesktopDragEnd);
-  document.body.style.userSelect = "";
-  document.body.style.cursor = "";
+  document.removeEventListener('mousemove', onDesktopDragMove);
+  document.removeEventListener('mouseup', onDesktopDragEnd);
+  document.body.style.userSelect = '';
+  document.body.style.cursor = '';
 
   if (_desktopRafId !== null) {
     cancelAnimationFrame(_desktopRafId);
@@ -424,21 +498,15 @@ function onDesktopDragEnd() {
     desktopCurrentDragWidth.value ??
     getDesktopWidthForState(desktopState.value);
 
-  // Snap to nearest state
-  const peekDist = Math.abs(width - DESKTOP_PEEK_PX);
-  const halfDist = Math.abs(width - DESKTOP_HALF_PX);
-  const fullDist = Math.abs(width - DESKTOP_FULL_PX);
-  const minDist = Math.min(peekDist, halfDist, fullDist);
+  const newState = resolveSnapState(width, _desktopVelocity, DESKTOP_PEEK_PX, DESKTOP_HALF_PX, DESKTOP_FULL_PX);
 
-  if (minDist === peekDist) {
-    desktopState.value = "peek";
-  } else if (minDist === halfDist) {
-    desktopState.value = "half";
-  } else {
-    desktopState.value = "full";
-  }
-
+  const targetW = getDesktopWidthForState(newState);
+  const dist = Math.abs(width - targetW);
+  const dur = computeSnapDuration(dist, _desktopVelocity);
+  desktopSnapTransition.value = `width ${dur}ms ${IOS_SPRING_BEZIER}`;
+  desktopState.value = newState;
   desktopCurrentDragWidth.value = null;
+  _desktopVelocity = 0;
 }
 
 // Cleanup listeners and pending rAFs on unmount
@@ -463,7 +531,10 @@ let _mobileLastTime = 0;
 let _mobileVelocity = 0;
 let _mobileTouchStartY = 0;
 let _mobileDragCommitted = false;
-const MOBILE_DRAG_DEAD_ZONE = 8; // px before drag is committed
+const MOBILE_DRAG_DEAD_ZONE = 4; // px before drag is committed (reduced for instant response)
+
+// Dynamic snap transition for mobile
+const mobileSnapTransition = ref('');
 
 function getMobileHeightForState(state: SheetState): number {
   const vh = window.innerHeight;
@@ -495,26 +566,24 @@ const mobileSheetStyle = computed(() => {
   return {
     height: `${maxH}px`,
     transform: `translateY(${translateY}px)`,
-    willChange: isMobileDragging.value ? "transform" : "auto",
+    willChange: 'transform',
     transition: isMobileDragging.value
-      ? "none"
-      : "transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)",
+      ? 'none'
+      : (mobileSnapTransition.value || `transform ${SNAP_DURATION_MIN}ms ${IOS_SPRING_BEZIER}`),
   };
 });
 
+const MOBILE_TOGGLE_MAP: Record<SheetState, SheetState> = { peek: 'half', half: 'full', full: 'peek' };
+
 function toggleMobile() {
   if (isMobileDragging.value) return;
-  switch (mobileState.value) {
-    case "peek":
-      mobileState.value = "half";
-      break;
-    case "half":
-      mobileState.value = "full";
-      break;
-    case "full":
-      mobileState.value = "peek";
-      break;
-  }
+  const currentH = getMobileHeightForState(mobileState.value);
+  const nextState = MOBILE_TOGGLE_MAP[mobileState.value];
+  const targetH = getMobileHeightForState(nextState);
+  const dist = Math.abs(targetH - currentH);
+  const dur = computeSnapDuration(dist, 0);
+  mobileSnapTransition.value = `transform ${dur}ms ${IOS_SPRING_BEZIER}`;
+  mobileState.value = nextState;
   mobileTranslateY.value = null;
 }
 
@@ -553,10 +622,12 @@ function onMobileTouchMove(e: TouchEvent) {
     _mobileDragCommitted = true;
   }
 
-  // Track velocity on every event for accuracy (positive = swipe up)
+  // Track velocity with EMA (exponential moving average) for smooth response
   const dt = now - _mobileLastTime;
   if (dt > 0) {
-    _mobileVelocity = (_mobileLastY - touch.clientY) / dt;
+    const instantVel = (_mobileLastY - touch.clientY) / dt;
+    // Blend: 60% new + 40% previous for smoother velocity curve
+    _mobileVelocity = _mobileVelocity === 0 ? instantVel : instantVel * 0.6 + _mobileVelocity * 0.4;
   }
   _mobileLastY = touch.clientY;
   _mobileLastTime = now;
@@ -570,13 +641,11 @@ function onMobileTouchMove(e: TouchEvent) {
     const maxH = mobileMaxHeight.value;
     const currentStateH = getMobileHeightForState(mobileState.value);
     const startOffset = maxH - currentStateH;
-    // deltaY > 0 = finger moved up = sheet expands = translateY decreases
     const deltaY = _mobileTouchStartY - _mobileLastY;
-    const newTranslate = Math.max(
-      0,
-      Math.min(startOffset - deltaY, maxH - MOBILE_PEEK_PX),
-    );
-    mobileTranslateY.value = newTranslate;
+    const raw = startOffset - deltaY;
+    const minTranslate = 0;
+    const maxTranslate = maxH - MOBILE_PEEK_PX;
+    mobileTranslateY.value = rubberClamp(raw, minTranslate, maxTranslate, maxH);
   });
 }
 
@@ -598,38 +667,23 @@ function onMobileTouchEnd() {
 
   const maxH = mobileMaxHeight.value;
   const currentTranslate = mobileTranslateY.value ?? (maxH - getMobileHeightForState(mobileState.value));
-  // Convert translateY back to effective height for snapping
   const effectiveHeight = maxH - currentTranslate;
 
   const peekH = MOBILE_PEEK_PX;
   const halfH = (MOBILE_HALF_VH / 100) * window.innerHeight;
   const fullH = (MOBILE_FULL_VH / 100) * window.innerHeight;
 
-  let newState: SheetState;
+  const newState = resolveSnapState(effectiveHeight, _mobileVelocity, peekH, halfH, fullH);
 
-  // Velocity-based snapping: fling in a direction snaps to next state
-  if (Math.abs(_mobileVelocity) > FLING_VELOCITY_THRESHOLD) {
-    if (_mobileVelocity > 0) {
-      // Swiping up → expand
-      newState = effectiveHeight < halfH ? "half" : "full";
-    } else {
-      // Swiping down → collapse
-      newState = effectiveHeight > halfH ? "half" : "peek";
-    }
-  } else {
-    // Slow drag → snap to nearest state
-    const peekDist = Math.abs(effectiveHeight - peekH);
-    const halfDist = Math.abs(effectiveHeight - halfH);
-    const fullDist = Math.abs(effectiveHeight - fullH);
-    const minDist = Math.min(peekDist, halfDist, fullDist);
-
-    if (minDist === peekDist) newState = "peek";
-    else if (minDist === halfDist) newState = "half";
-    else newState = "full";
-  }
+  // Compute dynamic duration based on remaining distance and velocity
+  const targetTranslate = maxH - getMobileHeightForState(newState);
+  const snapDist = Math.abs(currentTranslate - targetTranslate);
+  const dur = computeSnapDuration(snapDist, _mobileVelocity);
+  mobileSnapTransition.value = `transform ${dur}ms ${IOS_SPRING_BEZIER}`;
 
   mobileState.value = newState;
   mobileTranslateY.value = null;
+  _mobileVelocity = 0;
 }
 
 // Auto-expand mobile sheet when modelValue changes
@@ -637,17 +691,6 @@ watch(
   () => props.modelValue,
   (newVal) => {
     if (isMobile.value && newVal && mobileState.value === "peek") {
-      mobileState.value = "half";
-      mobileTranslateY.value = null;
-    }
-  },
-);
-
-// Auto-expand mobile sheet when refreshKey changes
-watch(
-  () => props.refreshKey,
-  () => {
-    if (isMobile.value && mobileState.value === "peek") {
       mobileState.value = "half";
       mobileTranslateY.value = null;
     }
@@ -671,5 +714,7 @@ watch(
   touch-action: none;
   -webkit-overflow-scrolling: touch;
   backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 </style>

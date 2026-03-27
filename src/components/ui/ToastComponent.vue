@@ -16,8 +16,11 @@
   >
     <!-- Main content -->
     <div class="flex items-center gap-3 px-4 py-3.5">
-      <!-- Icon -->
-      <div :class="['flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center', iconBgClass]">
+      <!-- Icon or Image -->
+      <div v-if="props.toast.image" class="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden">
+        <img :src="props.toast.image" alt="" class="w-full h-full object-cover" />
+      </div>
+      <div v-else :class="['flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center', iconBgClass]">
         <v-icon :name="iconName" :class="['w-5 h-5', iconColorClass]" />
       </div>
 
