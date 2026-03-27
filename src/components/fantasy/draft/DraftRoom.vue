@@ -4,61 +4,7 @@
     :style="{ marginLeft: `${drawerWidth}px` }"
   >
     <!-- Draft Completed -->
-    <div
-      v-if="isDraftCompleted"
-      class="rounded-2xl overflow-hidden shadow-sm bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 dark:from-emerald-600 dark:via-green-600 dark:to-teal-600"
-    >
-      <div class="px-5 py-6 flex flex-col items-center text-center gap-3">
-        <!-- Trophy icon -->
-        <div
-          class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-9 h-9 text-yellow-200"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M5 3h14c.55 0 1 .45 1 1v2c0 2.55-1.16 4.83-3 6.32V18h1c.55 0 1 .45 1 1v1c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1c0-.55.45-1 1-1h1v-5.68C5.16 10.83 4 8.55 4 6V4c0-.55.45-1 1-1zm2 2v1c0 1.87.83 3.54 2.14 4.68L12 12.87l2.86-2.19A5.98 5.98 0 0017 6V5H7zm5 10.32L9 11.5V17h6v-5.5l-3 1.82z"
-            />
-          </svg>
-        </div>
-
-        <div>
-          <p class="text-lg font-extrabold text-white leading-tight">
-            Draft Completed!
-          </p>
-          <p class="text-sm text-white/70 mt-1">
-            All picks have been made. Check your roster!
-          </p>
-        </div>
-
-        <!-- Confetti dots decoration -->
-        <div class="flex gap-1.5 mt-1">
-          <span
-            class="w-2 h-2 rounded-full bg-yellow-300/60 animate-bounce"
-            style="animation-delay: 0ms; animation-duration: 1.4s"
-          />
-          <span
-            class="w-2 h-2 rounded-full bg-white/50 animate-bounce"
-            style="animation-delay: 200ms; animation-duration: 1.4s"
-          />
-          <span
-            class="w-2 h-2 rounded-full bg-yellow-300/60 animate-bounce"
-            style="animation-delay: 400ms; animation-duration: 1.4s"
-          />
-          <span
-            class="w-2 h-2 rounded-full bg-white/50 animate-bounce"
-            style="animation-delay: 600ms; animation-duration: 1.4s"
-          />
-          <span
-            class="w-2 h-2 rounded-full bg-yellow-300/60 animate-bounce"
-            style="animation-delay: 800ms; animation-duration: 1.4s"
-          />
-        </div>
-      </div>
-    </div>
+    <DraftCompleted v-if="isDraftCompleted" />
 
     <!-- Active draft -->
     <template v-else>
@@ -81,26 +27,6 @@
         :currentTurnUserUuid="turnStarted?.user?.uuid ?? undefined"
       />
 
-      <!-- Draft Board toggle -->
-      <button
-        type="button"
-        class="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-[13px] font-semibold transition-colors"
-        :class="showDraftBoard
-          ? 'bg-blue-500 text-white dark:bg-blue-600'
-          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700'"
-        @click="toggleDraftBoard"
-      >
-        <v-icon name="hi-solid-clipboard-list" class="w-4 h-4" />
-        {{ showDraftBoard ? 'Hide Draft Board' : 'Draft Board' }}
-      </button>
-
-      <!-- Draft Board panel -->
-      <DraftPlayerPicked
-        v-if="showDraftBoard"
-        ref="draftPickedRef"
-        :fantasyLeagueUuid="fantasyLeague.uuid"
-      />
-
       <SearchPlayerFantasy
         ref="searchPlayerRef"
         :fantasyLeagueUuid="fantasyLeague.uuid"
@@ -109,20 +35,30 @@
       />
     </template>
 
+    <!-- Bottom spacer so content is not hidden behind MenuDraft -->
+    <div class="h-16" />
+
     <DraftTeamDrawer
       v-model="showDrawer"
       :fantasyLeagueUuid="fantasyLeague.uuid"
       :refreshKey="drawerRefreshKey"
       @width-change="(w: number) => drawerWidth = w"
     />
+
+    <MenuDraft
+      ref="menuDraftRef"
+      :leftOffset="drawerWidth"
+      :fantasyLeagueUuid="fantasyLeague.uuid"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+import DraftCompleted from "@/components/fantasy/draft/DraftCompleted.vue";
 import DraftOrder from "@/components/fantasy/draft/DraftOrder.vue";
-import DraftPlayerPicked from "@/components/fantasy/draft/DraftPlayerPicked.vue";
 import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
 import DraftTimer from "@/components/fantasy/draft/DraftTimer.vue";
+import MenuDraft from "@/components/fantasy/draft/MenuDraft.vue";
 import SearchPlayerFantasy from "@/components/user/fantasy/SearchPlayerFantasy.vue";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import { useToast } from "@/composables/useToast";
@@ -139,6 +75,7 @@ const isTimerCompact = ref(false);
 let timerObserver: IntersectionObserver | null = null;
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { FantasyDraftPlayerSelected } from "@/interfaces/fantasy/draft/FantasyDraftPlayerSelected";
+import type { FantasyDraftPlayerPicked } from "@/interfaces/fantasy/draft/FantasyDraftPlayerPicked";
 
 const props = defineProps<{
   fantasyLeague: FantasyLeaguesResponse;
@@ -155,8 +92,7 @@ const showDrawer = ref(false);
 const drawerRefreshKey = ref(0);
 const drawerWidth = ref(0);
 
-const showDraftBoard = ref(false);
-const draftPickedRef = ref<InstanceType<typeof DraftPlayerPicked> | null>(null);
+const menuDraftRef = ref<InstanceType<typeof MenuDraft> | null>(null);
 
 const isDraftCompleted = computed(
   () => turnStarted.value?.status === "COMPLETED",
@@ -275,16 +211,26 @@ onMounted(async () => {
     );
     searchPlayerRef.value?.removePlayerByUuid(playerSelected.player?.uuid);
     drawerRefreshKey.value++;
-    draftPickedRef.value?.refresh();
+    const newPick: FantasyDraftPlayerPicked = {
+      pick: playerSelected.pick,
+      round: playerSelected.round,
+      player: playerSelected.player,
+      user: playerSelected.user,
+    };
+    menuDraftRef.value?.addPick(newPick);
+  });
+
+  channel.subscribe("draft.finished", () => {
+    if (turnStarted.value) {
+      turnStarted.value = { ...turnStarted.value, status: 'COMPLETED' };
+    } else {
+      turnStarted.value = { status: 'COMPLETED', pick: null, round: null, user: null, turn_started_at: null, duration_seconds: null };
+    }
   });
 });
 
 function onTurnExpired() {
   // Timer expired — the backend handles turn advancement
-}
-
-function toggleDraftBoard() {
-  showDraftBoard.value = !showDraftBoard.value;
 }
 
 onUnmounted(() => {

@@ -1,27 +1,27 @@
 <template>
     <div class="animate-page-enter space-y-4">
-        <!-- Header compacto -->
-        <div class="flex items-center gap-3 px-1">
-            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
-                <v-icon name="hi-solid-search" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+        <!-- Header — FotMob / Apple Sport style -->
+        <div class="flex items-center gap-3.5 px-1">
+            <div class="w-11 h-11 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-500/20">
+                <v-icon name="bi-trophy-fill" class="w-5 h-5 text-white" />
             </div>
             <div>
-                <h1 class="text-lg font-bold text-gray-900 dark:text-white">Search Leagues</h1>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Find and join fantasy football leagues</p>
+                <h1 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight">Discover Leagues</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Find and join fantasy football competitions</p>
             </div>
         </div>
 
-        <!-- Search bar sticky estilo iOS -->
-        <div class="sticky top-0 z-30 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-xl -mx-4 px-4 py-3 border-b border-gray-200/60 dark:border-gray-700/60">
+        <!-- Search bar sticky — iOS glassmorphism -->
+        <div class="sticky top-0 z-30 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-xl -mx-4 px-4 py-3 border-b border-gray-200/50 dark:border-gray-700/40">
             <form @submit.prevent="searchLeagues" class="space-y-3">
-                <!-- Search Input nativo -->
+                <!-- Search Input -->
                 <div class="relative">
-                    <v-icon name="hi-solid-search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 dark:text-gray-500 pointer-events-none" />
+                    <v-icon name="hi-solid-search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
                     <input
                         v-model="searchQuery"
                         type="search"
                         placeholder="Search by name..."
-                        class="w-full pl-10 pr-4 py-2.5 bg-gray-200/60 dark:bg-gray-800 rounded-xl text-base md:text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-0 focus:ring-2 focus:ring-emerald-500/50 focus:bg-white dark:focus:bg-gray-700 transition-all"
+                        class="w-full pl-10 pr-10 py-2.5 bg-gray-200/60 dark:bg-gray-800 rounded-xl text-base md:text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-0 focus:ring-2 focus:ring-emerald-500/40 focus:bg-white dark:focus:bg-gray-700 transition-all"
                     />
                     <button
                         v-if="searchQuery"
@@ -33,7 +33,7 @@
                     </button>
                 </div>
 
-                <!-- Filtros tipo: chips horizontales -->
+                <!-- Filter chips + search button -->
                 <div class="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-hide">
                     <button
                         v-for="filter in leagueFilters"
@@ -43,8 +43,8 @@
                         :class="[
                             'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all',
                             leagueType === filter.value
-                                ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-500/30'
-                                : 'bg-gray-200/70 dark:bg-gray-800 text-gray-600 dark:text-gray-400 active:scale-95'
+                                ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-500/25'
+                                : 'bg-gray-200/60 dark:bg-gray-800 text-gray-500 dark:text-gray-400 active:scale-95'
                         ]"
                         :disabled="isLoading"
                     >
@@ -52,11 +52,10 @@
                         {{ filter.label }}
                     </button>
 
-                    <!-- Search button -->
                     <button
                         type="submit"
                         :disabled="isLoading"
-                        class="ml-auto inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-600 text-white shadow-sm shadow-emerald-500/30 active:scale-95 transition-all disabled:opacity-50"
+                        class="ml-auto inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-sm shadow-emerald-500/25 active:scale-95 transition-all disabled:opacity-50"
                     >
                         <v-icon v-if="!isLoading" name="hi-solid-search" class="w-3.5 h-3.5" />
                         <div v-else class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -66,37 +65,43 @@
             </form>
         </div>
 
-        <!-- Loading skeleton -->
-        <div v-if="isLoading" class="space-y-3">
-            <div v-for="i in 3" :key="i" class="bg-white dark:bg-gray-800 rounded-xl p-4 animate-pulse">
+        <!-- Loading skeleton — shimmer cards -->
+        <div v-if="isLoading" class="space-y-2.5">
+            <div v-for="i in 4" :key="i" class="bg-white dark:bg-gray-800/80 rounded-xl p-4 animate-pulse border border-gray-100 dark:border-gray-700/40">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                    <div class="w-11 h-11 bg-gray-200 dark:bg-gray-700 rounded-xl" />
                     <div class="flex-1 space-y-2">
                         <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-lg w-3/4" />
-                        <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-lg w-1/2" />
+                        <div class="h-3 bg-gray-100 dark:bg-gray-700/60 rounded-lg w-1/2" />
                     </div>
+                    <div class="w-16 h-7 bg-gray-200 dark:bg-gray-700 rounded-full" />
                 </div>
             </div>
         </div>
 
-        <!-- Resultados -->
+        <!-- Results -->
         <div v-else-if="hasSearched">
-            <!-- Results count -->
-            <div class="flex items-center justify-between px-1">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                    {{ leagues.length }} league{{ leagues.length !== 1 ? 's' : '' }} found
-                </p>
+            <!-- Results header -->
+            <div class="flex items-center justify-between px-1 mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                        Results
+                    </span>
+                    <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
+                        {{ leagues.length }}
+                    </span>
+                </div>
                 <button
                     v-if="leagues.length > 0 || searchQuery"
                     @click="clearSearch"
-                    class="text-xs font-medium text-emerald-600 dark:text-emerald-400 active:opacity-70"
+                    class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 active:opacity-70"
                 >
                     Clear
                 </button>
             </div>
 
             <!-- League list -->
-            <div v-if="leagues.length > 0" class="space-y-3">
+            <div v-if="leagues.length > 0" class="space-y-2.5">
                 <FantasyLeagueCard
                     v-for="league in leagues"
                     :key="league.uuid"
@@ -109,42 +114,44 @@
 
             <!-- No results -->
             <div v-else class="py-16 text-center">
-                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <v-icon name="hi-solid-search" class="w-7 h-7 text-gray-400 dark:text-gray-500" />
+                <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                    <v-icon name="hi-solid-search" class="w-6 h-6 text-gray-300 dark:text-gray-600" />
                 </div>
-                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">No leagues found</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
+                <p class="text-sm font-bold text-gray-900 dark:text-white mb-1">No leagues found</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
                     Try a different search or browse all available leagues
                 </p>
                 <button
                     @click="clearSearch"
-                    class="mt-4 px-4 py-2 rounded-full text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 active:scale-95 transition-all"
+                    class="mt-4 px-4 py-2 rounded-full text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 active:scale-95 transition-all"
                 >
                     Clear filters
                 </button>
             </div>
         </div>
 
-        <!-- Estado vacío inicial (antes de buscar) -->
+        <!-- Initial empty state — before searching -->
         <div v-else class="py-20 text-center">
-            <div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl mx-auto mb-5 flex items-center justify-center">
-                <v-icon name="bi-trophy-fill" class="w-10 h-10 text-emerald-500 dark:text-emerald-400" />
+            <div class="w-20 h-20 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl mx-auto mb-5 flex items-center justify-center shadow-sm">
+                <v-icon name="bi-trophy-fill" class="w-9 h-9 text-emerald-500 dark:text-emerald-400" />
             </div>
-            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Discover Leagues</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
+            <h2 class="text-lg font-extrabold text-gray-900 dark:text-white mb-1.5 tracking-tight">Discover Leagues</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto leading-relaxed">
                 Search by name or browse all available leagues to join the competition
             </p>
         </div>
 
         <!-- Error State -->
-        <div v-if="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+        <div v-if="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200/60 dark:border-red-800/40 rounded-xl p-4">
             <div class="flex items-start gap-3">
-                <v-icon name="hi-solid-exclamation" class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center shrink-0">
+                    <v-icon name="hi-solid-exclamation" class="w-4 h-4 text-red-500 dark:text-red-400" />
+                </div>
                 <div>
                     <p class="text-sm font-medium text-red-800 dark:text-red-200">{{ errorMessage }}</p>
                     <button
                         @click="retrySearch"
-                        class="mt-2 text-xs font-semibold text-red-600 dark:text-red-400 active:opacity-70"
+                        class="mt-2 text-xs font-bold text-red-600 dark:text-red-400 active:opacity-70"
                     >
                         Try again
                     </button>

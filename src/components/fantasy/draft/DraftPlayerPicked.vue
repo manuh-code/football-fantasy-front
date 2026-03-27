@@ -31,7 +31,7 @@
 
     <!-- Empty State -->
     <div
-      v-else-if="roundsData.length === 0"
+      v-else-if="picks.length === 0"
       class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-8 text-center"
     >
       <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-3">
@@ -41,103 +41,108 @@
       <p class="text-[12px] text-gray-500 dark:text-gray-400">The draft board will update as players are picked.</p>
     </div>
 
-    <!-- Draft Board -->
-    <div v-else class="space-y-2">
-      <div
-        v-for="round in roundsData"
-        :key="round.number"
-        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
-      >
-        <!-- Round Header -->
-        <div class="flex items-center justify-between px-3.5 py-2 border-b border-gray-100 dark:border-gray-700/60 bg-gray-50/80 dark:bg-gray-700/30">
-          <div class="flex items-center gap-2">
-            <span class="text-[11px] font-bold text-gray-900 dark:text-white uppercase tracking-wider">
-              Round {{ round.number }}
-            </span>
-            <span class="text-[10px] text-gray-400 dark:text-gray-500">
-              {{ round.picks.length }} {{ round.picks.length === 1 ? 'pick' : 'picks' }}
-            </span>
-          </div>
-          <!-- Snake direction indicator -->
-          <v-icon
-            :name="round.isReversed ? 'hi-solid-arrow-left' : 'hi-solid-arrow-right'"
-            class="w-3 h-3 text-gray-400 dark:text-gray-500"
-          />
-        </div>
+    <!-- Draft Board Grid -->
+    <div v-else class="overflow-x-auto scrollbar-hide rounded-2xl border border-gray-100 dark:border-gray-700/60 bg-white dark:bg-gray-800">
+      <table class="w-full border-collapse min-w-max">
+        <!-- Header: Participants -->
+        <thead>
+          <tr>
+            <th
+              v-for="(participant, idx) in participants"
+              :key="participant.uuid ?? idx"
+              class="sticky top-0 z-10 px-1.5 py-2 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600"
+              :class="{ 'border-r border-gray-100 dark:border-gray-700/40': idx < participants.length - 1 }"
+            >
+              <div class="flex flex-col items-center gap-1 min-w-[72px] sm:min-w-[80px]">
+                <div class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white dark:ring-gray-800 bg-gray-200 dark:bg-gray-600">
+                  <img
+                    v-if="participant.avatar"
+                    :src="participant.avatar"
+                    :alt="participant.firstname ?? ''"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    v-else
+                    class="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-500 dark:text-gray-400"
+                  >
+                    {{ userInitials(participant) }}
+                  </div>
+                </div>
+                <span class="text-[9px] font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[72px] text-center leading-tight">
+                  {{ participant.firstname ?? 'Team' }} {{ (idx + 1) }}
+                </span>
+              </div>
+            </th>
+          </tr>
+        </thead>
 
-        <!-- Picks Row — horizontal scroll -->
-        <div
-          class="flex gap-2 px-3 py-2.5 overflow-x-auto scrollbar-hide"
-          :class="{ 'flex-row-reverse': round.isReversed }"
-        >
-          <div
-            v-for="pick in round.picks"
-            :key="pick.pick"
-            class="shrink-0 w-[72px] sm:w-[80px] flex flex-col items-center gap-1.5"
+        <!-- Body: Rounds as rows, picks as cells -->
+        <tbody>
+          <tr
+            v-for="round in boardRows"
+            :key="round.number"
           >
-            <!-- Pick number pill -->
-            <span
-              class="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-              :class="positionPillClass(pick.player?.position?.developer_name)"
-              style="font-variant-numeric: tabular-nums"
+            <td
+              v-for="(cell, colIdx) in round.cells"
+              :key="colIdx"
+              class="px-1 py-1.5 align-top border-b border-gray-50 dark:border-gray-700/30"
+              :class="{ 'border-r border-gray-100 dark:border-gray-700/40': colIdx < round.cells.length - 1 }"
             >
-              #{{ pick.pick }}
-            </span>
-
-            <!-- Player photo -->
-            <div class="relative">
+              <!-- Filled pick -->
               <div
-                class="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2"
-                :class="positionBorderClass(pick.player?.position?.developer_name)"
+                v-if="cell"
+                class="flex flex-col items-center gap-0.5 min-w-[72px] sm:min-w-[80px] group"
               >
-                <img
-                  v-if="pick.player?.image_path"
-                  :src="pick.player.image_path"
-                  :alt="pick.player.display_name"
-                  class="w-full h-full object-cover"
-                />
-                <div
-                  v-else
-                  class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-[11px] font-bold text-gray-400 dark:text-gray-500"
+                <!-- Pick label -->
+                <span
+                  class="text-[8px] font-bold px-1 py-px rounded-full"
+                  :class="positionPillClass(cell.player?.position?.developer_name)"
+                  style="font-variant-numeric: tabular-nums"
                 >
-                  {{ playerInitials(pick.player) }}
+                  {{ round.number }}.{{ cell.pickInRound }} ({{ cell.pick }})
+                </span>
+
+                <!-- Player photo -->
+                <div
+                  class="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2"
+                  :class="positionBorderClass(cell.player?.position?.developer_name)"
+                >
+                  <img
+                    v-if="cell.player?.image_path"
+                    :src="cell.player.image_path"
+                    :alt="cell.player.display_name"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    v-else
+                    class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-[10px] font-bold text-gray-400 dark:text-gray-500"
+                  >
+                    {{ playerInitials(cell.player) }}
+                  </div>
                 </div>
+
+                <!-- Player name -->
+                <p class="text-[9px] sm:text-[10px] font-semibold text-gray-800 dark:text-gray-200 text-center leading-tight truncate w-full max-w-[72px] sm:max-w-[80px]">
+                  {{ shortName(cell.player) }}
+                </p>
+
+                <!-- Position badge -->
+                <span
+                  class="text-[7px] sm:text-[8px] font-bold px-1.5 py-px rounded"
+                  :class="positionBadgeClass(cell.player?.position?.developer_name)"
+                >
+                  {{ cell.player?.position?.code ?? '—' }}
+                </span>
               </div>
 
-              <!-- User avatar badge -->
-              <div
-                class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full overflow-hidden ring-2 ring-white dark:ring-gray-800"
-              >
-                <img
-                  v-if="pick.user?.avatar"
-                  :src="pick.user.avatar"
-                  :alt="pick.user.firstname ?? ''"
-                  class="w-full h-full object-cover"
-                />
-                <div
-                  v-else
-                  class="w-full h-full flex items-center justify-center bg-blue-500 text-[7px] font-bold text-white"
-                >
-                  {{ userInitials(pick.user) }}
-                </div>
+              <!-- Empty cell -->
+              <div v-else class="flex items-center justify-center min-w-[72px] sm:min-w-[80px] h-[72px]">
+                <div class="w-8 h-8 rounded-full border-2 border-dashed border-gray-200 dark:border-gray-600" />
               </div>
-            </div>
-
-            <!-- Player name -->
-            <p class="text-[10px] sm:text-[11px] font-semibold text-gray-800 dark:text-gray-200 text-center leading-tight truncate w-full">
-              {{ shortName(pick.player) }}
-            </p>
-
-            <!-- Position badge -->
-            <span
-              class="text-[8px] font-bold px-1.5 py-0.5 rounded"
-              :class="positionBadgeClass(pick.player?.position?.developer_name)"
-            >
-              {{ pick.player?.position?.code ?? '—' }}
-            </span>
-          </div>
-        </div>
-      </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -157,22 +162,68 @@ const picks = ref<FantasyDraftPlayerPicked[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
-const roundsData = computed(() => {
-  const grouped = new Map<number, FantasyDraftPlayerPicked[]>();
-  for (const pick of picks.value) {
-    if (!grouped.has(pick.round)) {
-      grouped.set(pick.round, []);
-    }
-    grouped.get(pick.round)!.push(pick);
-  }
-  return Array.from(grouped.entries())
-    .sort(([a], [b]) => a - b)
-    .map(([roundNumber, roundPicks]) => ({
-      number: roundNumber,
-      picks: roundPicks.sort((a, b) => a.pick - b.pick),
-      isReversed: roundNumber % 2 === 0,
-    }));
+// Derive unique participants in draft order from round 1 picks
+const participants = computed<UserDataInterface[]>(() => {
+  const round1 = picks.value
+    .filter((p) => p.round === 1 && p.user !== null)
+    .sort((a, b) => a.pick - b.pick);
+  return round1.map((p) => p.user!);
 });
+
+const totalParticipants = computed(() => participants.value.length);
+
+// Build board rows: each round is a row with cells ordered in snake
+const boardRows = computed(() => {
+  if (totalParticipants.value === 0) return [];
+
+  const maxRound = Math.max(...picks.value.map((p) => p.round));
+  const rows: { number: number; cells: (BoardCell | null)[] }[] = [];
+
+  // Index picks by round+pick for O(1) lookup
+  const pickMap = new Map<string, FantasyDraftPlayerPicked>();
+  for (const p of picks.value) {
+    pickMap.set(`${p.round}-${p.pick}`, p);
+  }
+
+  for (let r = 1; r <= maxRound; r++) {
+    const isReversed = r % 2 === 0;
+    const cells: (BoardCell | null)[] = [];
+
+    for (let col = 0; col < totalParticipants.value; col++) {
+      const pickInRound = col + 1;
+      const globalPick = (r - 1) * totalParticipants.value + pickInRound;
+      const pick = pickMap.get(`${r}-${globalPick}`);
+
+      if (pick) {
+        cells.push({
+          pick: pick.pick,
+          pickInRound,
+          round: r,
+          player: pick.player,
+          user: pick.user,
+        });
+      } else {
+        cells.push(null);
+      }
+    }
+
+    // Snake: reverse even rounds
+    rows.push({
+      number: r,
+      cells: isReversed ? cells.reverse() : cells,
+    });
+  }
+
+  return rows;
+});
+
+interface BoardCell {
+  pick: number;
+  pickInRound: number;
+  round: number;
+  player: FootballPlayerResponse | null;
+  user: UserDataInterface | null;
+}
 
 function shortName(player: FootballPlayerResponse | null): string {
   if (!player) return '—';
@@ -238,9 +289,16 @@ async function loadPicks() {
   }
 }
 
+function addPick(pick: FantasyDraftPlayerPicked) {
+  const exists = picks.value.some((p) => p.pick === pick.pick && p.round === pick.round);
+  if (!exists) {
+    picks.value.push(pick);
+  }
+}
+
 onMounted(loadPicks);
 
-defineExpose({ refresh: loadPicks });
+defineExpose({ refresh: loadPicks, addPick });
 </script>
 
 <style scoped>

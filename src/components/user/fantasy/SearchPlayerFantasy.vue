@@ -114,10 +114,6 @@
               ]"
             />
             {{ filter.name }}
-            <span
-              v-if="filter.slots"
-              class="text-[10px] opacity-70"
-            >{{ filter.slots }}</span>
           </button>
         </div>
       </div>
