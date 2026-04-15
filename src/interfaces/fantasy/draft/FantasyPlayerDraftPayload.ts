@@ -4,5 +4,6 @@ export interface FantasyPlayerDraftPayload {
     filters?: {
         position_uuid?: string;
         team_uuid?: string;
+        player_name?: string;
     };
 }

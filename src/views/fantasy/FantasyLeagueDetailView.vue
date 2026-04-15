@@ -73,7 +73,7 @@ const router = useRouter()
 const leagueDetailStore = useFantasyLeagueDetailStore()
 const uuid = route.params.uuid as string
 // Initialize activeTab from query param or default to 'overview'
-const activeTab = ref('overview')
+const activeTab = ref((route.query.tab as string) || 'overview')
 const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoadingLeague = ref(false)
 

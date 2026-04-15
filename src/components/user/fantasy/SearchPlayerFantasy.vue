@@ -31,7 +31,9 @@
           <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
             Error loading players
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400 mt-0.5">{{ error }}</p>
+          <p class="text-[12px] text-gray-500 dark:text-gray-400 mt-0.5">
+            {{ error }}
+          </p>
         </div>
       </div>
     </div>
@@ -63,15 +65,18 @@
       class="space-y-4 relative"
       :class="{ 'max-h-[70vh] overflow-hidden': props.disabled }"
     >
-
       <!-- Disabled Overlay (waiting for turn) -->
       <div
         v-if="props.disabled"
         class="absolute inset-0 z-20 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl"
       >
         <div class="sticky top-0 h-[70vh] flex items-center justify-center">
-          <div class="flex flex-col items-center gap-4 px-8 py-7 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200/80 dark:border-gray-700/80 mx-4 max-w-sm w-full">
-            <div class="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+          <div
+            class="flex flex-col items-center gap-4 px-8 py-7 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200/80 dark:border-gray-700/80 mx-4 max-w-sm w-full"
+          >
+            <div
+              class="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center"
+            >
               <v-icon
                 name="hi-solid-clock"
                 class="w-7 h-7 text-amber-500 dark:text-amber-400 animate-pulse"
@@ -89,125 +94,27 @@
         </div>
       </div>
 
-      <!-- Position Filters (iOS-style pills) -->
-      <div class="px-1">
-        <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
-          <button
-            v-for="filter in positionFilters"
-            :key="filter.code"
-            @click="handleFilterChange(filter.code)"
-            :disabled="props.disabled"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.96] shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-            :class="[
-              selectedPosition === filter.code
-                ? filter.activeClasses + ' shadow-sm'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 active:bg-gray-50 dark:active:bg-gray-700/50',
-            ]"
-          >
-            <v-icon
-              :name="filter.icon"
-              class="w-3.5 h-3.5"
-              :class="[
-                selectedPosition === filter.code
-                  ? 'text-current'
-                  : filter.color,
-              ]"
-            />
-            {{ filter.name }}
-          </button>
-        </div>
-      </div>
+      <!-- Player Name Search -->
+      <PlayerNameFilter
+        :disabled="props.disabled"
+        @search="onPlayerNameSearch"
+      />
 
       <!-- Team Filter -->
-      <div
-        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-visible"
-      >
-        <div class="px-4 py-3">
-          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-            <!-- Label -->
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <v-icon
-                name="hi-solid-user-group"
-                class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0"
-              />
-              <span
-                class="text-[13px] font-semibold text-gray-700 dark:text-gray-300"
-                >Team</span
-              >
-            </div>
+      <TeamFilter
+        :teams="teams"
+        :selected-team="selectedTeam"
+        :disabled="props.disabled"
+        @update:selected-team="onTeamFilterChange"
+      />
 
-            <!-- Team Selector -->
-            <div class="flex-1">
-              <SearchableSelectComponent
-                v-model="selectedTeam"
-                :options="teams"
-                value-key="uuid"
-                label-key="name"
-                image-key="image_path"
-                subtitle-key="short_code"
-                placeholder="All teams"
-                search-placeholder="Search team..."
-                :all-option="true"
-                all-option-label="All teams"
-                all-option-value="ALL"
-                accent-color="indigo"
-                default-image="/img/default-team.svg"
-                no-results-text="No teams found for"
-                :disabled="props.disabled"
-                @change="onTeamFilterChange"
-              />
-            </div>
-
-            <!-- Active Filters Summary -->
-            <div
-              v-if="selectedTeam !== 'ALL' || selectedPosition !== 'ALL'"
-              class="flex items-center gap-2 flex-wrap sm:flex-shrink-0"
-            >
-              <span
-                class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline"
-                >Active:</span
-              >
-              <span
-                v-if="selectedPosition !== 'ALL'"
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-              >
-                {{
-                  selectedPosition === "GOALKEEPER"
-                    ? "GK"
-                    : selectedPosition === "DEFENDER"
-                      ? "DF"
-                      : selectedPosition === "MIDFIELDER"
-                        ? "MF"
-                        : "FW"
-                }}
-                <button
-                  @click="handleFilterChange('ALL')"
-                  class="hover:text-blue-900 dark:hover:text-blue-100"
-                >
-                  <v-icon name="hi-solid-x" class="w-3 h-3" />
-                </button>
-              </span>
-              <span
-                v-if="selectedTeamData"
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300"
-              >
-                <img
-                  :src="selectedTeamData.image_path || '/img/default-team.svg'"
-                  :alt="selectedTeamData.short_code"
-                  class="w-3.5 h-3.5 object-contain"
-                />
-                {{ selectedTeamData.short_code }}
-                <button
-                  @click="onTeamFilterChange('ALL')"
-                  class="hover:text-indigo-900 dark:hover:text-indigo-100"
-                >
-                  <v-icon name="hi-solid-x" class="w-3 h-3" />
-                </button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Position Filters -->
+      <PositionFilter
+        :filters="positionFilters"
+        :selected-position="selectedPosition"
+        :disabled="props.disabled"
+        @update:selected-position="handleFilterChange"
+      />
 
       <!-- Show players if available -->
       <div
@@ -240,8 +147,15 @@
             class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60"
           >
             <div class="flex items-center gap-2">
-              <v-icon name="hi-solid-clipboard-list" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-              <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Available Players</h3>
+              <v-icon
+                name="hi-solid-clipboard-list"
+                class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0"
+              />
+              <h3
+                class="text-[13px] font-semibold text-gray-900 dark:text-white"
+              >
+                Available Players
+              </h3>
             </div>
           </div>
 
@@ -252,13 +166,39 @@
                 class="bg-gray-50/80 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700/60"
               >
                 <tr>
-                  <th class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-16"></th>
-                  <th class="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Player</th>
-                  <th class="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Team</th>
-                  <th class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pos</th>
-                  <th class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total</th>
-                  <th class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Avg</th>
-                  <th class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">GP</th>
+                  <th
+                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-16"
+                  ></th>
+                  <th
+                    class="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Player
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Team
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Pos
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Total
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Avg
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    GP
+                  </th>
                 </tr>
               </thead>
               <TransitionGroup
@@ -275,16 +215,27 @@
                   <td class="px-3 py-2.5">
                     <button
                       @click="handleAddPlayer(player)"
-                      :disabled="props.disabled || isAddingPlayer(player.player.uuid)"
+                      :disabled="
+                        props.disabled || isAddingPlayer(player.player.uuid)
+                      "
                       class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                      :class="[isAddingPlayer(player.player.uuid) ? 'opacity-50 cursor-not-allowed' : '']"
+                      :class="[
+                        isAddingPlayer(player.player.uuid)
+                          ? 'opacity-50 cursor-not-allowed'
+                          : '',
+                      ]"
                     >
                       <v-icon
                         v-if="!isAddingPlayer(player.player.uuid)"
                         name="hi-solid-plus"
                         class="w-4 h-4"
                       />
-                      <v-icon v-else name="pr-spinner" class="w-3.5 h-3.5" animation="spin" />
+                      <v-icon
+                        v-else
+                        name="pr-spinner"
+                        class="w-3.5 h-3.5"
+                        animation="spin"
+                      />
                     </button>
                   </td>
 
@@ -292,15 +243,21 @@
                   <td class="px-3 py-2.5">
                     <div class="flex items-center gap-2.5">
                       <img
-                        :src="player.player.image_path || '/img/default-avatar.svg'"
+                        :src="
+                          player.player.image_path || '/img/default-avatar.svg'
+                        "
                         :alt="player.player.display_name"
                         class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
                       />
                       <div class="min-w-0">
-                        <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+                        <p
+                          class="text-[13px] font-medium text-gray-900 dark:text-white truncate"
+                        >
                           {{ player.player.display_name }}
                         </p>
-                        <p class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
+                        <p
+                          class="text-[11px] text-gray-400 dark:text-gray-500 truncate"
+                        >
                           {{ player.player.common_name }}
                         </p>
                       </div>
@@ -315,7 +272,9 @@
                         :alt="player.team.name"
                         class="w-5 h-5 object-contain shrink-0"
                       />
-                      <span class="text-[12px] font-medium text-gray-600 dark:text-gray-400">
+                      <span
+                        class="text-[12px] font-medium text-gray-600 dark:text-gray-400"
+                      >
                         {{ player.team.short_code }}
                       </span>
                     </div>
@@ -325,7 +284,9 @@
                   <td class="px-3 py-2.5 text-center">
                     <span
                       class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-bold"
-                      :class="getPositionColorClass(player.position.developer_name)"
+                      :class="
+                        getPositionColorClass(player.position.developer_name)
+                      "
                     >
                       {{ player.position.code }}
                     </span>
@@ -333,21 +294,27 @@
 
                   <!-- Total Points -->
                   <td class="px-3 py-2.5 text-center">
-                    <span class="text-[13px] font-bold text-gray-900 dark:text-white tabular-nums">
+                    <span
+                      class="text-[13px] font-bold text-gray-900 dark:text-white tabular-nums"
+                    >
                       {{ formatNumber(player.total_points, 1) }}
                     </span>
                   </td>
 
                   <!-- Average Points -->
                   <td class="px-3 py-2.5 text-center">
-                    <span class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums">
+                    <span
+                      class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
+                    >
                       {{ formatNumber(player.average_points, 2) }}
                     </span>
                   </td>
 
                   <!-- Fixtures -->
                   <td class="px-3 py-2.5 text-center">
-                    <span class="text-[12px] text-gray-500 dark:text-gray-400 tabular-nums">
+                    <span
+                      class="text-[12px] text-gray-500 dark:text-gray-400 tabular-nums"
+                    >
                       {{ player.total_fixtures ?? 0 }}
                     </span>
                   </td>
@@ -371,16 +338,27 @@
                 <!-- Select Button -->
                 <button
                   @click="handleAddPlayer(player)"
-                  :disabled="props.disabled || isAddingPlayer(player.player.uuid)"
+                  :disabled="
+                    props.disabled || isAddingPlayer(player.player.uuid)
+                  "
                   class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                  :class="[isAddingPlayer(player.player.uuid) ? 'opacity-50 cursor-not-allowed' : '']"
+                  :class="[
+                    isAddingPlayer(player.player.uuid)
+                      ? 'opacity-50 cursor-not-allowed'
+                      : '',
+                  ]"
                 >
                   <v-icon
                     v-if="!isAddingPlayer(player.player.uuid)"
                     name="hi-solid-plus"
                     class="w-4 h-4"
                   />
-                  <v-icon v-else name="pr-spinner" class="w-3.5 h-3.5" animation="spin" />
+                  <v-icon
+                    v-else
+                    name="pr-spinner"
+                    class="w-3.5 h-3.5"
+                    animation="spin"
+                  />
                 </button>
 
                 <!-- Avatar -->
@@ -393,12 +371,16 @@
                 <!-- Info -->
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
-                    <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+                    <p
+                      class="text-[13px] font-medium text-gray-900 dark:text-white truncate"
+                    >
                       {{ player.player.display_name }}
                     </p>
                     <span
                       class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
-                      :class="getPositionColorClass(player.position.developer_name)"
+                      :class="
+                        getPositionColorClass(player.position.developer_name)
+                      "
                     >
                       {{ player.position.code }}
                     </span>
@@ -418,12 +400,24 @@
                 <!-- Stats -->
                 <div class="flex items-center gap-3 shrink-0">
                   <div class="text-right">
-                    <p class="text-[13px] font-bold text-gray-900 dark:text-white tabular-nums">{{ formatNumber(player.total_points, 1) }}</p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">pts</p>
+                    <p
+                      class="text-[13px] font-bold text-gray-900 dark:text-white tabular-nums"
+                    >
+                      {{ formatNumber(player.total_points, 1) }}
+                    </p>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500">
+                      pts
+                    </p>
                   </div>
                   <div class="text-right">
-                    <p class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums">{{ formatNumber(player.average_points, 2) }}</p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">avg</p>
+                    <p
+                      class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
+                    >
+                      {{ formatNumber(player.average_points, 2) }}
+                    </p>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500">
+                      avg
+                    </p>
                   </div>
                 </div>
               </div>
@@ -432,10 +426,7 @@
         </div>
 
         <!-- Loading More Indicator -->
-        <div
-          v-if="isLoadingMore"
-          class="py-6 flex items-center justify-center"
-        >
+        <div v-if="isLoadingMore" class="py-6 flex items-center justify-center">
           <v-icon
             name="pr-spinner"
             class="w-5 h-5 text-gray-300 dark:text-gray-600"
@@ -444,10 +435,7 @@
         </div>
 
         <!-- End of List Indicator -->
-        <div
-          v-else-if="!hasMoreData"
-          class="py-4 text-center"
-        >
+        <div v-else-if="!hasMoreData" class="py-4 text-center">
           <p class="text-[12px] text-gray-400 dark:text-gray-500">
             {{ players.length }} players loaded
           </p>
@@ -476,8 +464,14 @@
             class="w-7 h-7 text-gray-400 dark:text-gray-500"
           />
         </div>
-        <h3 class="text-[15px] font-semibold text-gray-900 dark:text-white mb-1">
-          {{ selectedPosition === "ALL" ? "No players available" : "No players found" }}
+        <h3
+          class="text-[15px] font-semibold text-gray-900 dark:text-white mb-1"
+        >
+          {{
+            selectedPosition === "ALL"
+              ? "No players available"
+              : "No players found"
+          }}
         </h3>
         <p class="text-[13px] text-gray-500 dark:text-gray-400">
           {{
@@ -508,17 +502,19 @@ import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeag
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
-import { SearchableSelectComponent } from "@/components/ui";
 import { useToast } from "@/composables/useToast";
+import PositionFilter from "@/components/user/fantasy/search/PositionFilter.vue";
+import TeamFilter from "@/components/user/fantasy/search/TeamFilter.vue";
+import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.vue";
 
 interface Props {
   fantasyLeagueUuid?: string;
-  mode?: 'add' | 'draft';
+  mode?: "add" | "draft";
   disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  mode: 'add',
+  mode: "add",
   disabled: false,
 });
 
@@ -546,6 +542,7 @@ const observerTarget = ref<HTMLElement | null>(null);
 const addingPlayers = ref<Set<string>>(new Set());
 const selectedPosition = ref<string>("ALL");
 const selectedTeam = ref<string>("ALL");
+const playerName = ref<string>("");
 const teams = ref<FootballTeamResponse[]>([]);
 const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
@@ -572,7 +569,8 @@ const positionFilters = computed(() => {
       name: "All",
       icon: "hi-solid-view-grid",
       color: "text-gray-600 dark:text-gray-400",
-      activeClasses: "text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/60",
+      activeClasses:
+        "text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/60",
       iconBgActive: "bg-gray-700 dark:bg-gray-300",
       slotsTextActive: "text-gray-500 dark:text-gray-400",
       barColor: "bg-gray-700 dark:bg-gray-300",
@@ -586,8 +584,10 @@ const positionFilters = computed(() => {
         name: "GK",
         icon: "hi-solid-shield-check",
         color: "text-blue-600 dark:text-blue-400",
-        activeClasses: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20",
-        iconBgActive: "bg-blue-600 dark:bg-blue-500 shadow-blue-500/30 shadow-md",
+        activeClasses:
+          "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20",
+        iconBgActive:
+          "bg-blue-600 dark:bg-blue-500 shadow-blue-500/30 shadow-md",
         slotsTextActive: "text-blue-500 dark:text-blue-400",
         barColor: "bg-blue-600 dark:bg-blue-400",
         slots: league.value.formation.goalkeeper.starter,
@@ -599,8 +599,10 @@ const positionFilters = computed(() => {
         name: "DF",
         icon: "hi-solid-shield-exclamation",
         color: "text-emerald-600 dark:text-emerald-400",
-        activeClasses: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20",
-        iconBgActive: "bg-emerald-600 dark:bg-emerald-500 shadow-emerald-500/30 shadow-md",
+        activeClasses:
+          "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20",
+        iconBgActive:
+          "bg-emerald-600 dark:bg-emerald-500 shadow-emerald-500/30 shadow-md",
         slotsTextActive: "text-emerald-500 dark:text-emerald-400",
         barColor: "bg-emerald-600 dark:bg-emerald-400",
         slots: league.value.formation.defender.starter,
@@ -612,8 +614,10 @@ const positionFilters = computed(() => {
         name: "MF",
         icon: "hi-solid-lightning-bolt",
         color: "text-amber-600 dark:text-amber-400",
-        activeClasses: "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20",
-        iconBgActive: "bg-amber-600 dark:bg-amber-500 shadow-amber-500/30 shadow-md",
+        activeClasses:
+          "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20",
+        iconBgActive:
+          "bg-amber-600 dark:bg-amber-500 shadow-amber-500/30 shadow-md",
         slotsTextActive: "text-amber-500 dark:text-amber-400",
         barColor: "bg-amber-600 dark:bg-amber-400",
         slots: league.value.formation.midfielder.starter,
@@ -625,8 +629,10 @@ const positionFilters = computed(() => {
         name: "FW",
         icon: "hi-solid-fire",
         color: "text-rose-600 dark:text-rose-400",
-        activeClasses: "text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20",
-        iconBgActive: "bg-rose-600 dark:bg-rose-500 shadow-rose-500/30 shadow-md",
+        activeClasses:
+          "text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20",
+        iconBgActive:
+          "bg-rose-600 dark:bg-rose-500 shadow-rose-500/30 shadow-md",
         slotsTextActive: "text-rose-500 dark:text-rose-400",
         barColor: "bg-rose-600 dark:bg-rose-400",
         slots: league.value.formation.attacker.starter,
@@ -635,11 +641,6 @@ const positionFilters = computed(() => {
   }
 
   return filters;
-});
-
-const selectedTeamData = computed(() => {
-  if (selectedTeam.value === "ALL") return null;
-  return teams.value.find((t) => t.uuid === selectedTeam.value) || null;
 });
 
 // Methods
@@ -672,7 +673,9 @@ function isAddingPlayer(playerUuid: string): boolean {
 async function loadLeague() {
   if (!leagueUuid.value) return;
   try {
-    league.value = await fantasyLeagueService.showFantasyLeague(leagueUuid.value);
+    league.value = await fantasyLeagueService.showFantasyLeague(
+      leagueUuid.value,
+    );
   } catch (err: unknown) {
     console.error("Error loading league:", err);
   }
@@ -694,6 +697,11 @@ function onTeamFilterChange(value: string | number | null) {
   loadPlayers(false);
 }
 
+function onPlayerNameSearch(value: string) {
+  playerName.value = value;
+  loadPlayers(false);
+}
+
 function handleFilterChange(position: string) {
   selectedPosition.value = position;
   loadPlayers(false);
@@ -703,12 +711,13 @@ function handleFilterChange(position: string) {
  * Add or pick a player depending on the current mode.
  */
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
-  if (props.disabled || !leagueUuid.value || isAddingPlayer(player.player.uuid)) return;
+  if (props.disabled || !leagueUuid.value || isAddingPlayer(player.player.uuid))
+    return;
 
   addingPlayers.value.add(player.player.uuid);
 
   try {
-    if (props.mode === 'draft') {
+    if (props.mode === "draft") {
       const payload: FantasyAddPlayerPayload = {
         fantasy_league_uuid: leagueUuid.value,
         player_uuid: player.player.uuid,
@@ -747,7 +756,9 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
     players.value = players.value.filter(
       (p) => p.player.uuid !== player.player.uuid,
     );
-    setTimeout(() => { animateRemoval.value = false; }, 500);
+    setTimeout(() => {
+      animateRemoval.value = false;
+    }, 500);
 
     emit("player-added", player);
   } catch (err: unknown) {
@@ -817,6 +828,10 @@ function buildPayloadFilters(): FantasyPlayerDraftPayload["filters"] {
     filters.team_uuid = selectedTeam.value;
   }
 
+  if (playerName.value) {
+    filters.player_name = playerName.value;
+  }
+
   return Object.keys(filters).length > 0 ? filters : undefined;
 }
 
@@ -882,7 +897,9 @@ onMounted(async () => {
   const positionFromQuery = route.query.position as string;
   if (
     positionFromQuery &&
-    ["GOALKEEPER", "DEFENDER", "MIDFIELDER", "ATTACKER", "ALL"].includes(positionFromQuery)
+    ["GOALKEEPER", "DEFENDER", "MIDFIELDER", "ATTACKER", "ALL"].includes(
+      positionFromQuery,
+    )
   ) {
     selectedPosition.value = positionFromQuery;
   }
@@ -908,10 +925,10 @@ onUnmounted(() => {
 /** Remove a player from the list by UUID (called from parent via ref) */
 function removePlayerByUuid(playerUuid: string) {
   animateRemoval.value = true;
-  players.value = players.value.filter(
-    (p) => p.player.uuid !== playerUuid,
-  );
-  setTimeout(() => { animateRemoval.value = false; }, 500);
+  players.value = players.value.filter((p) => p.player.uuid !== playerUuid);
+  setTimeout(() => {
+    animateRemoval.value = false;
+  }, 500);
 }
 
 defineExpose({ removePlayerByUuid });

@@ -39,7 +39,10 @@
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <NextFixtureBadge :fixture="player.next_fixture" />
+              </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
             </div>
           </div>
@@ -81,7 +84,10 @@
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <NextFixtureBadge :fixture="player.next_fixture" />
+              </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
             </div>
           </div>
@@ -123,7 +129,10 @@
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <NextFixtureBadge :fixture="player.next_fixture" />
+              </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
             </div>
           </div>
@@ -165,7 +174,10 @@
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <NextFixtureBadge :fixture="player.next_fixture" />
+              </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
             </div>
           </div>
@@ -207,7 +219,10 @@
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <p class="flex-1 min-w-0 text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <NextFixtureBadge :fixture="player.next_fixture" />
+              </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
             </div>
           </div>
@@ -232,6 +247,7 @@
 import { computed, ref } from "vue";
 import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
+import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
 
 interface Props {
   /** All players (the component filters starters internally) */

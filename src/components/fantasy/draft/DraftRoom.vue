@@ -27,13 +27,48 @@
         :currentTurnUserUuid="turnStarted?.user?.uuid ?? undefined"
       />
 
-      <SearchPlayerFantasy
-        ref="searchPlayerRef"
-        :fantasyLeagueUuid="fantasyLeague.uuid"
-        mode="draft"
-        :disabled="!isMyTurn"
-      />
+      <!-- My Turn indicator bar -->
+      <Transition name="my-turn-bar">
+        <div
+          v-if="isMyTurn"
+          class="relative overflow-hidden rounded-xl h-1.5"
+        >
+          <div class="absolute inset-0 my-turn-bar-shine bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-400 dark:from-emerald-500 dark:via-green-400 dark:to-emerald-500" />
+        </div>
+      </Transition>
+
+      <div
+        class="transition-all duration-500 rounded-2xl"
+        :class="{ 'my-turn-glow': isMyTurn }"
+      >
+        <SearchPlayerFantasy
+          ref="searchPlayerRef"
+          :fantasyLeagueUuid="fantasyLeague.uuid"
+          mode="draft"
+          :disabled="!isMyTurn"
+        />
+      </div>
     </template>
+
+    <!-- My Turn Flash Notification -->
+    <Transition name="my-turn-flash">
+      <div
+        v-if="showMyTurnFlash"
+        class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+      >
+        <div
+          class="bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600
+                 text-white px-5 py-3 sm:px-8 sm:py-4 rounded-2xl shadow-2xl
+                 flex items-center gap-3 backdrop-blur-sm"
+        >
+          <span class="text-2xl sm:text-3xl" aria-hidden="true">⚡</span>
+          <div>
+            <p class="text-base sm:text-xl font-bold leading-tight">It's your turn!</p>
+            <p class="text-[11px] sm:text-sm text-white/70">Pick a player for your team</p>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- Bottom spacer so content is not hidden behind MenuDraft -->
     <div class="h-16" />
@@ -68,7 +103,7 @@ import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeag
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { useUserStore } from "@/store";
 import { Types } from "ably";
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { onMounted, onUnmounted, ref, computed, watch } from "vue";
 
 const timerSentinelRef = ref<HTMLElement | null>(null);
 const isTimerCompact = ref(false);
@@ -101,6 +136,25 @@ const isDraftCompleted = computed(
 const isMyTurn = computed(() => {
   if (!turnStarted.value?.user) return false;
   return userStore.getUserData?.uuid === turnStarted.value.user.uuid;
+});
+
+const showMyTurnFlash = ref(false);
+let flashTimeout: ReturnType<typeof setTimeout> | null = null;
+
+watch(isMyTurn, (newVal, oldVal) => {
+  if (newVal && !oldVal) {
+    showMyTurnFlash.value = true;
+    if (flashTimeout) clearTimeout(flashTimeout);
+    flashTimeout = setTimeout(() => {
+      showMyTurnFlash.value = false;
+    }, 3000);
+  } else if (!newVal) {
+    showMyTurnFlash.value = false;
+    if (flashTimeout) {
+      clearTimeout(flashTimeout);
+      flashTimeout = null;
+    }
+  }
 });
 
 const { draftRoomChannel } = useAblyBroadcast();
@@ -234,6 +288,10 @@ function onTurnExpired() {
 }
 
 onUnmounted(() => {
+  if (flashTimeout) {
+    clearTimeout(flashTimeout);
+    flashTimeout = null;
+  }
   if (timerObserver) {
     timerObserver.disconnect();
     timerObserver = null;
@@ -246,3 +304,69 @@ onUnmounted(() => {
   }
 });
 </script>
+
+<style scoped>
+/* Flash notification enter/leave transitions */
+.my-turn-flash-enter-active {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.my-turn-flash-leave-active {
+  transition: all 0.8s ease-in;
+}
+.my-turn-flash-enter-from {
+  opacity: 0;
+  transform: scale(0.7);
+}
+.my-turn-flash-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(-20px);
+}
+
+/* Animated top bar */
+.my-turn-bar-enter-active {
+  transition: all 0.6s ease-out;
+}
+.my-turn-bar-leave-active {
+  transition: all 0.4s ease-in;
+}
+.my-turn-bar-enter-from,
+.my-turn-bar-leave-to {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.my-turn-bar-shine {
+  background-size: 200% 100%;
+  animation: barShine 2s ease-in-out infinite;
+}
+
+@keyframes barShine {
+  0% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+  100% { background-position: 100% 0; }
+}
+
+/* Glowing border around search area */
+.my-turn-glow {
+  box-shadow:
+    0 0 0 2px rgba(52, 211, 153, 0.5),
+    0 0 12px rgba(52, 211, 153, 0.25),
+    0 0 24px rgba(52, 211, 153, 0.1);
+  animation: turnGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes turnGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(52, 211, 153, 0.4),
+      0 0 12px rgba(52, 211, 153, 0.2),
+      0 0 24px rgba(52, 211, 153, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(52, 211, 153, 0.7),
+      0 0 20px rgba(52, 211, 153, 0.35),
+      0 0 40px rgba(52, 211, 153, 0.15);
+  }
+}
+</style>
