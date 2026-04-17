@@ -1,5 +1,15 @@
 <template>
   <div class="w-full">
+    <!-- Lineup Drawer (slot picker for add mode) -->
+    <LineupDrawer
+      v-model="showLineupDrawer"
+      :fantasy-league-uuid="leagueUuid ?? ''"
+      :player-name="pendingPlayer?.player?.display_name ?? ''"
+      :adding-player-position="pendingPlayer?.position?.developer_name ?? null"
+      @slot-selected="handleLineupSlotSelected"
+      @swap-player="handleSwapPlayer"
+    />
+
     <!-- Loading State -->
     <div
       v-if="isLoading && players.length === 0"
@@ -506,16 +516,24 @@ import { useToast } from "@/composables/useToast";
 import PositionFilter from "@/components/user/fantasy/search/PositionFilter.vue";
 import TeamFilter from "@/components/user/fantasy/search/TeamFilter.vue";
 import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.vue";
+import LineupDrawer from "@/components/fantasy/lineup/LineupDrawer.vue";
+import type { LineupSlotSelection } from "@/components/fantasy/lineup/LineupDrawer.vue";
 
 interface Props {
   fantasyLeagueUuid?: string;
   mode?: "add" | "draft";
   disabled?: boolean;
+  positionUuid?: string | null;
+  isFlex?: boolean | null;
+  isStarter?: boolean | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   mode: "add",
   disabled: false,
+  positionUuid: null,
+  isFlex: null,
+  isStarter: null,
 });
 
 const emit = defineEmits<{
@@ -547,6 +565,9 @@ const teams = ref<FootballTeamResponse[]>([]);
 const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
 const animateRemoval = ref(false);
+const showLineupDrawer = ref(false);
+const pendingPlayer = ref<FantasyPlayerDraftResponse | null>(null);
+const positionUuidQuery = ref<string | null>(null);
 let observer: IntersectionObserver | null = null;
 
 // Computed
@@ -714,13 +735,13 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   if (props.disabled || !leagueUuid.value || isAddingPlayer(player.player.uuid))
     return;
 
-  addingPlayers.value.add(player.player.uuid);
-
-  try {
-    if (props.mode === "draft") {
+  if (props.mode === "draft") {
+    addingPlayers.value.add(player.player.uuid);
+    try {
       const payload: FantasyAddPlayerPayload = {
         fantasy_league_uuid: leagueUuid.value,
         player_uuid: player.player.uuid,
+        player_uuid_change: null,
         position_uuid: player.position.uuid,
         is_flex: null,
         is_starter: null,
@@ -733,33 +754,66 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
         `${player.player.display_name} has been drafted`,
         { duration: 3000 },
       );
-    } else {
-      const payload: FantasyAddPlayerPayload = {
-        fantasy_league_uuid: leagueUuid.value,
-        player_uuid: player.player.uuid,
-        position_uuid: player.position.uuid,
-        is_flex: slotType.value === "FLEX",
-        is_starter: slotType.value !== "BENCH",
-      };
 
-      await fantasyLeagueService.addPlayer(payload);
-
-      toast.success(
-        "Player added successfully",
-        `${player.player.display_name} has been added to your team`,
-        { duration: 3000 },
-      );
+      removePlayerFromList(player);
+      emit("player-added", player);
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error adding player";
+      toast.error("Error", errorMessage);
+      console.error("Error adding player:", errorMessage);
+    } finally {
+      addingPlayers.value.delete(player.player.uuid);
     }
+  } else {
+    // mode === "add"
+    const hasSlotFromProps = props.isStarter !== null && props.isStarter !== undefined;
+    const hasSlotFromQuery = !!route.query.slotType;
 
-    // Remove from the local list with animation
-    animateRemoval.value = true;
-    players.value = players.value.filter(
-      (p) => p.player.uuid !== player.player.uuid,
+    if (hasSlotFromProps || hasSlotFromQuery) {
+      await addPlayerToLineup(player);
+    } else {
+      // No slot info — show LineupDrawer to choose
+      pendingPlayer.value = player;
+      showLineupDrawer.value = true;
+    }
+  }
+}
+
+/**
+ * Add a player to the lineup with resolved slot info.
+ */
+async function addPlayerToLineup(
+  player: FantasyPlayerDraftResponse,
+  overrideSlot?: LineupSlotSelection,
+  playerUuidChange?: string | null,
+) {
+  if (!leagueUuid.value) return;
+
+  addingPlayers.value.add(player.player.uuid);
+
+  try {
+    const isFlex = overrideSlot?.isFlex ?? props.isFlex ?? (slotType.value === "FLEX");
+    const isStarter = overrideSlot?.isStarter ?? props.isStarter ?? (slotType.value !== "BENCH");
+
+    const payload: FantasyAddPlayerPayload = {
+      fantasy_league_uuid: leagueUuid.value,
+      player_uuid: player.player.uuid,
+      player_uuid_change: playerUuidChange ?? null,
+      position_uuid: props.positionUuid || positionUuidQuery.value || player.position.uuid,
+      is_flex: isFlex,
+      is_starter: isStarter,
+    };
+
+    await fantasyLeagueService.addPlayer(payload);
+
+    toast.success(
+      "Player added successfully",
+      `${player.player.display_name} has been added to your team`,
+      { duration: 3000 },
     );
-    setTimeout(() => {
-      animateRemoval.value = false;
-    }, 500);
 
+    removePlayerFromList(player);
     emit("player-added", player);
   } catch (err: unknown) {
     const errorMessage =
@@ -769,6 +823,42 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   } finally {
     addingPlayers.value.delete(player.player.uuid);
   }
+}
+
+/**
+ * Handle slot selection from the LineupDrawer.
+ */
+function handleLineupSlotSelected(slot: LineupSlotSelection) {
+  showLineupDrawer.value = false;
+  if (pendingPlayer.value) {
+    addPlayerToLineup(pendingPlayer.value, slot, null);
+    pendingPlayer.value = null;
+  }
+}
+
+/**
+ * Handle swap-player from the LineupDrawer (occupied slot selected).
+ */
+function handleSwapPlayer(playerUuid: string, position: string) {
+  showLineupDrawer.value = false;
+  if (pendingPlayer.value) {
+    const slot: LineupSlotSelection = {
+      isStarter: position !== "BENCH",
+      isFlex: position === "FLEX",
+    };
+    addPlayerToLineup(pendingPlayer.value, slot, playerUuid);
+    pendingPlayer.value = null;
+  }
+}
+
+function removePlayerFromList(player: FantasyPlayerDraftResponse) {
+  animateRemoval.value = true;
+  players.value = players.value.filter(
+    (p) => p.player.uuid !== player.player.uuid,
+  );
+  setTimeout(() => {
+    animateRemoval.value = false;
+  }, 500);
 }
 
 async function loadPlayers(append = false) {
@@ -908,6 +998,12 @@ onMounted(async () => {
   const slotTypeFromQuery = route.query.slotType as string;
   if (slotTypeFromQuery) {
     slotType.value = slotTypeFromQuery;
+  }
+
+  // Check if there's a positionUuid in query params
+  const positionUuidFromQuery = route.query.positionUuid as string;
+  if (positionUuidFromQuery) {
+    positionUuidQuery.value = positionUuidFromQuery;
   }
 
   await loadPlayers();

@@ -16,6 +16,7 @@ import { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/Fant
 import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/FantasyParticipanCountResponse";
 import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
 import { FantasyDraftPlayerPicked } from "@/interfaces/fantasy/draft/FantasyDraftPlayerPicked";
+import { LineupPlayerRemovePayload } from "@/interfaces/fantasy/lineup/LineupPlayerRemovePayload";
 
 
 export class FantasyLeagueService {
@@ -231,6 +232,35 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch picked players');
+    }
+
+    async lineupPlayerRemove(payload: LineupPlayerRemovePayload): Promise<ApiResponse<null>> {
+        const response = await this.api.delete<ApiResponse<null>>(
+            `fantasy/leagues/remove/player`,
+            { data: payload }
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to remove player from lineup');
+    }
+
+    async getCurrentMatchup(leagueUuid: string): Promise<FantasyLeagueMatchupResponse> {
+        const response = await this.api.get<ApiResponse<FantasyLeagueMatchupResponse>>(`fantasy/leagues/matchups/${leagueUuid}/current/user`);
+
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch current matchup');
+    }
+
+    async getMatchupByRoundAndUser(leagueUuid: string, roundUuid: string): Promise<FantasyLeagueMatchupResponse> {
+        const response = await this.api.get<ApiResponse<FantasyLeagueMatchupResponse>>(`fantasy/leagues/matchups/${leagueUuid}/round/${roundUuid}/user`);
+
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch matchup for round');
     }
 }
 

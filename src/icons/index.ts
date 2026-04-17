@@ -3,6 +3,7 @@
 
 // Basic icons
 import {
+  HiSolidFingerPrint,
   HiSolidHome,
   HiSolidUser,
   HiSolidCog,
@@ -266,6 +267,7 @@ export const iconList = [
   GiSoccerBall,
   GiCrossedSwords,
   RiTeamLine,
+  HiSolidFingerPrint,
 ]
 
 // Icon name mapping for easier usage
