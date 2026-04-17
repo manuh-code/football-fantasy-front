@@ -44,7 +44,26 @@
 
                         <!-- Participants Count -->
                         <div>
+                            <!-- Fixed value: only one option available -->
+                            <div v-if="isFixedParticipants">
+                                <p class="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Number of Participants *
+                                </p>
+                                <div class="flex items-center gap-2 px-3 py-2.5 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl">
+                                    <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-500 shrink-0" />
+                                    <span class="text-[14px] font-semibold text-gray-900 dark:text-white">{{ formData.participants_count }}</span>
+                                    <span class="text-[12px] text-gray-500 dark:text-gray-400">participants</span>
+                                    <span class="ml-auto text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
+                                        Fixed
+                                    </span>
+                                </div>
+                                <p class="mt-1 text-[11px] text-gray-400 dark:text-gray-500">
+                                    This league requires exactly {{ formData.participants_count }} participants
+                                </p>
+                            </div>
+                            <!-- Select: multiple options available -->
                             <SelectComponent
+                                v-else
                                 v-model="formData.participants_count"
                                 :options="participantOptions"
                                 value-key="value"
@@ -182,6 +201,7 @@ const footballLeagueStore = useFootballLeagueStore()
 // State
 const isLoading = ref(false)
 const participantOptions = ref<{ value: number; label: string }[]>([])
+const isFixedParticipants = ref(false)
 const isLoadingOptions = ref(false)
 
 // Simplified form data - only required fields
@@ -251,11 +271,36 @@ const fetchParticipantOptions = async (leagueUuid: string) => {
     try {
         const response = await fantasyLeagueService.getParticipantOptions(leagueUuid)
         const data = response.data
-        participantOptions.value = [
-            { value: data.min, label: `${data.min} participants` },
-            { value: data.mid, label: `${data.mid} participants` },
-            { value: data.max, label: `${data.max} participants` }
-        ]
+
+        const labelMap: Record<string, string> = {
+            min: 'Minimum',
+            mid: 'Recommended',
+            max: 'Maximum'
+        }
+
+        // Deduplicate values while preserving descriptive labels
+        const seen = new Map<number, string>()
+        for (const key of ['min', 'mid', 'max'] as const) {
+            const value = data[key] as number
+            if (!seen.has(value)) {
+                seen.set(value, labelMap[key])
+            }
+        }
+
+        if (seen.size === 1) {
+            // Only one unique value: auto-assign and show fixed text
+            const [uniqueValue] = seen.keys()
+            formData.participants_count = uniqueValue
+            isFixedParticipants.value = true
+            participantOptions.value = []
+        } else {
+            // Multiple unique values: build select with descriptive labels
+            isFixedParticipants.value = false
+            participantOptions.value = Array.from(seen.entries()).map(([value, tag]) => ({
+                value,
+                label: `${tag} (${value} participants)`
+            }))
+        }
     } catch (error) {
         console.error('Error fetching participant options:', error)
     } finally {

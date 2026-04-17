@@ -1,26 +1,16 @@
 <template>
   <!-- Footer Navigation — iOS Tab Bar style -->
-  <nav 
+  <nav
     v-if="shouldShowMenu"
-    aria-label="Main navigation" 
+    aria-label="Main navigation"
     class="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-100 dark:border-gray-800"
   >
-    <div class="flex items-center justify-around px-1 pt-1.5 pb-1.5" style="padding-bottom: max(0.375rem, env(safe-area-inset-bottom, 0.375rem))">
-      <!-- League Overview -->
-      <button
-        @click="handleTabChange('overview')"
-        :class="[
-          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'overview' 
-            ? 'text-blue-500 dark:text-blue-400' 
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
-        ]"
-        aria-label="League Overview"
-      >
-        <v-icon name="hi-solid-information-circle" :class="['w-[22px] h-[22px]', activeTab === 'overview' ? 'scale-110' : '']" />
-        <span class="text-[10px] font-medium leading-tight">Overview</span>
-      </button>
-
+    <div
+      class="flex items-center justify-around px-1 pt-1.5 pb-1.5"
+      style="
+        padding-bottom: max(0.375rem, env(safe-area-inset-bottom, 0.375rem));
+      "
+    >
       <!-- My Leagues -->
       <button
         @click="goToMyLeagues"
@@ -29,6 +19,27 @@
       >
         <v-icon name="bi-trophy-fill" class="w-[22px] h-[22px]" />
         <span class="text-[10px] font-medium leading-tight">Leagues</span>
+      </button>
+
+      <!-- League Overview -->
+      <button
+        @click="handleTabChange('overview')"
+        :class="[
+          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
+          activeTab === 'overview'
+            ? 'text-blue-500 dark:text-blue-400'
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
+        ]"
+        aria-label="League Overview"
+      >
+        <v-icon
+          name="hi-solid-information-circle"
+          :class="[
+            'w-[22px] h-[22px]',
+            activeTab === 'overview' ? 'scale-110' : '',
+          ]"
+        />
+        <span class="text-[10px] font-medium leading-tight">Overview</span>
       </button>
 
       <!-- My Team -->
@@ -40,30 +51,42 @@
           'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
           leagueDetailStore.isDraftNotStarted
             ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50'
-            : activeTab === 'myteam' 
-              ? 'text-emerald-500 dark:text-emerald-400' 
-              : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
+            : activeTab === 'myteam'
+              ? 'text-emerald-500 dark:text-emerald-400'
+              : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
         ]"
         aria-label="Team"
       >
-        <v-icon name="hi-solid-user-group" :class="['w-[22px] h-[22px]', activeTab === 'myteam' ? 'scale-110' : '']" />
+        <v-icon
+          name="hi-solid-user-group"
+          :class="[
+            'w-[22px] h-[22px]',
+            activeTab === 'myteam' ? 'scale-110' : '',
+          ]"
+        />
         <span class="text-[10px] font-medium leading-tight">Team</span>
       </button>
 
-      <!-- Player Statistics -->
+      <!-- Players -->
       <button
         v-if="canAccessMemberTabs"
-        @click="handleTabChange('statistics')"
+        @click="goToSearchPlayers"
         :class="[
           'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'statistics' 
-            ? 'text-orange-500 dark:text-orange-400' 
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
+          activeTab === 'players'
+            ? 'text-orange-500 dark:text-orange-400'
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
         ]"
-        aria-label="Player Statistics"
+        aria-label="Players"
       >
-        <v-icon name="hi-solid-chart-bar" :class="['w-[22px] h-[22px]', activeTab === 'statistics' ? 'scale-110' : '']" />
-        <span class="text-[10px] font-medium leading-tight">Stats</span>
+        <v-icon
+          name="hi-solid-user-add"
+          :class="[
+            'w-[22px] h-[22px]',
+            activeTab === 'players' ? 'scale-110' : '',
+          ]"
+        />
+        <span class="text-[10px] font-medium leading-tight">Players</span>
       </button>
 
       <!-- Matchups -->
@@ -72,97 +95,126 @@
         @click="handleTabChange('matchups')"
         :class="[
           'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'matchups' 
-            ? 'text-red-500 dark:text-red-400' 
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
+          activeTab === 'matchups'
+            ? 'text-red-500 dark:text-red-400'
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
         ]"
         aria-label="Matchups"
       >
-        <v-icon name="gi-crossed-swords" :class="['w-[22px] h-[22px]', activeTab === 'matchups' ? 'scale-110' : '']" />
+        <v-icon
+          name="gi-crossed-swords"
+          :class="[
+            'w-[22px] h-[22px]',
+            activeTab === 'matchups' ? 'scale-110' : '',
+          ]"
+        />
         <span class="text-[10px] font-medium leading-tight">Matchups</span>
       </button>
 
       <!-- Management -->
-      <button
+      <!-- <button
         v-if="canAccessAdminTabs"
         @click="handleTabChange('management')"
         :class="[
           'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'management' 
-            ? 'text-purple-500 dark:text-purple-400' 
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600'
+          activeTab === 'management'
+            ? 'text-purple-500 dark:text-purple-400'
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
         ]"
         aria-label="Management"
       >
-        <v-icon name="hi-solid-cog" :class="['w-[22px] h-[22px]', activeTab === 'management' ? 'scale-110' : '']" />
+        <v-icon
+          name="hi-solid-cog"
+          :class="[
+            'w-[22px] h-[22px]',
+            activeTab === 'management' ? 'scale-110' : '',
+          ]"
+        />
         <span class="text-[10px] font-medium leading-tight">Manage</span>
-      </button>
+      </button> -->
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import { useAuthStore } from '@/store/auth/useAuthStore'
-import { useFantasyLeagueDetailStore } from '@/store/fantasy/useFantasyLeagueDetailStore'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, watch, computed } from "vue";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
+import { useRoute, useRouter } from "vue-router";
 
-const authStore = useAuthStore()
-const leagueDetailStore = useFantasyLeagueDetailStore()
-const route = useRoute()
-const router = useRouter()
-const isAuthenticatedRef = ref(false)
+const authStore = useAuthStore();
+const leagueDetailStore = useFantasyLeagueDetailStore();
+const route = useRoute();
+const router = useRouter();
+const isAuthenticatedRef = ref(false);
 
 // Get active tab from route query or default based on route
 const activeTab = computed(() => {
-  // If we're in playersToDraft, set myteam as active
-  if (route.name === 'playersToDraft') {
-    return 'myteam'
+  if (route.name === "playersToDraft") {
+    return "myteam";
   }
-  return (route.query.tab as string) || 'overview'
-})
+  if (route.name === "searchPlayerFantasy") {
+    return "players";
+  }
+  return (route.query.tab as string) || "overview";
+});
+
+// Get the league UUID from route params
+const leagueUuid = computed(() => route.params.uuid as string);
 
 // Only show member-only tabs when user is a member or admin of the league
-const canAccessMemberTabs = computed(() => leagueDetailStore.isMember || leagueDetailStore.isAdmin)
+const canAccessMemberTabs = computed(
+  () => leagueDetailStore.isMember || leagueDetailStore.isAdmin,
+);
 
 // Only show admin tabs when user is an admin of the league
-const canAccessAdminTabs = computed(() => leagueDetailStore.isAdmin)
+const canAccessAdminTabs = computed(() => leagueDetailStore.isAdmin);
 
 // Only show footer menu in fantasy league related routes when authenticated
 const shouldShowMenu = computed(() => {
-  if (!isAuthenticatedRef.value) return false
-  const fantasyRoutes = ['fantasyLeagueDetail']
-  return fantasyRoutes.includes(route.name as string)
-})
+  if (!isAuthenticatedRef.value) return false;
+  const fantasyRoutes = ["fantasyLeagueDetail", "searchPlayerFantasy"];
+  return fantasyRoutes.includes(route.name as string);
+});
 
 // Watch for token changes to update authentication status (immediate covers mount)
-watch(() => authStore.token, async (newToken) => {
-  if (newToken) {
-    isAuthenticatedRef.value = await authStore.isAuthenticated()
-  } else {
-    isAuthenticatedRef.value = false
-  }
-}, { immediate: true })
+watch(
+  () => authStore.token,
+  async (newToken) => {
+    if (newToken) {
+      isAuthenticatedRef.value = await authStore.isAuthenticated();
+    } else {
+      isAuthenticatedRef.value = false;
+    }
+  },
+  { immediate: true },
+);
 
 // Handle tab change
 function handleTabChange(tab: string) {
-  // If we're in playersToDraft view, redirect to fantasyLeagueDetail with the selected tab
-  if (route.name === 'playersToDraft') {
-    router.push({
-      name: 'fantasyLeagueDetail',
-      params: route.params,
-      query: { tab }
-    })
-  } else {
-    // Update the query parameter to change the active tab
+  if (route.name === "fantasyLeagueDetail") {
     router.replace({
-      query: { ...route.query, tab }
-    })
+      query: { ...route.query, tab },
+    });
+  } else {
+    router.push({
+      name: "fantasyLeagueDetail",
+      params: { uuid: leagueUuid.value },
+      query: { tab },
+    });
   }
 }
 
+function goToSearchPlayers() {
+  if (!leagueUuid.value) return;
+  router.push({
+    name: "searchPlayerFantasy",
+    params: { uuid: leagueUuid.value },
+  });
+}
+
 function goToMyLeagues() {
-  router.push({ name: 'userFantasyLeague' })
+  router.push({ name: "userFantasyLeague" });
 }
 </script>
 

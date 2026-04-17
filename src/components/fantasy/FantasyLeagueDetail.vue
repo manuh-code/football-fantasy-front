@@ -182,6 +182,44 @@
       </div>
 
       <!-- ============================== -->
+      <!-- QUICK ACCESS — Action buttons  -->
+      <!-- ============================== -->
+      <div
+        v-if="league.isMember || league.isAdmin"
+        class="grid grid-cols-3 gap-2"
+      >
+        <button
+          @click="navigateToTab('myteam')"
+          class="flex flex-col items-center gap-1.5 py-3 px-2 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-emerald-200 dark:hover:border-emerald-800/40 active:scale-[0.97] transition-all"
+        >
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+            <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          </div>
+          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">My Team</span>
+        </button>
+
+        <button
+          @click="navigateToTab('statistics')"
+          class="flex flex-col items-center gap-1.5 py-3 px-2 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-orange-200 dark:hover:border-orange-800/40 active:scale-[0.97] transition-all"
+        >
+          <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-orange-600 dark:text-orange-400" />
+          </div>
+          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">Stats</span>
+        </button>
+
+        <button
+          @click="navigateToTab('matchups')"
+          class="flex flex-col items-center gap-1.5 py-3 px-2 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-red-200 dark:hover:border-red-800/40 active:scale-[0.97] transition-all"
+        >
+          <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <v-icon name="gi-crossed-swords" class="w-4 h-4 text-red-600 dark:text-red-400" />
+          </div>
+          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">Matchups</span>
+        </button>
+      </div>
+
+      <!-- ============================== -->
       <!-- ABOUT — Description card       -->
       <!-- ============================== -->
       <div
@@ -343,6 +381,7 @@
               />
               <!-- Enter Draft Room -->
               <ButtonComponent
+                v-if="draftStatusValue !== 'COMPLETED'"
                 variant="primary"
                 size="sm"
                 text="Enter Draft Room"
@@ -459,6 +498,14 @@ const goToDraft = () => {
   router.push({
     name: "playersToDraft",
     params: { uuid: props.uuid },
+  });
+};
+
+const navigateToTab = (tab: string) => {
+  router.replace({
+    name: "fantasyLeagueDetail",
+    params: { uuid: props.uuid },
+    query: { tab },
   });
 };
 

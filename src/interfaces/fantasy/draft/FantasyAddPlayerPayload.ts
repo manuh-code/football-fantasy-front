@@ -1,6 +1,7 @@
 export interface FantasyAddPlayerPayload {
     fantasy_league_uuid: string;
     player_uuid: string;
+    player_uuid_change: string | null;
     position_uuid: string;
     is_flex: boolean | null;
     is_starter: boolean | null;

@@ -1,25 +1,8 @@
 <template>
   <div class="w-full">
-    <!-- Loading State -->
-    <div
-      v-if="isLoading && players.length === 0"
-      class="flex items-center justify-center min-h-[300px]"
-    >
-      <div class="flex flex-col items-center gap-2">
-        <v-icon
-          name="pr-spinner"
-          class="w-5 h-5 text-gray-300 dark:text-gray-600"
-          animation="spin"
-        />
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">
-          Loading your team...
-        </p>
-      </div>
-    </div>
-
     <!-- Loading Rounds State -->
     <div
-      v-else-if="isLoadingRounds && rounds.length === 0"
+      v-if="isLoadingRounds && rounds.length === 0"
       class="flex items-center justify-center min-h-[300px]"
     >
       <div class="flex flex-col items-center gap-2">
@@ -48,7 +31,9 @@
           <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
             Error loading team
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400">{{ error }}</p>
+          <p class="text-[12px] text-gray-500 dark:text-gray-400">
+            {{ error }}
+          </p>
         </div>
       </div>
     </div>
@@ -75,10 +60,7 @@
     </div>
 
     <!-- Round Selector -->
-    <div v-else-if="rounds.length > 0" class="mb-4">
-      <!-- Team Info Card -->
-      <ShowFantasyTeam v-if="leagueUuid" :league-uuid="leagueUuid" class="mb-3" />
-
+    <div v-else-if="rounds.length > 0" class="mb-4 space-y-3">
       <!-- Round Navigation -->
       <RoundSelector
         :rounds="rounds"
@@ -92,38 +74,42 @@
         @select-next="selectNextRound"
       />
 
-      <!-- Fantasy Team Display -->
-      <div class="mt-4">
-        <!-- Starters Section -->
-        <StartersTable
-          :players="players"
-          :formation="league?.formation ?? null"
-          :highlighted-player-uuid="highlightedPlayerUuid"
-          class="mb-4"
-          @draft-by-position="handleDraftPlayerByPosition"
+      <!-- Matchup by Round -->
+      <MatchupByRoundAndUser
+        :league-uuid="leagueUuid!"
+        :round-uuid="selectedRoundUuid"
+        :round-name="selectedRound?.round?.name ?? 'Matchup'"
+      />
+
+      <!-- Quick Actions -->
+      <div class="flex gap-2">
+        <button
+          @click="goToSearchPlayers()"
+          class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 active:scale-[0.97] transition-all"
         >
-          <template #header-action>
-            <button
-              @click="goToSearchPlayers"
-              class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/20 active:bg-white/30 text-white text-[11px] font-medium rounded-lg backdrop-blur-sm transition-all border border-white/30"
-              title="Search and add players to your team"
-            >
-              <v-icon name="hi-solid-user-add" class="w-3 h-3" />
-              <span class="hidden sm:inline">Add Players</span>
-              <span class="sm:hidden">Add</span>
-            </button>
-          </template>
-        </StartersTable>
+          <v-icon name="hi-solid-user-add" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+          <span class="text-[12px] font-semibold text-gray-700 dark:text-gray-300">Add Players</span>
+        </button>
 
-        <!-- Bench Section -->
-        <BenchTable
-          :players="players"
-          :formation="league?.formation ?? null"
-          :highlighted-player-uuid="highlightedPlayerUuid"
-          @draft-by-position="handleDraftPlayerByPosition"
-        />
-
+        <button
+          disabled
+          class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 opacity-40 cursor-not-allowed"
+        >
+          <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-blue-500 dark:text-blue-400" />
+          <span class="text-[12px] font-semibold text-gray-700 dark:text-gray-300">Trades</span>
+        </button>
       </div>
+
+      <!-- Fantasy Team Display -->
+      <FantasyTeamDisplay
+        :players="players"
+        :formation="league?.formation ?? null"
+        :league-uuid="leagueUuid ?? ''"
+        :highlighted-player-uuid="highlightedPlayerUuid"
+        :is-loading="isLoading"
+        @draft-by-position="handleDraftPlayerByPosition"
+        @player-removed="loadPlayers"
+      />
     </div>
 
     <!-- No Rounds Available -->
@@ -158,10 +144,9 @@ import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/Fanta
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useFantasyRounds } from "@/composables/useFantasyRounds";
-import ShowFantasyTeam from "@/components/user/fantasy/ShowFantasyTeam.vue";
 import RoundSelector from "@/components/fantasy/rounds/RoundSelector.vue";
-import StartersTable from "@/components/fantasy/lineup/StartersTable.vue";
-import BenchTable from "@/components/fantasy/lineup/BenchTable.vue";
+import FantasyTeamDisplay from "@/components/fantasy/lineup/FantasyTeamDisplay.vue";
+import MatchupByRoundAndUser from "@/components/fantasy/matchups/MatchupByRoundAndUser.vue";
 
 interface Props {
   fantasyLeagueUuid?: string;
@@ -248,18 +233,71 @@ function handleGoToLeagues() {
 }
 
 /**
- * Navigate to the dedicated search players page.
+ * Navigate to the dedicated search players page with optional query params.
  */
-function goToSearchPlayers() {
+function navigateToSearch(query?: Record<string, string>) {
   if (!leagueUuid.value) return;
   router.push({
-    name: 'searchPlayerFantasy',
+    name: "searchPlayerFantasy",
     params: { uuid: leagueUuid.value },
+    query,
   });
 }
 
+function goToSearchPlayers() {
+  navigateToSearch();
+}
+
 function handleDraftPlayerByPosition(position: string) {
-  goToSearchPlayers();
+  const formation = league.value?.formation;
+  if (!formation) {
+    navigateToSearch();
+    return;
+  }
+
+  const positionMap: Record<
+    string,
+    { positionUuid?: string; slotType: string; filter: string }
+  > = {
+    GOALKEEPER: {
+      positionUuid: formation.goalkeeper?.uuid,
+      slotType: "STARTER",
+      filter: "GOALKEEPER",
+    },
+    DEFENDER: {
+      positionUuid: formation.defender?.uuid,
+      slotType: "STARTER",
+      filter: "DEFENDER",
+    },
+    MIDFIELDER: {
+      positionUuid: formation.midfielder?.uuid,
+      slotType: "STARTER",
+      filter: "MIDFIELDER",
+    },
+    ATTACKER: {
+      positionUuid: formation.attacker?.uuid,
+      slotType: "STARTER",
+      filter: "ATTACKER",
+    },
+    FLEX: { slotType: "FLEX", filter: "ALL" },
+    BENCH: { slotType: "BENCH", filter: "ALL" },
+  };
+
+  const info = positionMap[position];
+  if (!info) {
+    navigateToSearch();
+    return;
+  }
+
+  const query: Record<string, string> = {
+    position: info.filter,
+    slotType: info.slotType,
+  };
+  if (info.positionUuid) {
+    query.positionUuid = info.positionUuid;
+  }
+
+  navigateToSearch(query);
 }
 
 /**
