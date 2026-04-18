@@ -4,6 +4,7 @@ import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamRes
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 
 export interface FantasyFootballPlayersResponse {
+    in_play: boolean;
     round: number;
     is_starter: boolean;
     is_flex: boolean;

@@ -73,7 +73,7 @@ function formatFixtureDate(dateStr: string): string {
       <span class="text-[9px] text-gray-400 dark:text-gray-500 leading-none mx-0.5">·</span>
     </template>
     <span class="text-[10px] text-gray-500 dark:text-gray-400 tabular-nums leading-none">
-      {{ formatFixtureDate(fixture.starting_at) }}
+      {{ fixture.starting_at}}
     </span>
   </div>
 </template>

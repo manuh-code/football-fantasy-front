@@ -4,6 +4,7 @@ import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 
 export interface FantasyPlayerDraftResponse {
 
+    in_play: boolean;
     player: FootballPlayerResponse;
     team: FootballTeamResponse;
     position: TypeResponse;
