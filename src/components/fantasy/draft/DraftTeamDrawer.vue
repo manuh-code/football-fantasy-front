@@ -63,11 +63,13 @@
                 :players="players"
                 :formation="league?.formation ?? null"
                 :highlighted-player-uuid="highlightedPlayerUuid"
+                :league-uuid="fantasyLeagueUuid ?? ''"
               />
               <BenchTable
                 :players="players"
                 :formation="league?.formation ?? null"
                 :highlighted-player-uuid="highlightedPlayerUuid"
+                :league-uuid="fantasyLeagueUuid ?? ''"
               />
             </div>
           </div>
@@ -186,11 +188,13 @@
               :players="players"
               :formation="league?.formation ?? null"
               :highlighted-player-uuid="highlightedPlayerUuid"
+              :league-uuid="fantasyLeagueUuid ?? ''"
             />
             <BenchTable
               :players="players"
               :formation="league?.formation ?? null"
               :highlighted-player-uuid="highlightedPlayerUuid"
+              :league-uuid="fantasyLeagueUuid ?? ''"
             />
           </div>
         </div>

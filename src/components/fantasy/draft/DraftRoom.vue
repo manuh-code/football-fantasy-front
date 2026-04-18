@@ -10,13 +10,42 @@
     <template v-else>
       <div ref="timerSentinelRef" class="h-0" />
       <div
-        class="sticky top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-40"
+        class="sticky top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-40 space-y-1.5"
       >
         <DraftTimer
           :turn="turnStarted"
           :compact="isTimerCompact"
           @expired="onTurnExpired"
         />
+
+        <!-- Auto Pick toggle -->
+        <div
+          class="flex items-center justify-between bg-white dark:bg-gray-800/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-gray-100 dark:border-gray-700/40 shadow-sm"
+        >
+          <div class="flex items-center gap-2">
+            <v-icon name="ri-robot-line" class="w-4 h-4 text-amber-500 dark:text-amber-400" />
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Auto Pick</span>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            :aria-checked="isAutoPick"
+            :disabled="isTogglingAutoPick"
+            :class="[
+              'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800',
+              isAutoPick ? 'bg-emerald-500' : 'bg-gray-200 dark:bg-gray-600',
+              isTogglingAutoPick ? 'opacity-50 cursor-not-allowed' : ''
+            ]"
+            @click="handleToggleAutoPick"
+          >
+            <span
+              :class="[
+                'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                isAutoPick ? 'translate-x-4' : 'translate-x-0'
+              ]"
+            />
+          </button>
+        </div>
       </div>
 
       <DraftOrder
@@ -126,6 +155,8 @@ const toast = useToast();
 const showDrawer = ref(false);
 const drawerRefreshKey = ref(0);
 const drawerWidth = ref(0);
+const isAutoPick = ref(false);
+const isTogglingAutoPick = ref(false);
 
 const menuDraftRef = ref<InstanceType<typeof MenuDraft> | null>(null);
 
@@ -222,6 +253,29 @@ async function getTurnInfo() {
     });
 }
 
+async function fetchAutoPickStatus() {
+  try {
+    isAutoPick.value = await fantasyLeagueService.getAutoPickStatus(props.fantasyLeague.uuid);
+  } catch (error) {
+    console.error('Error fetching auto-pick status:', error);
+  }
+}
+
+async function handleToggleAutoPick() {
+  if (isTogglingAutoPick.value) return;
+  try {
+    isTogglingAutoPick.value = true;
+    const newValue = !isAutoPick.value;
+    await fantasyLeagueService.toggleAutoPick(props.fantasyLeague.uuid, newValue);
+    isAutoPick.value = newValue;
+    toast.success('Auto Pick', newValue ? 'Auto Pick activated' : 'Auto Pick deactivated');
+  } catch (error) {
+    console.error('Error toggling auto-pick:', error);
+  } finally {
+    isTogglingAutoPick.value = false;
+  }
+}
+
 onMounted(async () => {
   // Sentinel observer for compact timer mode
   if (timerSentinelRef.value) {
@@ -235,6 +289,7 @@ onMounted(async () => {
   }
 
   await getTurnInfo();
+  await fetchAutoPickStatus();
   await subscribeToDraftRoom(channel!);
   await leaveDraftRoom(channel!);
   await getMembersInDraftRoom(channel!);
@@ -278,7 +333,7 @@ onMounted(async () => {
     if (turnStarted.value) {
       turnStarted.value = { ...turnStarted.value, status: 'COMPLETED' };
     } else {
-      turnStarted.value = { status: 'COMPLETED', pick: null, round: null, user: null, turn_started_at: null, duration_seconds: null };
+      turnStarted.value = { status: 'COMPLETED', pick: null, round: null, user: null, turn_started_at: null, duration_seconds: null, auto_pick: null };
     }
   });
 });

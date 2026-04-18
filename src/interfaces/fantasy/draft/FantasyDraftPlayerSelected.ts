@@ -9,4 +9,5 @@ export interface FantasyDraftPlayerSelected {
     player: FootballPlayerResponse;
     slot: FantasyDraftPlayerSlot;
     pickedAt: string;
+    auto_picked: boolean | null;
 }   
