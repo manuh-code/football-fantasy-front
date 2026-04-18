@@ -10,20 +10,50 @@
       @swap-player="handleSwapPlayer"
     />
 
-    <!-- Loading State -->
+    <!-- Loading Skeleton State -->
     <div
       v-if="isLoading && players.length === 0"
-      class="flex items-center justify-center min-h-[300px]"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
     >
-      <div class="flex flex-col items-center gap-3">
-        <v-icon
-          name="pr-spinner"
-          class="w-5 h-5 text-gray-300 dark:text-gray-600"
-          animation="spin"
-        />
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">
-          Loading available players...
-        </p>
+      <!-- Skeleton Header -->
+      <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+          <div class="h-4 w-32 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" />
+        </div>
+      </div>
+
+      <!-- Desktop Skeleton Rows -->
+      <div class="hidden md:block">
+        <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-3 py-3 border-b border-gray-50 dark:border-gray-700/30 last:border-b-0">
+          <div class="w-8 h-8 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse" />
+          <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+          <div class="flex-1 space-y-1.5">
+            <div class="h-3.5 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" :style="{ width: `${50 + (i * 7) % 30}%` }" />
+            <div class="h-2.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 animate-pulse w-1/3" />
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-8 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+            <div class="w-8 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+            <div class="w-6 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Skeleton Cards -->
+      <div class="md:hidden divide-y divide-gray-50 dark:divide-gray-700/30">
+        <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-4 py-3">
+          <div class="w-8 h-8 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
+          <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
+          <div class="flex-1 space-y-1.5 min-w-0">
+            <div class="h-3.5 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" :style="{ width: `${55 + (i * 9) % 30}%` }" />
+            <div class="h-2.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 animate-pulse w-1/4" />
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <div class="w-10 h-8 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+            <div class="w-10 h-8 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -132,21 +162,23 @@
         class="relative"
       >
         <!-- Loading Overlay when filtering -->
-        <div
-          v-if="isLoading"
-          class="absolute inset-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center"
-        >
-          <div class="flex flex-col items-center gap-2">
-            <v-icon
-              name="pr-spinner"
-              class="w-5 h-5 text-gray-300 dark:text-gray-600"
-              animation="spin"
-            />
-            <p class="text-[12px] text-gray-400 dark:text-gray-500">
-              Filtering players...
-            </p>
+        <Transition name="filter-overlay">
+          <div
+            v-if="isLoading"
+            class="absolute inset-0 bg-white/60 dark:bg-gray-800/60 z-10 rounded-2xl flex items-center justify-center"
+          >
+            <div class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-100 dark:border-gray-700/60">
+              <v-icon
+                name="pr-spinner"
+                class="w-4 h-4 text-gray-400 dark:text-gray-500"
+                animation="spin"
+              />
+              <p class="text-[12px] text-gray-500 dark:text-gray-400 font-medium">
+                Filtering...
+              </p>
+            </div>
           </div>
-        </div>
+        </Transition>
 
         <!-- Table Container -->
         <div
@@ -226,7 +258,7 @@
                     <button
                       @click="handleAddPlayer(player)"
                       :disabled="
-                        props.disabled || isAddingPlayer(player.player.uuid)
+                        props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid)
                       "
                       class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                       :class="[
@@ -349,7 +381,7 @@
                 <button
                   @click="handleAddPlayer(player)"
                   :disabled="
-                    props.disabled || isAddingPlayer(player.player.uuid)
+                    props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid)
                   "
                   class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                   :class="[
@@ -573,6 +605,14 @@ let observer: IntersectionObserver | null = null;
 // Computed
 const leagueUuid = computed(() => props.fantasyLeagueUuid);
 
+/** In 'add' mode, only allow adding players when the draft is COMPLETED */
+const isDraftCompleted = computed(() =>
+  league.value?.draft?.status?.value?.toUpperCase() === 'COMPLETED',
+);
+const canAddPlayer = computed(() =>
+  props.mode === 'draft' || isDraftCompleted.value,
+);
+
 const positionFilters = computed(() => {
   const filters: Array<{
     code: string;
@@ -732,7 +772,7 @@ function handleFilterChange(position: string) {
  * Add or pick a player depending on the current mode.
  */
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
-  if (props.disabled || !leagueUuid.value || isAddingPlayer(player.player.uuid))
+  if (props.disabled || !canAddPlayer.value || !leagueUuid.value || isAddingPlayer(player.player.uuid))
     return;
 
   if (props.mode === "draft") {
@@ -1045,6 +1085,18 @@ defineExpose({ removePlayerByUuid });
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ── Filter overlay transition ── */
+.filter-overlay-enter-active {
+  transition: opacity 0.2s ease;
+}
+.filter-overlay-leave-active {
+  transition: opacity 0.15s ease;
+}
+.filter-overlay-enter-from,
+.filter-overlay-leave-to {
+  opacity: 0;
 }
 
 /* ── Desktop table row animations ── */

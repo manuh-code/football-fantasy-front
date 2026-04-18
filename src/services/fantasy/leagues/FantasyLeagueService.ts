@@ -79,6 +79,25 @@ export class FantasyLeagueService {
         throw new Error('Failed to fetch players to draft');
     }
 
+    async toggleAutoPick(leagueUuid: string, autoPick: boolean): Promise<ApiResponse<null>> {
+        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/draft/auto-pick`, {
+            fantasy_league_uuid: leagueUuid,
+            auto_pick: autoPick
+        });
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new Error('Failed to toggle auto-pick');
+    }
+
+    async getAutoPickStatus(leagueUuid: string): Promise<boolean> {
+        const response = await this.api.get<ApiResponse<{ auto_pick: boolean }>>(`fantasy/leagues/draft/user/autopick/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data.auto_pick;
+        }
+        throw new Error('Failed to fetch auto-pick status');
+    }
+
     async pickerPlayer(payload: FantasyAddPlayerPayload): Promise<ApiResponse<null>> {
         const response = await this.api.post<ApiResponse<null>>(`fantasy/leagues/draft/pick/`, payload);
         if (response.data.code === 200) {

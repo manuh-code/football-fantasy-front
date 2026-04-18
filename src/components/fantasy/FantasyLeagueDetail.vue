@@ -367,6 +367,33 @@
               </span>
             </div>
 
+            <!-- Auto-pick toggle -->
+            <div
+              v-if="(league.isMember || league.isAdmin) && draftStatusValue !== 'COMPLETED'"
+              class="flex justify-between items-center"
+            >
+              <span class="text-xs text-gray-400 dark:text-gray-500">Auto Pick</span>
+              <button
+                type="button"
+                role="switch"
+                :aria-checked="isAutoPick"
+                :disabled="isTogglingAutoPick"
+                :class="[
+                  'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800',
+                  isAutoPick ? 'bg-emerald-500' : 'bg-gray-200 dark:bg-gray-600',
+                  isTogglingAutoPick ? 'opacity-50 cursor-not-allowed' : ''
+                ]"
+                @click="handleToggleAutoPick"
+              >
+                <span
+                  :class="[
+                    'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    isAutoPick ? 'translate-x-4' : 'translate-x-0'
+                  ]"
+                />
+              </button>
+            </div>
+
             <!-- Action buttons -->
             <div class="pt-2 space-y-2">
               <!-- Activate Draft (admin only, when not active/completed) -->
@@ -450,6 +477,8 @@ const showCreateTeamModal = ref(false);
 const isJoining = ref(false);
 const isActivatingDraft = ref(false);
 const isDraftActivatedViaAbly = ref(false);
+const isAutoPick = ref(false);
+const isTogglingAutoPick = ref(false);
 
 
 // Show create team modal based on API response
@@ -485,6 +514,9 @@ const fetchLeague = async () => {
   try {
     league.value = await fantasyLeagueService.showFantasyLeague(props.uuid);
     leagueDetailStore.setCurrentLeague(league.value);
+    if (league.value.draft && (league.value.isMember || league.value.isAdmin)) {
+      fetchAutoPickStatus();
+    }
   } catch (error) {
     console.error("Error loading league details:", error);
     errorMessage.value =
@@ -543,6 +575,29 @@ const handleImageError = (event: Event) => {
 
 const manageLeague = () => {
   toast.info("Coming Soon", "League management page is under development!");
+};
+
+const fetchAutoPickStatus = async () => {
+  try {
+    isAutoPick.value = await fantasyLeagueService.getAutoPickStatus(props.uuid);
+  } catch (error) {
+    console.error('Error fetching auto-pick status:', error);
+  }
+};
+
+const handleToggleAutoPick = async () => {
+  if (!league.value || isTogglingAutoPick.value) return;
+  try {
+    isTogglingAutoPick.value = true;
+    const newValue = !isAutoPick.value;
+    await fantasyLeagueService.toggleAutoPick(league.value.uuid, newValue);
+    isAutoPick.value = newValue;
+    toast.success('Auto Pick', newValue ? 'Auto Pick activated' : 'Auto Pick deactivated');
+  } catch (error) {
+    console.error('Error toggling auto-pick:', error);
+  } finally {
+    isTogglingAutoPick.value = false;
+  }
 };
 
 const handleActivateDraft = async () => {

@@ -1,64 +1,63 @@
 <template>
   <Teleport to="body">
-    <!-- Backdrop -->
-    <Transition name="lineup-backdrop">
-      <div
-        v-if="modelValue"
-        class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-[2px]"
-      />
-    </Transition>
-
-    <!-- Full-screen Sheet -->
-    <Transition name="lineup-sheet">
-      <div
-        v-if="modelValue"
-        ref="sheetRef"
-        class="fixed inset-x-0 top-0 bottom-0 z-[61] flex flex-col bg-white dark:bg-gray-900 rounded-t-[20px] pt-[env(safe-area-inset-top)] lineup-sheet-drag"
-        :class="{ 'lineup-sheet-snapping': !isDragging && dragOffset > 0 }"
-        :style="dragOffset > 0 ? { transform: `translateY(${dragOffset}px)` } : undefined"
-      >
-        <!-- Draggable Header Area -->
+    <!-- ==================== DESKTOP: Left-side draggable sheet ==================== -->
+    <template v-if="!isMobile && modelValue">
+      <!-- Backdrop (only when fully expanded) -->
+      <Transition name="backdrop">
         <div
-          class="shrink-0 cursor-grab active:cursor-grabbing"
-          @touchstart.passive="onDragStart"
-          @touchmove.passive="onDragMove"
-          @touchend="onDragEnd"
-          @mousedown="onMouseDragStart"
-        >
-          <!-- Drag Handle -->
-          <div class="flex justify-center pt-3 pb-1">
-            <div class="w-9 h-[5px] rounded-full bg-gray-300 dark:bg-gray-600" />
-          </div>
+          v-if="desktopState === 'full'"
+          class="fixed inset-0 bg-black/20 z-[60]"
+          @click="desktopState = 'half'"
+        />
+      </Transition>
 
+      <!-- Left Side Sheet -->
+      <div
+        ref="desktopSheetRef"
+        class="fixed left-0 bottom-0 z-[61] bg-white dark:bg-gray-900 shadow-[4px_0_24px_rgba(0,0,0,0.12)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.4)] flex flex-row will-change-[width]"
+        :style="[desktopSheetStyle, { top: 'calc(3.5rem + env(safe-area-inset-top, 0px))' }]"
+      >
+        <!-- Content area -->
+        <div class="flex-1 flex flex-col overflow-hidden min-w-0">
           <!-- Header -->
-          <div class="px-5 pb-3 border-b border-gray-100 dark:border-gray-800">
-            <div class="flex items-center justify-between">
-              <p v-if="playerName" class="text-[13px] text-gray-600 dark:text-gray-300 font-semibold truncate">
-                {{ playerName }}
-              </p>
-              <span v-else />
-              <button
-                @click.stop="close"
-                class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform"
-              >
-                <v-icon name="hi-solid-x" class="w-4 h-4 text-gray-500 dark:text-gray-400" />
-              </button>
+          <div
+            class="flex items-center justify-between px-3 py-2.5 border-b border-gray-100 dark:border-gray-700/60 bg-white dark:bg-gray-900 shrink-0"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
+              <div v-if="desktopState !== 'peek'" class="min-w-0">
+                <p v-if="playerName" class="text-[13px] font-semibold text-gray-900 dark:text-white truncate">
+                  {{ playerName }}
+                </p>
+                <h2 v-else class="text-[13px] font-semibold text-gray-900 dark:text-white truncate">
+                  My Team
+                </h2>
+              </div>
             </div>
+            <button
+              v-if="desktopState !== 'peek'"
+              @click.stop="close"
+              class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform shrink-0"
+            >
+              <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+            </button>
           </div>
-        </div>
 
-        <!-- Content -->
-        <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">
-          <!-- Loading -->
-          <div v-if="isLoading" class="flex flex-col items-center justify-center py-16 gap-3">
+          <!-- Loading state -->
+          <div
+            v-if="isLoading && players.length === 0 && desktopState !== 'peek'"
+            class="flex-1 flex items-center justify-center"
+          >
             <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600" animation="spin" />
-            <p class="text-[12px] text-gray-400 dark:text-gray-500">Loading lineup...</p>
           </div>
 
-          <!-- Error -->
-          <div v-else-if="loadError" class="px-5 py-10 text-center">
-            <v-icon name="hi-solid-exclamation-circle" class="w-8 h-8 text-red-400 mx-auto mb-2" />
-            <p class="text-[13px] text-gray-500 dark:text-gray-400">{{ loadError }}</p>
+          <!-- Error state -->
+          <div
+            v-else-if="loadError && desktopState !== 'peek'"
+            class="flex-1 flex flex-col items-center justify-center px-4"
+          >
+            <v-icon name="hi-solid-exclamation-circle" class="w-8 h-8 text-red-400 mb-2" />
+            <p class="text-[13px] text-gray-500 dark:text-gray-400 text-center">{{ loadError }}</p>
             <button
               @click="loadData"
               class="mt-3 px-4 py-2 text-[12px] font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl active:scale-95 transition-transform"
@@ -67,9 +66,13 @@
             </button>
           </div>
 
-          <!-- Lineup -->
-          <template v-else>
-            <div class="px-4 py-4 space-y-4">
+          <!-- Lineup content (scrollable) -->
+          <div
+            v-else
+            class="flex-1 overflow-y-auto overscroll-contain transition-opacity duration-200"
+            :class="desktopState === 'peek' ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+          >
+            <div class="p-2 space-y-3">
               <StartersTable
                 :players="players"
                 :formation="formation"
@@ -87,17 +90,157 @@
                 @swap-player="(uuid, pos) => emit('swap-player', uuid, pos)"
               />
             </div>
-          </template>
+          </div>
+        </div>
+
+        <!-- Drag handle (right edge) -->
+        <div
+          class="w-5 flex items-center justify-center cursor-col-resize shrink-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-l border-gray-100 dark:border-gray-700/60 select-none"
+          @mousedown.prevent="onDesktopDragStart"
+          @click="toggleDesktop"
+        >
+          <div class="flex flex-col gap-1">
+            <div class="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-500" />
+            <div class="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-500" />
+            <div class="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-500" />
+          </div>
         </div>
       </div>
-    </Transition>
+    </template>
+
+    <!-- ==================== MOBILE: Draggable bottom sheet ==================== -->
+    <template v-else-if="isMobile && modelValue">
+      <!-- Backdrop (only when expanded to full) -->
+      <Transition name="backdrop">
+        <div
+          v-if="mobileState === 'full'"
+          class="fixed inset-0 bg-black/30 z-[60]"
+          @click="mobileState = 'half'; mobileTranslateY = null"
+        />
+      </Transition>
+
+      <!-- Bottom Sheet (offset above MenuDraft) -->
+      <div
+        ref="mobileSheetRef"
+        class="fixed inset-x-0 bottom-[52px] z-[61] bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col mobile-sheet"
+        :style="mobileSheetStyle"
+        @touchstart.passive="onMobileTouchStart"
+        @touchmove.passive="onMobileTouchMove"
+        @touchend="onMobileTouchEnd"
+      >
+        <!-- Drag Handle -->
+        <div
+          class="flex flex-col items-center pt-2 pb-1 cursor-grab active:cursor-grabbing shrink-0 touch-none"
+          @click="toggleMobile"
+        >
+          <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+        </div>
+
+        <!-- Peek Header (always visible) -->
+        <div class="flex items-center justify-between px-4 py-2 shrink-0 touch-none">
+          <div class="flex items-center gap-2 flex-1 min-w-0" @click="toggleMobile">
+            <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
+            <div class="min-w-0">
+              <h3
+                class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight truncate"
+              >
+                {{ playerName || 'My Team' }}
+              </h3>
+              <p
+                class="text-[11px] text-gray-500 dark:text-gray-400 leading-tight"
+              >
+                {{
+                  mobileState === "peek"
+                    ? "Swipe up to view"
+                    : "Swipe down to minimize"
+                }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Close + chevron -->
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button
+              @click.stop="close"
+              class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform"
+            >
+              <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+            </button>
+            <v-icon
+              :name="
+                mobileState === 'peek'
+                  ? 'hi-solid-chevron-up'
+                  : 'hi-solid-chevron-down'
+              "
+              class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform duration-200"
+              @click="toggleMobile"
+            />
+          </div>
+        </div>
+
+        <!-- Loading state -->
+        <div
+          v-if="isLoading && players.length === 0 && mobileState !== 'peek'"
+          class="flex-1 flex items-center justify-center py-8"
+        >
+          <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600" animation="spin" />
+        </div>
+
+        <!-- Error state -->
+        <div
+          v-else-if="loadError && mobileState !== 'peek'"
+          class="flex-1 flex flex-col items-center justify-center px-4 py-8"
+        >
+          <v-icon name="hi-solid-exclamation-circle" class="w-8 h-8 text-red-400 mb-2" />
+          <p class="text-[13px] text-gray-500 dark:text-gray-400 text-center">{{ loadError }}</p>
+          <button
+            @click="loadData"
+            class="mt-3 px-4 py-2 text-[12px] font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl active:scale-95 transition-transform"
+          >
+            Retry
+          </button>
+        </div>
+
+        <!-- Content (scrollable, only interactive when not in peek) -->
+        <div
+          v-else
+          ref="mobileContentRef"
+          class="flex-1 overflow-y-auto overscroll-contain px-2 pb-4 transition-opacity duration-200"
+          :class="
+            mobileState === 'peek'
+              ? 'opacity-0 pointer-events-none'
+              : 'opacity-100'
+          "
+        >
+          <div class="space-y-3">
+            <StartersTable
+              :players="players"
+              :formation="formation"
+              league-uuid=""
+              :adding-player-position="props.addingPlayerPosition"
+              @draft-by-position="handleSlotSelected"
+              @swap-player="(uuid, pos) => emit('swap-player', uuid, pos)"
+            />
+            <BenchTable
+              :players="players"
+              :formation="formation"
+              league-uuid=""
+              :adding-player-position="props.addingPlayerPosition"
+              @draft-by-position="handleSlotSelected"
+              @swap-player="(uuid, pos) => emit('swap-player', uuid, pos)"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import StartersTable from "@/components/fantasy/lineup/StartersTable.vue";
 import BenchTable from "@/components/fantasy/lineup/BenchTable.vue";
+import { useBreakpoints } from "@/composables/useMediaQuery";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useUserStore } from "@/store/user/useUserStore";
 import { useFantasyRounds } from "@/composables/useFantasyRounds";
@@ -109,6 +252,69 @@ export interface LineupSlotSelection {
   isStarter: boolean;
   isFlex: boolean;
 }
+
+type SheetState = "peek" | "half" | "full";
+
+// ==================== Constants ====================
+// Mobile: heights
+const MOBILE_PEEK_PX = 72;
+const MOBILE_HALF_VH = 45;
+const MOBILE_FULL_VH = 88;
+
+// Desktop: widths in px
+const DESKTOP_PEEK_PX = 56;
+const DESKTOP_HALF_PX = 360;
+const DESKTOP_FULL_PX = 480;
+
+// Fling velocity threshold (px/ms)
+const FLING_VELOCITY_THRESHOLD = 0.3;
+
+// iOS-style spring curve
+const IOS_SPRING_BEZIER = 'cubic-bezier(0.32, 0.72, 0, 1)';
+
+// Dynamic duration bounds (ms)
+const SNAP_DURATION_MIN = 260;
+const SNAP_DURATION_MAX = 500;
+
+function computeSnapDuration(distance: number, velocity: number): number {
+  const absVel = Math.abs(velocity);
+  const base = Math.min(SNAP_DURATION_MAX, Math.max(SNAP_DURATION_MIN, distance * 0.8));
+  const factor = absVel > 0.5 ? Math.max(0.4, 1 - absVel * 0.3) : 1;
+  return Math.round(Math.min(SNAP_DURATION_MAX, Math.max(SNAP_DURATION_MIN, base * factor)));
+}
+
+function rubberBand(offset: number, dimension: number): number {
+  const c = 0.55;
+  return (1 - (1 / ((offset * c / dimension) + 1))) * dimension;
+}
+
+function rubberClamp(value: number, min: number, max: number, dimension: number): number {
+  if (value < min) return min - rubberBand(min - value, dimension);
+  if (value > max) return max + rubberBand(value - max, dimension);
+  return value;
+}
+
+function resolveSnapState(
+  value: number,
+  velocity: number,
+  peekVal: number,
+  halfVal: number,
+  fullVal: number,
+): SheetState {
+  if (Math.abs(velocity) > FLING_VELOCITY_THRESHOLD) {
+    if (velocity > 0) return value < halfVal ? 'half' : 'full';
+    return value > halfVal ? 'half' : 'peek';
+  }
+  const peekDist = Math.abs(value - peekVal);
+  const halfDist = Math.abs(value - halfVal);
+  const fullDist = Math.abs(value - fullVal);
+  const minDist = Math.min(peekDist, halfDist, fullDist);
+  if (minDist === peekDist) return 'peek';
+  if (minDist === halfDist) return 'half';
+  return 'full';
+}
+
+// ==================== Props / Emits ====================
 
 interface Props {
   modelValue: boolean;
@@ -129,28 +335,26 @@ const emit = defineEmits<{
   "swap-player": [playerUuid: string, position: string];
 }>();
 
+const { isMobile } = useBreakpoints();
 const userStore = useUserStore();
 
-// Data
+// ==================== Data loading ====================
 const players = ref<FantasyFootballPlayersResponse[]>([]);
 const formation = ref<FantasyLeagueFormationResponse | null>(null);
 const isLoading = ref(false);
 const loadError = ref<string | null>(null);
 
-// Drag-to-dismiss
-const sheetRef = ref<HTMLElement | null>(null);
-const dragOffset = ref(0);
-const dragStartY = ref(0);
-const isDragging = ref(false);
-
-// Rounds
-const { rounds, selectedRoundUuid, loadRounds } = useFantasyRounds(
+const { selectedRoundUuid, loadRounds } = useFantasyRounds(
   () => props.fantasyLeagueUuid,
 );
 
 function close() {
-  dragOffset.value = 0;
   emit("update:modelValue", false);
+  // Reset states when closing
+  desktopState.value = "half";
+  desktopCurrentDragWidth.value = null;
+  mobileState.value = "half";
+  mobileTranslateY.value = null;
 }
 
 function handleSlotSelected(position: string) {
@@ -167,6 +371,10 @@ watch(
   () => props.modelValue,
   async (open) => {
     if (open) {
+      // Auto-expand to half when opened
+      desktopState.value = "half";
+      mobileState.value = "half";
+      mobileTranslateY.value = null;
       await loadData();
     }
   },
@@ -179,11 +387,9 @@ async function loadData() {
   loadError.value = null;
 
   try {
-    // Load league for formation
     const league = await fantasyLeagueService.showFantasyLeague(props.fantasyLeagueUuid);
     formation.value = league.formation ?? null;
 
-    // Load rounds to get current round
     await loadRounds();
 
     if (selectedRoundUuid.value) {
@@ -203,86 +409,300 @@ async function loadData() {
   }
 }
 
-// Drag-to-dismiss handlers (touch)
-function onDragStart(e: TouchEvent) {
-  const touch = e.touches[0];
-  dragStartY.value = touch.clientY;
-  isDragging.value = true;
-  dragOffset.value = 0;
-}
+// ==================== DESKTOP: Left-side draggable sheet ====================
+const desktopSheetRef = ref<HTMLElement | null>(null);
+const desktopState = ref<SheetState>("half");
+const isDesktopDragging = ref(false);
+const desktopDragStartX = ref(0);
+const desktopDragStartWidth = ref(0);
+const desktopCurrentDragWidth = ref<number | null>(null);
 
-function onDragMove(e: TouchEvent) {
-  if (!isDragging.value) return;
-  const touch = e.touches[0];
-  const delta = touch.clientY - dragStartY.value;
-  dragOffset.value = Math.max(0, delta);
-}
-
-function onDragEnd() {
-  const offset = dragOffset.value;
-  isDragging.value = false;
-  if (offset > window.innerHeight * 0.8) {
-    close();
-  } else {
-    dragOffset.value = 0;
+function getDesktopWidthForState(state: SheetState): number {
+  switch (state) {
+    case "peek": return DESKTOP_PEEK_PX;
+    case "half": return DESKTOP_HALF_PX;
+    case "full": return DESKTOP_FULL_PX;
   }
 }
 
-// Drag-to-dismiss handlers (mouse — desktop)
-function onMouseDragStart(e: MouseEvent) {
-  dragStartY.value = e.clientY;
-  isDragging.value = true;
-  dragOffset.value = 0;
-  document.addEventListener("mousemove", onMouseDragMove);
-  document.addEventListener("mouseup", onMouseDragEnd);
-}
+const desktopSnapTransition = ref('');
 
-function onMouseDragMove(e: MouseEvent) {
-  if (!isDragging.value) return;
-  const delta = e.clientY - dragStartY.value;
-  dragOffset.value = Math.max(0, delta);
-}
+const desktopSheetStyle = computed(() => {
+  if (isMobile.value) return {};
+  const width =
+    desktopCurrentDragWidth.value ??
+    getDesktopWidthForState(desktopState.value);
+  return {
+    width: `${width}px`,
+    transition: isDesktopDragging.value
+      ? 'none'
+      : (desktopSnapTransition.value || `width ${SNAP_DURATION_MIN}ms ${IOS_SPRING_BEZIER}`),
+  };
+});
 
-function onMouseDragEnd() {
-  document.removeEventListener("mousemove", onMouseDragMove);
-  document.removeEventListener("mouseup", onMouseDragEnd);
-  const offset = dragOffset.value;
-  isDragging.value = false;
-  if (offset > window.innerHeight * 0.8) {
-    close();
-  } else {
-    dragOffset.value = 0;
+function toggleDesktop() {
+  if (isDesktopDragging.value) return;
+  const currentW = getDesktopWidthForState(desktopState.value);
+  let nextState: SheetState;
+  switch (desktopState.value) {
+    case 'peek': nextState = 'half'; break;
+    case 'half': nextState = 'full'; break;
+    case 'full': nextState = 'peek'; break;
+    default: nextState = 'half';
   }
+  const targetW = getDesktopWidthForState(nextState);
+  const dur = computeSnapDuration(Math.abs(targetW - currentW), 0);
+  desktopSnapTransition.value = `width ${dur}ms ${IOS_SPRING_BEZIER}`;
+  desktopState.value = nextState;
+  desktopCurrentDragWidth.value = null;
+}
+
+function onDesktopDragStart(e: MouseEvent) {
+  isDesktopDragging.value = true;
+  desktopDragStartX.value = e.clientX;
+  desktopDragStartWidth.value =
+    desktopCurrentDragWidth.value ??
+    getDesktopWidthForState(desktopState.value);
+  _desktopLastClientX = e.clientX;
+  _desktopLastTime = performance.now();
+  _desktopVelocity = 0;
+
+  document.addEventListener('mousemove', onDesktopDragMove);
+  document.addEventListener('mouseup', onDesktopDragEnd);
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'col-resize';
+}
+
+let _desktopRafId: number | null = null;
+let _desktopLastClientX = 0;
+let _desktopLastTime = 0;
+let _desktopVelocity = 0;
+
+function onDesktopDragMove(e: MouseEvent) {
+  if (!isDesktopDragging.value) return;
+  const now = performance.now();
+  const dt = now - _desktopLastTime;
+  if (dt > 0 && _desktopLastClientX !== 0) {
+    _desktopVelocity = (e.clientX - _desktopLastClientX) / dt;
+  }
+  _desktopLastClientX = e.clientX;
+  _desktopLastTime = now;
+
+  if (_desktopRafId !== null) return;
+  _desktopRafId = requestAnimationFrame(() => {
+    _desktopRafId = null;
+    if (!isDesktopDragging.value) return;
+    const deltaX = _desktopLastClientX - desktopDragStartX.value;
+    const raw = desktopDragStartWidth.value + deltaX;
+    desktopCurrentDragWidth.value = rubberClamp(raw, DESKTOP_PEEK_PX, DESKTOP_FULL_PX, DESKTOP_FULL_PX);
+  });
+}
+
+function onDesktopDragEnd() {
+  if (!isDesktopDragging.value) return;
+  isDesktopDragging.value = false;
+  document.removeEventListener('mousemove', onDesktopDragMove);
+  document.removeEventListener('mouseup', onDesktopDragEnd);
+  document.body.style.userSelect = '';
+  document.body.style.cursor = '';
+
+  if (_desktopRafId !== null) {
+    cancelAnimationFrame(_desktopRafId);
+    _desktopRafId = null;
+  }
+
+  const width =
+    desktopCurrentDragWidth.value ??
+    getDesktopWidthForState(desktopState.value);
+
+  const newState = resolveSnapState(width, _desktopVelocity, DESKTOP_PEEK_PX, DESKTOP_HALF_PX, DESKTOP_FULL_PX);
+  const targetW = getDesktopWidthForState(newState);
+  const dist = Math.abs(width - targetW);
+  const dur = computeSnapDuration(dist, _desktopVelocity);
+  desktopSnapTransition.value = `width ${dur}ms ${IOS_SPRING_BEZIER}`;
+  desktopState.value = newState;
+  desktopCurrentDragWidth.value = null;
+  _desktopVelocity = 0;
+}
+
+// Cleanup listeners and pending rAFs on unmount
+onUnmounted(() => {
+  document.removeEventListener("mousemove", onDesktopDragMove);
+  document.removeEventListener("mouseup", onDesktopDragEnd);
+  if (_mobileRafId !== null) cancelAnimationFrame(_mobileRafId);
+  if (_desktopRafId !== null) cancelAnimationFrame(_desktopRafId);
+});
+
+// ==================== MOBILE: Bottom sheet ====================
+const mobileSheetRef = ref<HTMLElement | null>(null);
+const mobileContentRef = ref<HTMLElement | null>(null);
+const mobileState = ref<SheetState>("half");
+const isMobileDragging = ref(false);
+const mobileTranslateY = ref<number | null>(null);
+
+let _mobileRafId: number | null = null;
+let _mobileLastY = 0;
+let _mobileLastTime = 0;
+let _mobileVelocity = 0;
+let _mobileTouchStartY = 0;
+let _mobileDragCommitted = false;
+const MOBILE_DRAG_DEAD_ZONE = 4;
+
+const mobileSnapTransition = ref('');
+
+function getMobileHeightForState(state: SheetState): number {
+  const vh = window.innerHeight;
+  switch (state) {
+    case "peek": return MOBILE_PEEK_PX;
+    case "half": return (MOBILE_HALF_VH / 100) * vh;
+    case "full": return (MOBILE_FULL_VH / 100) * vh;
+  }
+}
+
+const mobileMaxHeight = computed(() => {
+  if (!isMobile.value) return 0;
+  return (MOBILE_FULL_VH / 100) * window.innerHeight;
+});
+
+const mobileSheetStyle = computed(() => {
+  if (!isMobile.value) return {};
+
+  const maxH = mobileMaxHeight.value;
+  const targetH = getMobileHeightForState(mobileState.value);
+  const stateOffset = maxH - targetH;
+  const translateY = mobileTranslateY.value ?? stateOffset;
+
+  return {
+    height: `${maxH}px`,
+    transform: `translateY(${translateY}px)`,
+    willChange: 'transform',
+    transition: isMobileDragging.value
+      ? 'none'
+      : (mobileSnapTransition.value || `transform ${SNAP_DURATION_MIN}ms ${IOS_SPRING_BEZIER}`),
+  };
+});
+
+const MOBILE_TOGGLE_MAP: Record<SheetState, SheetState> = { peek: 'half', half: 'full', full: 'peek' };
+
+function toggleMobile() {
+  if (isMobileDragging.value) return;
+  const currentH = getMobileHeightForState(mobileState.value);
+  const nextState = MOBILE_TOGGLE_MAP[mobileState.value];
+  const targetH = getMobileHeightForState(nextState);
+  const dist = Math.abs(targetH - currentH);
+  const dur = computeSnapDuration(dist, 0);
+  mobileSnapTransition.value = `transform ${dur}ms ${IOS_SPRING_BEZIER}`;
+  mobileState.value = nextState;
+  mobileTranslateY.value = null;
+}
+
+function onMobileTouchStart(e: TouchEvent) {
+  if (
+    mobileContentRef.value &&
+    mobileContentRef.value.scrollTop > 0 &&
+    mobileState.value !== "peek"
+  ) {
+    return;
+  }
+  const touch = e.touches[0];
+  _mobileTouchStartY = touch.clientY;
+  _mobileDragCommitted = false;
+
+  _mobileLastY = touch.clientY;
+  _mobileLastTime = performance.now();
+  _mobileVelocity = 0;
+
+  isMobileDragging.value = true;
+}
+
+function onMobileTouchMove(e: TouchEvent) {
+  if (!isMobileDragging.value) return;
+  const touch = e.touches[0];
+  const now = performance.now();
+
+  if (!_mobileDragCommitted) {
+    if (Math.abs(touch.clientY - _mobileTouchStartY) < MOBILE_DRAG_DEAD_ZONE) {
+      return;
+    }
+    _mobileDragCommitted = true;
+  }
+
+  const dt = now - _mobileLastTime;
+  if (dt > 0) {
+    const instantVel = (_mobileLastY - touch.clientY) / dt;
+    _mobileVelocity = _mobileVelocity === 0 ? instantVel : instantVel * 0.6 + _mobileVelocity * 0.4;
+  }
+  _mobileLastY = touch.clientY;
+  _mobileLastTime = now;
+
+  if (_mobileRafId !== null) return;
+  _mobileRafId = requestAnimationFrame(() => {
+    _mobileRafId = null;
+    if (!isMobileDragging.value) return;
+
+    const maxH = mobileMaxHeight.value;
+    const currentStateH = getMobileHeightForState(mobileState.value);
+    const startOffset = maxH - currentStateH;
+    const deltaY = _mobileTouchStartY - _mobileLastY;
+    const raw = startOffset - deltaY;
+    const minTranslate = 0;
+    const maxTranslate = maxH - MOBILE_PEEK_PX;
+    mobileTranslateY.value = rubberClamp(raw, minTranslate, maxTranslate, maxH);
+  });
+}
+
+function onMobileTouchEnd() {
+  if (!isMobileDragging.value) return;
+  isMobileDragging.value = false;
+
+  if (_mobileRafId !== null) {
+    cancelAnimationFrame(_mobileRafId);
+    _mobileRafId = null;
+  }
+
+  if (!_mobileDragCommitted) {
+    mobileTranslateY.value = null;
+    return;
+  }
+
+  const maxH = mobileMaxHeight.value;
+  const currentTranslate = mobileTranslateY.value ?? (maxH - getMobileHeightForState(mobileState.value));
+  const effectiveHeight = maxH - currentTranslate;
+
+  const peekH = MOBILE_PEEK_PX;
+  const halfH = (MOBILE_HALF_VH / 100) * window.innerHeight;
+  const fullH = (MOBILE_FULL_VH / 100) * window.innerHeight;
+
+  const newState = resolveSnapState(effectiveHeight, _mobileVelocity, peekH, halfH, fullH);
+
+  const targetTranslate = maxH - getMobileHeightForState(newState);
+  const snapDist = Math.abs(currentTranslate - targetTranslate);
+  const dur = computeSnapDuration(snapDist, _mobileVelocity);
+  mobileSnapTransition.value = `transform ${dur}ms ${IOS_SPRING_BEZIER}`;
+
+  mobileState.value = newState;
+  mobileTranslateY.value = null;
+  _mobileVelocity = 0;
 }
 </script>
 
 <style scoped>
-/* Backdrop */
-.lineup-backdrop-enter-active {
-  transition: opacity 0.3s ease;
-}
-.lineup-backdrop-leave-active {
+/* Backdrop transition */
+.backdrop-enter-active,
+.backdrop-leave-active {
   transition: opacity 0.25s ease;
 }
-.lineup-backdrop-enter-from,
-.lineup-backdrop-leave-to {
+.backdrop-enter-from,
+.backdrop-leave-to {
   opacity: 0;
 }
 
-/* Sheet */
-.lineup-sheet-enter-active {
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.lineup-sheet-leave-active {
-  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.lineup-sheet-enter-from,
-.lineup-sheet-leave-to {
-  transform: translateY(100%);
-}
-
-/* Snap-back animation when drag is released */
-.lineup-sheet-snapping {
-  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+/* Mobile sheet: GPU-composited layer */
+.mobile-sheet {
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 </style>
