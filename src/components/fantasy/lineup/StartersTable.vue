@@ -21,12 +21,12 @@
           v-for="player in goalkeepers"
           :key="player.football_player.uuid"
           :data-player-uuid="player.football_player.uuid"
-          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, isSwappable(player) ? 'swap-highlight cursor-pointer' : '']"
-          @click="isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'GOALKEEPER')"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, player.in_play ? 'in-play-locked' : '', isSwappable(player) && !player.in_play ? 'swap-highlight cursor-pointer' : '']"
+          @click="!player.in_play && isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'GOALKEEPER')"
         >
           <div class="relative overflow-hidden">
             <button
-              v-if="!addingPlayerPosition"
+              v-if="!addingPlayerPosition && !player.in_play"
               class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
               :disabled="removingPlayer === player.football_player.uuid"
               @click="removePlayer(player.football_player.uuid, player.football_player.display_name)"
@@ -36,11 +36,12 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :style="!addingPlayerPosition ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
-              @touchstart="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
-              @touchmove="!addingPlayerPosition && onSwipeMove(player.football_player.uuid, $event)"
-              @touchend="!addingPlayerPosition && onSwipeEnd(player.football_player.uuid)"
-              @mousedown="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
+              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
+              :style="!addingPlayerPosition && !player.in_play ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
+              @touchstart="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="!addingPlayerPosition && !player.in_play && onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
+              @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
@@ -78,12 +79,12 @@
           v-for="player in defenders"
           :key="player.football_player.uuid"
           :data-player-uuid="player.football_player.uuid"
-          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, isSwappable(player) ? 'swap-highlight cursor-pointer' : '']"
-          @click="isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'DEFENDER')"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, player.in_play ? 'in-play-locked' : '', isSwappable(player) && !player.in_play ? 'swap-highlight cursor-pointer' : '']"
+          @click="!player.in_play && isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'DEFENDER')"
         >
           <div class="relative overflow-hidden">
             <button
-              v-if="!addingPlayerPosition"
+              v-if="!addingPlayerPosition && !player.in_play"
               class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
               :disabled="removingPlayer === player.football_player.uuid"
               @click="removePlayer(player.football_player.uuid, player.football_player.display_name)"
@@ -93,11 +94,12 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :style="!addingPlayerPosition ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
-              @touchstart="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
-              @touchmove="!addingPlayerPosition && onSwipeMove(player.football_player.uuid, $event)"
-              @touchend="!addingPlayerPosition && onSwipeEnd(player.football_player.uuid)"
-              @mousedown="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
+              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
+              :style="!addingPlayerPosition && !player.in_play ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
+              @touchstart="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="!addingPlayerPosition && !player.in_play && onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
+              @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
@@ -135,12 +137,12 @@
           v-for="player in midfielders"
           :key="player.football_player.uuid"
           :data-player-uuid="player.football_player.uuid"
-          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, isSwappable(player) ? 'swap-highlight cursor-pointer' : '']"
-          @click="isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'MIDFIELDER')"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, player.in_play ? 'in-play-locked' : '', isSwappable(player) && !player.in_play ? 'swap-highlight cursor-pointer' : '']"
+          @click="!player.in_play && isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'MIDFIELDER')"
         >
           <div class="relative overflow-hidden">
             <button
-              v-if="!addingPlayerPosition"
+              v-if="!addingPlayerPosition && !player.in_play"
               class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
               :disabled="removingPlayer === player.football_player.uuid"
               @click="removePlayer(player.football_player.uuid, player.football_player.display_name)"
@@ -150,11 +152,12 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :style="!addingPlayerPosition ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
-              @touchstart="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
-              @touchmove="!addingPlayerPosition && onSwipeMove(player.football_player.uuid, $event)"
-              @touchend="!addingPlayerPosition && onSwipeEnd(player.football_player.uuid)"
-              @mousedown="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
+              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
+              :style="!addingPlayerPosition && !player.in_play ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
+              @touchstart="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="!addingPlayerPosition && !player.in_play && onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
+              @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
@@ -192,12 +195,12 @@
           v-for="player in attackers"
           :key="player.football_player.uuid"
           :data-player-uuid="player.football_player.uuid"
-          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, isSwappable(player) ? 'swap-highlight cursor-pointer' : '']"
-          @click="isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'ATTACKER')"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, player.in_play ? 'in-play-locked' : '', isSwappable(player) && !player.in_play ? 'swap-highlight cursor-pointer' : '']"
+          @click="!player.in_play && isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'ATTACKER')"
         >
           <div class="relative overflow-hidden">
             <button
-              v-if="!addingPlayerPosition"
+              v-if="!addingPlayerPosition && !player.in_play"
               class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
               :disabled="removingPlayer === player.football_player.uuid"
               @click="removePlayer(player.football_player.uuid, player.football_player.display_name)"
@@ -207,11 +210,12 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :style="!addingPlayerPosition ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
-              @touchstart="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
-              @touchmove="!addingPlayerPosition && onSwipeMove(player.football_player.uuid, $event)"
-              @touchend="!addingPlayerPosition && onSwipeEnd(player.football_player.uuid)"
-              @mousedown="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
+              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
+              :style="!addingPlayerPosition && !player.in_play ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
+              @touchstart="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="!addingPlayerPosition && !player.in_play && onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
+              @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px] font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
@@ -249,12 +253,12 @@
           v-for="player in flexPlayers"
           :key="player.football_player.uuid"
           :data-player-uuid="player.football_player.uuid"
-          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, isSwappable(player) ? 'swap-highlight cursor-pointer' : '']"
-          @click="isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'FLEX')"
+          :class="[{ 'player-highlight': isHighlighted(player.football_player.uuid) }, player.in_play ? 'in-play-locked' : '', isSwappable(player) && !player.in_play ? 'swap-highlight cursor-pointer' : '']"
+          @click="!player.in_play && isSwappable(player) && $emit('swapPlayer', player.football_player.uuid, 'FLEX')"
         >
           <div class="relative overflow-hidden">
             <button
-              v-if="!addingPlayerPosition"
+              v-if="!addingPlayerPosition && !player.in_play"
               class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
               :disabled="removingPlayer === player.football_player.uuid"
               @click="removePlayer(player.football_player.uuid, player.football_player.display_name)"
@@ -264,11 +268,12 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :style="!addingPlayerPosition ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
-              @touchstart="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
-              @touchmove="!addingPlayerPosition && onSwipeMove(player.football_player.uuid, $event)"
-              @touchend="!addingPlayerPosition && onSwipeEnd(player.football_player.uuid)"
-              @mousedown="!addingPlayerPosition && onSwipeStart(player.football_player.uuid, $event)"
+              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
+              :style="!addingPlayerPosition && !player.in_play ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
+              @touchstart="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
+              @touchmove="!addingPlayerPosition && !player.in_play && onSwipeMove(player.football_player.uuid, $event)"
+              @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
+              @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-[10px] font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
@@ -567,5 +572,13 @@ function onSwipeEnd(uuid: string) {
 }
 .swap-icon-pulse {
   animation: swap-pulse 1.8s ease-in-out infinite;
+}
+
+.in-play-locked {
+  position: relative;
+  background-color: rgba(156, 163, 175, 0.06);
+}
+.dark .in-play-locked {
+  background-color: rgba(156, 163, 175, 0.04);
 }
 </style>

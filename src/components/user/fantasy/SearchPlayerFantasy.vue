@@ -252,13 +252,14 @@
                   v-for="player in players"
                   :key="player.player.uuid"
                   class="active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
+                  :class="{ 'opacity-50': props.mode === 'add' && player.in_play }"
                 >
                   <!-- Select Button -->
                   <td class="px-3 py-2.5">
                     <button
                       @click="handleAddPlayer(player)"
                       :disabled="
-                        props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid)
+                        props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
                       "
                       class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                       :class="[
@@ -375,13 +376,14 @@
               v-for="player in players"
               :key="player.player.uuid"
               class="px-4 py-3 active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
+              :class="{ 'opacity-50': props.mode === 'add' && player.in_play }"
             >
               <div class="flex items-center gap-3">
                 <!-- Select Button -->
                 <button
                   @click="handleAddPlayer(player)"
                   :disabled="
-                    props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid)
+                    props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
                   "
                   class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                   :class="[
@@ -774,6 +776,8 @@ function handleFilterChange(position: string) {
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   if (props.disabled || !canAddPlayer.value || !leagueUuid.value || isAddingPlayer(player.player.uuid))
     return;
+
+  if (props.mode === 'add' && player.in_play) return;
 
   if (props.mode === "draft") {
     addingPlayers.value.add(player.player.uuid);
