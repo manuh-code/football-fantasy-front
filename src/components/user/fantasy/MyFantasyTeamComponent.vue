@@ -107,8 +107,10 @@
         :league-uuid="leagueUuid ?? ''"
         :highlighted-player-uuid="highlightedPlayerUuid"
         :is-loading="isLoading"
+        :fantasy-round-uuid="selectedRoundUuid ?? ''"
         @draft-by-position="handleDraftPlayerByPosition"
         @player-removed="loadPlayers"
+        @lineup-updated="loadPlayers"
       />
     </div>
 
@@ -139,7 +141,7 @@
 import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/store/user/useUserStore";
-import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
@@ -176,7 +178,7 @@ const {
 } = useFantasyRounds(() => leagueUuid.value);
 
 // State
-const players = ref<FantasyFootballPlayersResponse[]>([]);
+const players = ref<FantasyFootballPlayer[]>([]);
 const league = ref<FantasyLeaguesResponse | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
@@ -211,10 +213,11 @@ async function loadPlayers() {
     const payload: FantasyFootballLineupPayload = {
       fantasy_round_uuid: selectedRoundUuid.value,
     };
-    players.value = await userStore.getFantasyFootballPlayersByLeagueUuid(
+    const lineupResponse = await userStore.getFantasyFootballPlayersByLeagueUuid(
       leagueUuid.value,
       payload,
     );
+    players.value = lineupResponse.players;
 
     // Check for highlighted player from route query
     await nextTick();

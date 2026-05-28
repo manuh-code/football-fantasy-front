@@ -244,7 +244,7 @@ import { useBreakpoints } from "@/composables/useMediaQuery";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useUserStore } from "@/store/user/useUserStore";
 import { useFantasyRounds } from "@/composables/useFantasyRounds";
-import type { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import type { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
 import type { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 
@@ -339,7 +339,7 @@ const { isMobile } = useBreakpoints();
 const userStore = useUserStore();
 
 // ==================== Data loading ====================
-const players = ref<FantasyFootballPlayersResponse[]>([]);
+const players = ref<FantasyFootballPlayer[]>([]);
 const formation = ref<FantasyLeagueFormationResponse | null>(null);
 const isLoading = ref(false);
 const loadError = ref<string | null>(null);
@@ -396,10 +396,11 @@ async function loadData() {
       const payload: FantasyFootballLineupPayload = {
         fantasy_round_uuid: selectedRoundUuid.value,
       };
-      players.value = await userStore.getFantasyFootballPlayersByLeagueUuid(
+      const lineupResponse = await userStore.getFantasyFootballPlayersByLeagueUuid(
         props.fantasyLeagueUuid,
         payload,
       );
+      players.value = lineupResponse.players;
     }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Error loading lineup";

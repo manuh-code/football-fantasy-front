@@ -11,9 +11,11 @@ import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/User
 import { UserStorePayload } from "@/interfaces/user/store/userStorePayload";
 import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
+import { LineupPlayerUpdatePayload } from "@/interfaces/fantasy/lineup/LineupPlayerUpdatePayload";
+import { FantasyFootballPlayerVersusResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayerVersusResponse";
 
 export class UserService {
-    private api;
+    private readonly api;
 
     constructor() {
         const { apiFantasyInstance } = useApiFantasy();
@@ -92,12 +94,31 @@ export class UserService {
         throw new AxiosError('Failed to store football leagues');
     }
 
-    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse[]> {
-        const response = await this.api.post<ApiResponse<FantasyFootballPlayersResponse[]>>(`user/fantasy/football/lineups/${leagueUuid}`, payload);
+    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse> {
+        const response = await this.api.post<ApiResponse<FantasyFootballPlayersResponse>>(`user/fantasy/football/lineups/${leagueUuid}`, payload);
         if (response.data.code === 200) {
             return response.data.data;
         }
         throw new AxiosError('Failed to fetch fantasy football players');
+    }
+
+    async getLineupsVersusByRoundAndMatchup(leagueUuid: string, roundUuid: string, matchupUuid: string): Promise<ApiResponse<FantasyFootballPlayerVersusResponse>> {
+        const response = await this.api.post<ApiResponse<FantasyFootballPlayerVersusResponse>>(`user/fantasy/football/lineups/versus/${leagueUuid}`, {
+            fantasy_round_uuid: roundUuid,
+            fantasy_matchup_uuid: matchupUuid
+        });
+        if (response.data.code === 200) {
+            return response.data;
+        }
+        throw new AxiosError('Failed to fetch lineups versus data');
+    }
+
+    async updatePlayerLineup(leagueUuid: string, payload: LineupPlayerUpdatePayload): Promise<null> {
+        const response = await this.api.put<ApiResponse<null>>(`user/fantasy/football/lineups/${leagueUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to update player lineup');
     }
 }
 
@@ -105,10 +126,8 @@ export class UserService {
 let userServiceInstance: UserService | null = null;
 
 export const getUserService = (): UserService => {
-  if (!userServiceInstance) {
-    userServiceInstance = new UserService();
-  }
-  return userServiceInstance;
+    userServiceInstance ??= new UserService();
+    return userServiceInstance;
 }
 
 // Export default using factory

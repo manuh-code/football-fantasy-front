@@ -48,21 +48,31 @@
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
+              <button
+                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
+                class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0 hover:bg-blue-100 dark:hover:bg-blue-900/30 active:scale-90 transition-all"
+                @click.stop="openSwapDrawer('GOALKEEPER', true, false, player)"
+              >
+                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+              </button>
             </div>
           </div>
         </div>
         <div
           v-for="slot in emptyGoalkeeperSlots" :key="`empty-gk-${slot}`"
-          @click="$emit('draftByPosition', 'GOALKEEPER')"
           class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
           :class="{ 'bg-blue-50/50 dark:bg-blue-900/10': addingPlayerPosition === 'GOALKEEPER' }"
+          @click="$emit('draftByPosition', 'GOALKEEPER')"
         >
           <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'GOALKEEPER' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-400 dark:text-blue-500 opacity-60'">GK</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'GOALKEEPER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
@@ -70,6 +80,13 @@
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
           <p class="text-[12px]" :class="addingPlayerPosition === 'GOALKEEPER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'GOALKEEPER' ? 'Place here' : 'Add goalkeeper' }}</p>
+          <button
+            v-if="!addingPlayerPosition && fantasyRoundUuid"
+            class="ml-auto w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0 hover:bg-blue-100 dark:hover:bg-blue-900/30 active:scale-90 transition-all"
+            @click.stop="openSwapDrawer('GOALKEEPER', true, false, null)"
+          >
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+          </button>
         </div>
       </template>
 
@@ -106,21 +123,31 @@
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
+              <button
+                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
+                class="w-7 h-7 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center shrink-0 hover:bg-green-100 dark:hover:bg-green-900/30 active:scale-90 transition-all"
+                @click.stop="openSwapDrawer('DEFENDER', true, false, player)"
+              >
+                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-green-500 dark:text-green-400" />
+              </button>
             </div>
           </div>
         </div>
         <div
           v-for="slot in emptyDefenderSlots" :key="`empty-def-${slot}`"
-          @click="$emit('draftByPosition', 'DEFENDER')"
           class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
           :class="{ 'bg-green-50/50 dark:bg-green-900/10': addingPlayerPosition === 'DEFENDER' }"
+          @click="$emit('draftByPosition', 'DEFENDER')"
         >
           <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'DEFENDER' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-green-50 dark:bg-green-900/20 text-green-400 dark:text-green-500 opacity-60'">DF</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'DEFENDER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
@@ -128,6 +155,13 @@
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
           <p class="text-[12px]" :class="addingPlayerPosition === 'DEFENDER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'DEFENDER' ? 'Place here' : 'Add defender' }}</p>
+          <button
+            v-if="!addingPlayerPosition && fantasyRoundUuid"
+            class="ml-auto w-7 h-7 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center shrink-0 hover:bg-green-100 dark:hover:bg-green-900/30 active:scale-90 transition-all"
+            @click.stop="openSwapDrawer('DEFENDER', true, false, null)"
+          >
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-green-500 dark:text-green-400" />
+          </button>
         </div>
       </template>
 
@@ -164,21 +198,31 @@
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
+              <button
+                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
+                class="w-7 h-7 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center shrink-0 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 active:scale-90 transition-all"
+                @click.stop="openSwapDrawer('MIDFIELDER', true, false, player)"
+              >
+                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400" />
+              </button>
             </div>
           </div>
         </div>
         <div
           v-for="slot in emptyMidfielderSlots" :key="`empty-mid-${slot}`"
-          @click="$emit('draftByPosition', 'MIDFIELDER')"
           class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
           :class="{ 'bg-yellow-50/50 dark:bg-yellow-900/10': addingPlayerPosition === 'MIDFIELDER' }"
+          @click="$emit('draftByPosition', 'MIDFIELDER')"
         >
           <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'MIDFIELDER' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-400 dark:text-yellow-500 opacity-60'">MF</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'MIDFIELDER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
@@ -186,6 +230,13 @@
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
           <p class="text-[12px]" :class="addingPlayerPosition === 'MIDFIELDER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'MIDFIELDER' ? 'Place here' : 'Add midfielder' }}</p>
+          <button
+            v-if="!addingPlayerPosition && fantasyRoundUuid"
+            class="ml-auto w-7 h-7 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center shrink-0 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 active:scale-90 transition-all"
+            @click.stop="openSwapDrawer('MIDFIELDER', true, false, null)"
+          >
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400" />
+          </button>
         </div>
       </template>
 
@@ -222,21 +273,31 @@
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
+              <button
+                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
+                class="w-7 h-7 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center shrink-0 hover:bg-red-100 dark:hover:bg-red-900/30 active:scale-90 transition-all"
+                @click.stop="openSwapDrawer('ATTACKER', true, false, player)"
+              >
+                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-red-500 dark:text-red-400" />
+              </button>
             </div>
           </div>
         </div>
         <div
           v-for="slot in emptyAttackerSlots" :key="`empty-att-${slot}`"
-          @click="$emit('draftByPosition', 'ATTACKER')"
           class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
           :class="{ 'bg-red-50/50 dark:bg-red-900/10': addingPlayerPosition === 'ATTACKER' }"
+          @click="$emit('draftByPosition', 'ATTACKER')"
         >
           <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'ATTACKER' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 opacity-60'">FW</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'ATTACKER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
@@ -244,6 +305,13 @@
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
           <p class="text-[12px]" :class="addingPlayerPosition === 'ATTACKER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'ATTACKER' ? 'Place here' : 'Add forward' }}</p>
+          <button
+            v-if="!addingPlayerPosition && fantasyRoundUuid"
+            class="ml-auto w-7 h-7 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center shrink-0 hover:bg-red-100 dark:hover:bg-red-900/30 active:scale-90 transition-all"
+            @click.stop="openSwapDrawer('ATTACKER', true, false, null)"
+          >
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-red-500 dark:text-red-400" />
+          </button>
         </div>
       </template>
 
@@ -280,13 +348,23 @@
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
+              <button
+                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
+                class="w-7 h-7 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center shrink-0 hover:bg-purple-100 dark:hover:bg-purple-900/30 active:scale-90 transition-all"
+                @click.stop="openSwapDrawer('FLEX', true, true, player)"
+              >
+                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
+              </button>
             </div>
           </div>
         </div>
@@ -302,17 +380,40 @@
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
           <p class="text-[12px]" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place here (Flex)' : 'Add flex player' }}</p>
+          <!-- Swap icon for empty flex slot -->
+          <button
+            v-if="!addingPlayerPosition && fantasyRoundUuid"
+            class="ml-auto w-7 h-7 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center shrink-0 hover:bg-purple-100 dark:hover:bg-purple-900/30 active:scale-90 transition-all"
+            @click.stop="openSwapDrawer('FLEX', true, true, null)"
+          >
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
+          </button>
         </div>
       </template>
     </div>
   </div>
+
+  <!-- Swap Player Drawer -->
+  <SwapPlayerDrawer
+    v-if="fantasyRoundUuid"
+    v-model="swapDrawerOpen"
+    :players="players"
+    :target-player="swapTargetPlayer"
+    :slot-position="swapSlotPosition"
+    :slot-is-starter="swapSlotIsStarter"
+    :slot-is-flex="swapSlotIsFlex"
+    :league-uuid="leagueUuid"
+    :fantasy-round-uuid="fantasyRoundUuid"
+    @lineup-updated="emit('lineupUpdated')"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
 import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
+import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
 
@@ -320,7 +421,7 @@ const { addToast } = useToast();
 
 interface Props {
   /** All players (the component filters starters internally) */
-  players: FantasyFootballPlayersResponse[];
+  players: FantasyFootballPlayer[];
   /** League formation configuration */
   formation: FantasyLeagueFormationResponse | null;
   /** Fantasy league UUID for player removal */
@@ -329,18 +430,42 @@ interface Props {
   highlightedPlayerUuid?: string | null;
   /** developer_name of the position being added — shows swap icon on matching empty slots */
   addingPlayerPosition?: string | null;
+  /** Fantasy round UUID required for lineup update */
+  fantasyRoundUuid?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   highlightedPlayerUuid: null,
   addingPlayerPosition: null,
+  fantasyRoundUuid: '',
 });
 
 const emit = defineEmits<{
   draftByPosition: [position: string];
   playerRemoved: [playerUuid: string];
   swapPlayer: [playerUuid: string, position: string];
+  lineupUpdated: [];
 }>();
+
+// ==================== Swap drawer ====================
+const swapDrawerOpen = ref(false);
+const swapTargetPlayer = ref<FantasyFootballPlayer | null>(null);
+const swapSlotPosition = ref('');
+const swapSlotIsStarter = ref(true);
+const swapSlotIsFlex = ref(false);
+
+function openSwapDrawer(
+  position: string,
+  isStarter: boolean,
+  isFlex: boolean,
+  targetPlayer: FantasyFootballPlayer | null = null,
+) {
+  swapSlotPosition.value = position;
+  swapSlotIsStarter.value = isStarter;
+  swapSlotIsFlex.value = isFlex;
+  swapTargetPlayer.value = targetPlayer;
+  swapDrawerOpen.value = true;
+}
 
 const removingPlayer = ref<string | null>(null);
 
@@ -428,7 +553,7 @@ const emptyFlexSlots = computed(() => {
   return Math.max(0, required - flexPlayers.value.length);
 });
 
-function isSwappable(player: FantasyFootballPlayersResponse): boolean {
+function isSwappable(player: FantasyFootballPlayer): boolean {
   if (!props.addingPlayerPosition) return false;
   return player.position.developer_name === props.addingPlayerPosition || player.is_flex;
 }

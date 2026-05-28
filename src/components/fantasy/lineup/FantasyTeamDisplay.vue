@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import type { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import type { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
 import StartersTable from "@/components/fantasy/lineup/StartersTable.vue";
 import BenchTable from "@/components/fantasy/lineup/BenchTable.vue";
 
 interface Props {
-  players: FantasyFootballPlayersResponse[];
+  players: FantasyFootballPlayer[];
   formation: FantasyLeagueFormationResponse | null;
   leagueUuid: string;
   highlightedPlayerUuid?: string | null;
   isLoading?: boolean;
+  fantasyRoundUuid?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   highlightedPlayerUuid: null,
   isLoading: false,
+  fantasyRoundUuid: '',
 });
 
 const emit = defineEmits<{
   (e: "draftByPosition", position: string): void;
   (e: "playerRemoved"): void;
+  (e: "lineupUpdated"): void;
 }>();
 </script>
 
@@ -64,15 +67,16 @@ const emit = defineEmits<{
   </div>
 
   <!-- Team Display -->
-  <div v-else>
+  <div v-else class="space-y-6">
     <StartersTable
       :players="players"
       :formation="formation"
       :league-uuid="leagueUuid"
       :highlighted-player-uuid="highlightedPlayerUuid"
-      class="mb-3"
+      :fantasy-round-uuid="fantasyRoundUuid"
       @draft-by-position="emit('draftByPosition', $event)"
       @player-removed="emit('playerRemoved')"
+      @lineup-updated="emit('lineupUpdated')"
     />
 
     <BenchTable
@@ -80,8 +84,10 @@ const emit = defineEmits<{
       :formation="formation"
       :league-uuid="leagueUuid"
       :highlighted-player-uuid="highlightedPlayerUuid"
+      :fantasy-round-uuid="fantasyRoundUuid"
       @draft-by-position="emit('draftByPosition', $event)"
       @player-removed="emit('playerRemoved')"
+      @lineup-updated="emit('lineupUpdated')"
     />
   </div>
 </template>

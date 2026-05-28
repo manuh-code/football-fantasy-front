@@ -2,7 +2,8 @@ import { FootballFixtureResponse } from '../fixture/FootballFixtureResponse';
 import { FootballLeagueResponse } from '../league/FootballLeagueResponse';
 
 export interface FootballRoundResponse {
-    league: FootballLeagueResponse;
+    league: FootballLeagueResponse | null;
+    uuid: string;
     name: string;
     finished: boolean;
     is_current: boolean;

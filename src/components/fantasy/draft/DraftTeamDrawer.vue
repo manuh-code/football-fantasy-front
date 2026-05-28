@@ -211,7 +211,7 @@ import { useBreakpoints } from "@/composables/useMediaQuery";
 import { useFantasyRounds } from "@/composables/useFantasyRounds";
 import { useUserStore } from "@/store/user/useUserStore";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
-import type { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import type { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 
@@ -318,7 +318,7 @@ const { isMobile } = useBreakpoints();
 const userStore = useUserStore();
 
 // ==================== Data loading ====================
-const players = ref<FantasyFootballPlayersResponse[]>([]);
+const players = ref<FantasyFootballPlayer[]>([]);
 const league = ref<FantasyLeaguesResponse | null>(null);
 const isLoadingData = ref(false);
 const highlightedPlayerUuid = ref<string | null>(null);
@@ -347,10 +347,11 @@ async function loadPlayers() {
     const payload: FantasyFootballLineupPayload = {
       fantasy_round_uuid: selectedRoundUuid.value,
     };
-    players.value = await userStore.getFantasyFootballPlayersByLeagueUuid(
+    const lineupResponse = await userStore.getFantasyFootballPlayersByLeagueUuid(
       leagueUuid.value,
       payload,
     );
+    players.value = lineupResponse.players;
   } catch (err: unknown) {
     console.error("DraftTeamDrawer: Error loading players:", err);
   } finally {

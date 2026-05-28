@@ -82,7 +82,7 @@ export const useUserStore = defineStore("user", {
         footballLeagueStore.setLeague(response.football_league);
       }
     },
-    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse[]> {
+    async getFantasyFootballPlayersByLeagueUuid(leagueUuid: string, payload: FantasyFootballLineupPayload): Promise<FantasyFootballPlayersResponse> {
       return await getUserService().getFantasyFootballPlayersByLeagueUuid(leagueUuid, payload);
     }
   },
