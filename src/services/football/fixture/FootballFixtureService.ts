@@ -34,8 +34,17 @@ export class FootballFixtureService {
         await this.api.get<ApiResponse<void>>("/fixtures/current");
     }
 
-    async getFixturesByStageAndCurrentRound(stageUuid: string): Promise<FootballRoundResponse[]> {
-        const response = await this.api.get<ApiResponse<FootballRoundResponse[]>>(`/fixtures/stage/${stageUuid}/round/current`);
+    async getFixturesByStageAndCurrentRound(stageUuid: string): Promise<FootballFixtureResponse[]> {
+        const response = await this.api.get<ApiResponse<FootballFixtureResponse[]>>(`/fixtures/stage/${stageUuid}/round/current`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new AxiosError('Failed to fetch football fixture data');
+    }
+
+    async getFixuresByStageAndRound(stageUuid: string, roundUuid: string): Promise<FootballFixtureResponse[]> {
+        const response = await this.api.get<ApiResponse<FootballFixtureResponse[]>>(`/fixtures/stage/${stageUuid}/round/${roundUuid}`);
         if (response.data.code === 200) {
             return response.data.data;
         }
@@ -47,6 +56,15 @@ export class FootballFixtureService {
         const response = await this.api.get<ApiResponse<FootballRoundResponse[]>>(`/fixtures/stage/${stageUuid}/rounds`);
         if (response.data.code === 200) {
             return response.data.data;
+        }
+
+        throw new AxiosError('Failed to fetch football fixture data');
+    }
+
+    async getMatchCenterFixture(fixtureUuid: string): Promise<ApiResponse<FootballFixtureResponse>> {
+        const response = await this.api.get<ApiResponse<FootballFixtureResponse>>(`/fixtures/match/center/${fixtureUuid}`);
+        if (response.data.code === 200) {
+            return response.data;
         }
 
         throw new AxiosError('Failed to fetch football fixture data');

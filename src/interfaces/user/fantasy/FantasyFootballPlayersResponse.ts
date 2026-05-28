@@ -4,6 +4,11 @@ import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamRes
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 
 export interface FantasyFootballPlayersResponse {
+    total_fantasy_points: number;
+    players: FantasyFootballPlayer[];
+}
+
+export interface FantasyFootballPlayer {
     in_play: boolean;
     round: number;
     is_starter: boolean;
@@ -13,6 +18,4 @@ export interface FantasyFootballPlayersResponse {
     position: TypeResponse;
     team: FootballTeamResponse;
     next_fixture: FootballNextFixtureResponse;
-
-
 }

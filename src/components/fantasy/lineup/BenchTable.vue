@@ -45,13 +45,23 @@
               </span>
               <img :src="player.football_player?.image_path || '/img/default-avatar.svg'" :alt="player.football_player?.display_name || 'Player'" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player?.display_name }}</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player?.display_name }}</p>
+                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
               <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
+              <button
+                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
+                class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all"
+                @click.stop="openSwapDrawer(player)"
+              >
+                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+              </button>
             </div>
           </div>
         </div>
@@ -70,17 +80,39 @@
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
           <p class="text-[12px]" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place on bench' : 'Add bench player' }}</p>
+          <button
+            v-if="!addingPlayerPosition && fantasyRoundUuid"
+            class="ml-auto w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all"
+            @click.stop="openSwapDrawer(null)"
+          >
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+          </button>
         </div>
       </template>
     </div>
   </div>
+
+  <!-- Swap Player Drawer -->
+  <SwapPlayerDrawer
+    v-if="fantasyRoundUuid"
+    v-model="swapDrawerOpen"
+    :players="players"
+    :target-player="swapTargetPlayer"
+    :slot-position="swapSlotPosition"
+    :slot-is-starter="false"
+    :slot-is-flex="false"
+    :league-uuid="leagueUuid"
+    :fantasy-round-uuid="fantasyRoundUuid"
+    @lineup-updated="emit('lineupUpdated')"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
 import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
+import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
 
@@ -88,7 +120,7 @@ const { addToast } = useToast();
 
 interface Props {
   /** All players (the component filters bench internally) */
-  players: FantasyFootballPlayersResponse[];
+  players: FantasyFootballPlayer[];
   /** League formation configuration */
   formation: FantasyLeagueFormationResponse | null;
   /** Fantasy league UUID for player removal */
@@ -97,18 +129,34 @@ interface Props {
   highlightedPlayerUuid?: string | null;
   /** developer_name of the position being added — shows swap icon on matching empty slots */
   addingPlayerPosition?: string | null;
+  /** Fantasy round UUID required for lineup update */
+  fantasyRoundUuid?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   highlightedPlayerUuid: null,
   addingPlayerPosition: null,
+  fantasyRoundUuid: '',
 });
 
 const emit = defineEmits<{
   draftByPosition: [position: string];
   playerRemoved: [playerUuid: string];
   swapPlayer: [playerUuid: string, position: string];
+  lineupUpdated: [];
 }>();
+
+// ==================== Swap drawer ====================
+const swapDrawerOpen = ref(false);
+const swapTargetPlayer = ref<FantasyFootballPlayer | null>(null);
+const swapSlotPosition = ref('BENCH');
+
+function openSwapDrawer(targetPlayer: FantasyFootballPlayer | null = null) {
+  swapTargetPlayer.value = targetPlayer;
+  // Use the bench player's actual position so the drawer filters correctly
+  swapSlotPosition.value = targetPlayer?.position?.developer_name ?? 'BENCH';
+  swapDrawerOpen.value = true;
+}
 
 const removingPlayer = ref<string | null>(null);
 
@@ -153,7 +201,7 @@ const emptyBenchSlots = computed(() => {
   return Math.max(0, maxBenchSize - currentBenchSize);
 });
 
-function isSwappable(player: FantasyFootballPlayersResponse): boolean {
+function isSwappable(player: FantasyFootballPlayer): boolean {
   if (!props.addingPlayerPosition) return false;
   return player.position.developer_name === props.addingPlayerPosition || player.is_flex;
 }

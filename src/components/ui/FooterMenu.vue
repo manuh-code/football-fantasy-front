@@ -89,26 +89,26 @@
         <span class="text-[10px] font-medium leading-tight">Players</span>
       </button>
 
-      <!-- Matchups -->
+      <!-- Matches -->
       <button
         v-if="canAccessMemberTabs"
-        @click="handleTabChange('matchups')"
+        @click="handleTabChange('matches')"
         :class="[
           'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'matchups'
+          activeTab === 'matches'
             ? 'text-red-500 dark:text-red-400'
             : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
         ]"
-        aria-label="Matchups"
+        aria-label="Matches"
       >
         <v-icon
           name="gi-crossed-swords"
           :class="[
             'w-[22px] h-[22px]',
-            activeTab === 'matchups' ? 'scale-110' : '',
+            activeTab === 'matches' ? 'scale-110' : '',
           ]"
         />
-        <span class="text-[10px] font-medium leading-tight">Matchups</span>
+        <span class="text-[10px] font-medium leading-tight">Matches</span>
       </button>
 
       <!-- Management -->

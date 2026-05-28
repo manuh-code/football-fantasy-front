@@ -135,6 +135,9 @@ import {
   BiEyeSlashFill,
   HiChevronDown,
   HiSolidSparkles,
+  HiX,
+  HiSolidLocationMarker,
+  MdReplay,
 } from 'oh-vue-icons/icons'
 
 // Sports icons
@@ -268,6 +271,9 @@ export const iconList = [
   GiCrossedSwords,
   RiTeamLine,
   HiSolidFingerPrint,
+  HiX,
+  HiSolidLocationMarker,
+  MdReplay,
 ]
 
 // Icon name mapping for easier usage

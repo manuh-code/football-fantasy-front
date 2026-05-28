@@ -8,13 +8,21 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const homeScore = computed(() => {
-  return props.fixture?.scores?.find(s => s.score.participant === "home") ?? null;
-});
+const homeParticipant = computed(() =>
+  props.fixture?.participants?.find(p => p.meta?.location === "home") ?? null,
+);
 
-const awayScore = computed(() => {
-  return props.fixture?.scores?.find(s => s.score.participant === "away") ?? null;
-});
+const awayParticipant = computed(() =>
+  props.fixture?.participants?.find(p => p.meta?.location === "away") ?? null,
+);
+
+const homeScore = computed(() =>
+  props.fixture?.scores?.find(s => s.score.participant === "home") ?? null,
+);
+
+const awayScore = computed(() =>
+  props.fixture?.scores?.find(s => s.score.participant === "away") ?? null,
+);
 
 const hasScore = computed(() => homeScore.value != null && awayScore.value != null);
 
@@ -43,14 +51,14 @@ function formatFixtureDate(dateStr: string): string {
     v-if="fixture"
     class="inline-flex items-center gap-1 mt-0.5 px-1.5 py-0.5 bg-gray-50 dark:bg-gray-700/40 rounded-md"
   >
-    <template v-if="fixture.participants?.length >= 2">
+    <template v-if="homeParticipant && awayParticipant">
       <img
-        :src="fixture.participants[0].image_path"
-        :alt="fixture.participants[0].short_code"
+        :src="homeParticipant.image_path"
+        :alt="homeParticipant.short_code"
         class="w-3.5 h-3.5 rounded-full object-contain"
       />
       <span class="text-[10px] font-semibold text-gray-700 dark:text-gray-200 leading-none">
-        {{ fixture.participants[0].short_code }}
+        {{ homeParticipant.short_code }}
       </span>
       <template v-if="hasScore">
         <span class="text-[10px] font-bold text-gray-800 dark:text-gray-100 leading-none">
@@ -63,17 +71,15 @@ function formatFixtureDate(dateStr: string): string {
       </template>
       <span v-else class="text-[9px] text-gray-400 dark:text-gray-500 leading-none">vs</span>
       <span class="text-[10px] font-semibold text-gray-700 dark:text-gray-200 leading-none">
-        {{ fixture.participants[1].short_code }}
+        {{ awayParticipant.short_code }}
       </span>
       <img
-        :src="fixture.participants[1].image_path"
-        :alt="fixture.participants[1].short_code"
+        :src="awayParticipant.image_path"
+        :alt="awayParticipant.short_code"
         class="w-3.5 h-3.5 rounded-full object-contain"
       />
       <span class="text-[9px] text-gray-400 dark:text-gray-500 leading-none mx-0.5">·</span>
     </template>
-    <span class="text-[10px] text-gray-500 dark:text-gray-400 tabular-nums leading-none">
-      {{ fixture.starting_at}}
-    </span>
+    
   </div>
 </template>

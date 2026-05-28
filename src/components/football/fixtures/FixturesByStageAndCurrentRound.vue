@@ -2,32 +2,35 @@
   <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
     <!-- Card Header (minimal iOS/Android style) -->
     <div class="px-4 py-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 min-w-0">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <v-icon
             name="md-sportssoccer"
             class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0"
           />
-          <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white truncate">
-            {{ viewMode === 'carousel' ? 'Matches' : 'All Rounds' }}
-          </h2>
-          <span class="text-[11px] text-gray-400 dark:text-gray-500 shrink-0">
-            {{ viewMode === 'carousel' ? (roundLabel || '') : `${allRounds.length} rounds` }}
-          </span>
+          <!-- Stack vertically on mobile, inline on sm+ -->
+          <div class="flex flex-col sm:flex-row sm:items-baseline sm:gap-2 min-w-0 flex-1 leading-tight">
+            <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white truncate">
+              Matches
+            </h2>
+            <span class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
+              {{ roundLabel || '' }}
+            </span>
+          </div>
         </div>
 
-        <div class="flex items-center gap-1.5">
-          <!-- View All / Back (iOS-style text link) -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <!-- View All (opens RoundFixturesDrawer) -->
           <button
             v-if="!loading && fixtures.length > 0"
-            @click="toggleViewMode"
+            @click="roundsDrawerOpen = true"
             class="text-[13px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors px-1"
           >
-            {{ viewMode === 'carousel' ? 'View All' : 'Back' }}
+            View All
           </button>
 
           <!-- Carousel navigation dots + arrows -->
-          <template v-if="viewMode === 'carousel' && maxSlides > 1">
+          <template v-if="maxSlides > 1">
             <span class="text-[11px] text-gray-300 dark:text-gray-600">|</span>
             <span class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums">
               {{ currentSlide + 1 }}/{{ maxSlides }}
@@ -55,7 +58,7 @@
     <div class="px-1 pb-3">
       <!-- Loading State -->
       <div
-        v-if="loading || loadingAll"
+        v-if="loading"
         class="flex items-center justify-center py-10"
       >
         <v-icon
@@ -79,7 +82,7 @@
 
       <!-- Empty State -->
       <div
-        v-else-if="fixtures.length === 0 && viewMode === 'carousel'"
+        v-else-if="fixtures.length === 0"
         class="text-center py-10 text-gray-400 dark:text-gray-500"
       >
         <v-icon
@@ -89,310 +92,135 @@
         <p class="text-[13px]">No matches available</p>
       </div>
 
-      <!-- ═══════════ CAROUSEL VIEW ═══════════ -->
-      <Transition
-        enter-active-class="transition-all duration-400 ease-out"
-        leave-active-class="transition-all duration-300 ease-in"
-        enter-from-class="opacity-0 translate-y-1"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-1"
-        mode="out-in"
-      >
-        <div v-if="viewMode === 'carousel' && fixtures.length > 0" key="carousel" class="relative">
+      <!-- Carousel -->
+      <div v-else class="relative">
+        <div
+          ref="carouselSwipeEl"
+          class="overflow-hidden"
+        >
           <div
-            class="overflow-hidden"
-            @touchstart="handleTouchStart"
-            @touchmove="handleTouchMove"
-            @touchend="handleTouchEnd"
+            class="flex transition-transform duration-300 ease-in-out"
+            :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
           >
             <div
-              class="flex transition-transform duration-300 ease-in-out"
-              :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
+              v-for="(slideFixtures, slideIndex) in paginatedFixtures"
+              :key="slideIndex"
+              class="w-full flex-shrink-0"
             >
-              <div
-                v-for="(slideFixtures, slideIndex) in paginatedFixtures"
-                :key="slideIndex"
-                class="w-full flex-shrink-0"
-              >
-                <!-- Mobile: native list style -->
-                <div v-if="isMobile" class="divide-y divide-gray-100 dark:divide-gray-700/50">
-                  <div
-                    v-for="(fixture, fIdx) in slideFixtures"
-                    :key="fixture.name + '-' + fIdx"
-                    class="fixture-cell relative transition-colors"
-                    :class="[
-                      isMatchLive(fixture)
-                        ? 'bg-red-50/40 dark:bg-red-900/5 border-l-[3px] border-l-red-500 dark:border-l-red-400'
-                        : 'border-l-[3px] border-l-transparent',
-                      'px-3 py-3 active:bg-gray-50 dark:active:bg-gray-700/30',
-                    ]"
-                  >
-                    <!-- LIVE badge (top-left, iOS style) -->
-                    <div v-if="isMatchLive(fixture)" class="flex items-center gap-1.5 mb-2">
-                      <span class="live-dot relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                      </span>
-                      <span class="text-[10px] font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
-                    </div>
-
-                    <!-- Time label (when NOT live) -->
-                    <div v-else class="text-center mb-2">
-                      <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
-                        {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
-                      </span>
-                    </div>
-
-                    <!-- Match row -->
-                    <div class="flex items-center gap-2">
-                      <!-- Home -->
-                      <div class="flex items-center gap-2 flex-1 min-w-0">
-                        <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
-                        <span
-                          :class="getTeamResultClass(fixture, 'home')"
-                          class="text-[13px] font-medium truncate"
-                          :title="getTeamName(getHomeParticipant(fixture))"
-                        >
-                          {{ getTeamName(getHomeParticipant(fixture)) }}
-                        </span>
-                      </div>
-
-                      <!-- Score center -->
-                      <div class="flex flex-col items-center shrink-0 min-w-[56px]">
-                        <div
-                          class="tabular-nums"
-                          :class="[
-                            hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                            isMatchLive(fixture) ? 'text-[22px]' : 'text-[20px]',
-                          ]"
-                        >
-                          <template v-if="hasScores(fixture)">
-                            {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
-                          </template>
-                          <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
-                        </div>
-                        <!-- State badge (only when NOT live — live uses top badge) -->
-                        <span
-                          v-if="!isMatchLive(fixture)"
-                          :class="getFixtureStateClass(fixture)"
-                          class="text-[9px] px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
-                        >
-                          {{ getFixtureStateText(fixture) }}
-                        </span>
-                      </div>
-
-                      <!-- Away -->
-                      <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                        <span
-                          :class="getTeamResultClass(fixture, 'away')"
-                          class="text-[13px] font-medium truncate text-right"
-                          :title="getTeamName(getAwayParticipant(fixture))"
-                        >
-                          {{ getTeamName(getAwayParticipant(fixture)) }}
-                        </span>
-                        <TeamLogo :team="getAwayParticipant(fixture)" size="md" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Desktop: clean rows -->
-                <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-px">
-                  <div
-                    v-for="(fixture, fIdx) in slideFixtures"
-                    :key="fixture.name + '-' + fIdx"
-                    class="fixture-cell relative rounded-xl transition-colors"
-                    :class="[
-                      isMatchLive(fixture)
-                        ? 'bg-red-50/30 dark:bg-red-900/5 ring-1 ring-red-200/60 dark:ring-red-800/30'
-                        : 'hover:bg-gray-50/80 dark:hover:bg-gray-700/20',
-                    ]"
-                  >
-                    <!-- LIVE top-left pill (desktop) -->
-                    <div
-                      v-if="isMatchLive(fixture)"
-                      class="flex items-center gap-1 px-3 pt-2 pb-0.5"
-                    >
-                      <span class="live-dot relative flex h-1.5 w-1.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                      </span>
-                      <span class="text-[9px] font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">Live</span>
-                    </div>
-
-                    <div class="flex items-center gap-2 px-3 py-2.5" :class="isMatchLive(fixture) ? 'pt-1' : ''">
-                      <!-- Home Team -->
-                      <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                        <span
-                          :class="getTeamResultClass(fixture, 'home')"
-                          class="text-[12px] font-medium truncate text-right"
-                          :title="getTeamName(getHomeParticipant(fixture))"
-                        >
-                          {{ getTeamName(getHomeParticipant(fixture)) }}
-                        </span>
-                        <TeamLogo :team="getHomeParticipant(fixture)" size="sm" />
-                      </div>
-
-                      <!-- Score -->
-                      <div class="flex flex-col items-center shrink-0 min-w-[48px]">
-                        <div
-                          class="tabular-nums"
-                          :class="[
-                            hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                            isMatchLive(fixture) ? 'text-[15px]' : 'text-[13px]',
-                          ]"
-                        >
-                          <template v-if="hasScores(fixture)">
-                            {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-px' : 'text-gray-300 dark:text-gray-600 mx-px'">-</span>{{ getAwayScore(fixture) }}
-                          </template>
-                          <span v-else class="text-[10px] font-semibold text-gray-300 dark:text-gray-600">vs</span>
-                        </div>
-                        <span
-                          v-if="!isMatchLive(fixture)"
-                          :class="getFixtureStateClass(fixture)"
-                          class="text-[9px] leading-none px-1.5 py-px rounded-full font-semibold"
-                        >
-                          {{ getFixtureStateText(fixture) }}
-                        </span>
-                      </div>
-
-                      <!-- Away Team -->
-                      <div class="flex items-center gap-2 flex-1 min-w-0">
-                        <TeamLogo :team="getAwayParticipant(fixture)" size="sm" />
-                        <span
-                          :class="getTeamResultClass(fixture, 'away')"
-                          class="text-[12px] font-medium truncate"
-                          :title="getTeamName(getAwayParticipant(fixture))"
-                        >
-                          {{ getTeamName(getAwayParticipant(fixture)) }}
-                        </span>
-                      </div>
-
-                      <!-- Time (only when not live) -->
-                      <span v-if="!isMatchLive(fixture)" class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
-                        {{ formatMatchTime(fixture.starting_at) }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slide Indicators (iOS-style pill dots) -->
-          <div class="flex justify-center mt-3 gap-1" v-if="maxSlides > 1">
-            <button
-              v-for="slide in maxSlides"
-              :key="slide"
-              @click="currentSlide = slide - 1"
-              :class="[
-                'rounded-full transition-all duration-200 h-[5px]',
-                currentSlide === slide - 1
-                  ? 'bg-emerald-500 w-4'
-                  : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 w-[5px]',
-              ]"
-            />
-          </div>
-        </div>
-
-        <!-- ═══════════ ALL ROUNDS LIST VIEW ═══════════ -->
-        <div v-else-if="viewMode === 'list'" key="list" class="all-rounds-list max-h-[70vh] overflow-y-auto scroll-smooth" ref="allRoundsContainer">
-          <div
-            v-for="(round, rIdx) in allRounds"
-            :key="'round-' + rIdx"
-            :ref="(el) => { if (round.is_current && el) currentRoundEl = el as HTMLElement }"
-            class="round-group"
-            :style="{ animationDelay: `${rIdx * 50}ms` }"
-          >
-            <!-- Section Header (iOS grouped style) -->
-            <button
-              @click="toggleRound(rIdx)"
-              class="w-full flex items-center justify-between px-3 py-2 transition-colors group sticky top-0 z-10"
-              :class="[
-                round.is_current
-                  ? 'bg-emerald-50/90 dark:bg-emerald-900/20 backdrop-blur-sm'
-                  : 'bg-gray-50/90 dark:bg-gray-800/90 backdrop-blur-sm',
-              ]"
-            >
-              <div class="flex items-center gap-2">
-                <!-- Accent dot for current -->
+              <!-- Mobile: native list style -->
+              <div v-if="isMobile" class="divide-y divide-gray-100 dark:divide-gray-700/50">
                 <div
-                  v-if="round.is_current"
-                  class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 animate-pulse"
-                />
-                <span
-                  class="text-[12px] font-semibold tracking-wide"
-                  :class="round.is_current ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'"
-                >
-                  Round {{ round.name }}
-                </span>
-                <span
-                  v-if="round.is_current"
-                  class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase"
-                >
-                  Now
-                </span>
-                <span
-                  v-else-if="round.finished"
-                  class="text-[10px] text-gray-400 dark:text-gray-500"
-                >
-                  · Done
-                </span>
-                <span class="text-[10px] text-gray-300 dark:text-gray-600">
-                  {{ round.fixtures?.length || 0 }}
-                </span>
-              </div>
-              <v-icon
-                name="hi-chevron-right"
-                class="w-3 h-3 text-gray-300 dark:text-gray-600 transition-transform duration-300"
-                :class="{ 'rotate-90': expandedRounds.has(rIdx) }"
-              />
-            </button>
-
-            <!-- Round Fixtures (Collapsible) -->
-            <div
-              class="round-fixtures-wrapper overflow-hidden"
-              :style="{
-                maxHeight: expandedRounds.has(rIdx) ? `${(round.fixtures?.length || 0) * 56 + 8}px` : '0px',
-                opacity: expandedRounds.has(rIdx) ? 1 : 0,
-              }"
-            >
-              <div class="divide-y divide-gray-100 dark:divide-gray-700/40">
-                <div
-                  v-for="(fixture, fIdx) in (round.fixtures || [])"
+                  v-for="(fixture, fIdx) in slideFixtures"
                   :key="fixture.name + '-' + fIdx"
-                  class="fixture-row transition-colors"
-                  :style="{ animationDelay: `${fIdx * 30}ms` }"
+                  @click="openMatchCenter(fixture)"
+                  class="fixture-cell relative transition-colors cursor-pointer"
                   :class="[
-                    expandedRounds.has(rIdx) ? 'fixture-enter' : '',
                     isMatchLive(fixture)
-                      ? 'bg-red-50/30 dark:bg-red-900/5 border-l-2 border-l-red-500 dark:border-l-red-400'
-                      : 'border-l-2 border-l-transparent hover:bg-gray-50/60 dark:hover:bg-gray-700/20',
+                      ? 'bg-red-50/40 dark:bg-red-900/5 border-l-[3px] border-l-red-500 dark:border-l-red-400'
+                      : 'border-l-[3px] border-l-transparent',
+                    'px-3 py-3 active:bg-gray-50 dark:active:bg-gray-700/30',
                   ]"
                 >
-                  <div class="flex items-center gap-1.5 px-3 py-2">
-                    <!-- LIVE indicator OR Date/Time -->
-                    <div class="shrink-0 w-14 text-center leading-tight">
-                      <template v-if="isMatchLive(fixture)">
-                        <div class="flex items-center justify-center gap-1">
-                          <span class="live-dot relative flex h-1.5 w-1.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                          </span>
-                          <span class="text-[9px] font-bold text-red-500 dark:text-red-400 tracking-wider uppercase">Live</span>
-                        </div>
-                      </template>
-                      <span v-else class="text-[9px] text-gray-400 dark:text-gray-500 tabular-nums">
-                        {{ formatShortDate(fixture.starting_at) }}
+                  <!-- LIVE badge (top-left, iOS style) -->
+                  <div v-if="isMatchLive(fixture)" class="flex items-center gap-1.5 mb-2">
+                    <span class="live-dot relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    <span class="text-[10px] font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+                  </div>
+
+                  <!-- Time label (when NOT live) -->
+                  <div v-else class="text-center mb-2">
+                    <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
+                      {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
+                    </span>
+                  </div>
+
+                  <!-- Match row -->
+                  <div class="flex items-center gap-2">
+                    <!-- Home -->
+                    <div class="flex items-center gap-2 flex-1 min-w-0">
+                      <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
+                      <span
+                        :class="getTeamResultClass(fixture, 'home')"
+                        class="text-[13px] font-medium truncate"
+                        :title="getTeamName(getHomeParticipant(fixture))"
+                      >
+                        {{ getTeamName(getHomeParticipant(fixture)) }}
                       </span>
                     </div>
 
+                    <!-- Score center -->
+                    <div class="flex flex-col items-center shrink-0 min-w-[56px]">
+                      <div
+                        class="tabular-nums"
+                        :class="[
+                          hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
+                          isMatchLive(fixture) ? 'text-[22px]' : 'text-[20px]',
+                        ]"
+                      >
+                        <template v-if="hasScores(fixture)">
+                          {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
+                        </template>
+                        <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+                      </div>
+                      <!-- State badge (only when NOT live — live uses top badge) -->
+                      <span
+                        v-if="!isMatchLive(fixture)"
+                        :class="getFixtureStateClass(fixture)"
+                        class="text-[9px] px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
+                      >
+                        {{ getFixtureStateText(fixture) }}
+                      </span>
+                    </div>
+
+                    <!-- Away -->
+                    <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                      <span
+                        :class="getTeamResultClass(fixture, 'away')"
+                        class="text-[13px] font-medium truncate text-right"
+                        :title="getTeamName(getAwayParticipant(fixture))"
+                      >
+                        {{ getTeamName(getAwayParticipant(fixture)) }}
+                      </span>
+                      <TeamLogo :team="getAwayParticipant(fixture)" size="md" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Desktop: clean rows -->
+              <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-px">
+                <div
+                  v-for="(fixture, fIdx) in slideFixtures"
+                  :key="fixture.name + '-' + fIdx"
+                  @click="openMatchCenter(fixture)"
+                  class="fixture-cell relative rounded-xl transition-colors cursor-pointer"
+                  :class="[
+                    isMatchLive(fixture)
+                      ? 'bg-red-50/30 dark:bg-red-900/5 ring-1 ring-red-200/60 dark:ring-red-800/30'
+                      : 'hover:bg-gray-50/80 dark:hover:bg-gray-700/20',
+                  ]"
+                >
+                  <!-- LIVE top-left pill (desktop) -->
+                  <div
+                    v-if="isMatchLive(fixture)"
+                    class="flex items-center gap-1 px-3 pt-2 pb-0.5"
+                  >
+                    <span class="live-dot relative flex h-1.5 w-1.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                    </span>
+                    <span class="text-[9px] font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">Live</span>
+                  </div>
+
+                  <div class="flex items-center gap-2 px-3 py-2.5" :class="isMatchLive(fixture) ? 'pt-1' : ''">
                     <!-- Home Team -->
-                    <div class="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                    <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                       <span
                         :class="getTeamResultClass(fixture, 'home')"
-                        class="text-[11px] font-medium truncate text-right"
+                        class="text-[12px] font-medium truncate text-right"
                         :title="getTeamName(getHomeParticipant(fixture))"
                       >
                         {{ getTeamName(getHomeParticipant(fixture)) }}
@@ -401,52 +229,87 @@
                     </div>
 
                     <!-- Score -->
-                    <div class="flex flex-col items-center shrink-0 min-w-[40px]">
+                    <div class="flex flex-col items-center shrink-0 min-w-[48px]">
                       <div
                         class="tabular-nums"
                         :class="[
                           hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                          isMatchLive(fixture) ? 'text-[13px]' : 'text-[12px]',
+                          isMatchLive(fixture) ? 'text-[15px]' : 'text-[13px]',
                         ]"
                       >
                         <template v-if="hasScores(fixture)">
                           {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-px' : 'text-gray-300 dark:text-gray-600 mx-px'">-</span>{{ getAwayScore(fixture) }}
                         </template>
-                        <span v-else class="text-[9px] font-semibold text-gray-300 dark:text-gray-600">vs</span>
+                        <span v-else class="text-[10px] font-semibold text-gray-300 dark:text-gray-600">vs</span>
                       </div>
                       <span
                         v-if="!isMatchLive(fixture)"
                         :class="getFixtureStateClass(fixture)"
-                        class="text-[8px] leading-none px-1 py-px rounded-full font-semibold"
+                        class="text-[9px] leading-none px-1.5 py-px rounded-full font-semibold"
                       >
                         {{ getFixtureStateText(fixture) }}
                       </span>
                     </div>
 
                     <!-- Away Team -->
-                    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-1 min-w-0">
                       <TeamLogo :team="getAwayParticipant(fixture)" size="sm" />
                       <span
                         :class="getTeamResultClass(fixture, 'away')"
-                        class="text-[11px] font-medium truncate"
+                        class="text-[12px] font-medium truncate"
                         :title="getTeamName(getAwayParticipant(fixture))"
                       >
                         {{ getTeamName(getAwayParticipant(fixture)) }}
                       </span>
                     </div>
+
+                    <!-- Time (only when not live) -->
+                    <span v-if="!isMatchLive(fixture)" class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
+                      {{ formatMatchTime(fixture.starting_at) }}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </Transition>
+
+        <!-- Slide Indicators (iOS-style pill dots) -->
+        <div class="flex justify-center mt-3 gap-1" v-if="maxSlides > 1">
+          <button
+            v-for="slide in maxSlides"
+            :key="slide"
+            @click="currentSlide = slide - 1"
+            :class="[
+              'rounded-full transition-all duration-200 h-[5px]',
+              currentSlide === slide - 1
+                ? 'bg-emerald-500 w-4'
+                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 w-[5px]',
+            ]"
+          />
+        </div>
+      </div>
     </div>
+
+    <!-- Match Center drawer -->
+    <FixtureMatchCenter
+      :is-open="matchCenterOpen"
+      :fixture-uuid="selectedFixtureUuid"
+      @close="matchCenterOpen = false"
+    />
+
+    <!-- Rounds drawer (replaces the old list view) -->
+    <RoundFixturesDrawer
+      :is-open="roundsDrawerOpen"
+      :stage-uuid="props.stageUuid"
+      @close="roundsDrawerOpen = false"
+      @fixture-selected="onFixtureSelectedFromRounds"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, onBeforeUnmount, watch, nextTick } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount, watch } from "vue";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
 import { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
@@ -455,6 +318,8 @@ import { useToast } from "@/composables/useToast";
 import { useMediaQuery } from "@/composables/useMediaQuery";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
+import FixtureMatchCenter from "./FixtureMatchCenter.vue";
+import RoundFixturesDrawer from "./RoundFixturesDrawer.vue";
 
 // Props
 const props = defineProps<{
@@ -468,13 +333,26 @@ const loading = ref(true);
 const error = ref<string | null>(null);
 const currentSlide = ref(0);
 
-// View mode: carousel (default) or list (all rounds)
-const viewMode = ref<'carousel' | 'list'>('carousel');
-const allRounds = ref<FootballRoundResponse[]>([]);
-const loadingAll = ref(false);
-const expandedRounds = ref<Set<number>>(new Set());
-const allRoundsContainer = ref<HTMLElement | null>(null);
-const currentRoundEl = ref<HTMLElement | null>(null);
+// Match Center drawer state
+const selectedFixtureUuid = ref<string | null>(null);
+const matchCenterOpen = ref(false);
+
+const openMatchCenter = (fixture: FootballFixtureResponse) => {
+  selectedFixtureUuid.value = fixture.uuid;
+  matchCenterOpen.value = true;
+};
+
+// Rounds drawer state
+const roundsDrawerOpen = ref(false);
+
+const onFixtureSelectedFromRounds = (fixtureUuid: string) => {
+  selectedFixtureUuid.value = fixtureUuid;
+  matchCenterOpen.value = true;
+};
+
+// Carousel swipe — listener registered manually with { passive: false }
+// so preventDefault works without browser-intervention warnings
+const carouselSwipeEl = ref<HTMLElement | null>(null);
 
 // Touch/Swipe state
 const touchStartX = ref(0);
@@ -521,15 +399,8 @@ const loadStageFixtures = async (stageUuid: string) => {
       return;
     }
 
-    // Fetch rounds for the stage
-    const rounds: FootballRoundResponse[] = await footballFixtureService.getFixturesByStageAndCurrentRound(stageUuid);
-
-    // Find the current round, or fallback to the first one
-    const round = rounds.find((r) => r.is_current === true) || rounds[0];
-    currentRound.value = round;
-
-    // Extract fixtures from the round
-    fixtures.value = round?.fixtures ?? [];
+    // Fetch fixtures directly for the current round
+    fixtures.value = await footballFixtureService.getFixturesByStageAndCurrentRound(stageUuid);
   } catch (err) {
     error.value = "Error loading current round fixtures";
     showErrorToast("Error loading fixtures");
@@ -745,102 +616,25 @@ const formatMatchTime = (dateString: string): string => {
   });
 };
 
-/**
- * Short date format for the list view (e.g. "Sat 15")
- */
-const formatShortDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const day = date.toLocaleDateString("es-ES", { weekday: "short", day: "numeric" });
-  const time = date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
-  return `${day} ${time}`;
-};
-
-// ── All Rounds: load & toggle ──
-
-/**
- * Loads all rounds for the current stage and switches to list view.
- */
-const loadAllRounds = async () => {
-  try {
-    loadingAll.value = true;
-    error.value = null;
-
-    const rounds = await footballFixtureService.getAllFixturesByStage(props.stageUuid);
-    allRounds.value = rounds;
-
-    // Auto-expand the current round
-    expandedRounds.value.clear();
-    const currentIdx = rounds.findIndex((r) => r.is_current);
-    if (currentIdx !== -1) {
-      expandedRounds.value.add(currentIdx);
-    }
-
-    viewMode.value = 'list';
-
-    // Auto-scroll to the current round after DOM render
-    await nextTick();
-    setTimeout(() => {
-      scrollToCurrentRound();
-    }, 150);
-  } catch (err) {
-    showErrorToast("Error loading all rounds");
-    console.error("Error fetching all fixtures by stage:", err);
-  } finally {
-    loadingAll.value = false;
-  }
-};
-
-/**
- * Toggle between carousel and list views
- */
-const toggleViewMode = () => {
-  if (viewMode.value === 'carousel') {
-    loadAllRounds();
-  } else {
-    viewMode.value = 'carousel';
-    allRounds.value = [];
-    expandedRounds.value.clear();
-  }
-};
-
-/**
- * Toggle expansion of a specific round
- */
-const toggleRound = (roundIndex: number) => {
-  if (expandedRounds.value.has(roundIndex)) {
-    expandedRounds.value.delete(roundIndex);
-  } else {
-    expandedRounds.value.add(roundIndex);
-  }
-  // Force reactivity
-  expandedRounds.value = new Set(expandedRounds.value);
-};
-
-/**
- * Smooth scroll to the current round element with retry for DOM readiness
- */
-const scrollToCurrentRound = () => {
-  const attemptScroll = (retries = 3) => {
-    if (currentRoundEl.value && allRoundsContainer.value) {
-      const container = allRoundsContainer.value;
-      const element = currentRoundEl.value;
-      // Calculate offset relative to the scrollable container
-      const containerRect = container.getBoundingClientRect();
-      const elementRect = element.getBoundingClientRect();
-      const scrollOffset = elementRect.top - containerRect.top + container.scrollTop - 8;
-      container.scrollTo({
-        top: Math.max(0, scrollOffset),
-        behavior: 'smooth',
-      });
-    } else if (retries > 0) {
-      // Retry if DOM refs aren't ready yet
-      setTimeout(() => attemptScroll(retries - 1), 100);
-    }
-  };
-  attemptScroll();
-};
-
 const { inPlayChannel } = useAblyBroadcast();
+
+// Attach swipe listeners with passive:false so preventDefault is honored
+// without the "Ignored attempt to cancel a touchmove event" warning.
+const attachSwipeListeners = (el: HTMLElement) => {
+  el.addEventListener("touchstart", handleTouchStart, { passive: true });
+  el.addEventListener("touchmove", handleTouchMove, { passive: false });
+  el.addEventListener("touchend", handleTouchEnd, { passive: true });
+};
+const detachSwipeListeners = (el: HTMLElement) => {
+  el.removeEventListener("touchstart", handleTouchStart);
+  el.removeEventListener("touchmove", handleTouchMove);
+  el.removeEventListener("touchend", handleTouchEnd);
+};
+
+watch(carouselSwipeEl, (newEl, oldEl) => {
+  if (oldEl) detachSwipeListeners(oldEl);
+  if (newEl) attachSwipeListeners(newEl);
+});
 
 // Lifecycle
 onMounted(async () => {
@@ -855,16 +649,13 @@ onMounted(async () => {
 // Re-fetch when stageUuid changes
 watch(() => props.stageUuid, async (newUuid) => {
   if (newUuid) {
-    // Reset to carousel view on stage change
-    viewMode.value = 'carousel';
-    allRounds.value = [];
-    expandedRounds.value.clear();
     await loadStageFixtures(newUuid);
   }
 });
 
 onBeforeUnmount(() => {
   inPlayChannel.unsubscribe("matchedFixtures");
+  if (carouselSwipeEl.value) detachSwipeListeners(carouselSwipeEl.value);
 });
 </script>
 
@@ -893,73 +684,5 @@ onBeforeUnmount(() => {
 /* ── Live dot container ── */
 .live-dot {
   line-height: 0;
-}
-
-/* ── All Rounds list animations ── */
-
-/* Round group entrance */
-.round-group {
-  animation: roundFadeIn 0.3s ease-out both;
-}
-
-@keyframes roundFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Fixture items staggered entrance */
-.fixture-enter {
-  animation: fixtureSlideIn 0.25s ease-out both;
-}
-
-@keyframes fixtureSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* Collapsible content smooth transition */
-.round-fixtures-wrapper {
-  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.25s ease;
-}
-
-/* Custom scrollbar — minimal like iOS */
-.all-rounds-list {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.2) transparent;
-}
-
-.all-rounds-list::-webkit-scrollbar {
-  width: 3px;
-}
-
-.all-rounds-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.all-rounds-list::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.2);
-  border-radius: 9999px;
-}
-
-.all-rounds-list::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.4);
-}
-
-/* Transition utilities */
-.duration-400 {
-  transition-duration: 400ms;
 }
 </style>

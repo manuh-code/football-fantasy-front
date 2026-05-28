@@ -9,6 +9,7 @@ import { FootballSeasonResponse } from "@/interfaces/football/season/FootballSea
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import { FantasyConditionsRulesResponse } from "@/interfaces/fantasy/leagues/FantasyConditionsRulesResponse";
+import { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 
 export class CatalogService {
   private api;
@@ -118,6 +119,15 @@ export class CatalogService {
     }
 
     throw new AxiosError('Failed to fetch fantasy conditions rules');
+  }
+
+  async getRoundsByStage(stageUuid: string): Promise<FootballRoundResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballRoundResponse[]>>(`catalog/stage/${stageUuid}/rounds`);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+
+    throw new AxiosError('Failed to fetch football rounds');
   }
 }
 
