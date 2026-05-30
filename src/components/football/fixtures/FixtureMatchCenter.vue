@@ -7,6 +7,9 @@ import FixtureScoreboardHeader from "./matchcenter/FixtureScoreboardHeader.vue";
 import FixtureEventsTimeline from "./matchcenter/FixtureEventsTimeline.vue";
 import FixtureStatistics from "./matchcenter/FixtureStatistics.vue";
 import FixtureMatchCenterSkeleton from "./matchcenter/FixtureMatchCenterSkeleton.vue";
+import FixtureAccordion from "./matchcenter/FixtureAccordion.vue";
+import FixtureMatchInfo from "./matchcenter/FixtureMatchInfo.vue";
+import FixtureSidelined from "./matchcenter/FixtureSidelined.vue";
 
 interface Props {
   isOpen: boolean;
@@ -236,96 +239,62 @@ const onDragEnd = (e: PointerEvent) => {
             <template v-else-if="fixture">
               <FixtureScoreboardHeader :fixture="fixture" />
 
-              <FixtureEventsTimeline
-                :events="fixture.events ?? []"
-                :home-team="homeTeam"
-                :away-team="awayTeam"
-              />
+              <!-- Events (open by default) -->
+              <FixtureAccordion
+                title="Events"
+                icon="md-sportssoccer"
+                :default-open="true"
+              >
+                <FixtureEventsTimeline
+                  :events="fixture.events ?? []"
+                  :event-filters="fixture.eventFilters"
+                  :home-team="homeTeam"
+                  :away-team="awayTeam"
+                />
+              </FixtureAccordion>
 
-              <FixtureStatistics
+              <!-- Statistics (open by default) -->
+              <FixtureAccordion
                 v-if="fixture.statistics && fixture.statistics.length > 0"
-                :statistics="fixture.statistics"
-                :home-team="homeTeam"
-                :away-team="awayTeam"
-              />
+                title="Statistics"
+                icon="hi-solid-chart-bar"
+                :default-open="true"
+              >
+                <FixtureStatistics
+                  :statistics="fixture.statistics"
+                  :home-team="homeTeam"
+                  :away-team="awayTeam"
+                />
+              </FixtureAccordion>
 
-              <!-- Venue + Weather compact card -->
-              <section
+              <!-- Match Info — Venue + Weather (collapsed) -->
+              <FixtureAccordion
                 v-if="fixture.venue || fixture.weatherReport"
-                class="px-4 py-5 border-t border-gray-100 dark:border-gray-800"
+                title="Match Info"
+                icon="hi-solid-information-circle"
+                :default-open="false"
               >
-                <h3 class="text-[15px] font-bold text-gray-900 dark:text-white mb-3">Match Info</h3>
-                <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 p-3 space-y-2">
-                  <div
-                    v-if="fixture.venue?.name"
-                    class="flex items-start gap-2 text-[12px] text-gray-700 dark:text-gray-300"
-                  >
-                    <v-icon name="hi-solid-location-marker" class="w-3.5 h-3.5 mt-0.5 text-gray-400 shrink-0" />
-                    <div class="min-w-0">
-                      <p class="font-medium truncate">{{ fixture.venue.name }}</p>
-                      <p v-if="fixture.venue.city_name || fixture.venue.capacity" class="text-[11px] text-gray-500 dark:text-gray-400">
-                        <span v-if="fixture.venue.city_name">{{ fixture.venue.city_name }}</span>
-                        <span v-if="fixture.venue.city_name && fixture.venue.capacity"> • </span>
-                        <span v-if="fixture.venue.capacity">{{ fixture.venue.capacity.toLocaleString() }} capacity</span>
-                      </p>
-                    </div>
-                  </div>
+                <FixtureMatchInfo
+                  :venue="fixture.venue"
+                  :weather="fixture.weatherReport"
+                />
+              </FixtureAccordion>
 
-                  <div
-                    v-if="fixture.weatherReport"
-                    class="flex items-start gap-2 text-[12px] text-gray-700 dark:text-gray-300"
-                  >
-                    <img
-                      v-if="fixture.weatherReport.icon"
-                      :src="fixture.weatherReport.icon"
-                      :alt="fixture.weatherReport.description"
-                      class="w-4 h-4 mt-0.5 shrink-0"
-                    />
-                    <div class="min-w-0">
-                      <p class="font-medium capitalize truncate">{{ fixture.weatherReport.description }}</p>
-                      <p class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">
-                        {{ Math.round(fixture.weatherReport.current?.temp ?? fixture.weatherReport.temperature?.day ?? 0) }}°C
-                        • {{ fixture.weatherReport.humidity }} humidity
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <!-- Sidelined -->
-              <section
+              <!-- Sidelined (collapsed) -->
+              <FixtureAccordion
                 v-if="fixture.sidelined && fixture.sidelined.length > 0"
-                class="px-4 py-5 border-t border-gray-100 dark:border-gray-800"
+                title="Sidelined"
+                icon="hi-solid-user"
+                icon-class="text-red-500 dark:text-red-400"
+                :default-open="false"
               >
-                <h3 class="text-[15px] font-bold text-gray-900 dark:text-white mb-3">
-                  Sidelined
-                  <span class="text-[11px] font-normal text-gray-400 dark:text-gray-500 ml-1">
+                <template #trailing>
+                  <span class="text-[11px] font-normal text-gray-400 dark:text-gray-500 tabular-nums">
                     {{ fixture.sidelined.length }}
                   </span>
-                </h3>
-                <div class="space-y-2">
-                  <div
-                    v-for="s in fixture.sidelined"
-                    :key="s.id"
-                    class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-2.5"
-                  >
-                    <img
-                      v-if="s.player?.image_path"
-                      :src="s.player.image_path"
-                      :alt="s.player.display_name"
-                      class="w-8 h-8 rounded-full object-cover bg-gray-100 dark:bg-gray-700 shrink-0"
-                    />
-                    <div class="min-w-0 flex-1">
-                      <p class="text-[12px] font-semibold text-gray-800 dark:text-gray-200 truncate">
-                        {{ s.player?.display_name ?? "Player" }}
-                      </p>
-                      <p class="text-[10px] text-red-500 dark:text-red-400 truncate">
-                        {{ s.type?.name ?? "Injured" }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </section>
+                </template>
+                <FixtureSidelined :sidelined="fixture.sidelined" />
+              </FixtureAccordion>
             </template>
           </div>
         </div>

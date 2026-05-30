@@ -52,8 +52,8 @@ export class FootballFixtureService {
         throw new AxiosError('Failed to fetch football fixture data');
     }
 
-    async getAllFixturesByStage(stageUuid: string): Promise<FootballRoundResponse[]> {
-        const response = await this.api.get<ApiResponse<FootballRoundResponse[]>>(`/fixtures/stage/${stageUuid}/rounds`);
+    async getAllFixturesByStage(stageUuid: string): Promise<FootballFixtureResponse[]> {
+        const response = await this.api.get<ApiResponse<FootballFixtureResponse[]>>(`/fixtures/stage/${stageUuid}`);
         if (response.data.code === 200) {
             return response.data.data;
         }

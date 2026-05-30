@@ -100,11 +100,7 @@ const hasAnyStat = computed(() => headline.value.length > 0 || secondary.value.l
 </script>
 
 <template>
-  <section v-if="hasAnyStat" class="px-4 py-5 border-t border-gray-100 dark:border-gray-800">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-[15px] font-bold text-gray-900 dark:text-white">Statistics</h3>
-    </div>
-
+  <div v-if="hasAnyStat" class="px-4 pt-2 pb-5">
     <!-- Headline stats -->
     <div class="divide-y divide-gray-100 dark:divide-gray-800/60">
       <FixtureStatBar
@@ -151,5 +147,5 @@ const hasAnyStat = computed(() => headline.value.length > 0 || secondary.value.l
         />
       </button>
     </template>
-  </section>
+  </div>
 </template>

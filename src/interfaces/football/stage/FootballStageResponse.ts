@@ -2,7 +2,9 @@ import { TypeResponse } from "../type/TypeResponse";
 
 export interface FootballStageResponse {
     uuid: string;
+    season_uuid: string;
     name: string;
+    name_complete: string | null;
     sort_order: number;
     finished: boolean;
     is_current: boolean;
