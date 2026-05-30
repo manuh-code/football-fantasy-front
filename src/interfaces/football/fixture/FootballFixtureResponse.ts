@@ -10,6 +10,7 @@ import { ScoreResponse } from "./ScoreResponse";
 import { FootballStatisticResponse } from "./FootballStatisticResponse";
 import { FootballSidelinedResponse } from "./FootballSidelinedResponse";
 import { FootballWeatherReportResponse } from "./FootballWeatherReportResponse";
+import { FootballEventFilterResponse } from "../event/FootballEventFilterResponse";
 
 export interface FootballFixtureResponse {
     uuid: string;
@@ -22,6 +23,7 @@ export interface FootballFixtureResponse {
     venue: FootballVenueResponse | null;
     scores: ScoreResponse[] | null;
     events: FootballEventResponse[] | null;
+    eventFilters : FootballEventFilterResponse | null;
     statistics: FootballStatisticResponse[] | null;
     sidelined: FootballSidelinedResponse[] | null;
     weatherReport: FootballWeatherReportResponse | null;

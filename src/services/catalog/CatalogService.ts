@@ -129,6 +129,14 @@ export class CatalogService {
 
     throw new AxiosError('Failed to fetch football rounds');
   }
+
+  async getKnockoutStageByStage(stageUuid: string): Promise<FootballStageResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballStageResponse[]>>(`catalog/stage/${stageUuid}/knockout`);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+    throw new AxiosError('Failed to fetch knockout stage');
+  }
 }
 
 export const catalogService = new CatalogService();

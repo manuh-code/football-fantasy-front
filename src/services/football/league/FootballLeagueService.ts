@@ -1,8 +1,8 @@
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
-import { FootballStageLeagueResponse } from "@/interfaces/football/league/stage/FootballStageLeagueResponse";
 import { FootballLeagueStandingsPayload } from "@/interfaces/football/league/Standing/FootballLeagueStandingsPayload";
+import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import { AxiosError } from "axios";
 
 export class FootballLeagueService {
@@ -29,8 +29,8 @@ export class FootballLeagueService {
         throw new AxiosError('Failed to fetch standings');
     }
 
-    async getStage(leagueUuid: string): Promise<FootballStageLeagueResponse[]> {
-        const response = await this.api.get<ApiResponse<FootballStageLeagueResponse[]>>(`/leagues/${leagueUuid}/stages`);
+    async getStage(leagueUuid: string): Promise<FootballStageResponse[]> {
+        const response = await this.api.get<ApiResponse<FootballStageResponse[]>>(`/leagues/${leagueUuid}/stages`);
         if (response.data.code === 200) {
             return response.data.data;
         }

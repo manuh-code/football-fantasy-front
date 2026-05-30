@@ -30,8 +30,8 @@
             <SearchableSelectComponent
               v-model="selectedStageUuid"
               :options="stages"
-              value-key="stageUuid"
-              label-key="stage"
+              value-key="uuid"
+              label-key="name"
               placeholder="Select stage"
               search-placeholder="Search stage..."
               :disabled="loadingStages"
@@ -40,14 +40,27 @@
               :searchable="stages.length > 5"
               :clearable="false"
               @change="onStageChange"
-            />
+            >
+              <template #selected="{ option }">
+                <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+                  {{ (option.name_complete as string | null) || option.name }}
+                </span>
+              </template>
+              <template #option="{ option }">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">
+                    {{ (option.name_complete as string | null) || option.name }}
+                  </p>
+                </div>
+              </template>
+            </SearchableSelectComponent>
           </div>
         </div>
       </div>
 
       <!-- Content (only when a stage is selected) -->
       <template v-if="selectedStageUuid">
-        <FixturesByStageAndCurrentRound :stage-uuid="selectedStageUuid" />
+        <FixturesSectionTabs :stage-uuid="selectedStageUuid" />
         <LeagueStanding
           :stage-uuid="selectedStageUuid"
           :season-uuid="selectedSeasonUuid"
@@ -78,10 +91,10 @@ import { footballLeagueService } from "@/services/football/league/FootballLeague
 import { SearchableSelectComponent } from "@/components/ui";
 import { useToast } from "@/composables/useToast";
 import { getActivePinia, type Pinia, type Store } from "pinia";
-import type { FootballStageLeagueResponse } from "@/interfaces/football/league/stage/FootballStageLeagueResponse";
+import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 
 // Lazy-load heavy components
-const FixturesByStageAndCurrentRound = defineAsyncComponent(() => import('@/components/football/fixtures/FixturesByStageAndCurrentRound.vue'))
+const FixturesSectionTabs = defineAsyncComponent(() => import('@/components/football/fixtures/FixturesSectionTabs.vue'))
 const LeagueStanding = defineAsyncComponent(() => import('@/components/football/leagues/LeagueStanding.vue'))
 
 const store = useFootballLeagueStore();
@@ -92,20 +105,20 @@ const leagueName = computed(() => store.getLeague?.name ?? 'League');
 const leagueImage = computed(() => store.getLeague?.image_path ?? '');
 
 // Stage state
-const stages = ref<FootballStageLeagueResponse[]>([]);
+const stages = ref<FootballStageResponse[]>([]);
 const loadingStages = ref(false);
 const selectedStageUuid = ref("");
 const selectedSeasonUuid = ref("");
 
 const selectedStageName = computed(() => {
-  const stage = stages.value.find((s) => s.stageUuid === selectedStageUuid.value);
-  return stage?.stage ?? "";
+  const stage = stages.value.find((s) => s.uuid === selectedStageUuid.value);
+  return stage?.name ?? "";
 });
 
 /** Extract a short season label from the selected stage */
 const currentSeasonLabel = computed(() => {
-  const stage = stages.value.find((s) => s.stageUuid === selectedStageUuid.value);
-  return stage?.stage ?? "";
+  const stage = stages.value.find((s) => s.uuid === selectedStageUuid.value);
+  return stage?.name ?? "";
 });
 
 /**
@@ -162,9 +175,9 @@ const fetchStages = async () => {
     const res = await footballLeagueService.getStage(leagueUuid);
     if (Array.isArray(res) && res.length > 0) {
       stages.value = res;
-      const currentStage = res.find((s) => s.isCurrent === true) || res[0];
-      selectedStageUuid.value = currentStage.stageUuid;
-      selectedSeasonUuid.value = currentStage.seasonUuid;
+      const currentStage = res.find((s) => s.is_current === true) || res[0];
+      selectedStageUuid.value = currentStage.uuid;
+      selectedSeasonUuid.value = currentStage.season_uuid;
     }
   } catch (e) {
     if (is404Error(e)) {
@@ -173,9 +186,9 @@ const fetchStages = async () => {
         const res = await footballLeagueService.getStage(leagueUuid);
         if (Array.isArray(res) && res.length > 0) {
           stages.value = res;
-          const currentStage = res.find((s) => s.isCurrent === true) || res[0];
-          selectedStageUuid.value = currentStage.stageUuid;
-          selectedSeasonUuid.value = currentStage.seasonUuid;
+          const currentStage = res.find((s) => s.is_current === true) || res[0];
+          selectedStageUuid.value = currentStage.uuid;
+          selectedSeasonUuid.value = currentStage.season_uuid;
         }
       } catch (_retryError: unknown) {
         // Second attempt failed — reset everything and show league modal
@@ -193,9 +206,9 @@ const fetchStages = async () => {
 
 const onStageChange = (value: string | number | null) => {
   selectedStageUuid.value = String(value || "");
-  const stage = stages.value.find((s) => s.stageUuid === selectedStageUuid.value);
+  const stage = stages.value.find((s) => s.uuid === selectedStageUuid.value);
   if (stage) {
-    selectedSeasonUuid.value = stage.seasonUuid;
+    selectedSeasonUuid.value = stage.season_uuid;
   }
 };
 
