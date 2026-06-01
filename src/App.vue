@@ -30,8 +30,9 @@
       </div>
     </transition>
 
-    <!-- Header Menu - Fixed at top, outside transform context -->
-    <HeaderMenu />
+    <!-- Header Menu - Fixed at top, outside transform context.
+         Hidden on Home, which renders its own HomeHeaderMenu (brand + stage switcher + profile). -->
+    <HeaderMenu v-if="!isHomeRoute" />
 
     <!-- Main Content with Swipe Transform -->
     <div
@@ -65,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 import HeaderMenu from "@/components/HeaderMenu.vue";
@@ -82,6 +83,9 @@ const themeStore = useThemeStore();
 const store = useFootballLeagueStore();
 const router = useRouter();
 const showLeagueModal = ref(false);
+
+// Home renders its own header (HomeHeaderMenu); hide the global one there.
+const isHomeRoute = computed(() => router.currentRoute.value.name === "home");
 const { requestPermissionAndRegister, onForegroundMessage } =
   usePushNotifications();
 const toast = useToast();

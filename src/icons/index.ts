@@ -56,6 +56,7 @@ import {
   HiChevronLeft,
   HiChevronRight,
   MdSportssoccer,
+  MdHistory,
   HiSolidClipboardCheck,
   HiSolidSave,
   HiSolidHashtag,
@@ -138,6 +139,7 @@ import {
   HiX,
   HiSolidLocationMarker,
   MdReplay,
+  BiTrophy,
 } from 'oh-vue-icons/icons'
 
 // Sports icons
@@ -264,6 +266,7 @@ export const iconList = [
   BiEyeSlashFill,
   HiSolidTable,
   MdSportssoccer,
+  MdHistory,
   HiSolidPhotograph,
   HiSolidSwitchHorizontal,
   // Sports icons
@@ -274,6 +277,7 @@ export const iconList = [
   HiX,
   HiSolidLocationMarker,
   MdReplay,
+  BiTrophy,
 ]
 
 // Icon name mapping for easier usage

@@ -1,6 +1,7 @@
 import { CountryResponse } from "@/interfaces/country/CountryResponse";
 import { FootballTeamMetaResponse } from "./FootballTeamMetaResponse";
 import { FootballTeamCurrentScoreResponse } from "./FootballTeamCurrentScoreResponse";
+import { FootballFixtureResponse } from "../fixture/FootballFixtureResponse";
 
 export interface FootballTeamResponse {
     uuid: string;
@@ -12,5 +13,6 @@ export interface FootballTeamResponse {
     country: CountryResponse;
     meta: FootballTeamMetaResponse | null;
     current_score: FootballTeamCurrentScoreResponse | null;
+    latest: FootballFixtureResponse[] | null;
 
 }

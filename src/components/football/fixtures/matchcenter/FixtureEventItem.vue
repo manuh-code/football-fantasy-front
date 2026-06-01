@@ -143,26 +143,26 @@ const isHome = computed(() => props.side === "home");
 
     <!-- Content -->
     <div class="flex-1 min-w-0" :class="isHome ? 'text-left' : 'text-right'">
-      <div class="flex items-center gap-1.5" :class="isHome ? 'justify-start' : 'justify-end'">
+      <div class="flex items-start gap-1.5" :class="isHome ? 'justify-start' : 'justify-end'">
         <p
-          class="text-[13px] font-semibold text-gray-900 dark:text-white truncate"
+          class="text-[13px] font-semibold text-gray-900 dark:text-white break-words"
           :class="isCancelledPenalty ? 'line-through text-gray-400 dark:text-gray-500' : ''"
         >
           {{ event.player_name }}
         </p>
         <span
           v-if="developerName === 'PENALTY'"
-          class="text-[9px] font-bold px-1 py-px rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 shrink-0"
+          class="text-[9px] font-bold px-1 py-px rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 shrink-0 mt-0.5"
         >
           P
         </span>
       </div>
-      <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+      <p class="text-[11px] text-gray-500 dark:text-gray-400 break-words">
         {{ eventTitle }}
       </p>
       <p
         v-if="secondaryLine"
-        class="text-[10px] text-gray-400 dark:text-gray-500 truncate italic"
+        class="text-[10px] text-gray-400 dark:text-gray-500 break-words italic"
       >
         {{ secondaryLine }}
       </p>
