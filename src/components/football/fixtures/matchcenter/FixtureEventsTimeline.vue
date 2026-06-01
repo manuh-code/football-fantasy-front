@@ -234,35 +234,17 @@ const showEmptyMatchingFilters = computed(
           <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700/60" />
         </div>
 
-        <!-- Events list -->
-        <div class="relative">
-          <!-- Center vertical line -->
+        <!-- Events list — FotMob style: each event takes most of the row width and is
+             aligned to its team's side, so player names render in full (no truncation). -->
+        <div class="space-y-3.5">
           <div
-            class="absolute top-0 bottom-0 left-1/2 w-px bg-gray-200 dark:bg-gray-700/40 -translate-x-px"
-            aria-hidden="true"
-          />
-
-          <div class="space-y-4">
-            <div
-              v-for="event in group.events"
-              :key="event.id"
-              class="grid grid-cols-2 gap-2"
-            >
-              <!-- Home side -->
-              <div v-if="sideOf(event) === 'home'" class="col-start-1 col-end-2 flex justify-end">
-                <div class="w-full max-w-full">
-                  <FixtureEventItem :event="event" side="home" />
-                </div>
-              </div>
-              <div v-else class="col-start-1 col-end-2" />
-
-              <!-- Away side -->
-              <div v-if="sideOf(event) === 'away'" class="col-start-2 col-end-3 flex justify-start">
-                <div class="w-full max-w-full">
-                  <FixtureEventItem :event="event" side="away" />
-                </div>
-              </div>
-              <div v-else class="col-start-2 col-end-3" />
+            v-for="event in group.events"
+            :key="event.id"
+            class="flex"
+            :class="sideOf(event) === 'home' ? 'justify-start' : 'justify-end'"
+          >
+            <div class="w-[88%] sm:w-[85%]">
+              <FixtureEventItem :event="event" :side="sideOf(event)" />
             </div>
           </div>
         </div>

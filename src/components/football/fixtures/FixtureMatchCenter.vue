@@ -10,6 +10,7 @@ import FixtureMatchCenterSkeleton from "./matchcenter/FixtureMatchCenterSkeleton
 import FixtureAccordion from "./matchcenter/FixtureAccordion.vue";
 import FixtureMatchInfo from "./matchcenter/FixtureMatchInfo.vue";
 import FixtureSidelined from "./matchcenter/FixtureSidelined.vue";
+import FixtureLatestMatches from "./matchcenter/FixtureLatestMatches.vue";
 
 interface Props {
   isOpen: boolean;
@@ -262,6 +263,19 @@ const onDragEnd = (e: PointerEvent) => {
               >
                 <FixtureStatistics
                   :statistics="fixture.statistics"
+                  :home-team="homeTeam"
+                  :away-team="awayTeam"
+                />
+              </FixtureAccordion>
+
+              <!-- Latest Matches — recent form for both teams (collapsed) -->
+              <FixtureAccordion
+                v-if="(homeTeam?.latest && homeTeam.latest.length > 0) || (awayTeam?.latest && awayTeam.latest.length > 0)"
+                title="Latest Matches"
+                icon="md-history"
+                :default-open="false"
+              >
+                <FixtureLatestMatches
                   :home-team="homeTeam"
                   :away-team="awayTeam"
                 />

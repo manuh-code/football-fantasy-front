@@ -1,63 +1,12 @@
 <template>
   <div class="space-y-4 sm:space-y-6">
+    <!-- Home header: brand + stage switcher + profile (replaces the global HeaderMenu on Home) -->
+    <HomeHeaderMenu
+      v-model:stage-uuid="selectedStageUuid"
+      v-model:season-uuid="selectedSeasonUuid"
+    />
+
     <template v-if="hasLeague">
-      <!-- Stage Selector Bar — Apple Sports / FotMob style -->
-      <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
-        <!-- League identity row -->
-        <div class="flex items-center gap-3 px-4 pt-3.5 pb-2">
-          <img
-            :src="leagueImage || '/img/default-avatar.svg'"
-            :alt="leagueName"
-            class="w-8 h-8 rounded-lg object-cover shadow-sm ring-1 ring-gray-100 dark:ring-gray-700 shrink-0"
-          />
-          <div class="min-w-0 flex-1">
-            <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white leading-tight truncate">
-              {{ leagueName }}
-            </h2>
-          </div>
-          <!-- Season badge -->
-          <span
-            v-if="selectedStageName"
-            class="text-[10px] font-medium text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700/50 px-2 py-0.5 rounded-full shrink-0"
-          >
-            {{ currentSeasonLabel }}
-          </span>
-        </div>
-
-        <!-- Stage selector row -->
-        <div class="px-4 pb-3.5">
-          <div class="relative">
-            <SearchableSelectComponent
-              v-model="selectedStageUuid"
-              :options="stages"
-              value-key="uuid"
-              label-key="name"
-              placeholder="Select stage"
-              search-placeholder="Search stage..."
-              :disabled="loadingStages"
-              :loading="loadingStages"
-              accent-color="blue"
-              :searchable="stages.length > 5"
-              :clearable="false"
-              @change="onStageChange"
-            >
-              <template #selected="{ option }">
-                <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
-                  {{ (option.name_complete as string | null) || option.name }}
-                </span>
-              </template>
-              <template #option="{ option }">
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium truncate">
-                    {{ (option.name_complete as string | null) || option.name }}
-                  </p>
-                </div>
-              </template>
-            </SearchableSelectComponent>
-          </div>
-        </div>
-      </div>
-
       <!-- Content (only when a stage is selected) -->
       <template v-if="selectedStageUuid">
         <FixturesSectionTabs :stage-uuid="selectedStageUuid" />
@@ -85,145 +34,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, defineAsyncComponent, watch } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
-import { footballLeagueService } from "@/services/football/league/FootballLeagueService";
-import { SearchableSelectComponent } from "@/components/ui";
-import { useToast } from "@/composables/useToast";
-import { getActivePinia, type Pinia, type Store } from "pinia";
-import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
+import HomeHeaderMenu from "@/components/home/HomeHeaderMenu.vue";
 
-// Lazy-load heavy components
-const FixturesSectionTabs = defineAsyncComponent(() => import('@/components/football/fixtures/FixturesSectionTabs.vue'))
-const LeagueStanding = defineAsyncComponent(() => import('@/components/football/leagues/LeagueStanding.vue'))
+// Lazy-load heavy content components
+const FixturesSectionTabs = defineAsyncComponent(() => import("@/components/football/fixtures/FixturesSectionTabs.vue"));
+const LeagueStanding = defineAsyncComponent(() => import("@/components/football/leagues/LeagueStanding.vue"));
 
 const store = useFootballLeagueStore();
-const { error: showError } = useToast();
 
 const hasLeague = computed(() => store.existLeague());
-const leagueName = computed(() => store.getLeague?.name ?? 'League');
-const leagueImage = computed(() => store.getLeague?.image_path ?? '');
 
-// Stage state
-const stages = ref<FootballStageResponse[]>([]);
-const loadingStages = ref(false);
+// Active stage/season context, driven by the HomeHeaderMenu.
 const selectedStageUuid = ref("");
 const selectedSeasonUuid = ref("");
-
-const selectedStageName = computed(() => {
-  const stage = stages.value.find((s) => s.uuid === selectedStageUuid.value);
-  return stage?.name ?? "";
-});
-
-/** Extract a short season label from the selected stage */
-const currentSeasonLabel = computed(() => {
-  const stage = stages.value.find((s) => s.uuid === selectedStageUuid.value);
-  return stage?.name ?? "";
-});
-
-/**
- * Check if the error is a 404 response.
- */
-const is404Error = (e: unknown): boolean => {
-  const err = e as Record<string, unknown>;
-  return err?.status === 404 || (err?.response as Record<string, unknown>)?.status === 404;
-};
-
-/**
- * Reset all Pinia stores, clear localStorage, and reload to show league selection modal.
- */
-const resetStoresAndShowLeagueModal = () => {
-  const pinia = getActivePinia() as Pinia & { _s: Map<string, Store> };
-  if (pinia) {
-    pinia._s.forEach((s) => {
-      try {
-        s.$reset();
-      } catch {
-        const emptyState: Record<string, null> = {};
-        Object.keys(s.$state).forEach((key) => { emptyState[key] = null; });
-        s.$patch(emptyState);
-      }
-    });
-  }
-  // Clear persisted data
-  const keys: string[] = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key) keys.push(key);
-  }
-  keys.forEach((key) => localStorage.removeItem(key));
-
-  showError('League not found', 'Please select a new league to continue.');
-  // Reload so App.vue shows the league selection modal
-  globalThis.location.reload();
-};
-
-/**
- * Fetch stages for the current league and auto-select the current one.
- * On 404: retries once. If still fails, resets all stores and shows league modal.
- */
-const fetchStages = async () => {
-  const leagueUuid = store.getFootballLeagueUuid();
-  if (!leagueUuid) return;
-
-  loadingStages.value = true;
-  stages.value = [];
-  selectedStageUuid.value = "";
-  selectedSeasonUuid.value = "";
-
-  try {
-    const res = await footballLeagueService.getStage(leagueUuid);
-    if (Array.isArray(res) && res.length > 0) {
-      stages.value = res;
-      const currentStage = res.find((s) => s.is_current === true) || res[0];
-      selectedStageUuid.value = currentStage.uuid;
-      selectedSeasonUuid.value = currentStage.season_uuid;
-    }
-  } catch (e) {
-    if (is404Error(e)) {
-      // Retry once
-      try {
-        const res = await footballLeagueService.getStage(leagueUuid);
-        if (Array.isArray(res) && res.length > 0) {
-          stages.value = res;
-          const currentStage = res.find((s) => s.is_current === true) || res[0];
-          selectedStageUuid.value = currentStage.uuid;
-          selectedSeasonUuid.value = currentStage.season_uuid;
-        }
-      } catch (_retryError: unknown) {
-        // Second attempt failed — reset everything and show league modal
-        console.error('Retry failed for getStage:', _retryError);
-        resetStoresAndShowLeagueModal();
-        return;
-      }
-    } else {
-      console.error("Error loading stages:", e);
-    }
-  } finally {
-    loadingStages.value = false;
-  }
-};
-
-const onStageChange = (value: string | number | null) => {
-  selectedStageUuid.value = String(value || "");
-  const stage = stages.value.find((s) => s.uuid === selectedStageUuid.value);
-  if (stage) {
-    selectedSeasonUuid.value = stage.season_uuid;
-  }
-};
-
-// Re-fetch stages when the league changes
-watch(() => store.getLeague, () => {
-  if (hasLeague.value) {
-    fetchStages();
-  }
-});
-
-onMounted(() => {
-  if (hasLeague.value) {
-    fetchStages();
-  }
-});
 </script>
 
 <style scoped>
