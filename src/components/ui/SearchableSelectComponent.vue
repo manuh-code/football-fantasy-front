@@ -10,97 +10,146 @@
       <span v-if="required" class="text-red-500 ml-1">*</span>
     </label>
 
-    <!-- Select Container -->
-    <div class="relative" ref="containerRef">
-      <!-- Trigger Button -->
-      <button
-        :id="id"
-        type="button"
-        @click.stop="toggleDropdown"
-        :disabled="disabled"
-        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all duration-200 text-left"
-        :class="[
-          isOpen
-            ? `${accentBorderClass} ring-2 ${accentRingClass}`
-            : error
-              ? 'border-red-300 dark:border-red-600 hover:border-red-400 dark:hover:border-red-500'
-              : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500',
-          disabled
-            ? 'opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-800'
-            : 'bg-white dark:bg-gray-700/50 cursor-pointer',
-        ]"
-        :aria-expanded="isOpen"
-        :aria-describedby="error ? `${id}-error` : undefined"
-      >
-        <!-- Selected value display -->
-        <template v-if="selectedOption">
-          <img
-            v-if="imageKey && selectedOption[imageKey]"
-            :src="String(selectedOption[imageKey]) || defaultImage"
-            :alt="String(selectedOption[labelKey])"
-            class="w-6 h-6 object-contain flex-shrink-0 rounded"
-          />
-          <slot name="selected" :option="selectedOption">
-            <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
-              {{ selectedOption[labelKey] }}
-            </span>
-          </slot>
-          <button
-            v-if="clearable && !disabled"
-            @click.stop="handleClear"
-            class="flex-shrink-0 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            title="Clear selection"
-          >
-            <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-          </button>
-        </template>
-
-        <!-- Placeholder -->
-        <template v-else>
-          <v-icon
-            v-if="searchable"
-            name="hi-solid-search"
-            class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
-          />
-          <span class="text-sm text-gray-400 dark:text-gray-500 flex-1">
-            {{ placeholder }}
+    <!-- Trigger Button -->
+    <button
+      :id="id"
+      type="button"
+      @click.stop="toggleDropdown"
+      :disabled="disabled"
+      class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all duration-200 text-left"
+      :class="[
+        isOpen
+          ? `${accentBorderClass} ring-2 ${accentRingClass}`
+          : error
+            ? 'border-red-300 dark:border-red-600 hover:border-red-400 dark:hover:border-red-500'
+            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500',
+        disabled
+          ? 'opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-800'
+          : 'bg-white dark:bg-gray-700/50 cursor-pointer',
+      ]"
+      :aria-expanded="isOpen"
+      aria-haspopup="dialog"
+      :aria-describedby="error ? `${id}-error` : undefined"
+    >
+      <!-- Selected value display -->
+      <template v-if="selectedOption">
+        <img
+          v-if="imageKey && selectedOption[imageKey]"
+          :src="String(selectedOption[imageKey]) || defaultImage"
+          :alt="String(selectedOption[labelKey])"
+          class="w-6 h-6 object-contain flex-shrink-0 rounded"
+        />
+        <slot name="selected" :option="selectedOption">
+          <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+            {{ selectedOption[labelKey] }}
           </span>
-        </template>
+        </slot>
+        <button
+          v-if="clearable && !disabled"
+          @click.stop="handleClear"
+          class="flex-shrink-0 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          title="Clear selection"
+        >
+          <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+        </button>
+      </template>
 
-        <!-- Loading indicator -->
+      <!-- Placeholder -->
+      <template v-else>
         <v-icon
-          v-if="loading"
-          name="pr-spinner"
-          class="w-4 h-4 text-gray-400 flex-shrink-0"
-          animation="spin"
+          v-if="searchable"
+          name="hi-solid-search"
+          class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
         />
+        <span class="text-sm text-gray-400 dark:text-gray-500 flex-1">
+          {{ placeholder }}
+        </span>
+      </template>
 
-        <!-- Chevron -->
-        <v-icon
-          v-if="!loading"
-          name="hi-solid-chevron-down"
-          class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 transition-transform duration-200"
-          :class="{ 'rotate-180': isOpen }"
-        />
-      </button>
+      <!-- Loading indicator -->
+      <v-icon
+        v-if="loading"
+        name="pr-spinner"
+        class="w-4 h-4 text-gray-400 flex-shrink-0"
+        animation="spin"
+      />
 
-      <!-- Dropdown Panel -->
-      <Transition
-        enter-active-class="transition ease-out duration-200"
-        enter-from-class="opacity-0 translate-y-1"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition ease-in duration-150"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 translate-y-1"
+      <!-- Chevron -->
+      <v-icon
+        v-if="!loading"
+        name="hi-solid-chevron-down"
+        class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 transition-transform duration-200"
+        :class="{ 'rotate-180': isOpen }"
+      />
+    </button>
+
+    <!-- Error message -->
+    <p
+      v-if="error"
+      :id="`${id}-error`"
+      class="text-sm text-red-600 dark:text-red-400"
+    >
+      {{ error }}
+    </p>
+  </div>
+
+  <!-- Options drawer (bottom-sheet, consistent with the rest of the app) -->
+  <Teleport to="body">
+    <!-- Backdrop -->
+    <Transition name="ss-fade">
+      <div
+        v-if="isOpen"
+        class="fixed inset-0 z-[130] bg-black/60 backdrop-blur-sm"
+        @click="closeDropdown"
+      />
+    </Transition>
+
+    <!-- Sheet -->
+    <Transition name="ss-slide">
+      <div
+        v-if="isOpen"
+        class="fixed bottom-0 left-0 right-0 z-[140] md:left-4 md:right-4 md:bottom-4 md:max-w-md md:mx-auto pointer-events-none"
       >
         <div
-          v-if="isOpen"
-          class="absolute z-50 mt-2 w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+          :style="{
+            transform: `translateY(${dragOffsetY}px)`,
+            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
+          }"
+          class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[80dvh] overflow-hidden pointer-events-auto"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="label || placeholder"
         >
+          <!-- Draggable header -->
+          <div
+            @pointerdown="onDragStart"
+            @pointermove="onDragMove"
+            @pointerup="onDragEnd"
+            @pointercancel="onDragEnd"
+            class="relative shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
+          >
+            <div class="flex justify-center pt-2.5 pb-1.5">
+              <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
+            </div>
+            <div class="flex items-center justify-between px-4 pb-2.5 pt-1">
+              <h3 class="text-[15px] font-bold text-gray-900 dark:text-white truncate">
+                {{ label || placeholder }}
+              </h3>
+              <button
+                @click.stop="closeDropdown"
+                @pointerdown.stop
+                class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Close"
+              >
+                <v-icon name="hi-x" class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
           <!-- Search Input -->
           <div
             v-if="searchable"
-            class="p-2 border-b border-gray-100 dark:border-gray-700"
+            class="shrink-0 px-4 pb-3 pt-1 border-b border-gray-100 dark:border-gray-800"
           >
             <div class="relative">
               <v-icon
@@ -112,23 +161,26 @@
                 v-model="searchQuery"
                 type="text"
                 :placeholder="searchPlaceholder"
-                class="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-700 focus:border-indigo-400 dark:focus:border-indigo-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full h-10 pl-9 pr-3 text-sm bg-gray-100 dark:bg-gray-800 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 @click.stop
               />
             </div>
           </div>
 
           <!-- Options List -->
-          <div class="max-h-60 overflow-y-auto overscroll-contain">
+          <div
+            class="flex-1 overflow-y-auto overscroll-contain px-2 py-1.5"
+            style="padding-bottom: calc(1rem + env(safe-area-inset-bottom))"
+          >
             <!-- "All" / Default option -->
             <button
               v-if="allOption"
               @click.stop="handleSelect(allOptionValue)"
-              class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150"
+              class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors duration-150"
               :class="[
                 modelValue === allOptionValue || modelValue === null || modelValue === ''
                   ? `${accentBgClass} ${accentTextClass}`
-                  : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300'
+                  : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 active:bg-gray-100 dark:active:bg-gray-800 text-gray-700 dark:text-gray-300'
               ]"
             >
               <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
@@ -147,11 +199,11 @@
               v-for="option in filteredOptions"
               :key="String(option[valueKey])"
               @click.stop="handleSelect(option[valueKey])"
-              class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150"
+              class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors duration-150"
               :class="[
                 String(modelValue) === String(option[valueKey])
                   ? `${accentBgClass} ${accentTextClass}`
-                  : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300'
+                  : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 active:bg-gray-100 dark:active:bg-gray-800 text-gray-700 dark:text-gray-300'
               ]"
             >
               <img
@@ -181,7 +233,7 @@
             <!-- No results -->
             <div
               v-if="filteredOptions.length === 0 && searchQuery"
-              class="px-4 py-6 text-center"
+              class="px-4 py-8 text-center"
             >
               <v-icon
                 name="hi-solid-emoji-sad"
@@ -195,7 +247,7 @@
             <!-- Empty options -->
             <div
               v-if="options.length === 0 && !searchQuery"
-              class="px-4 py-6 text-center"
+              class="px-4 py-8 text-center"
             >
               <p class="text-sm text-gray-400 dark:text-gray-500">
                 {{ noOptionsText }}
@@ -203,18 +255,9 @@
             </div>
           </div>
         </div>
-      </Transition>
-    </div>
-
-    <!-- Error message -->
-    <p
-      v-if="error"
-      :id="`${id}-error`"
-      class="text-sm text-red-600 dark:text-red-400"
-    >
-      {{ error }}
-    </p>
-  </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -278,7 +321,6 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const containerRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
 const isOpen = ref(false);
 const searchQuery = ref("");
@@ -378,15 +420,18 @@ const isDesktop = globalThis.window !== undefined && globalThis.window.matchMedi
 // Methods
 function toggleDropdown() {
   if (props.disabled || props.loading) return;
-  isOpen.value = !isOpen.value;
-  if (isOpen.value) {
-    searchQuery.value = "";
-    if (props.searchable && isDesktop) {
-      nextTick(() => {
-        searchInputRef.value?.focus();
-      });
-    }
-  }
+  isOpen.value ? closeDropdown() : openDropdown();
+}
+
+function openDropdown() {
+  if (props.disabled || props.loading) return;
+  isOpen.value = true;
+  searchQuery.value = "";
+}
+
+function closeDropdown() {
+  isOpen.value = false;
+  searchQuery.value = "";
 }
 
 function handleSelect(value: unknown) {
@@ -394,8 +439,7 @@ function handleSelect(value: unknown) {
     value === null || value === undefined ? null : (value as string | number);
   emit("update:modelValue", emitValue);
   emit("change", emitValue);
-  isOpen.value = false;
-  searchQuery.value = "";
+  closeDropdown();
 }
 
 function handleClear() {
@@ -404,31 +448,88 @@ function handleClear() {
   emit("change", clearValue ?? null);
 }
 
-function handleClickOutside(event: MouseEvent) {
-  if (
-    containerRef.value &&
-    !containerRef.value.contains(event.target as Node)
-  ) {
-    isOpen.value = false;
-    searchQuery.value = "";
-  }
-}
+// ── Drag-to-dismiss (consistent with the app's other bottom-sheets) ──
+const dragOffsetY = ref(0);
+const isDragging = ref(false);
+const dragStartY = ref(0);
+const dragStartTime = ref(0);
 
-// Auto-focus search on open (only on desktop to avoid mobile keyboard issues)
-watch(isOpen, (val) => {
-  if (val && props.searchable && isDesktop) {
-    nextTick(() => {
-      searchInputRef.value?.focus();
-    });
+const onDragStart = (e: PointerEvent) => {
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  isDragging.value = true;
+  dragStartY.value = e.clientY;
+  dragStartTime.value = Date.now();
+  dragOffsetY.value = 0;
+  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+};
+
+const onDragMove = (e: PointerEvent) => {
+  if (!isDragging.value) return;
+  const delta = e.clientY - dragStartY.value;
+  dragOffsetY.value = delta > 0 ? delta : delta * 0.15;
+};
+
+const onDragEnd = (e: PointerEvent) => {
+  if (!isDragging.value) return;
+  isDragging.value = false;
+  try {
+    (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+  } catch {
+    // ignore
+  }
+  const elapsed = Date.now() - dragStartTime.value;
+  const velocity = elapsed > 0 ? dragOffsetY.value / elapsed : 0;
+  const shouldClose = dragOffsetY.value > 100 || velocity > 0.6;
+  dragOffsetY.value = 0;
+  if (shouldClose) closeDropdown();
+};
+
+// Body scroll lock + focus management while open
+watch(isOpen, (open) => {
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+  if (open) {
+    if (props.searchable && isDesktop) {
+      nextTick(() => searchInputRef.value?.focus());
+    }
+  } else {
+    dragOffsetY.value = 0;
+    isDragging.value = false;
   }
 });
 
-// Lifecycle
+// Esc to close
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === "Escape" && isOpen.value) closeDropdown();
+}
+
 onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
+  window.addEventListener("keydown", onKeydown);
 });
 
 onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutside);
+  window.removeEventListener("keydown", onKeydown);
+  if (typeof document !== "undefined") document.body.style.overflow = "";
 });
 </script>
+
+<style scoped>
+.ss-fade-enter-active,
+.ss-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.ss-fade-enter-from,
+.ss-fade-leave-to {
+  opacity: 0;
+}
+
+.ss-slide-enter-active,
+.ss-slide-leave-active {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ss-slide-enter-from,
+.ss-slide-leave-to {
+  transform: translateY(100%);
+}
+</style>
