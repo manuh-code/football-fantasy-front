@@ -1,0 +1,255 @@
+<script setup lang="ts">
+import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
+import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import TeamLogo from "@/components/football/ui/TeamLogo.vue";
+
+defineProps<{
+  fixtures: FootballFixtureResponse[];
+  isLoading: boolean;
+  error: string | null;
+  emptyIcon: string;
+  emptyMessage: string;
+}>();
+
+const emit = defineEmits<{
+  "fixture-selected": [fixture: FootballFixtureResponse];
+  retry: [];
+}>();
+
+// ── Fixture helpers ──
+const getHomeParticipant = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
+  fixture.participants?.find((p) => p.meta?.location === "home");
+
+const getAwayParticipant = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
+  fixture.participants?.find((p) => p.meta?.location === "away");
+
+const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || "TBD";
+
+const hasScores = (fixture: FootballFixtureResponse): boolean => {
+  const home = getHomeParticipant(fixture);
+  const away = getAwayParticipant(fixture);
+  return (
+    home?.current_score !== undefined &&
+    home?.current_score !== null &&
+    away?.current_score !== undefined &&
+    away?.current_score !== null
+  );
+};
+
+const getHomeScore = (fixture: FootballFixtureResponse): number =>
+  getHomeParticipant(fixture)?.current_score?.score ?? 0;
+
+const getAwayScore = (fixture: FootballFixtureResponse): number =>
+  getAwayParticipant(fixture)?.current_score?.score ?? 0;
+
+const isMatchLive = (fixture: FootballFixtureResponse): boolean => {
+  if (fixture.state) {
+    const stateName = fixture.state.name.toLowerCase();
+    return (
+      stateName.includes("live") ||
+      stateName.includes("in play") ||
+      stateName.includes("ht") ||
+      stateName.includes("half time")
+    );
+  }
+  if (!hasScores(fixture)) return false;
+  const home = getHomeParticipant(fixture);
+  const away = getAwayParticipant(fixture);
+  const matchStarted = new Date(fixture.starting_at).getTime() <= Date.now();
+  const noWinnerDecided = home?.meta?.winner === null && away?.meta?.winner === null;
+  return matchStarted && noWinnerDecided && hasScores(fixture);
+};
+
+const isMatchFinished = (fixture: FootballFixtureResponse): boolean => {
+  if (fixture.state) return fixture.state.state.includes("FT");
+  const home = getHomeParticipant(fixture);
+  return home?.meta?.winner !== null && home?.meta?.winner !== undefined;
+};
+
+const formatMatchDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+};
+
+const formatMatchTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
+  if (fixture.state) {
+    const stateName = fixture.state.name.toLowerCase();
+    if (stateName.includes("finished") || stateName.includes("ft")) return "FT";
+    if (stateName.includes("live") || stateName.includes("in play")) return "LIVE";
+    if (stateName.includes("ht") || stateName.includes("half time")) return "HT";
+    if (stateName.includes("postponed")) return "POSTPONED";
+    if (stateName.includes("cancelled")) return "CANCELLED";
+    return fixture.state.name;
+  }
+  if (isMatchFinished(fixture)) return "FT";
+  if (isMatchLive(fixture)) return "LIVE";
+  return formatMatchTime(fixture.starting_at);
+};
+
+const getFixtureStateClass = (fixture: FootballFixtureResponse): string => {
+  if (isMatchFinished(fixture)) {
+    return "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300";
+  }
+  if (isMatchLive(fixture)) {
+    return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
+  }
+  return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300";
+};
+
+const getTeamResultClass = (
+  fixture: FootballFixtureResponse,
+  location: "home" | "away",
+): string => {
+  if (!hasScores(fixture) || !isMatchFinished(fixture)) {
+    return "text-gray-600 dark:text-gray-300";
+  }
+  const homeScore = getHomeScore(fixture);
+  const awayScore = getAwayScore(fixture);
+  if (homeScore === awayScore) return "text-yellow-600 dark:text-yellow-400 font-medium";
+  const teamWon =
+    (location === "home" && homeScore > awayScore) ||
+    (location === "away" && awayScore > homeScore);
+  return teamWon
+    ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+    : "text-red-500 dark:text-red-400";
+};
+</script>
+
+<template>
+  <!-- Loading -->
+  <div v-if="isLoading" class="flex items-center justify-center py-12">
+    <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600" animation="spin" />
+  </div>
+
+  <!-- Error -->
+  <div v-else-if="error" class="px-4 py-12 flex flex-col items-center text-center">
+    <v-icon
+      name="hi-solid-exclamation-circle"
+      class="w-9 h-9 text-red-400 dark:text-red-500 mb-3"
+    />
+    <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+    <button
+      @click="emit('retry')"
+      class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+    >
+      Retry
+    </button>
+  </div>
+
+  <!-- Empty -->
+  <div
+    v-else-if="fixtures.length === 0"
+    class="px-4 py-12 text-center text-gray-400 dark:text-gray-500"
+  >
+    <v-icon :name="emptyIcon" class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
+    <p class="text-[13px]">{{ emptyMessage }}</p>
+  </div>
+
+  <!-- List -->
+  <div v-else class="divide-y divide-gray-100 dark:divide-gray-700/50">
+    <div
+      v-for="(fixture, fIdx) in fixtures"
+      :key="fixture.uuid || fixture.name + '-' + fIdx"
+      @click="emit('fixture-selected', fixture)"
+      class="fixture-cell relative transition-colors cursor-pointer"
+      :class="[
+        isMatchLive(fixture)
+          ? 'bg-red-50/40 dark:bg-red-900/5 border-l-[3px] border-l-red-500 dark:border-l-red-400'
+          : 'border-l-[3px] border-l-transparent',
+        'px-4 py-3 active:bg-gray-50 dark:active:bg-gray-700/30',
+      ]"
+    >
+      <!-- LIVE badge top -->
+      <div v-if="isMatchLive(fixture)" class="flex items-center gap-1.5 mb-2">
+        <span class="live-dot relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+        </span>
+        <span class="text-[10px] font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+      </div>
+
+      <!-- Date/time (not live) -->
+      <div v-else class="text-center mb-2">
+        <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
+          {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
+        </span>
+      </div>
+
+      <!-- Match row -->
+      <div class="flex items-center gap-2">
+        <!-- Home -->
+        <div class="flex items-center gap-2 flex-1 min-w-0">
+          <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
+          <span
+            :class="getTeamResultClass(fixture, 'home')"
+            class="text-[13px] font-medium truncate"
+            :title="getTeamName(getHomeParticipant(fixture))"
+          >
+            {{ getTeamName(getHomeParticipant(fixture)) }}
+          </span>
+        </div>
+
+        <!-- Score center -->
+        <div class="flex flex-col items-center shrink-0 min-w-[56px]">
+          <div
+            class="tabular-nums"
+            :class="[
+              hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
+              isMatchLive(fixture) ? 'text-[22px]' : 'text-[20px]',
+            ]"
+          >
+            <template v-if="hasScores(fixture)">
+              {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
+            </template>
+            <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+          </div>
+          <span
+            v-if="!isMatchLive(fixture)"
+            :class="getFixtureStateClass(fixture)"
+            class="text-[9px] px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
+          >
+            {{ getFixtureStateText(fixture) }}
+          </span>
+        </div>
+
+        <!-- Away -->
+        <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
+          <span
+            :class="getTeamResultClass(fixture, 'away')"
+            class="text-[13px] font-medium truncate text-right"
+            :title="getTeamName(getAwayParticipant(fixture))"
+          >
+            {{ getTeamName(getAwayParticipant(fixture)) }}
+          </span>
+          <TeamLogo :team="getAwayParticipant(fixture)" size="md" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.fixture-cell {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.live-dot {
+  line-height: 0;
+}
+</style>

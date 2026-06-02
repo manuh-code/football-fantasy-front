@@ -11,6 +11,8 @@ import { FootballStatisticResponse } from "./FootballStatisticResponse";
 import { FootballSidelinedResponse } from "./FootballSidelinedResponse";
 import { FootballWeatherReportResponse } from "./FootballWeatherReportResponse";
 import { FootballEventFilterResponse } from "../event/FootballEventFilterResponse";
+import { FootballLineupResponse } from "./FootballLineupResponse";
+import { FootballFixtureFormationResponse } from "./FootballFixtureFormationResponse";
 
 export interface FootballFixtureResponse {
     uuid: string;
@@ -27,6 +29,8 @@ export interface FootballFixtureResponse {
     statistics: FootballStatisticResponse[] | null;
     sidelined: FootballSidelinedResponse[] | null;
     weatherReport: FootballWeatherReportResponse | null;
+    lineups: FootballLineupResponse[] | null;
+    formations: FootballFixtureFormationResponse[] | null;
 
     name: string;
     starting_at: string;
