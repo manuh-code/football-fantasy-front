@@ -12,6 +12,9 @@ import FixtureMatchInfo from "./matchcenter/FixtureMatchInfo.vue";
 import FixtureSidelined from "./matchcenter/FixtureSidelined.vue";
 import FixtureLatestMatches from "./matchcenter/FixtureLatestMatches.vue";
 import FixtureLineups from "./matchcenter/FixtureLineups.vue";
+import FixtureComments from "./matchcenter/FixtureComments.vue";
+import FixtureHeadToHead from "./matchcenter/FixtureHeadToHead.vue";
+import FixtureMatchTabs, { type MatchTab } from "./matchcenter/FixtureMatchTabs.vue";
 
 interface Props {
   isOpen: boolean;
@@ -26,14 +29,41 @@ const isLoading = ref(false);
 const loadError = ref<string | null>(null);
 
 // ── Linear tab menu ──
-type Tab = "info" | "events" | "stats" | "lineups";
-const activeTab = ref<Tab>("info");
-const tabs: { key: Tab; label: string; icon: string }[] = [
-  { key: "info", label: "Info", icon: "hi-solid-information-circle" },
-  { key: "events", label: "Events", icon: "md-sportssoccer" },
-  { key: "stats", label: "Stats", icon: "hi-solid-chart-bar" },
-  { key: "lineups", label: "Lineups", icon: "hi-solid-users" },
-];
+const activeTab = ref<MatchTab>("info");
+
+// ── Sticky + Shrink scoreboard ──
+const scrollBody = ref<HTMLElement | null>(null);
+const isHeaderCollapsed = ref(false);
+
+// Collapse/expand uses wide hysteresis + a post-toggle lock so the layout reflow
+// triggered by the shrink animation can't bounce the state back (flicker).
+const COLLAPSE_AT = 64; // scroll past this → collapse
+const EXPAND_AT = 10; // scroll back under this → expand
+const MIN_SCROLLABLE = 160; // only collapse when there's clearly room to scroll
+const TOGGLE_LOCK_MS = 360; // ~ the header transition duration
+let scrollTicking = false;
+let toggleLockUntil = 0;
+
+const onScroll = (e: Event) => {
+  if (scrollTicking) return;
+  const el = e.target as HTMLElement;
+  scrollTicking = true;
+  requestAnimationFrame(() => {
+    scrollTicking = false;
+    if (performance.now() < toggleLockUntil) return;
+    const top = el.scrollTop;
+    if (!isHeaderCollapsed.value) {
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      if (top > COLLAPSE_AT && maxScroll > MIN_SCROLLABLE) {
+        isHeaderCollapsed.value = true;
+        toggleLockUntil = performance.now() + TOGGLE_LOCK_MS;
+      }
+    } else if (top < EXPAND_AT) {
+      isHeaderCollapsed.value = false;
+      toggleLockUntil = performance.now() + TOGGLE_LOCK_MS;
+    }
+  });
+};
 
 const homeTeam = computed<FootballTeamResponse | undefined>(() =>
   fixture.value?.participants?.find((p) => p.meta?.location === "home")
@@ -42,15 +72,20 @@ const awayTeam = computed<FootballTeamResponse | undefined>(() =>
   fixture.value?.participants?.find((p) => p.meta?.location === "away")
 );
 
-const homeScoreSticky = computed(() => homeTeam.value?.current_score?.score ?? null);
-const awayScoreSticky = computed(() => awayTeam.value?.current_score?.score ?? null);
-const hasScoreSticky = computed(() => homeScoreSticky.value !== null && awayScoreSticky.value !== null);
+// Reset scroll + expanded header when switching tabs.
+watch(activeTab, () => {
+  if (scrollBody.value) scrollBody.value.scrollTop = 0;
+  isHeaderCollapsed.value = false;
+  toggleLockUntil = 0;
+});
 
 const loadFixture = async (uuid: string) => {
   isLoading.value = true;
   loadError.value = null;
   fixture.value = null;
   activeTab.value = "info";
+  isHeaderCollapsed.value = false;
+  toggleLockUntil = 0;
   try {
     const response = await footballFixtureService.getMatchCenterFixture(uuid);
     fixture.value = response.data;
@@ -100,9 +135,6 @@ watch(
     }
   }
 );
-
-const stickyTeamShort = (team: FootballTeamResponse | undefined): string =>
-  team?.short_code ?? team?.name?.substring(0, 3).toUpperCase() ?? "—";
 
 // ── Drag-to-dismiss ──
 const dragOffsetY = ref(0);
@@ -171,87 +203,25 @@ const onDragEnd = (e: PointerEvent) => {
           aria-modal="true"
           aria-label="Match Center"
         >
-          <!-- Draggable header -->
+          <!-- Draggable handle (thin grab area; close button is independent) -->
           <div
             @pointerdown="onDragStart"
             @pointermove="onDragMove"
             @pointerup="onDragEnd"
             @pointercancel="onDragEnd"
-            class="relative shrink-0 border-b border-gray-100 dark:border-gray-800 cursor-grab active:cursor-grabbing touch-none select-none"
+            class="relative shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
           >
-            <!-- Drag handle indicator (bigger touch target) -->
-            <div class="flex justify-center pt-2.5 pb-1.5">
+            <div class="flex justify-center pt-2.5 pb-2">
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
 
-            <!-- Sticky compact score bar -->
-            <div
-              v-if="fixture && hasScoreSticky"
-              class="flex items-center justify-between px-4 pb-2.5 pt-1"
-            >
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="text-[12px] font-bold text-gray-700 dark:text-gray-300">
-                  {{ stickyTeamShort(homeTeam) }}
-                </span>
-                <span class="text-[14px] font-extrabold tabular-nums text-gray-900 dark:text-white">
-                  {{ homeScoreSticky }} – {{ awayScoreSticky }}
-                </span>
-                <span class="text-[12px] font-bold text-gray-700 dark:text-gray-300">
-                  {{ stickyTeamShort(awayTeam) }}
-                </span>
-              </div>
-              <button
-                @click.stop="emit('close')"
-                @pointerdown.stop
-                class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Close"
-              >
-                <v-icon name="hi-x" class="w-4 h-4" />
-              </button>
-            </div>
-
-            <!-- Close button when no score yet -->
-            <button
-              v-else
-              @click.stop="emit('close')"
-              @pointerdown.stop
-              class="absolute top-1 right-2 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Close"
-            >
-              <v-icon name="hi-x" class="w-4 h-4" />
-            </button>
-          </div>
-
-          <!-- Linear tab menu (outside the draggable header so it doesn't trigger dismiss) -->
-          <div
-            v-if="fixture && !isLoading && !loadError"
-            class="shrink-0 px-4 pt-2.5 pb-2 border-b border-gray-100 dark:border-gray-800"
-          >
-            <div
-              class="flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800"
-              role="tablist"
-              aria-label="Match center sections"
-            >
-              <button
-                v-for="tab in tabs"
-                :key="tab.key"
-                type="button"
-                role="tab"
-                :aria-selected="activeTab === tab.key"
-                @click="activeTab = tab.key"
-                class="flex-1 flex items-center justify-center gap-1.5 h-8 px-1.5 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
-                :class="activeTab === tab.key
-                  ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
-              >
-                <v-icon :name="tab.icon" class="w-3.5 h-3.5 shrink-0" />
-                <span>{{ tab.label }}</span>
-              </button>
-            </div>
+          
           </div>
 
           <!-- Scrollable body (extra padding-bottom to clear iOS home indicator) -->
           <div
+            ref="scrollBody"
+            @scroll="onScroll"
             class="flex-1 overflow-y-auto overscroll-contain"
             style="padding-bottom: calc(2rem + env(safe-area-inset-bottom))"
           >
@@ -278,8 +248,18 @@ const onDragEnd = (e: PointerEvent) => {
 
             <!-- Loaded -->
             <template v-else-if="fixture">
-              <!-- Match hero (shared across all tabs) -->
-              <FixtureScoreboardHeader :fixture="fixture" />
+              <!-- Sticky cluster: shrinking match hero + linear tab menu.
+                   Stays pinned (opaque, above the scrolling content) while the
+                   per-tab content scrolls underneath. -->
+              <div
+                class="sticky top-0 z-30 bg-white dark:bg-gray-900 transition-shadow duration-300"
+                :class="isHeaderCollapsed ? 'shadow-md shadow-black/5 dark:shadow-black/40' : ''"
+              >
+                <FixtureScoreboardHeader :fixture="fixture" :collapsed="isHeaderCollapsed" />
+                <div class="border-b border-gray-100 dark:border-gray-800">
+                  <FixtureMatchTabs v-model="activeTab" />
+                </div>
+              </div>
 
               <!-- Per-tab content -->
               <Transition name="mc-tab" mode="out-in">
@@ -356,6 +336,13 @@ const onDragEnd = (e: PointerEvent) => {
                   </FixtureAccordion>
                 </div>
 
+                <!-- ── Comments (live commentary) ── -->
+                <FixtureComments
+                  v-else-if="activeTab === 'comments'"
+                  key="comments"
+                  :comments="fixture.comments"
+                />
+
                 <!-- ── Events only ── -->
                 <FixtureEventsTimeline
                   v-else-if="activeTab === 'events'"
@@ -382,10 +369,19 @@ const onDragEnd = (e: PointerEvent) => {
 
                 <!-- ── Lineups only ── -->
                 <FixtureLineups
-                  v-else
+                  v-else-if="activeTab === 'lineups'"
                   key="lineups"
                   :lineups="fixture.lineups"
                   :formations="fixture.formations"
+                  :home-team="homeTeam"
+                  :away-team="awayTeam"
+                />
+
+                <!-- ── Head to Head ── -->
+                <FixtureHeadToHead
+                  v-else
+                  key="head2head"
+                  :fixture-uuid="fixture.uuid"
                   :home-team="homeTeam"
                   :away-team="awayTeam"
                 />
@@ -419,22 +415,5 @@ const onDragEnd = (e: PointerEvent) => {
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
-}
-
-/* Tab content fade (out-in) */
-.mc-tab-enter-active,
-.mc-tab-leave-active {
-  transition: opacity 0.18s ease;
-}
-.mc-tab-enter-from,
-.mc-tab-leave-to {
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mc-tab-enter-active,
-  .mc-tab-leave-active {
-    transition: none;
-  }
 }
 </style>

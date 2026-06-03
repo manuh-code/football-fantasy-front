@@ -205,11 +205,12 @@ const fallbackSides = computed(() => {
                     </span>
                   </div>
                   <span class="text-[10px] font-medium text-white leading-tight truncate max-w-full drop-shadow">
-                    {{ shortName(p.lineup) }}
+                    {{p.lineup.player?.common_name}}
                   </span>
                 </div>
               </div>
             </div>
+            
 
             <!-- Home half (bottom, GK at the very bottom) -->
             <div class="flex-1 flex flex-col justify-evenly">
@@ -244,12 +245,14 @@ const fallbackSides = computed(() => {
                     </span>
                   </div>
                   <span class="text-[10px] font-medium text-white leading-tight truncate max-w-full drop-shadow">
-                    {{ shortName(p.lineup) }}
+                    {{ p.lineup.player?.common_name }}
                   </span>
                 </div>
               </div>
             </div>
+            
           </div>
+
         </div>
       </template>
 
