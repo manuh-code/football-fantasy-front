@@ -140,6 +140,7 @@ import {
   HiSolidLocationMarker,
   MdReplay,
   BiTrophy,
+  BiChatLeftDotsFill,
 } from 'oh-vue-icons/icons'
 
 // Sports icons
@@ -278,6 +279,7 @@ export const iconList = [
   HiSolidLocationMarker,
   MdReplay,
   BiTrophy,
+  BiChatLeftDotsFill,
 ]
 
 // Icon name mapping for easier usage

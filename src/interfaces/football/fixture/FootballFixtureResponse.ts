@@ -13,6 +13,7 @@ import { FootballWeatherReportResponse } from "./FootballWeatherReportResponse";
 import { FootballEventFilterResponse } from "../event/FootballEventFilterResponse";
 import { FootballLineupResponse } from "./FootballLineupResponse";
 import { FootballFixtureFormationResponse } from "./FootballFixtureFormationResponse";
+import { FootballFixtureCommentResponse } from "./FootballFixtureCommentResponse";
 
 export interface FootballFixtureResponse {
     uuid: string;
@@ -31,6 +32,7 @@ export interface FootballFixtureResponse {
     weatherReport: FootballWeatherReportResponse | null;
     lineups: FootballLineupResponse[] | null;
     formations: FootballFixtureFormationResponse[] | null;
+    comments: FootballFixtureCommentResponse[] | null;
 
     name: string;
     starting_at: string;
