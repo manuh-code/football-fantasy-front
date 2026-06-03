@@ -14,6 +14,7 @@ import FixtureLatestMatches from "./matchcenter/FixtureLatestMatches.vue";
 import FixtureLineups from "./matchcenter/FixtureLineups.vue";
 import FixtureComments from "./matchcenter/FixtureComments.vue";
 import FixtureHeadToHead from "./matchcenter/FixtureHeadToHead.vue";
+import FixtureLineupStats from "./matchcenter/FixtureLineupStats.vue";
 import FixtureMatchTabs, { type MatchTab } from "./matchcenter/FixtureMatchTabs.vue";
 
 interface Props {
@@ -375,6 +376,13 @@ const onDragEnd = (e: PointerEvent) => {
                   :formations="fixture.formations"
                   :home-team="homeTeam"
                   :away-team="awayTeam"
+                />
+
+                <!-- ── Player stats (lineup stats) ── -->
+                <FixtureLineupStats
+                  v-else-if="activeTab === 'playerstats'"
+                  key="playerstats"
+                  :lineup-stats="fixture.lineupStats"
                 />
 
                 <!-- ── Head to Head ── -->

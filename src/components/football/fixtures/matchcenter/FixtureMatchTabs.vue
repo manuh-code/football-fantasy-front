@@ -5,7 +5,7 @@ import type { ComponentPublicInstance } from "vue";
 // Linear menu for the Match Center sections.
 // Horizontally swipeable (like the events filter row) with a Scroll Hint /
 // Overflow Hint: edge fades + chevrons reveal that there's more to scroll.
-export type MatchTab = "info" | "comments" | "events" | "stats" | "lineups" | "head2head";
+export type MatchTab = "info" | "comments" | "events" | "stats" | "lineups" | "head2head" | "playerstats";
 
 const activeTab = defineModel<MatchTab>({ required: true });
 
@@ -15,7 +15,8 @@ const tabs: { key: MatchTab; label: string; icon: string }[] = [
   { key: "events", label: "Events", icon: "md-sportssoccer" },
   { key: "stats", label: "Stats", icon: "hi-solid-chart-bar" },
   { key: "lineups", label: "Lineups", icon: "hi-solid-users" },
-  { key: "head2head", label: "Head to Head", icon: "md-comparearrows-round" },
+  { key: "playerstats", label: "Players", icon: "hi-solid-star" },
+  { key: "head2head", label: "H2H", icon: "md-comparearrows-round" },
 ];
 
 const track = ref<HTMLElement | null>(null);

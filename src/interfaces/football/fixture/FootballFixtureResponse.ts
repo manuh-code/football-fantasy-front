@@ -14,6 +14,7 @@ import { FootballEventFilterResponse } from "../event/FootballEventFilterRespons
 import { FootballLineupResponse } from "./FootballLineupResponse";
 import { FootballFixtureFormationResponse } from "./FootballFixtureFormationResponse";
 import { FootballFixtureCommentResponse } from "./FootballFixtureCommentResponse";
+import { FootballFixtureLineupStatsResponse } from "./FootballFixtureLineupStatsResponse";
 
 export interface FootballFixtureResponse {
     uuid: string;
@@ -33,6 +34,7 @@ export interface FootballFixtureResponse {
     lineups: FootballLineupResponse[] | null;
     formations: FootballFixtureFormationResponse[] | null;
     comments: FootballFixtureCommentResponse[] | null;
+    lineupStats: FootballFixtureLineupStatsResponse[] | null;
 
     name: string;
     starting_at: string;
