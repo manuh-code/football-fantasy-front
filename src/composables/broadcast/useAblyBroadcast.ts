@@ -25,9 +25,11 @@ export function useAblyBroadcast() {
     }
 
     const inPlayChannel = channel('inplay-channel_' + userStore.getTimezone);
+    const matchCenterFixtureChannel = (fixtureUuid: string) => channel(`match-center-fixture-${userStore.getTimezone}-${fixtureUuid}`);
+
     const draftFantasyLeagueChannel = (leagueUuid: string) => channel(`draft-${leagueUuid}`);
     const fantasyLeagueChannel = (leagueUuid: string) => channel(`fantasy-league-${leagueUuid}`);
     const draftRoomChannel = (draftUuid: string) => channel(`draft-${draftUuid}`);
 
-    return { ably, channel, inPlayChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
+    return { ably, channel, inPlayChannel, matchCenterFixtureChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
 }

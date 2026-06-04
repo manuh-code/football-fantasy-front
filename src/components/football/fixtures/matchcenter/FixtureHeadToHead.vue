@@ -100,9 +100,73 @@ const orderedFixtures = computed(() =>
 
 <template>
   <div class="px-4 pt-3 pb-6">
-    <!-- Loading -->
-    <div v-if="isLoading" class="py-12 flex justify-center">
-      <v-icon name="pr-spinner" class="w-7 h-7 text-gray-300 dark:text-gray-600" animation="spin" />
+    <!-- Loading skeleton -->
+    <div v-if="isLoading" class="animate-pulse">
+      <!-- Summary block -->
+      <div class="mb-6">
+        <!-- "X games" label -->
+        <div class="flex justify-center mb-3">
+          <div class="h-3 w-16 rounded-full bg-gray-200 dark:bg-gray-700" />
+        </div>
+
+        <!-- 3 stat columns -->
+        <div class="flex items-end justify-between mb-2">
+          <div class="flex flex-col items-center gap-1.5">
+            <div class="h-8 w-8 rounded-md bg-gray-200 dark:bg-gray-700" />
+            <div class="h-2.5 w-14 rounded-full bg-gray-100 dark:bg-gray-800" />
+          </div>
+          <div class="flex flex-col items-center gap-1.5">
+            <div class="h-8 w-8 rounded-md bg-gray-200 dark:bg-gray-700" />
+            <div class="h-2.5 w-10 rounded-full bg-gray-100 dark:bg-gray-800" />
+          </div>
+          <div class="flex flex-col items-center gap-1.5">
+            <div class="h-8 w-8 rounded-md bg-gray-200 dark:bg-gray-700" />
+            <div class="h-2.5 w-16 rounded-full bg-gray-100 dark:bg-gray-800" />
+          </div>
+        </div>
+
+        <!-- Proportional bar -->
+        <div class="h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700" />
+      </div>
+
+      <!-- "Previous meetings" divider -->
+      <div class="flex items-center gap-2 mb-3">
+        <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
+        <div class="h-2.5 w-28 rounded-full bg-gray-100 dark:bg-gray-800" />
+        <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
+      </div>
+
+      <!-- 5 meeting rows -->
+      <ul class="space-y-2">
+        <li
+          v-for="i in 5"
+          :key="i"
+          class="rounded-xl bg-gray-50 dark:bg-gray-800/40 px-3 py-2.5"
+        >
+          <!-- Date line -->
+          <div class="flex justify-center mb-2">
+            <div class="h-2.5 rounded-full bg-gray-200 dark:bg-gray-700"
+              :class="i % 2 === 0 ? 'w-36' : 'w-44'" />
+          </div>
+          <!-- Teams + score grid -->
+          <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <!-- Home side -->
+            <div class="flex items-center gap-1.5 justify-end">
+              <div class="h-3 rounded-full bg-gray-200 dark:bg-gray-700"
+                :class="i % 3 === 0 ? 'w-16' : 'w-20'" />
+              <div class="w-4 h-4 rounded-sm bg-gray-200 dark:bg-gray-700 shrink-0" />
+            </div>
+            <!-- Score chip -->
+            <div class="h-5 w-12 rounded-md bg-gray-200 dark:bg-gray-700 shrink-0" />
+            <!-- Away side -->
+            <div class="flex items-center gap-1.5">
+              <div class="w-4 h-4 rounded-sm bg-gray-200 dark:bg-gray-700 shrink-0" />
+              <div class="h-3 rounded-full bg-gray-200 dark:bg-gray-700"
+                :class="i % 2 === 0 ? 'w-20' : 'w-14'" />
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
 
     <!-- Error -->

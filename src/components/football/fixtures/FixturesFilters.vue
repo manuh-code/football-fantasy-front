@@ -2,6 +2,7 @@
 import SearchableSelectComponent from "@/components/ui/SearchableSelectComponent.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
+import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 
 type Mode = "regular" | "playoffs";
 
@@ -12,23 +13,30 @@ defineProps<{
   knockoutStages: FootballStageResponse[];
   isLoadingStages: boolean;
   stagesError: string | null;
+  teams: FootballTeamResponse[];
+  isLoadingTeams: boolean;
+  teamsError: string | null;
 }>();
 
 const emit = defineEmits<{
   "retry-rounds": [];
   "retry-stages": [];
+  "retry-teams": [];
 }>();
 
 // Two-way bindings with the parent
 const mode = defineModel<Mode>("mode", { default: "regular" });
 const roundUuid = defineModel<string | null>("roundUuid", { default: null });
 const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null });
+// Empty string / null both mean "no team focused" → browse the league by round.
+const teamUuid = defineModel<string | null>("teamUuid", { default: null });
 </script>
 
 <template>
-  <div>
-    <!-- Mode toggle (Regular Season / Playoffs) -->
-    <div class="px-4 pt-3 pb-2.5">
+  <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 space-y-3">
+    <!-- ── Browse the league by round (hidden while a team is focused) ── -->
+    <template v-if="!teamUuid">
+      <!-- Mode segmented control (monochrome active thumb, FotMob-style) -->
       <div
         class="flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800"
         role="tablist"
@@ -41,7 +49,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
           @click="mode = 'regular'"
           class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
           :class="mode === 'regular'
-            ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
+            ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
         >
           <v-icon name="md-sportssoccer" class="w-3.5 h-3.5 shrink-0" />
@@ -54,26 +62,23 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
           @click="mode = 'playoffs'"
           class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
           :class="mode === 'playoffs'
-            ? 'bg-white dark:bg-gray-700 text-amber-600 dark:text-amber-400 shadow-sm'
+            ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
         >
           <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5 shrink-0" />
           <span>Playoffs</span>
         </button>
       </div>
-    </div>
 
-    <!-- Selector -->
-    <div class="px-4 pb-3 border-b border-gray-100 dark:border-gray-700/60">
       <!-- ── Regular Season: round selector ── -->
       <template v-if="mode === 'regular'">
-        <div v-if="isLoadingRounds" class="flex items-center justify-center py-3">
+        <div v-if="isLoadingRounds" class="flex items-center justify-center py-2">
           <v-icon name="pr-spinner" class="w-4 h-4 text-gray-300 dark:text-gray-600" animation="spin" />
         </div>
 
         <div
           v-else-if="roundsError"
-          class="flex items-center justify-between gap-2 py-2"
+          class="flex items-center justify-between gap-2 py-1"
         >
           <p class="text-[12px] text-red-500 dark:text-red-400">{{ roundsError }}</p>
           <button
@@ -87,6 +92,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
         <SearchableSelectComponent
           v-else-if="rounds.length > 0"
           v-model="roundUuid"
+          variant="minimal"
           :options="rounds"
           value-key="uuid"
           label-key="name"
@@ -97,7 +103,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
           no-options-text="No rounds available"
         >
           <template #selected="{ option }">
-            <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+            <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
               Round {{ option.name }}
             </span>
             <span
@@ -126,7 +132,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
           </template>
         </SearchableSelectComponent>
 
-        <div v-else class="text-center py-3 text-[12px] text-gray-400 dark:text-gray-500">
+        <div v-else class="text-center py-2 text-[12px] text-gray-400 dark:text-gray-500">
           No rounds available
         </div>
       </template>
@@ -135,7 +141,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
       <template v-else>
         <div
           v-if="stagesError"
-          class="flex items-center justify-between gap-2 py-2"
+          class="flex items-center justify-between gap-2 py-1"
         >
           <p class="text-[12px] text-red-500 dark:text-red-400">{{ stagesError }}</p>
           <button
@@ -149,6 +155,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
         <SearchableSelectComponent
           v-else
           v-model="knockoutUuid"
+          variant="minimal"
           :options="knockoutStages"
           value-key="uuid"
           label-key="name"
@@ -161,7 +168,7 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
           :clearable="false"
         >
           <template #selected="{ option }">
-            <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+            <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
               {{ (option.name_complete as string | null) || option.name }}
             </span>
             <span
@@ -192,6 +199,47 @@ const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null 
           </template>
         </SearchableSelectComponent>
       </template>
+    </template>
+
+    <!-- ── Focus a single team (becomes a removable chip when selected) ── -->
+    <div v-if="isLoadingTeams || teamsError || teams.length > 0">
+      <div
+        v-if="teamsError"
+        class="flex items-center justify-between gap-2 py-1"
+      >
+        <p class="text-[12px] text-red-500 dark:text-red-400">{{ teamsError }}</p>
+        <button
+          @click="emit('retry-teams')"
+          class="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+        >
+          Retry
+        </button>
+      </div>
+
+      <SearchableSelectComponent
+        v-else
+        v-model="teamUuid"
+        variant="minimal"
+        :options="teams"
+        value-key="uuid"
+        label-key="name"
+        image-key="image_path"
+        placeholder="Filter by team"
+        search-placeholder="Search team..."
+        :loading="isLoadingTeams"
+        :searchable="teams.length > 6"
+        :clearable="true"
+        all-option
+        all-option-label="All teams"
+        accent-color="emerald"
+        no-options-text="No teams available"
+      >
+        <template #selected="{ option }">
+          <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
+            {{ option.name }}
+          </span>
+        </template>
+      </SearchableSelectComponent>
     </div>
   </div>
 </template>

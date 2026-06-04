@@ -129,7 +129,10 @@ const activeComponent = computed(() => {
 
 const activeProps = computed<Record<string, unknown>>(() => {
   if (activeTab.value === "fixtures") {
-    return { stageUuid: selectedStageUuid.value };
+    return {
+      stageUuid: selectedStageUuid.value,
+      seasonUuid: selectedSeasonUuid.value,
+    };
   }
   return {
     stageUuid: selectedStageUuid.value,

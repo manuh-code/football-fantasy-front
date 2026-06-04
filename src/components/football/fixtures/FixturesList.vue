@@ -98,32 +98,23 @@ const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
   return formatMatchTime(fixture.starting_at);
 };
 
-const getFixtureStateClass = (fixture: FootballFixtureResponse): string => {
-  if (isMatchFinished(fixture)) {
-    return "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300";
-  }
-  if (isMatchLive(fixture)) {
-    return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
-  }
-  return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300";
-};
-
+// Monochrome result emphasis (FotMob/Apple style): bold the winner, mute the loser.
 const getTeamResultClass = (
   fixture: FootballFixtureResponse,
   location: "home" | "away",
 ): string => {
   if (!hasScores(fixture) || !isMatchFinished(fixture)) {
-    return "text-gray-600 dark:text-gray-300";
+    return "text-gray-700 dark:text-gray-200";
   }
   const homeScore = getHomeScore(fixture);
   const awayScore = getAwayScore(fixture);
-  if (homeScore === awayScore) return "text-yellow-600 dark:text-yellow-400 font-medium";
+  if (homeScore === awayScore) return "text-gray-500 dark:text-gray-400";
   const teamWon =
     (location === "home" && homeScore > awayScore) ||
     (location === "away" && awayScore > homeScore);
   return teamWon
-    ? "text-emerald-600 dark:text-emerald-400 font-semibold"
-    : "text-red-500 dark:text-red-400";
+    ? "text-gray-900 dark:text-white font-semibold"
+    : "text-gray-400 dark:text-gray-500";
 };
 </script>
 
@@ -217,8 +208,7 @@ const getTeamResultClass = (
           </div>
           <span
             v-if="!isMatchLive(fixture)"
-            :class="getFixtureStateClass(fixture)"
-            class="text-[9px] px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
+            class="text-[10px] font-semibold mt-0.5 tracking-wide text-gray-400 dark:text-gray-500"
           >
             {{ getFixtureStateText(fixture) }}
           </span>
