@@ -137,6 +137,15 @@ export class CatalogService {
     }
     throw new AxiosError('Failed to fetch knockout stage');
   }
+
+  async getTeamsBySeason(seasonUuid: string): Promise<FootballTeamResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballTeamResponse[]>>(`catalog/season/${seasonUuid}/teams`);
+    
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+    throw new AxiosError('Failed to fetch teams by season');
+  }
 }
 
 export const catalogService = new CatalogService();

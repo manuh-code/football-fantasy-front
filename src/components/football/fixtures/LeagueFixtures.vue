@@ -2,15 +2,19 @@
 import { computed, ref, watch, onMounted } from "vue";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
+import { footballTeamService } from "@/services/football/team/FootballTeamService";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
+import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import FixturesFilters from "@/components/football/fixtures/FixturesFilters.vue";
 import FixturesList from "@/components/football/fixtures/FixturesList.vue";
+import FixtureByTeam from "@/components/football/fixtures/FixtureByTeam.vue";
 import FixtureMatchCenter from "@/components/football/fixtures/FixtureMatchCenter.vue";
 
 interface Props {
   stageUuid: string;
+  seasonUuid?: string;
 }
 
 const props = defineProps<Props>();
@@ -35,6 +39,73 @@ const selectedKnockoutUuid = ref<string | null>(null);
 const fixtures = ref<FootballFixtureResponse[]>([]);
 const isLoadingFixtures = ref(false);
 const fixturesError = ref<string | null>(null);
+
+// ── Team focus state ──
+// Selecting a team switches the panel to that team's full schedule; while a
+// team is focused the round/playoffs browsing is hidden (see FixturesFilters).
+const teams = ref<FootballTeamResponse[]>([]);
+const isLoadingTeams = ref(false);
+const teamsError = ref<string | null>(null);
+const selectedTeamUuid = ref<string | null>(null);
+const teamsCache = new Map<string, FootballTeamResponse[]>();
+
+const teamSchedule = ref<FootballRoundResponse[]>([]);
+const isLoadingSchedule = ref(false);
+const scheduleError = ref<string | null>(null);
+
+// Empty string (from the "All teams" option) and null both mean "no team".
+const teamMode = computed(() => !!selectedTeamUuid.value);
+
+const loadTeams = async (seasonUuid: string) => {
+  if (!seasonUuid) return;
+  if (teamsCache.has(seasonUuid)) {
+    teams.value = teamsCache.get(seasonUuid)!;
+    return;
+  }
+  isLoadingTeams.value = true;
+  teamsError.value = null;
+  teams.value = [];
+  try {
+    const result = await catalogService.getTeamsBySeason(seasonUuid);
+    teams.value = result;
+    teamsCache.set(seasonUuid, result);
+  } catch (err) {
+    console.error("Error loading teams:", err);
+    teamsError.value = "Couldn't load teams.";
+  } finally {
+    isLoadingTeams.value = false;
+  }
+};
+
+const retryTeams = () => {
+  if (props.seasonUuid) {
+    teamsCache.delete(props.seasonUuid);
+    loadTeams(props.seasonUuid);
+  }
+};
+
+const loadTeamSchedule = async (teamUuid: string, stageUuid: string) => {
+  isLoadingSchedule.value = true;
+  scheduleError.value = null;
+  teamSchedule.value = [];
+  try {
+    teamSchedule.value = await footballTeamService.getScheduleByTeamAndStage(
+      teamUuid,
+      stageUuid,
+    );
+  } catch (err) {
+    console.error("Error loading team schedule:", err);
+    scheduleError.value = "Couldn't load this team's schedule.";
+  } finally {
+    isLoadingSchedule.value = false;
+  }
+};
+
+const retryTeamSchedule = () => {
+  if (selectedTeamUuid.value && props.stageUuid) {
+    loadTeamSchedule(selectedTeamUuid.value, props.stageUuid);
+  }
+};
 
 // ── Regular season loading ──
 const loadRounds = async (stageUuid: string) => {
@@ -170,6 +241,16 @@ watch(selectedKnockoutUuid, (uuid) => {
   }
 });
 
+// Selected team → load its schedule (or return to round browsing when cleared)
+watch(selectedTeamUuid, (uuid) => {
+  if (uuid && props.stageUuid) {
+    loadTeamSchedule(uuid, props.stageUuid);
+  } else {
+    teamSchedule.value = [];
+    scheduleError.value = null;
+  }
+});
+
 // Parent stage changes → reset everything back to Regular Season
 watch(
   () => props.stageUuid,
@@ -181,12 +262,26 @@ watch(
     stagesError.value = null;
     fixtures.value = [];
     fixturesError.value = null;
+    // Drop any team focus so we land back on the league's round view.
+    selectedTeamUuid.value = null;
+    teamSchedule.value = [];
+    scheduleError.value = null;
     if (stageUuid) loadRounds(stageUuid);
+  },
+);
+
+// Season changes → reload the team list for the new season
+watch(
+  () => props.seasonUuid,
+  (seasonUuid) => {
+    selectedTeamUuid.value = null;
+    if (seasonUuid) loadTeams(seasonUuid);
   },
 );
 
 onMounted(() => {
   if (props.stageUuid) loadRounds(props.stageUuid);
+  if (props.seasonUuid) loadTeams(props.seasonUuid);
 });
 
 // ── Derived list state ──
@@ -223,23 +318,39 @@ const onFixtureSelected = (fixture: FootballFixtureResponse) => {
   <div
     class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
   >
-    <!-- Filters: mode toggle + round/knockout selector -->
+    <!-- Filters: team focus + mode toggle + round/knockout selector -->
     <FixturesFilters
       v-model:mode="mode"
       v-model:round-uuid="selectedRoundUuid"
       v-model:knockout-uuid="selectedKnockoutUuid"
+      v-model:team-uuid="selectedTeamUuid"
       :rounds="rounds"
       :is-loading-rounds="isLoadingRounds"
       :rounds-error="roundsError"
       :knockout-stages="knockoutStages"
       :is-loading-stages="isLoadingStages"
       :stages-error="stagesError"
+      :teams="teams"
+      :is-loading-teams="isLoadingTeams"
+      :teams-error="teamsError"
       @retry-rounds="retryRounds"
       @retry-stages="loadKnockoutStages(props.stageUuid)"
+      @retry-teams="retryTeams"
     />
 
-    <!-- Fixtures list -->
+    <!-- Team focused → that team's full schedule -->
+    <FixtureByTeam
+      v-if="teamMode"
+      :schedule="teamSchedule"
+      :is-loading="isLoadingSchedule"
+      :error="scheduleError"
+      @fixture-selected="onFixtureSelected"
+      @retry="retryTeamSchedule"
+    />
+
+    <!-- Otherwise → league fixtures for the selected round/stage -->
     <FixturesList
+      v-else
       :fixtures="fixtures"
       :is-loading="listLoading"
       :error="fixturesError"

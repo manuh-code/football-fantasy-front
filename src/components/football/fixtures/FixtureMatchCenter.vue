@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { computed, ref, watch, onBeforeUnmount, onMounted } from "vue";
+import type * as Ably from "ably";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
+import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import type { ScoreResponse } from "@/interfaces/football/fixture/ScoreResponse";
+import type { FootballEventResponse } from "@/interfaces/football/event/FootballEventResponse";
+import type { FootballStatisticResponse } from "@/interfaces/football/fixture/FootballStatisticResponse";
+import type { FootballFixtureLineupStatsResponse } from "@/interfaces/football/fixture/FootballFixtureLineupStatsResponse";
+import type { FootballFixtureCommentResponse } from "@/interfaces/football/fixture/FootballFixtureCommentResponse";
 import FixtureScoreboardHeader from "./matchcenter/FixtureScoreboardHeader.vue";
 import FixtureEventsTimeline from "./matchcenter/FixtureEventsTimeline.vue";
 import FixtureStatistics from "./matchcenter/FixtureStatistics.vue";
@@ -13,6 +20,7 @@ import FixtureSidelined from "./matchcenter/FixtureSidelined.vue";
 import FixtureLatestMatches from "./matchcenter/FixtureLatestMatches.vue";
 import FixtureLineups from "./matchcenter/FixtureLineups.vue";
 import FixtureComments from "./matchcenter/FixtureComments.vue";
+import FixtureManOfTheMatch from "./matchcenter/FixtureManOfTheMatch.vue";
 import FixtureHeadToHead from "./matchcenter/FixtureHeadToHead.vue";
 import FixtureLineupStats from "./matchcenter/FixtureLineupStats.vue";
 import FixtureMatchTabs, { type MatchTab } from "./matchcenter/FixtureMatchTabs.vue";
@@ -35,6 +43,40 @@ const activeTab = ref<MatchTab>("info");
 // ── Sticky + Shrink scoreboard ──
 const scrollBody = ref<HTMLElement | null>(null);
 const isHeaderCollapsed = ref(false);
+
+// ── Auto-grow sheet (animate the drawer height together with its content) ──
+// The sheet height is driven explicitly from the natural height of its content
+// (handle + body), clamped to the CSS max-height. A ResizeObserver on the body
+// wrapper recomputes it on every content change (accordions, tab switches,
+// realtime inserts…), and a `height` CSS transition animates the growth/shrink.
+const sheetEl = ref<HTMLElement | null>(null);
+const handleEl = ref<HTMLElement | null>(null);
+const bodyContent = ref<HTMLElement | null>(null);
+const sheetHeight = ref<number | null>(null);
+let contentObserver: ResizeObserver | null = null;
+
+const measureSheet = () => {
+  const sheet = sheetEl.value;
+  const body = bodyContent.value;
+  if (!sheet || !body) return;
+  const maxPx =
+    parseFloat(getComputedStyle(sheet).maxHeight) || window.innerHeight * 0.92;
+  const natural = (handleEl.value?.offsetHeight ?? 0) + body.offsetHeight;
+  sheetHeight.value = Math.min(natural, maxPx);
+};
+
+// Attach/detach the observer as the body wrapper mounts with the sheet.
+watch(bodyContent, (el) => {
+  contentObserver?.disconnect();
+  contentObserver = null;
+  if (el && typeof ResizeObserver !== "undefined") {
+    contentObserver = new ResizeObserver(() => measureSheet());
+    contentObserver.observe(el);
+    measureSheet();
+  } else {
+    sheetHeight.value = null;
+  }
+});
 
 // Collapse/expand uses wide hysteresis + a post-toggle lock so the layout reflow
 // triggered by the shrink animation can't bounce the state back (flicker).
@@ -90,6 +132,7 @@ const loadFixture = async (uuid: string) => {
   try {
     const response = await footballFixtureService.getMatchCenterFixture(uuid);
     fixture.value = response.data;
+    subscribeRealtime(uuid);
   } catch (err) {
     console.error("Error loading match center fixture:", err);
     loadError.value = "Couldn't load match details. Please try again.";
@@ -102,11 +145,112 @@ const retry = () => {
   if (props.fixtureUuid) loadFixture(props.fixtureUuid);
 };
 
+// ── Real-time updates (Ably) ──────────────────────────────────────────────
+// A single channel per fixture feeds every section of the match center. Each
+// event mutates the reactive `fixture` object in place, so the change flows
+// down to the relevant child component through its props (scoreboard, events
+// timeline, statistics, player stats and live commentary).
+const { matchCenterFixtureChannel } = useAblyBroadcast();
+let liveChannel: Ably.RealtimeChannel | null = null;
+
+// Backend may publish a single item or a batch — normalize to an array.
+const toArray = <T,>(payload: T | T[]): T[] =>
+  Array.isArray(payload) ? payload : payload != null ? [payload] : [];
+
+// 1. match-center-score → keep the scoreboard header in sync.
+const onScore = (msg: Ably.InboundMessage) => {
+  const f = fixture.value;
+  if (!f?.participants) return;
+  for (const s of toArray<ScoreResponse>(msg.data)) {
+    const side = s.score?.participant;
+    const goals = s.score?.goals;
+    if (side == null || goals == null) continue;
+    const participant = f.participants.find((p) => p.meta?.location === side);
+    if (!participant) continue;
+    if (participant.current_score) {
+      participant.current_score.score = goals;
+    } else {
+      participant.current_score = { score: goals, participant: side, description: s.description ?? "" };
+    }
+  }
+};
+
+// 2. match-center-event → append / replace events in the timeline.
+const onEvent = (msg: Ably.InboundMessage) => {
+  const f = fixture.value;
+  if (!f) return;
+  if (!f.events) f.events = [];
+  for (const e of toArray<FootballEventResponse>(msg.data)) {
+    const idx = f.events.findIndex((x) => x.id === e.id);
+    if (idx !== -1) f.events[idx] = e;
+    else f.events.push(e);
+  }
+};
+
+// 3. match-center-statistics → upsert each stat by type + side.
+const onStatistics = (msg: Ably.InboundMessage) => {
+  const f = fixture.value;
+  if (!f) return;
+  if (!f.statistics) f.statistics = [];
+  for (const s of toArray<FootballStatisticResponse>(msg.data)) {
+    const idx = f.statistics.findIndex(
+      (x) => x.type_id === s.type_id && x.location === s.location
+    );
+    if (idx !== -1) f.statistics[idx] = s;
+    else f.statistics.push(s);
+  }
+};
+
+// 4. match-center-lineup-stats → replace the top list for each stat type.
+const onLineupStats = (msg: Ably.InboundMessage) => {
+  const f = fixture.value;
+  if (!f) return;
+  if (!f.lineupStats) f.lineupStats = [];
+  for (const ls of toArray<FootballFixtureLineupStatsResponse>(msg.data)) {
+    const idx = f.lineupStats.findIndex((x) => x.type?.uuid === ls.type?.uuid);
+    if (idx !== -1) f.lineupStats[idx] = ls;
+    else f.lineupStats.push(ls);
+  }
+};
+
+// 5. match-center-comments → append / replace live commentary by order.
+const onComments = (msg: Ably.InboundMessage) => {
+  const f = fixture.value;
+  if (!f) return;
+  if (!f.comments) f.comments = [];
+  for (const c of toArray<FootballFixtureCommentResponse>(msg.data)) {
+    const idx = f.comments.findIndex((x) => x.order === c.order);
+    if (idx !== -1) f.comments[idx] = c;
+    else f.comments.push(c);
+  }
+};
+
+const subscribeRealtime = (uuid: string) => {
+  unsubscribeRealtime();
+  liveChannel = matchCenterFixtureChannel(uuid);
+  liveChannel.subscribe("match-center-score", onScore);
+  liveChannel.subscribe("match-center-event", onEvent);
+  liveChannel.subscribe("match-center-statistics", onStatistics);
+  liveChannel.subscribe("match-center-lineup-stats", onLineupStats);
+  liveChannel.subscribe("match-center-comments", onComments);
+};
+
+const unsubscribeRealtime = () => {
+  if (!liveChannel) return;
+  liveChannel.unsubscribe("match-center-score", onScore);
+  liveChannel.unsubscribe("match-center-event", onEvent);
+  liveChannel.unsubscribe("match-center-statistics", onStatistics);
+  liveChannel.unsubscribe("match-center-lineup-stats", onLineupStats);
+  liveChannel.unsubscribe("match-center-comments", onComments);
+  liveChannel = null;
+};
+
 watch(
   () => [props.isOpen, props.fixtureUuid] as const,
   ([open, uuid]) => {
     if (open && uuid) loadFixture(uuid);
     if (!open) {
+      unsubscribeRealtime();
       fixture.value = null;
       loadError.value = null;
     }
@@ -119,9 +263,13 @@ const onKeydown = (e: KeyboardEvent) => {
 
 onMounted(() => {
   window.addEventListener("keydown", onKeydown);
+  window.addEventListener("resize", measureSheet);
 });
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeydown);
+  window.removeEventListener("resize", measureSheet);
+  contentObserver?.disconnect();
+  unsubscribeRealtime();
 });
 
 watch(
@@ -195,9 +343,13 @@ const onDragEnd = (e: PointerEvent) => {
       >
         <!-- Inner sheet (drag transform applied here, decoupled from Vue Transition) -->
         <div
+          ref="sheetEl"
           :style="{
+            height: sheetHeight != null ? `${sheetHeight}px` : undefined,
             transform: `translateY(${dragOffsetY}px)`,
-            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
+            transition: isDragging
+              ? 'none'
+              : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), height 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
           }"
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[92dvh] md:max-h-[88dvh] overflow-hidden pointer-events-auto"
           role="dialog"
@@ -206,6 +358,7 @@ const onDragEnd = (e: PointerEvent) => {
         >
           <!-- Draggable handle (thin grab area; close button is independent) -->
           <div
+            ref="handleEl"
             @pointerdown="onDragStart"
             @pointermove="onDragMove"
             @pointerup="onDragEnd"
@@ -224,8 +377,9 @@ const onDragEnd = (e: PointerEvent) => {
             ref="scrollBody"
             @scroll="onScroll"
             class="flex-1 overflow-y-auto overscroll-contain"
-            style="padding-bottom: calc(2rem + env(safe-area-inset-bottom))"
           >
+            <!-- Content wrapper: observed to drive the animated sheet height. -->
+            <div ref="bodyContent" style="padding-bottom: calc(2rem + env(safe-area-inset-bottom))">
             <!-- Loading skeleton -->
             <FixtureMatchCenterSkeleton v-if="isLoading" />
 
@@ -266,11 +420,17 @@ const onDragEnd = (e: PointerEvent) => {
               <Transition name="mc-tab" mode="out-in">
                 <!-- ── Info: full overview (accordions) ── -->
                 <div key="info" v-if="activeTab === 'info'">
-                  <!-- Events (open by default) -->
+                  <!-- Man of the Match -->
+                  <FixtureManOfTheMatch
+                    v-if="fixture.manOfTheMatch"
+                    :man-of-the-match="fixture.manOfTheMatch"
+                  />
+
+                  <!-- Events -->
                   <FixtureAccordion
                     title="Events"
                     icon="md-sportssoccer"
-                    :default-open="true"
+                    :default-open="false"
                   >
                     <FixtureEventsTimeline
                       :events="fixture.events ?? []"
@@ -280,12 +440,12 @@ const onDragEnd = (e: PointerEvent) => {
                     />
                   </FixtureAccordion>
 
-                  <!-- Statistics (open by default) -->
+                  <!-- Statistics -->
                   <FixtureAccordion
                     v-if="fixture.statistics && fixture.statistics.length > 0"
                     title="Statistics"
                     icon="hi-solid-chart-bar"
-                    :default-open="true"
+                    :default-open="false"
                   >
                     <FixtureStatistics
                       :statistics="fixture.statistics"
@@ -395,6 +555,7 @@ const onDragEnd = (e: PointerEvent) => {
                 />
               </Transition>
             </template>
+            </div>
           </div>
         </div>
       </div>

@@ -16,17 +16,7 @@
       type="button"
       @click.stop="toggleDropdown"
       :disabled="disabled"
-      class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all duration-200 text-left"
-      :class="[
-        isOpen
-          ? `${accentBorderClass} ring-2 ${accentRingClass}`
-          : error
-            ? 'border-red-300 dark:border-red-600 hover:border-red-400 dark:hover:border-red-500'
-            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500',
-        disabled
-          ? 'opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-800'
-          : 'bg-white dark:bg-gray-700/50 cursor-pointer',
-      ]"
+      :class="triggerClasses"
       :aria-expanded="isOpen"
       aria-haspopup="dialog"
       :aria-describedby="error ? `${id}-error` : undefined"
@@ -294,6 +284,8 @@ interface Props {
   allOptionLabel?: string;
   allOptionValue?: SelectValue;
   accentColor?: AccentColor;
+  /** "default" = bordered input · "minimal" = borderless subtle chip (FotMob style) */
+  variant?: "default" | "minimal";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -313,6 +305,7 @@ const props = withDefaults(defineProps<Props>(), {
   allOptionLabel: "All",
   allOptionValue: "",
   accentColor: "indigo",
+  variant: "default",
 });
 
 const emit = defineEmits<{
@@ -384,6 +377,35 @@ const accentCheckClass = computed(() => {
     gray: "text-gray-600 dark:text-gray-400",
   };
   return map[props.accentColor] || map.indigo;
+});
+
+// Trigger button styling — borderless subtle chip for "minimal", bordered input otherwise.
+const triggerClasses = computed(() => {
+  const base = "w-full flex items-center text-left transition-all duration-200";
+  if (props.variant === "minimal") {
+    return [
+      base,
+      "gap-2.5 px-3 py-2 rounded-xl",
+      isOpen.value
+        ? "bg-gray-100 dark:bg-gray-800"
+        : props.error
+          ? "bg-red-50 dark:bg-red-900/20"
+          : "bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700/50",
+      props.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+    ];
+  }
+  return [
+    base,
+    "gap-3 px-3 py-2.5 rounded-lg border",
+    isOpen.value
+      ? `${accentBorderClass.value} ring-2 ${accentRingClass.value}`
+      : props.error
+        ? "border-red-300 dark:border-red-600 hover:border-red-400 dark:hover:border-red-500"
+        : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500",
+    props.disabled
+      ? "opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-800"
+      : "bg-white dark:bg-gray-700/50 cursor-pointer",
+  ];
 });
 
 // Computed
