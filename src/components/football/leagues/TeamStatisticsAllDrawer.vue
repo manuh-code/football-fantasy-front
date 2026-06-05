@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import type { FootballFixtureLineupStatsResponse } from "@/interfaces/football/fixture/FootballFixtureLineupStatsResponse";
+import type { Statistic } from "@/interfaces/football/team/FootballTeamTopStatisticResponse";
+import { formatTeamStatValue } from "@/utils/teamStatistics";
 
-interface Props {
-  stat: FootballFixtureLineupStatsResponse | null;
+defineProps<{
+  statistic: Statistic | null;
   isOpen: boolean;
-}
-
-const props = defineProps<Props>();
+}>();
 const emit = defineEmits<{ close: [] }>();
 
-const FALLBACK_PLAYER = "/img/default-avatar.svg";
+const FALLBACK = "/img/default-avatar.svg";
 
-const formatValue = (value: number): string =>
-  Number.isInteger(value) ? String(value) : value.toFixed(2);
-
-const playerImg = (path: string | null | undefined): string => {
-  if (!path || path.includes("placeholder")) return FALLBACK_PLAYER;
+const teamImg = (path: string | null | undefined): string => {
+  if (!path || path.includes("placeholder")) return FALLBACK;
   return path;
 };
-
 const onImgError = (e: Event) => {
-  (e.target as HTMLImageElement).src = FALLBACK_PLAYER;
+  (e.target as HTMLImageElement).src = FALLBACK;
 };
 
 const rankColor = (index: number): string => {
@@ -45,7 +40,7 @@ const rankColor = (index: number): string => {
     <!-- Sheet -->
     <Transition name="sheet-slide">
       <div
-        v-if="isOpen && stat"
+        v-if="isOpen && statistic"
         class="fixed bottom-0 left-0 right-0 z-[135] md:left-4 md:right-4 md:bottom-4 md:max-w-2xl md:mx-auto"
       >
         <div class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[82dvh] overflow-hidden">
@@ -57,7 +52,7 @@ const rankColor = (index: number): string => {
           <!-- Header -->
           <div class="shrink-0 flex items-center justify-between px-4 pb-3 border-b border-gray-100 dark:border-gray-800">
             <h2 class="text-[15px] font-bold text-gray-900 dark:text-white">
-              {{ stat.type.name }}
+              {{ statistic.type.name }}
             </h2>
             <button
               @click="emit('close')"
@@ -75,8 +70,8 @@ const rankColor = (index: number): string => {
           >
             <ul class="space-y-1.5">
               <li
-                v-for="(entry, index) in stat.top"
-                :key="entry.player.uuid"
+                v-for="(team, index) in statistic.teams"
+                :key="team.uuid"
                 class="flex items-center gap-3 rounded-xl px-3 py-2"
                 :class="index === 0
                   ? 'bg-amber-50 dark:bg-amber-900/10'
@@ -88,30 +83,22 @@ const rankColor = (index: number): string => {
                   :class="rankColor(index)"
                 >{{ index + 1 }}</span>
 
-                <!-- Avatar -->
+                <!-- Logo -->
                 <img
-                  :src="playerImg(entry.player.image_path)"
-                  :alt="entry.player.display_name"
-                  class="w-9 h-9 rounded-full object-cover shrink-0 bg-gray-100 dark:bg-gray-700 ring-1 ring-gray-200 dark:ring-gray-700"
+                  :src="teamImg(team.image_path)"
+                  :alt="team.short_code || team.name"
+                  class="w-9 h-9 rounded-full object-contain shrink-0 bg-gray-100 dark:bg-gray-700 ring-1 ring-gray-200 dark:ring-gray-700"
                   @error="onImgError"
                 />
 
-                <!-- Name + team -->
+                <!-- Name -->
                 <div class="flex-1 min-w-0">
                   <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate leading-snug">
-                    {{ entry.player.display_name }}
+                    {{ team.name }}
                   </p>
-                  <div class="flex items-center gap-1.5 mt-0.5">
-                    <img
-                      :src="entry.team.image_path ?? ''"
-                      :alt="entry.team.short_code ?? entry.team.name"
-                      class="w-3.5 h-3.5 object-contain"
-                      @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
-                    />
-                    <span class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
-                      {{ entry.team.short_code ?? entry.team.name }}
-                    </span>
-                  </div>
+                  <span class="text-[11px] text-gray-400 dark:text-gray-500">
+                    {{ team.short_code }}
+                  </span>
                 </div>
 
                 <!-- Value -->
@@ -121,7 +108,7 @@ const rankColor = (index: number): string => {
                     ? 'text-amber-500'
                     : 'text-emerald-600 dark:text-emerald-400'"
                 >
-                  {{ formatValue(entry.data.value) }}
+                  {{ formatTeamStatValue(team.value) }}
                 </span>
               </li>
             </ul>

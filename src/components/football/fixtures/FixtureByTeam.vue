@@ -3,6 +3,7 @@ import { computed } from "vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import FixturesList from "@/components/football/fixtures/FixturesList.vue";
+import FixturesListSkeleton from "@/components/football/fixtures/FixturesListSkeleton.vue";
 
 const props = defineProps<{
   schedule: FootballRoundResponse[];
@@ -22,10 +23,8 @@ const roundsWithFixtures = computed(() =>
 </script>
 
 <template>
-  <!-- Loading -->
-  <div v-if="isLoading" class="flex items-center justify-center py-12">
-    <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600" animation="spin" />
-  </div>
+  <!-- Loading skeleton -->
+  <FixturesListSkeleton v-if="isLoading" />
 
   <!-- Error -->
   <div v-else-if="error" class="px-4 py-12 flex flex-col items-center text-center">

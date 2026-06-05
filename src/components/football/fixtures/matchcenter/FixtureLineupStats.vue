@@ -61,7 +61,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
             @click="drawerStat = stat"
             class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
           >
-            Ver todos
+            View all
           </button>
         </div>
 
@@ -120,8 +120,6 @@ const rankLabel = ["🥇", "🥈", "🥉"];
             </span>
           </li>
         </ul>
-
-        <!-- Ver todos footer (only when no header button — but we always show in header) -->
       </div>
     </template>
 

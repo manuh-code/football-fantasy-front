@@ -2,19 +2,12 @@
   <div
     class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
   >
-    <!-- Loading -->
-    <div
-      v-if="!stageUuid || loading"
-      class="flex items-center justify-center py-12"
-    >
-      <v-icon
-        v-if="loading"
-        name="pr-spinner"
-        class="w-5 h-5 text-gray-300 dark:text-gray-600"
-        animation="spin"
-        aria-hidden="true"
-      />
-      <p v-else class="text-[13px] text-gray-400 dark:text-gray-500">No stage selected.</p>
+    <!-- Loading skeleton -->
+    <StandingsTableSkeleton v-if="loading" />
+
+    <!-- No stage selected -->
+    <div v-else-if="!stageUuid" class="flex items-center justify-center py-12">
+      <p class="text-[13px] text-gray-400 dark:text-gray-500">No stage selected.</p>
     </div>
 
     <!-- Error -->
@@ -44,6 +37,7 @@ import { ref, onMounted, watch } from "vue";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
 import NoResults from "@/components/ui/NoResults.vue";
 import StandingsTable from "./StandingsTable.vue";
+import StandingsTableSkeleton from "./StandingsTableSkeleton.vue";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
 import type { FootballLeagueStandingsPayload } from "@/interfaces/football/league/Standing/FootballLeagueStandingsPayload";
 
