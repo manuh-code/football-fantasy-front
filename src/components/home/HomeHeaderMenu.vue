@@ -1,6 +1,11 @@
 <template>
   <!-- Top header for Home — replaces the global HeaderMenu on this route.
-       Mirrors HeaderMenu's actions (brand + login/avatar) and adds a stage switcher. -->
+       Mirrors HeaderMenu's actions (brand + login/avatar) and adds a stage switcher.
+       Teleported to <body> so its `position: fixed` resolves against the viewport:
+       the route lives inside App.vue's `.app-content`, which has a `transform`
+       (swipe nav) and would otherwise become the containing block — pinning the
+       header to the scrolling content instead of the screen. -->
+  <Teleport to="body">
   <header
     class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800 safe-area-top"
   >
@@ -74,6 +79,7 @@
       </div>
     </div>
   </header>
+  </Teleport>
 
   <!-- Stage switcher bottom-sheet -->
   <Teleport to="body">
