@@ -6,6 +6,7 @@ import { FootballPlayerStatisticPayload } from "@/interfaces/football/player/Foo
 import { FootballPlayerStatisticResponse } from "@/interfaces/football/player/FootballPlayerStatisticResponse";
 import { FootballPlayerTopScorePayload } from "@/interfaces/football/player/FootballPlayerTopScorePayload";
 import { FootballPlayerTopScoreResponse } from "@/interfaces/football/player/FootballPlayerTopScoreResponse";
+import { FootballPlayerVersusResponse } from "@/interfaces/football/player/FootballPlayerVersusResponse";
 import { AxiosError } from "axios";
 
 export class FootballPlayerService {
@@ -41,6 +42,15 @@ export class FootballPlayerService {
         }
 
         throw new AxiosError('Failed to fetch football player fantasy score');
+    }
+
+    async getPlayerVersus(player1Uuid: string, player2Uuid: string, seasonUuid: string): Promise<ApiResponse<FootballPlayerVersusResponse>> {
+        const response = await this.api.get<ApiResponse<FootballPlayerVersusResponse>>(`/football/players/versus/${player1Uuid}/vs/${player2Uuid}/season/${seasonUuid}`);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+
+        throw new AxiosError('Failed to fetch football player versus data');
     }
 }
 

@@ -10,6 +10,7 @@ import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import { FantasyConditionsRulesResponse } from "@/interfaces/fantasy/leagues/FantasyConditionsRulesResponse";
 import { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
+import { FootballPlayerResponse } from "@/interfaces/football/player/FootballPlayerResponse";
 
 export class CatalogService {
   private api;
@@ -140,13 +141,24 @@ export class CatalogService {
 
   async getTeamsBySeason(seasonUuid: string): Promise<FootballTeamResponse[]> {
     const response = await this.api.get<ApiResponse<FootballTeamResponse[]>>(`catalog/season/${seasonUuid}/teams`);
-    
+
     if (response.data.code === 200) {
       return response.data.data;
     }
     throw new AxiosError('Failed to fetch teams by season');
   }
+
+  async getPlayerSearch(search: string): Promise<FootballPlayerResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballPlayerResponse[]>>(`football/players/search/${encodeURIComponent(search) }`);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+    throw new AxiosError('Failed to search players');
+  }
 }
+
+
+
 
 export const catalogService = new CatalogService();
 export default catalogService;
