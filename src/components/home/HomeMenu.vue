@@ -1,27 +1,26 @@
 <template>
   <!-- Teleport outside transform context so fixed positioning works -->
   <Teleport to="#app">
-    <!-- Bottom Tab Bar — iOS / Fotmob style -->
+    <!-- Floating glassmorphism pill nav — single centered primary action (Gaming).
+         The <nav> spans the row but is click-through; only the capsule is interactive. -->
     <nav
       v-if="isVisible"
       aria-label="Home navigation"
-      class="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/60 dark:border-gray-800/60 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]"
+      class="fixed inset-x-0 bottom-0 z-[100] pointer-events-none"
+      style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem))"
     >
       <div
-        class="flex items-center justify-around max-w-lg mx-auto px-2 pt-2 pb-2"
-        style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem))"
+        class="pointer-events-auto mx-auto w-[70%] min-w-[240px] max-w-md flex items-center justify-center p-1.5 rounded-full bg-white/60 dark:bg-gray-900/55 backdrop-blur-2xl border border-white/50 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
       >
-        <!-- Gaming -->
+        <!-- Gaming — primary action -->
         <button
           @click="goToGaming"
-          class="group flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 rounded-2xl transition-all duration-200 active:scale-95 text-blue-500 dark:text-blue-400"
+          type="button"
           aria-label="Gaming"
+          class="flex flex-col items-center justify-center gap-0.5 px-10 py-2 rounded-full text-blue-600 dark:text-blue-400 bg-blue-500/15 dark:bg-blue-400/15 transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
         >
-          <div class="relative">
-            <div class="absolute -inset-1.5 rounded-full bg-blue-500/10 dark:bg-blue-400/10 scale-0 group-active:scale-100 transition-transform duration-200" />
-            <v-icon name="bi-trophy-fill" class="w-6 h-6 relative" />
-          </div>
-          <span class="text-[10px] font-semibold tracking-tight leading-none mt-0.5">Gaming</span>
+          <v-icon name="bi-trophy-fill" class="w-6 h-6" />
+          <span class="text-[10px] font-semibold tracking-tight leading-none">Gaming</span>
         </button>
       </div>
     </nav>

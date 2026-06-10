@@ -1,89 +1,43 @@
 <template>
-  <!-- Bottom Tab Bar — iOS / Apple Sports style -->
+  <!-- Floating glassmorphism pill nav — Instagram / iOS inspired.
+       The <nav> spans the row but is click-through; only the capsule is interactive. -->
   <nav
     aria-label="Home navigation"
-    class="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/60 dark:border-gray-800/60"
+    class="fixed inset-x-0 bottom-0 z-[100] pointer-events-none"
+    style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem))"
   >
     <div
-      class="max-w-lg mx-auto flex items-center justify-around px-6"
-      style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem))"
+      class="pointer-events-auto mx-auto w-[70%] min-w-[260px] max-w-md flex items-center gap-1 p-1.5 rounded-full bg-white/60 dark:bg-gray-900/55 backdrop-blur-2xl border border-white/50 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
     >
-      <!-- Home Tab -->
       <button
-        @click="handleTab('home')"
-        class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-4 min-w-[64px] transition-colors duration-150 focus:outline-none"
-        :class="[
-          activeTab === 'home'
-            ? 'text-blue-500 dark:text-blue-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300',
-        ]"
-        aria-label="Home"
-      >
-        <v-icon
-          name="hi-solid-home"
-          class="w-[22px] h-[22px] transition-transform duration-200"
-          :class="activeTab === 'home' ? 'scale-110' : ''"
-        />
-        <span class="text-[10px] font-semibold leading-tight mt-0.5">Home</span>
-        <!-- Active indicator dot -->
-        <span
-          v-if="activeTab === 'home'"
-          class="w-1 h-1 rounded-full bg-blue-500 dark:bg-blue-400 mt-0.5"
-        />
-      </button>
-
-      <!-- Games Tab -->
-      <button
-        @click="handleTab('games')"
-        class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-4 min-w-[64px] transition-colors duration-150 focus:outline-none"
-        :class="[
-          activeTab === 'games'
-            ? 'text-emerald-500 dark:text-emerald-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300',
-        ]"
-        aria-label="Games"
-      >
-        <v-icon
-          name="hi-solid-lightning-bolt"
-          class="w-[22px] h-[22px] transition-transform duration-200"
-          :class="activeTab === 'games' ? 'scale-110' : ''"
-        />
-        <span class="text-[10px] font-semibold leading-tight mt-0.5">Games</span>
-        <span
-          v-if="activeTab === 'games'"
-          class="w-1 h-1 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-0.5"
-        />
-      </button>
-
-      <!-- Following Tab (Coming Soon) -->
-      <button
-        @click="handleTab('following')"
-        class="flex flex-col items-center justify-center gap-0.5 py-2.5 px-4 min-w-[64px] transition-colors duration-150 focus:outline-none relative"
-        :class="[
-          activeTab === 'following'
-            ? 'text-amber-500 dark:text-amber-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300',
-        ]"
-        aria-label="Following"
+        v-for="tab in tabs"
+        :key="tab.key"
+        @click="handleTab(tab.key)"
+        type="button"
+        :aria-label="tab.label"
+        :aria-current="activeTab === tab.key ? 'page' : undefined"
+        class="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-current/40"
+        :class="
+          activeTab === tab.key
+            ? [tab.activeBg, tab.activeText]
+            : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300'
+        "
       >
         <div class="relative">
           <v-icon
-            name="hi-solid-star"
+            :name="tab.icon"
             class="w-[22px] h-[22px] transition-transform duration-200"
-            :class="activeTab === 'following' ? 'scale-110' : ''"
+            :class="activeTab === tab.key ? 'scale-110' : ''"
           />
           <!-- "Soon" mini badge -->
           <span
+            v-if="tab.badge"
             class="absolute -top-1.5 -right-3 text-[7px] font-bold text-white bg-gray-400 dark:bg-gray-600 rounded-full px-1 py-px leading-none"
           >
-            Soon
+            {{ tab.badge }}
           </span>
         </div>
-        <span class="text-[10px] font-semibold leading-tight mt-0.5">Following</span>
-        <span
-          v-if="activeTab === 'following'"
-          class="w-1 h-1 rounded-full bg-amber-500 dark:bg-amber-400 mt-0.5"
-        />
+        <span class="text-[10px] font-semibold leading-tight">{{ tab.label }}</span>
       </button>
     </div>
   </nav>
@@ -97,9 +51,47 @@ import { useToast } from "@/composables/useToast";
 const router = useRouter();
 const toast = useToast();
 
-const activeTab = ref<"home" | "games" | "following">("home");
+type TabKey = "home" | "games" | "following";
 
-function handleTab(tab: "home" | "games" | "following") {
+interface TabItem {
+  key: TabKey;
+  label: string;
+  icon: string;
+  /** Text color when the tab is active. */
+  activeText: string;
+  /** Soft accent pill behind the active tab. */
+  activeBg: string;
+  badge?: string;
+}
+
+const tabs: TabItem[] = [
+  {
+    key: "home",
+    label: "Home",
+    icon: "hi-solid-home",
+    activeText: "text-blue-600 dark:text-blue-400",
+    activeBg: "bg-blue-500/15 dark:bg-blue-400/15",
+  },
+  {
+    key: "games",
+    label: "Games",
+    icon: "hi-solid-lightning-bolt",
+    activeText: "text-emerald-600 dark:text-emerald-400",
+    activeBg: "bg-emerald-500/15 dark:bg-emerald-400/15",
+  },
+  {
+    key: "following",
+    label: "Following",
+    icon: "hi-solid-star",
+    activeText: "text-amber-600 dark:text-amber-400",
+    activeBg: "bg-amber-500/15 dark:bg-amber-400/15",
+    badge: "Soon",
+  },
+];
+
+const activeTab = ref<TabKey>("home");
+
+function handleTab(tab: TabKey) {
   activeTab.value = tab;
 
   switch (tab) {
