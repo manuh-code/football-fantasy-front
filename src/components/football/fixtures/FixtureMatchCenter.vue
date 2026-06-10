@@ -28,6 +28,8 @@ import FixtureMatchTabs, { type MatchTab } from "./matchcenter/FixtureMatchTabs.
 interface Props {
   isOpen: boolean;
   fixtureUuid: string | null;
+  /** Stage the fixture belongs to — forwarded to the scoreboard header for the team-profile drawer. */
+  stageUuid?: string | null;
 }
 
 const props = defineProps<Props>();
@@ -410,7 +412,11 @@ const onDragEnd = (e: PointerEvent) => {
                 class="sticky top-0 z-30 bg-white dark:bg-gray-900 transition-shadow duration-300"
                 :class="isHeaderCollapsed ? 'shadow-md shadow-black/5 dark:shadow-black/40' : ''"
               >
-                <FixtureScoreboardHeader :fixture="fixture" :collapsed="isHeaderCollapsed" />
+                <FixtureScoreboardHeader
+                  :fixture="fixture"
+                  :collapsed="isHeaderCollapsed"
+                  :stage-uuid="stageUuid"
+                />
                 <div class="border-b border-gray-100 dark:border-gray-800">
                   <FixtureMatchTabs v-model="activeTab" />
                 </div>

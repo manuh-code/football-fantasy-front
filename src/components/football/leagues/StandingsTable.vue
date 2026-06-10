@@ -6,6 +6,14 @@ const props = defineProps<{
   standings: FootballLeagueStandingsResponse[];
 }>();
 
+const emit = defineEmits<{
+  "team-selected": [teamUuid: string];
+}>();
+
+const onTeamSelect = (row: FootballLeagueStandingsResponse) => {
+  if (row.team?.uuid) emit("team-selected", row.team.uuid);
+};
+
 // ── Helpers ──
 type StatLike =
   | { type?: { code?: string }; value?: number }
@@ -97,7 +105,8 @@ const formatGD = (val: string | number | undefined) => {
         <tr
           v-for="(row, idx) in standings"
           :key="row.team?.uuid || idx"
-          class="standings-row group"
+          @click="onTeamSelect(row)"
+          class="standings-row group cursor-pointer"
           :class="{
             'border-b border-gray-50 dark:border-gray-700/30': idx < standings.length - 1,
           }"

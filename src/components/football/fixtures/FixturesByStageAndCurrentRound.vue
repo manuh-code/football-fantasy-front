@@ -295,6 +295,7 @@
     <FixtureMatchCenter
       :is-open="matchCenterOpen"
       :fixture-uuid="selectedFixtureUuid"
+      :stage-uuid="props.stageUuid"
       @close="matchCenterOpen = false"
     />
 

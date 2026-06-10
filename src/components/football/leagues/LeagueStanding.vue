@@ -28,7 +28,15 @@
     </div>
 
     <!-- Table -->
-    <StandingsTable v-else :standings="standings" />
+    <StandingsTable v-else :standings="standings" @team-selected="openTeamProfile" />
+
+    <!-- Team profile drawer -->
+    <FootballTeamProfileComponent
+      :is-open="isProfileOpen"
+      :team-uuid="selectedTeamUuid"
+      :stage-uuid="stageUuid"
+      @close="closeTeamProfile"
+    />
   </div>
 </template>
 
@@ -38,6 +46,7 @@ import footballLeagueService from "@/services/football/league/FootballLeagueServ
 import NoResults from "@/components/ui/NoResults.vue";
 import StandingsTable from "./StandingsTable.vue";
 import StandingsTableSkeleton from "./StandingsTableSkeleton.vue";
+import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
 import type { FootballLeagueStandingsPayload } from "@/interfaces/football/league/Standing/FootballLeagueStandingsPayload";
 
@@ -49,6 +58,19 @@ const props = defineProps<{
 const standings = ref<FootballLeagueStandingsResponse[]>([]);
 const loading = ref(false);
 const error = ref("");
+
+// ── Team profile drawer ──
+const isProfileOpen = ref(false);
+const selectedTeamUuid = ref<string | null>(null);
+
+const openTeamProfile = (teamUuid: string) => {
+  selectedTeamUuid.value = teamUuid;
+  isProfileOpen.value = true;
+};
+
+const closeTeamProfile = () => {
+  isProfileOpen.value = false;
+};
 
 const fetchStandings = async () => {
   if (!props.stageUuid || !props.seasonUuid) return;

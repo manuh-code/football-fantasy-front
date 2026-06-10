@@ -1,6 +1,7 @@
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
+import { FootballTeamProfileResponse } from "@/interfaces/football/team/FootballTeamProfileResponse";
 import { FootballTeamTopStatisticResponse } from "@/interfaces/football/team/FootballTeamTopStatisticResponse";
 
 export class FootballTeamService {
@@ -25,6 +26,14 @@ export class FootballTeamService {
             return response.data.data;
         }
         throw new Error('Failed to fetch top statistic teams by season');
+    }
+
+    async getTeamProfileByStage(teamUuid: string, stageUuid: string): Promise<FootballTeamProfileResponse> {
+        const response = await this.api.get<ApiResponse<FootballTeamProfileResponse>>(`/football/teams/${teamUuid}/stage/${stageUuid}/profile`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch team profile by stage');
     }
 }
 

@@ -1,15 +1,37 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";
 
 interface Props {
   fixture: FootballFixtureResponse;
   /** When true the header renders in its compact "scrolled" state (Sticky + Shrink). */
   collapsed?: boolean;
+  /** Stage context for the team-profile lookup — the Match Center fixture payload doesn't carry `stage`. */
+  stageUuid?: string | null;
 }
 
-const props = withDefaults(defineProps<Props>(), { collapsed: false });
+const props = withDefaults(defineProps<Props>(), { collapsed: false, stageUuid: null });
+
+// ── Team profile drawer (opened by tapping a crest) ──
+const isTeamProfileOpen = ref(false);
+const selectedTeamUuid = ref<string | null>(null);
+// The fixture payload may not include `stage`, so fall back to the stage provided
+// by the parent view (fixtures are always rendered within a stage context).
+const resolvedStageUuid = computed<string | null>(
+  () => props.fixture.stage?.uuid ?? props.stageUuid ?? null,
+);
+
+const onTeamSelect = (team?: FootballTeamResponse) => {
+  if (!team?.uuid || !resolvedStageUuid.value) return;
+  selectedTeamUuid.value = team.uuid;
+  isTeamProfileOpen.value = true;
+};
+
+const closeTeamProfile = () => {
+  isTeamProfileOpen.value = false;
+};
 
 const FALLBACK_LOGO = "/img/default-avatar.svg";
 const teamImage = (team?: FootballTeamResponse): string => team?.image_path || FALLBACK_LOGO;
@@ -120,8 +142,11 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
     <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
       <!-- Home team -->
       <div class="flex flex-col items-center min-w-0 transition-all duration-300 ease-out" :class="collapsed ? 'gap-0' : 'gap-2'">
-        <div
-          class="flex items-center justify-center shrink-0 transition-all duration-300 ease-out"
+        <button
+          type="button"
+          :aria-label="`View ${teamName(homeTeam)} profile`"
+          @click="onTeamSelect(homeTeam)"
+          class="flex items-center justify-center shrink-0 transition-all duration-300 ease-out rounded-full hover:opacity-75 active:scale-95"
           :class="collapsed ? 'w-7 h-7' : 'w-12 h-12'"
         >
           <img
@@ -130,7 +155,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
             class="max-w-full max-h-full object-contain"
             @error="onImgError"
           />
-        </div>
+        </button>
         <!-- Name + short code (fully hidden when collapsed) -->
         <div
           class="overflow-hidden text-center min-w-0 w-full transition-all duration-300 ease-out"
@@ -205,8 +230,11 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
 
       <!-- Away team -->
       <div class="flex flex-col items-center min-w-0 transition-all duration-300 ease-out" :class="collapsed ? 'gap-0' : 'gap-2'">
-        <div
-          class="flex items-center justify-center shrink-0 transition-all duration-300 ease-out"
+        <button
+          type="button"
+          :aria-label="`View ${teamName(awayTeam)} profile`"
+          @click="onTeamSelect(awayTeam)"
+          class="flex items-center justify-center shrink-0 transition-all duration-300 ease-out rounded-full hover:opacity-75 active:scale-95"
           :class="collapsed ? 'w-7 h-7' : 'w-12 h-12'"
         >
           <img
@@ -215,7 +243,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
             class="max-w-full max-h-full object-contain"
             @error="onImgError"
           />
-        </div>
+        </button>
         <!-- Name + short code (fully hidden when collapsed) -->
         <div
           class="overflow-hidden text-center min-w-0 w-full transition-all duration-300 ease-out"
@@ -248,5 +276,14 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
         </span>
       </div>
     </div>
+
+    <!-- Team profile drawer (elevated to sit above the Match Center sheet) -->
+    <FootballTeamProfileComponent
+      :is-open="isTeamProfileOpen"
+      :team-uuid="selectedTeamUuid"
+      :stage-uuid="resolvedStageUuid"
+      elevated
+      @close="closeTeamProfile"
+    />
   </div>
 </template>
