@@ -1,0 +1,1613 @@
+{
+    "timestamp": "2026-06-15 17:40:23",
+    "code": 200,
+    "message": "Match center data",
+    "data": {
+        "uuid": "98fa3d7a-506e-4e6c-9713-e622aae43cbb",
+        "name": "Tijuana vs Tigres UANL",
+        "starting_at": "16 Jul 2026, 15:00",
+        "starting_at_timestamp": 1784257200,
+        "length": 90,
+        "placeholder": false,
+        "participants": [
+            {
+                "uuid": "901bb44b-51f2-48b2-a9a0-fdeeac1c3f7c",
+                "sm_id": 11023,
+                "name": "Tijuana",
+                "short_code": "TIJ",
+                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/11023.png",
+                "founded": 2006,
+                "country": {
+                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                    "sm_id": 458,
+                    "name": "Mexico",
+                    "fifa_name": "MEX",
+                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                },
+                "meta": {
+                    "location": "home",
+                    "winner": null,
+                    "position": null
+                },
+                "latest": [
+                    {
+                        "uuid": "c47b7cb2-ad3f-456a-897e-aebdaceef018",
+                        "name": "Guadalajara vs Tijuana",
+                        "starting_at": "25 Apr 2026, 19:07",
+                        "starting_at_timestamp": 1777165620,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "cf21fd34-d3d0-42ac-b301-63a2ad2b37b1",
+                                "sm_id": 427,
+                                "name": "Guadalajara",
+                                "short_code": "GUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/11\/427.png",
+                                "founded": 1906,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": false,
+                                    "position": 1
+                                },
+                                "current_score": {
+                                    "score": 0,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "901bb44b-51f2-48b2-a9a0-fdeeac1c3f7c",
+                                "sm_id": 11023,
+                                "name": "Tijuana",
+                                "short_code": "TIJ",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/11023.png",
+                                "founded": 2006,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 9
+                                },
+                                "current_score": {
+                                    "score": 0,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20076463,
+                                "fixture_id": 19628264,
+                                "type_id": 1525,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20076466,
+                                "fixture_id": 19628264,
+                                "type_id": 1,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20076467,
+                                "fixture_id": 19628264,
+                                "type_id": 2,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20076468,
+                                "fixture_id": 19628264,
+                                "type_id": 2,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20076464,
+                                "fixture_id": 19628264,
+                                "type_id": 1525,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20076465,
+                                "fixture_id": 19628264,
+                                "type_id": 1,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20076902,
+                                "fixture_id": 19628264,
+                                "type_id": 48996,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20076901,
+                                "fixture_id": 19628264,
+                                "type_id": 48996,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3e62b39b-3901-4fa4-9425-d18e5f2e4132",
+                        "name": "Tijuana vs Pachuca",
+                        "starting_at": "22 Apr 2026, 21:06",
+                        "starting_at_timestamp": 1776913560,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "a3e0d786-df45-4f65-bd7c-dfd53d4b7a27",
+                                "sm_id": 10036,
+                                "name": "Pachuca",
+                                "short_code": "PCH",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/20\/10036.png",
+                                "founded": 1901,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 3
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "901bb44b-51f2-48b2-a9a0-fdeeac1c3f7c",
+                                "sm_id": 11023,
+                                "name": "Tijuana",
+                                "short_code": "TIJ",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/11023.png",
+                                "founded": 2006,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": true,
+                                    "position": 10
+                                },
+                                "current_score": {
+                                    "score": 3,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20052211,
+                                "fixture_id": 19628268,
+                                "type_id": 1525,
+                                "participant_id": 10036,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20052215,
+                                "fixture_id": 19628268,
+                                "type_id": 2,
+                                "participant_id": 10036,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20052214,
+                                "fixture_id": 19628268,
+                                "type_id": 2,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 3,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20052213,
+                                "fixture_id": 19628268,
+                                "type_id": 1,
+                                "participant_id": 10036,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20052212,
+                                "fixture_id": 19628268,
+                                "type_id": 1,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20052210,
+                                "fixture_id": 19628268,
+                                "type_id": 1525,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 3,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20052260,
+                                "fixture_id": 19628268,
+                                "type_id": 48996,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20052261,
+                                "fixture_id": 19628268,
+                                "type_id": 48996,
+                                "participant_id": 10036,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8501c430-4357-4795-a2c1-6ab58c74abf9",
+                        "name": "Cruz Azul vs Tijuana",
+                        "starting_at": "18 Apr 2026, 17:00",
+                        "starting_at_timestamp": 1776553200,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "901bb44b-51f2-48b2-a9a0-fdeeac1c3f7c",
+                                "sm_id": 11023,
+                                "name": "Tijuana",
+                                "short_code": "TIJ",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/11023.png",
+                                "founded": 2006,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 10
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "9660f2d4-292c-40d5-a303-dbfeeb760457",
+                                "sm_id": 2626,
+                                "name": "Cruz Azul",
+                                "short_code": "CAZ",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/2\/2626.png",
+                                "founded": 1927,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": false,
+                                    "position": 2
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20024887,
+                                "fixture_id": 19628282,
+                                "type_id": 1,
+                                "participant_id": 2626,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20024891,
+                                "fixture_id": 19628282,
+                                "type_id": 2,
+                                "participant_id": 2626,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20024882,
+                                "fixture_id": 19628282,
+                                "type_id": 1525,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20024886,
+                                "fixture_id": 19628282,
+                                "type_id": 1,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20024889,
+                                "fixture_id": 19628282,
+                                "type_id": 2,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20024884,
+                                "fixture_id": 19628282,
+                                "type_id": 1525,
+                                "participant_id": 2626,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20025375,
+                                "fixture_id": 19628282,
+                                "type_id": 48996,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20025374,
+                                "fixture_id": 19628282,
+                                "type_id": 48996,
+                                "participant_id": 2626,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "26c75d4f-9dc4-4785-af0f-c86864a15081",
+                        "name": "Ju\u00e1rez vs Tijuana",
+                        "starting_at": "10 Apr 2026, 21:06",
+                        "starting_at_timestamp": 1775876760,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "42f5e801-ac6d-4837-ab2e-2f66780b7a86",
+                                "sm_id": 6335,
+                                "name": "Ju\u00e1rez",
+                                "short_code": "JUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/31\/6335.png",
+                                "founded": 2015,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": false,
+                                    "position": 10
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "901bb44b-51f2-48b2-a9a0-fdeeac1c3f7c",
+                                "sm_id": 11023,
+                                "name": "Tijuana",
+                                "short_code": "TIJ",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/11023.png",
+                                "founded": 2006,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": true,
+                                    "position": 12
+                                },
+                                "current_score": {
+                                    "score": 2,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 19904023,
+                                "fixture_id": 19628293,
+                                "type_id": 1,
+                                "participant_id": 6335,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 19904026,
+                                "fixture_id": 19628293,
+                                "type_id": 2,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 19904021,
+                                "fixture_id": 19628293,
+                                "type_id": 1525,
+                                "participant_id": 6335,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 19904024,
+                                "fixture_id": 19628293,
+                                "type_id": 1,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 19904025,
+                                "fixture_id": 19628293,
+                                "type_id": 2,
+                                "participant_id": 6335,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 19904022,
+                                "fixture_id": 19628293,
+                                "type_id": 1525,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 19904472,
+                                "fixture_id": 19628293,
+                                "type_id": 48996,
+                                "participant_id": 6335,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 19904473,
+                                "fixture_id": 19628293,
+                                "type_id": 48996,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "df46a514-d4ee-4583-897d-3a7d6eced3c8",
+                        "name": "Tijuana vs Tigres UANL",
+                        "starting_at": "03 Apr 2026, 21:06",
+                        "starting_at_timestamp": 1775271960,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                                "sm_id": 609,
+                                "name": "Tigres UANL",
+                                "short_code": "TUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                                "founded": 1960,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 7
+                                },
+                                "current_score": {
+                                    "score": 0,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "901bb44b-51f2-48b2-a9a0-fdeeac1c3f7c",
+                                "sm_id": 11023,
+                                "name": "Tijuana",
+                                "short_code": "TIJ",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/11023.png",
+                                "founded": 2006,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": true,
+                                    "position": 13
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 19749640,
+                                "fixture_id": 19628301,
+                                "type_id": 2,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 19749641,
+                                "fixture_id": 19628301,
+                                "type_id": 2,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 19749638,
+                                "fixture_id": 19628301,
+                                "type_id": 1,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 19749639,
+                                "fixture_id": 19628301,
+                                "type_id": 1,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 19749637,
+                                "fixture_id": 19628301,
+                                "type_id": 1525,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 19749936,
+                                "fixture_id": 19628301,
+                                "type_id": 48996,
+                                "participant_id": 11023,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 19749937,
+                                "fixture_id": 19628301,
+                                "type_id": 48996,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 19749636,
+                                "fixture_id": 19628301,
+                                "type_id": 1525,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                "sm_id": 609,
+                "name": "Tigres UANL",
+                "short_code": "TUA",
+                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                "founded": 1960,
+                "country": {
+                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                    "sm_id": 458,
+                    "name": "Mexico",
+                    "fifa_name": "MEX",
+                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                },
+                "meta": {
+                    "location": "away",
+                    "winner": null,
+                    "position": null
+                },
+                "latest": [
+                    {
+                        "uuid": "5da922c3-286c-4415-82fb-4edbc2cd8ee7",
+                        "name": "Guadalajara vs Tigres UANL",
+                        "starting_at": "09 May 2026, 19:07",
+                        "starting_at_timestamp": 1778375220,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "cf21fd34-d3d0-42ac-b301-63a2ad2b37b1",
+                                "sm_id": 427,
+                                "name": "Guadalajara",
+                                "short_code": "GUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/11\/427.png",
+                                "founded": 1906,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": true,
+                                    "position": 1
+                                },
+                                "current_score": {
+                                    "score": 2,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                                "sm_id": 609,
+                                "name": "Tigres UANL",
+                                "short_code": "TUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                                "founded": 1960,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 2
+                                },
+                                "current_score": {
+                                    "score": 0,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20815479,
+                                "fixture_id": 19701670,
+                                "type_id": 2,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20815475,
+                                "fixture_id": 19701670,
+                                "type_id": 1525,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20815477,
+                                "fixture_id": 19701670,
+                                "type_id": 1,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20815478,
+                                "fixture_id": 19701670,
+                                "type_id": 2,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20815474,
+                                "fixture_id": 19701670,
+                                "type_id": 1525,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20837018,
+                                "fixture_id": 19701670,
+                                "type_id": 48996,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20837019,
+                                "fixture_id": 19701670,
+                                "type_id": 48996,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20815476,
+                                "fixture_id": 19701670,
+                                "type_id": 1,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "48744767-8caf-498c-9a3f-61e082830b56",
+                        "name": "Tigres UANL vs Guadalajara",
+                        "starting_at": "02 May 2026, 19:00",
+                        "starting_at_timestamp": 1777770000,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                                "sm_id": 609,
+                                "name": "Tigres UANL",
+                                "short_code": "TUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                                "founded": 1960,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": true,
+                                    "position": 1
+                                },
+                                "current_score": {
+                                    "score": 3,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "cf21fd34-d3d0-42ac-b301-63a2ad2b37b1",
+                                "sm_id": 427,
+                                "name": "Guadalajara",
+                                "short_code": "GUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/11\/427.png",
+                                "founded": 1906,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 2
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20239396,
+                                "fixture_id": 19701674,
+                                "type_id": 1,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20239394,
+                                "fixture_id": 19701674,
+                                "type_id": 1525,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20239398,
+                                "fixture_id": 19701674,
+                                "type_id": 2,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20239395,
+                                "fixture_id": 19701674,
+                                "type_id": 1,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20239958,
+                                "fixture_id": 19701674,
+                                "type_id": 48996,
+                                "participant_id": 427,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20239957,
+                                "fixture_id": 19701674,
+                                "type_id": 48996,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 2,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20239393,
+                                "fixture_id": 19701674,
+                                "type_id": 1525,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 3,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20239397,
+                                "fixture_id": 19701674,
+                                "type_id": 2,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 3,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "1bd8563b-8599-4a55-a7d0-3c1d54d8e376",
+                        "name": "Tigres UANL vs Mazatl\u00e1n",
+                        "starting_at": "25 Apr 2026, 17:00",
+                        "starting_at_timestamp": 1777158000,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "b38434c5-ab40-4374-a9d2-72b5c22e3a6e",
+                                "sm_id": 247689,
+                                "name": "Mazatl\u00e1n",
+                                "short_code": "MZA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/9\/247689.png",
+                                "founded": null,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 16
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                                "sm_id": 609,
+                                "name": "Tigres UANL",
+                                "short_code": "TUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                                "founded": 1960,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": true,
+                                    "position": 8
+                                },
+                                "current_score": {
+                                    "score": 5,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20075983,
+                                "fixture_id": 19628265,
+                                "type_id": 1,
+                                "participant_id": 247689,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20075985,
+                                "fixture_id": 19628265,
+                                "type_id": 2,
+                                "participant_id": 247689,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20075986,
+                                "fixture_id": 19628265,
+                                "type_id": 2,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 5,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20075981,
+                                "fixture_id": 19628265,
+                                "type_id": 1525,
+                                "participant_id": 247689,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20075982,
+                                "fixture_id": 19628265,
+                                "type_id": 1525,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 5,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20076528,
+                                "fixture_id": 19628265,
+                                "type_id": 48996,
+                                "participant_id": 247689,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20076527,
+                                "fixture_id": 19628265,
+                                "type_id": 48996,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 4,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20075984,
+                                "fixture_id": 19628265,
+                                "type_id": 1,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "25518334-d77e-4bc8-b47e-a0715e03b2c0",
+                        "name": "Atlas vs Tigres UANL",
+                        "starting_at": "22 Apr 2026, 19:00",
+                        "starting_at_timestamp": 1776906000,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "5aceeea5-8609-4952-9a9e-d498d397221f",
+                                "sm_id": 680,
+                                "name": "Atlas",
+                                "short_code": "ATS",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/8\/680.png",
+                                "founded": 1916,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": false,
+                                    "position": 7
+                                },
+                                "current_score": {
+                                    "score": 0,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                                "sm_id": 609,
+                                "name": "Tigres UANL",
+                                "short_code": "TUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                                "founded": 1960,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 9
+                                },
+                                "current_score": {
+                                    "score": 0,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20052021,
+                                "fixture_id": 19628272,
+                                "type_id": 2,
+                                "participant_id": 680,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20052018,
+                                "fixture_id": 19628272,
+                                "type_id": 1,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20052017,
+                                "fixture_id": 19628272,
+                                "type_id": 1525,
+                                "participant_id": 680,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20052016,
+                                "fixture_id": 19628272,
+                                "type_id": 1525,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20052020,
+                                "fixture_id": 19628272,
+                                "type_id": 2,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20052019,
+                                "fixture_id": 19628272,
+                                "type_id": 1,
+                                "participant_id": 680,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20052226,
+                                "fixture_id": 19628272,
+                                "type_id": 48996,
+                                "participant_id": 680,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20052227,
+                                "fixture_id": 19628272,
+                                "type_id": 48996,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b1655abb-a6de-4977-8279-52bdeb8e0470",
+                        "name": "Necaxa vs Tigres UANL",
+                        "starting_at": "18 Apr 2026, 17:00",
+                        "starting_at_timestamp": 1776553200,
+                        "length": 90,
+                        "placeholder": false,
+                        "participants": [
+                            {
+                                "uuid": "fdd81572-0c6a-4732-a3f2-091cc79a4fd5",
+                                "sm_id": 609,
+                                "name": "Tigres UANL",
+                                "short_code": "TUA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/1\/609.png",
+                                "founded": 1960,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "away",
+                                    "winner": false,
+                                    "position": 6
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "away",
+                                    "description": "CURRENT"
+                                }
+                            },
+                            {
+                                "uuid": "57aa85d1-4efe-4408-b86d-0624aa345f4e",
+                                "sm_id": 3951,
+                                "name": "Necaxa",
+                                "short_code": "NXA",
+                                "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/teams\/15\/3951.png",
+                                "founded": 1923,
+                                "country": {
+                                    "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                                    "sm_id": 458,
+                                    "name": "Mexico",
+                                    "fifa_name": "MEX",
+                                    "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+                                },
+                                "meta": {
+                                    "location": "home",
+                                    "winner": false,
+                                    "position": 12
+                                },
+                                "current_score": {
+                                    "score": 1,
+                                    "participant": "home",
+                                    "description": "CURRENT"
+                                }
+                            }
+                        ],
+                        "scores": [
+                            {
+                                "id": 20024883,
+                                "fixture_id": 19628283,
+                                "type_id": 1525,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20024894,
+                                "fixture_id": 19628283,
+                                "type_id": 2,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20024895,
+                                "fixture_id": 19628283,
+                                "type_id": 2,
+                                "participant_id": 3951,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF"
+                            },
+                            {
+                                "id": 20024885,
+                                "fixture_id": 19628283,
+                                "type_id": 1525,
+                                "participant_id": 3951,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "CURRENT"
+                            },
+                            {
+                                "id": 20024892,
+                                "fixture_id": 19628283,
+                                "type_id": 1,
+                                "participant_id": 3951,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "home"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20024888,
+                                "fixture_id": 19628283,
+                                "type_id": 1,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "away"
+                                },
+                                "description": "1ST_HALF"
+                            },
+                            {
+                                "id": 20025366,
+                                "fixture_id": 19628283,
+                                "type_id": 48996,
+                                "participant_id": 3951,
+                                "score": {
+                                    "goals": 0,
+                                    "participant": "home"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            },
+                            {
+                                "id": 20025367,
+                                "fixture_id": 19628283,
+                                "type_id": 48996,
+                                "participant_id": 609,
+                                "score": {
+                                    "goals": 1,
+                                    "participant": "away"
+                                },
+                                "description": "2ND_HALF_ONLY"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "league": {
+            "uuid": "95efa22c-d85a-437c-ad6d-36e8cce44bb7",
+            "sm_id": 743,
+            "country_id": 43,
+            "name": "Liga MX - Mexico",
+            "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/leagues\/7\/743.png"
+        },
+        "state": {
+            "uuid": "a50cdbad-6f8b-4538-8846-262aa5affb10",
+            "state": "NS",
+            "name": "Not Started",
+            "developer_name": "NS"
+        },
+        "venue": {
+            "uuid": "fdb933f7-6e12-489e-bd6b-c0868a7e8d85",
+            "name": "Estadio Caliente",
+            "address": "Boulevard Agua Caliente 12027, Colonia Hip\u00f3dromo",
+            "zipcode": null,
+            "latitude": "32.5010188",
+            "longitude": "-116.9646620",
+            "capacity": 27333,
+            "image_path": "https:\/\/cdn.sportmonks.com\/images\/soccer\/venues\/9\/7337.png",
+            "city_name": "Tijuana",
+            "surface": "artificial turf",
+            "city": {
+                "uuid": "aa939d01-507f-4e05-a233-c8fcc99b035c",
+                "sm_id": 90291,
+                "name": "Tijuana",
+                "latitude": null,
+                "longitude": null
+            },
+            "country": {
+                "uuid": "b34a171c-10de-4984-bbf8-994408910003",
+                "sm_id": 458,
+                "name": "Mexico",
+                "fifa_name": "MEX",
+                "image_path": "https:\/\/cdn.sportmonks.com\/images\/countries\/png\/short\/mx.png"
+            }
+        },
+        "scores": [],
+        "events": [],
+        "eventFilters": [],
+        "statistics": [],
+        "sidelined": [],
+        "weatherReport": null,
+        "lineups": [],
+        "formations": [],
+        "lineupStats": [],
+        "comments": [],
+        "manOfTheMatch": {
+            "player": null,
+            "team": null,
+            "rating": null
+        }
+    }
+}

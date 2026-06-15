@@ -428,7 +428,7 @@ const onDragEnd = (e: PointerEvent) => {
                 <div key="info" v-if="activeTab === 'info'">
                   <!-- Man of the Match -->
                   <FixtureManOfTheMatch
-                    v-if="fixture.manOfTheMatch"
+                    v-if="fixture.manOfTheMatch?.player"
                     :man-of-the-match="fixture.manOfTheMatch"
                   />
 

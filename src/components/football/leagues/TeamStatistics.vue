@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { footballTeamService } from "@/services/football/team/FootballTeamService";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import type {
@@ -8,6 +8,10 @@ import type {
 } from "@/interfaces/football/team/FootballTeamTopStatisticResponse";
 import { formatTeamStatValue } from "@/utils/teamStatistics";
 import TeamStatisticsAllDrawer from "./TeamStatisticsAllDrawer.vue";
+
+// Season is driven by the active stage (forwarded from LeagueStatistics). When
+// it's missing we fall back to the league's current_season in the Pinia store.
+const props = defineProps<{ seasonUuid?: string }>();
 
 const store = useFootballLeagueStore();
 
@@ -20,13 +24,15 @@ const isLoading = ref(false);
 const error = ref<string | null>(null);
 const drawerStat = ref<Statistic | null>(null);
 
-// Season comes from the league's current_season in the Pinia store.
-const currentSeasonUuid = (): string | null =>
-  store.getCurrentFootballSeason()?.uuid ?? null;
+// Resolved season: the stage-driven prop wins, the store's current_season is
+// the fallback. Reloading is keyed off this value.
+const seasonUuid = computed<string | null>(
+  () => props.seasonUuid || store.getCurrentFootballSeason()?.uuid || null,
+);
 
 const load = async () => {
-  const seasonUuid = currentSeasonUuid();
-  if (!seasonUuid) {
+  const uuid = seasonUuid.value;
+  if (!uuid) {
     data.value = [];
     return;
   }
@@ -34,7 +40,7 @@ const load = async () => {
   error.value = null;
   data.value = [];
   try {
-    data.value = await footballTeamService.getTopStatisticTeamsBySeason(seasonUuid);
+    data.value = await footballTeamService.getTopStatisticTeamsBySeason(uuid);
   } catch (err) {
     console.error("Error loading team statistics:", err);
     error.value = "Couldn't load team statistics.";
@@ -45,12 +51,10 @@ const load = async () => {
 
 onMounted(load);
 
-watch(
-  () => store.getCurrentFootballSeason()?.uuid,
-  (next, prev) => {
-    if (next && next !== prev) load();
-  },
-);
+// Reload whenever the season changes (e.g. the user switches stage).
+watch(seasonUuid, (next, prev) => {
+  if (next && next !== prev) load();
+});
 
 // ── Helpers ──
 const teamImg = (path: string | null | undefined): string => {
