@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import TeamStatistics from "./TeamStatistics.vue";
 
-// Stage/season context (kept for parity with the other panels). Team stats read
-// the season from the football league store (current_season).
+// Stage/season context. The season is forwarded to the team stats so they
+// reload whenever the active stage (and therefore its season) changes.
 defineProps<{ stageUuid: string; seasonUuid: string }>();
 
 type StatsView = "teams" | "players";
@@ -51,7 +51,7 @@ const view = ref<StatsView>("teams");
     </div>
 
     <!-- Teams statistics -->
-    <TeamStatistics v-if="view === 'teams'" />
+    <TeamStatistics v-if="view === 'teams'" :season-uuid="seasonUuid" />
 
     <!-- Players statistics (coming soon) -->
     <div v-else class="flex flex-col items-center text-center px-6 py-14">

@@ -138,7 +138,7 @@ const pickDefaultRound = () => {
   const current = rounds.value.find((r) => r.is_current);
   selectedRoundUuid.value = current
     ? current.uuid
-    : rounds.value[rounds.value.length - 1].uuid;
+    : rounds.value[0].uuid;
 };
 
 const loadRoundFixtures = async (stageUuid: string, roundUuid: string) => {
