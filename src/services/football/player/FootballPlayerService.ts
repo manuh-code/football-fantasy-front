@@ -8,6 +8,7 @@ import { FootballPlayerStatisticResponse } from "@/interfaces/football/player/Fo
 import { FootballPlayerTopScorePayload } from "@/interfaces/football/player/FootballPlayerTopScorePayload";
 import { FootballPlayerTopScoreResponse } from "@/interfaces/football/player/FootballPlayerTopScoreResponse";
 import { FootballPlayerVersusResponse } from "@/interfaces/football/player/FootballPlayerVersusResponse";
+import { TeamOfTheWeekByRoundResponse } from "@/interfaces/football/teamOfTheWeek/TeamOfTheWeekByRoundResponse";
 import { AxiosError } from "axios";
 
 export class FootballPlayerService {
@@ -54,13 +55,22 @@ export class FootballPlayerService {
         throw new AxiosError('Failed to fetch football player versus data');
     }
 
-    async getPlayerStatisticByStage(stageUuid: string, select: string = 'GOALS,ASSISTS,RATING,ACCURATE_PASSES,PENALTIES,YELLOWCARDS,SAVES'): Promise<ApiResponse<FootballPlayerStatisticByStageResponse[]>> {
+    async getPlayerStatisticByStage(stageUuid: string, select: string = 'GOALS,ASSISTS,RATING,ACCURATE_PASSES,PENALTIES_SCORED,YELLOWCARDS,SAVES,INTERCEPTIONS,TACKLES_WON'): Promise<ApiResponse<FootballPlayerStatisticByStageResponse[]>> {
         const response = await this.api.get<ApiResponse<FootballPlayerStatisticByStageResponse[]>>(`/football/players/statistics/stage/${stageUuid}?select=${select}`);
         if (response.data.code === 200) {
             return response.data;
         }
 
         throw new AxiosError('Failed to fetch football player statistics by stage');
+    }
+
+    async getTeamOfTheWeekByRound(roundUuid: string): Promise<ApiResponse<TeamOfTheWeekByRoundResponse[]>> {
+        const response = await this.api.get<ApiResponse<TeamOfTheWeekByRoundResponse[]>>(`/rounds/${roundUuid}/team-of-the-week`);
+        if (response.data.code === 200) {
+            return response.data;
+        }
+
+        throw new AxiosError('Failed to fetch team of the week by round');
     }
 }
 

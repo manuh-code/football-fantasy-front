@@ -67,11 +67,13 @@ const loadStanding = () => import("@/components/football/leagues/LeagueStanding.
 const loadFixtures = () => import("@/components/football/fixtures/LeagueFixtures.vue");
 const loadStatistics = () => import("@/components/football/leagues/LeagueStatistics.vue");
 const loadVersus = () => import("@/components/football/player/versus/PlayerVersus.vue");
+const loadTotw = () => import("@/components/football/teamOfTheWeek/TeamOfTheWeek.vue");
 
 const LeagueStanding = defineAsyncComponent(loadStanding);
 const LeagueFixtures = defineAsyncComponent(loadFixtures);
 const LeagueStatistics = defineAsyncComponent(loadStatistics);
 const PlayerVersus = defineAsyncComponent(loadVersus);
+const TeamOfTheWeek = defineAsyncComponent(loadTotw);
 
 const store = useFootballLeagueStore();
 const hasLeague = computed(() => store.existLeague());
@@ -81,13 +83,14 @@ const selectedStageUuid = ref("");
 const selectedSeasonUuid = ref("");
 
 // ── Tabs ──
-type TabKey = "standings" | "fixtures" | "statistics" | "versus";
+type TabKey = "standings" | "fixtures" | "statistics" | "versus" | "totw";
 
 const tabs: { key: TabKey; label: string; icon: string }[] = [
   { key: "standings", label: "Standings", icon: "bi-trophy-fill" },
   { key: "fixtures", label: "Fixtures", icon: "md-sportssoccer" },
   { key: "statistics", label: "Statistics", icon: "hi-solid-chart-bar" },
   { key: "versus", label: "Versus", icon: "md-comparearrows-round" },
+  { key: "totw", label: "TOTW", icon: "bi-star-fill" },
 ];
 
 const activeTab = ref<TabKey>("standings");
@@ -112,6 +115,8 @@ const activeComponent = computed(() => {
       return LeagueStatistics;
     case "versus":
       return PlayerVersus;
+    case "totw":
+      return TeamOfTheWeek;
     default:
       return LeagueStanding;
   }
@@ -138,6 +143,7 @@ onMounted(() => {
   loadFixtures();
   loadStatistics();
   loadVersus();
+  loadTotw();
 });
 </script>
 
