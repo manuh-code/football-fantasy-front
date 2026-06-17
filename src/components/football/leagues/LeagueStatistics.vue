@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import TeamStatistics from "./TeamStatistics.vue";
+import PlayerStatistics from "./PlayerStatistics.vue";
 
 // Stage/season context. The season is forwarded to the team stats so they
 // reload whenever the active stage (and therefore its season) changes.
@@ -53,17 +54,7 @@ const view = ref<StatsView>("teams");
     <!-- Teams statistics -->
     <TeamStatistics v-if="view === 'teams'" :season-uuid="seasonUuid" />
 
-    <!-- Players statistics (coming soon) -->
-    <div v-else class="flex flex-col items-center text-center px-6 py-14">
-      <div class="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-gray-700/40 flex items-center justify-center mb-4">
-        <v-icon name="hi-solid-users" class="w-7 h-7 text-gray-300 dark:text-gray-600" />
-      </div>
-      <h3 class="text-[15px] font-semibold text-gray-700 dark:text-gray-200 mb-1">
-        Coming soon
-      </h3>
-      <p class="text-[13px] text-gray-400 dark:text-gray-500 max-w-xs">
-        Player statistics will be available here shortly.
-      </p>
-    </div>
+    <!-- Players statistics -->
+    <PlayerStatistics v-else :stage-uuid="stageUuid" />
   </div>
 </template>
