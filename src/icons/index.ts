@@ -112,6 +112,8 @@ import {
   HiSolidLogin,
   HiArrowsExpand,
   HiSolidCursorClick,
+  BiStarFill,
+  BiStar,
 } from 'oh-vue-icons/icons'
 
 // Status icons
@@ -165,6 +167,7 @@ export const iconList = [
   HiSolidPlus,
   HiSolidMinus,
   HiSolidCheck,
+  BiStar,
   HiSolidExclamation,
   HiSolidInformationCircle,
   HiSolidXCircle,
@@ -280,6 +283,7 @@ export const iconList = [
   MdReplay,
   BiTrophy,
   BiChatLeftDotsFill,
+  BiStarFill,
 ]
 
 // Icon name mapping for easier usage
