@@ -41,33 +41,17 @@
 
         <!-- Password Input -->
         <div v-if="league?.is_private">
-            <label for="league-password" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
-                Password
-            </label>
-            <div class="relative">
-                <v-icon name="hi-solid-lock-closed" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                <input
-                    id="league-password"
-                    v-model="leaguePassword"
-                    type="password"
-                    placeholder="Enter league password..."
-                    required
-                    :class="[
-                        'w-full pl-10 pr-4 py-3 rounded-xl text-base md:text-sm border-0 transition-all',
-                        'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white',
-                        'placeholder-gray-400 dark:placeholder-gray-500',
-                        'focus:ring-2 focus:bg-white dark:focus:bg-gray-700',
-                        passwordError
-                            ? 'ring-2 ring-red-500/50 bg-red-50 dark:bg-red-900/10'
-                            : 'focus:ring-emerald-500/50'
-                    ]"
-                />
-            </div>
-            <!-- Error -->
-            <div v-if="passwordError" class="flex items-center gap-1.5 mt-2">
-                <v-icon name="hi-solid-exclamation-circle" class="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
-                <p class="text-xs text-red-600 dark:text-red-400">{{ passwordError }}</p>
-            </div>
+            <FormInput
+                id="league-password"
+                v-model="leaguePassword"
+                type="password"
+                label="Password"
+                icon="hi-solid-lock-closed"
+                placeholder="Enter league password..."
+                autocomplete="current-password"
+                :error="passwordError"
+                :disabled="isLoading"
+            />
         </div>
 
         <!-- Footer Actions -->
@@ -97,6 +81,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
+import { FormInput } from '@/components/ui'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 
 interface Props {

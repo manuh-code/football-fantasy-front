@@ -1,139 +1,13 @@
 <template>
-  <!-- Footer Navigation — iOS Tab Bar style -->
-  <nav
-    v-if="shouldShowMenu"
+  <!-- Fantasy league bottom navigation — shared floating pill design. -->
+  <BottomNavBar
+    :visible="shouldShowMenu"
+    :items="items"
+    :active-key="activeTab"
+    fill
     aria-label="Main navigation"
-    class="fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-100 dark:border-gray-800"
-  >
-    <div
-      class="flex items-center justify-around px-1 pt-1.5 pb-1.5"
-      style="
-        padding-bottom: max(0.375rem, env(safe-area-inset-bottom, 0.375rem));
-      "
-    >
-      <!-- My Leagues -->
-      <button
-        @click="goToMyLeagues"
-        class="flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150 text-gray-400 dark:text-gray-500 active:text-gray-600"
-        aria-label="My Leagues"
-      >
-        <v-icon name="bi-trophy-fill" class="w-[22px] h-[22px]" />
-        <span class="text-[10px] font-medium leading-tight">Leagues</span>
-      </button>
-
-      <!-- League Overview -->
-      <button
-        @click="handleTabChange('overview')"
-        :class="[
-          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'overview'
-            ? 'text-blue-500 dark:text-blue-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
-        ]"
-        aria-label="League Overview"
-      >
-        <v-icon
-          name="hi-solid-information-circle"
-          :class="[
-            'w-[22px] h-[22px]',
-            activeTab === 'overview' ? 'scale-110' : '',
-          ]"
-        />
-        <span class="text-[10px] font-medium leading-tight">Overview</span>
-      </button>
-
-      <!-- My Team -->
-      <button
-        v-if="canAccessMemberTabs"
-        @click="handleTabChange('myteam')"
-        :disabled="leagueDetailStore.isDraftNotStarted"
-        :class="[
-          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          leagueDetailStore.isDraftNotStarted
-            ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50'
-            : activeTab === 'myteam'
-              ? 'text-emerald-500 dark:text-emerald-400'
-              : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
-        ]"
-        aria-label="Team"
-      >
-        <v-icon
-          name="hi-solid-user-group"
-          :class="[
-            'w-[22px] h-[22px]',
-            activeTab === 'myteam' ? 'scale-110' : '',
-          ]"
-        />
-        <span class="text-[10px] font-medium leading-tight">Team</span>
-      </button>
-
-      <!-- Players -->
-      <button
-        v-if="canAccessMemberTabs"
-        @click="goToSearchPlayers"
-        :class="[
-          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'players'
-            ? 'text-orange-500 dark:text-orange-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
-        ]"
-        aria-label="Players"
-      >
-        <v-icon
-          name="hi-solid-user-add"
-          :class="[
-            'w-[22px] h-[22px]',
-            activeTab === 'players' ? 'scale-110' : '',
-          ]"
-        />
-        <span class="text-[10px] font-medium leading-tight">Players</span>
-      </button>
-
-      <!-- Matches -->
-      <button
-        v-if="canAccessMemberTabs"
-        @click="handleTabChange('matches')"
-        :class="[
-          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'matches'
-            ? 'text-red-500 dark:text-red-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
-        ]"
-        aria-label="Matches"
-      >
-        <v-icon
-          name="gi-crossed-swords"
-          :class="[
-            'w-[22px] h-[22px]',
-            activeTab === 'matches' ? 'scale-110' : '',
-          ]"
-        />
-        <span class="text-[10px] font-medium leading-tight">Matches</span>
-      </button>
-
-      <!-- Management -->
-      <!-- <button
-        v-if="canAccessAdminTabs"
-        @click="handleTabChange('management')"
-        :class="[
-          'flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-colors duration-150',
-          activeTab === 'management'
-            ? 'text-purple-500 dark:text-purple-400'
-            : 'text-gray-400 dark:text-gray-500 active:text-gray-600',
-        ]"
-        aria-label="Management"
-      >
-        <v-icon
-          name="hi-solid-cog"
-          :class="[
-            'w-[22px] h-[22px]',
-            activeTab === 'management' ? 'scale-110' : '',
-          ]"
-        />
-        <span class="text-[10px] font-medium leading-tight">Manage</span>
-      </button> -->
-    </div>
-  </nav>
+    @select="onSelect"
+  />
 </template>
 
 <script setup lang="ts">
@@ -141,6 +15,7 @@ import { ref, watch, computed } from "vue";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { useRoute, useRouter } from "vue-router";
+import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 
 const authStore = useAuthStore();
 const leagueDetailStore = useFantasyLeagueDetailStore();
@@ -167,8 +42,30 @@ const canAccessMemberTabs = computed(
   () => leagueDetailStore.isMember || leagueDetailStore.isAdmin,
 );
 
-// Only show admin tabs when user is an admin of the league
-const canAccessAdminTabs = computed(() => leagueDetailStore.isAdmin);
+// Tabs shown in the bar. "leagues" is a neutral shortcut (no accent → never
+// highlighted); member-only tabs are appended when allowed.
+const items = computed<BottomNavItem[]>(() => {
+  const list: BottomNavItem[] = [
+    { key: "leagues", label: "Leagues", icon: "bi-trophy-fill" },
+    { key: "overview", label: "Overview", icon: "hi-solid-information-circle", accent: "blue" },
+  ];
+
+  if (canAccessMemberTabs.value) {
+    list.push(
+      {
+        key: "myteam",
+        label: "Team",
+        icon: "hi-solid-user-group",
+        accent: "emerald",
+        disabled: leagueDetailStore.isDraftNotStarted,
+      },
+      { key: "players", label: "Players", icon: "hi-solid-user-add", accent: "orange" },
+      { key: "matches", label: "Matches", icon: "gi-crossed-swords", accent: "red" },
+    );
+  }
+
+  return list;
+});
 
 // Only show footer menu in fantasy league related routes when authenticated
 const shouldShowMenu = computed(() => {
@@ -189,6 +86,17 @@ watch(
   },
   { immediate: true },
 );
+
+// Route a tab selection to its action.
+function onSelect(key: string) {
+  if (key === "leagues") {
+    goToMyLeagues();
+  } else if (key === "players") {
+    goToSearchPlayers();
+  } else {
+    handleTabChange(key);
+  }
+}
 
 // Handle tab change
 function handleTabChange(tab: string) {
@@ -217,10 +125,3 @@ function goToMyLeagues() {
   router.push({ name: "userFantasyLeague" });
 }
 </script>
-
-<style scoped>
-/* Safe area padding for devices with notch (iPhone X+, etc.) */
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-</style>

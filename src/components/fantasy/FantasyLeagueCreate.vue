@@ -1,184 +1,113 @@
 <template>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        <!-- Main Form -->
-        <div class="lg:col-span-2">
-            <form @submit.prevent="handleSubmit" class="space-y-4">
-                <!-- League Information Section -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
-                    <!-- Section Header -->
-                    <div class="px-4 py-3">
-                        <div class="flex items-center gap-2">
-                            <v-icon name="bi-trophy-fill" class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0" />
-                            <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white">Create Fantasy League</h2>
-                            <span class="text-[11px] text-gray-400 dark:text-gray-500">Quick setup</span>
-                        </div>
-                    </div>
-
-                    <!-- Form Fields -->
-                    <div class="px-4 pb-4 space-y-4">
-                        <!-- League Name -->
-                        <div>
-                            <FormInput
-                                v-model="formData.name"
-                                label="League Name *"
-                                placeholder="Enter your league name"
-                                :error="getFieldError('name')"
-                                :disabled="isLoading"
-                            />
-                        </div>
-
-                        <!-- Password Field -->
-                        <div>
-                            <FormInput
-                                v-model="formData.password"
-                                type="password"
-                                label="League Password *"
-                                placeholder="Enter a secure password"
-                                :error="getFieldError('password')"
-                                :disabled="isLoading"
-                            />
-                            <p class="mt-1 text-[11px] text-gray-400 dark:text-gray-500">
-                                Required for others to join your league
-                            </p>
-                        </div>
-
-                        <!-- Participants Count -->
-                        <div>
-                            <!-- Fixed value: only one option available -->
-                            <div v-if="isFixedParticipants">
-                                <p class="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Number of Participants *
-                                </p>
-                                <div class="flex items-center gap-2 px-3 py-2.5 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl">
-                                    <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-500 shrink-0" />
-                                    <span class="text-[14px] font-semibold text-gray-900 dark:text-white">{{ formData.participants_count }}</span>
-                                    <span class="text-[12px] text-gray-500 dark:text-gray-400">participants</span>
-                                    <span class="ml-auto text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
-                                        Fixed
-                                    </span>
-                                </div>
-                                <p class="mt-1 text-[11px] text-gray-400 dark:text-gray-500">
-                                    This league requires exactly {{ formData.participants_count }} participants
-                                </p>
-                            </div>
-                            <!-- Select: multiple options available -->
-                            <SelectComponent
-                                v-else
-                                v-model="formData.participants_count"
-                                :options="participantOptions"
-                                value-key="value"
-                                label-key="label"
-                                label="Number of Participants *"
-                                placeholder="Select number of participants"
-                                :error="getFieldError('participants_count')"
-                                :disabled="isLoading || isLoadingOptions"
-                                :required="true"
-                            />
-                        </div>
-
-                        <!-- Form Actions -->
-                        <div class="flex flex-col sm:flex-row gap-3 pt-3 border-t border-gray-100 dark:border-gray-700/60">
-                            <ButtonComponent
-                                type="submit"
-                                :loading="isLoading"
-                                :disabled="!isFormValid"
-                                class="flex-1 sm:flex-none"
-                            >
-                                <v-icon name="hi-solid-plus" class="w-4 h-4 mr-1.5" />
-                                Create League
-                            </ButtonComponent>
-                            <ButtonComponent
-                                @click="handleCancel"
-                                variant="outline"
-                                :disabled="isLoading"
-                                class="flex-1 sm:flex-none"
-                            >
-                                Cancel
-                            </ButtonComponent>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <div
+        class="create-card relative w-full max-w-xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700/60 p-6 sm:p-8"
+    >
+        <!-- Brand header -->
+        <div class="flex flex-col items-center text-center mb-7">
+            <div
+                class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-4"
+            >
+                <v-icon name="bi-trophy-fill" class="w-7 h-7 text-white" />
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                Create Fantasy League
+            </h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Set up your private league in seconds
+            </p>
         </div>
 
-        <!-- Sidebar -->
-        <div class="lg:col-span-1 space-y-4">
-            <!-- Quick Setup Info -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
-                <div class="px-4 py-3">
-                    <div class="flex items-center gap-2 mb-3">
-                        <v-icon name="hi-solid-information-circle" class="w-[16px] h-[16px] text-blue-400 shrink-0" />
-                        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Quick Setup</h3>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex items-start gap-2.5">
-                            <span class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 mt-0.5">
-                                <v-icon name="hi-solid-check" class="w-2.5 h-2.5 text-emerald-500" />
-                            </span>
-                            <div>
-                                <p class="text-[12px] font-medium text-gray-900 dark:text-white">Simplified Creation</p>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500">Only 3 fields to start quickly</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-2.5">
-                            <span class="w-5 h-5 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0 mt-0.5">
-                                <v-icon name="hi-solid-lock-closed" class="w-2.5 h-2.5 text-blue-500" />
-                            </span>
-                            <div>
-                                <p class="text-[12px] font-medium text-gray-900 dark:text-white">Private by Default</p>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500">Password required to join</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-2.5">
-                            <span class="w-5 h-5 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center shrink-0 mt-0.5">
-                                <v-icon name="hi-solid-cog" class="w-2.5 h-2.5 text-purple-500" />
-                            </span>
-                            <div>
-                                <p class="text-[12px] font-medium text-gray-900 dark:text-white">Auto Configuration</p>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500">Standard settings applied automatically</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Form -->
+        <form @submit.prevent="handleSubmit" class="space-y-4" novalidate>
+            <!-- League Name -->
+            <FormInput
+                v-model="formData.name"
+                label="League Name *"
+                icon="bi-trophy-fill"
+                placeholder="Enter your league name"
+                :error="getFieldError('name')"
+                :disabled="isLoading"
+            />
+
+            <!-- Password -->
+            <div>
+                <FormInput
+                    v-model="formData.password"
+                    type="password"
+                    label="League Password *"
+                    icon="bi-lock-fill"
+                    placeholder="Enter a password"
+                    :error="getFieldError('password')"
+                    :disabled="isLoading"
+                />
+                <p class="mt-1.5 text-[12px] text-gray-400 dark:text-gray-500">
+                    Required for others to join your league
+                </p>
             </div>
 
-            <!-- Form Progress -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
-                <div class="px-4 py-3">
-                    <div class="flex items-center gap-2 mb-3">
-                        <v-icon name="hi-solid-chart-bar" class="w-[16px] h-[16px] text-emerald-500 shrink-0" />
-                        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Progress</h3>
-                        <span class="ml-auto text-[11px] font-semibold tabular-nums" :class="isFormValid ? 'text-emerald-500' : 'text-gray-400'">
-                            {{ Math.round((completedFields / 3) * 100) }}%
+            <!-- Participants -->
+            <div>
+                <!-- Fixed value: only one option available -->
+                <div v-if="isFixedParticipants">
+                    <p class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Number of Participants *
+                    </p>
+                    <div class="flex items-center gap-2 px-3.5 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl">
+                        <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span class="text-[14px] font-semibold text-gray-900 dark:text-white">{{ formData.participants_count }}</span>
+                        <span class="text-[12px] text-gray-500 dark:text-gray-400">participants</span>
+                        <span class="ml-auto text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
+                            Fixed
                         </span>
                     </div>
-                    <!-- Progress bar -->
-                    <div class="bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mb-3">
-                        <div 
-                            class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300"
-                            :style="{ width: `${Math.round((completedFields / 3) * 100)}%` }"
-                        ></div>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[12px] text-gray-500 dark:text-gray-400">League Name</span>
-                            <v-icon v-if="formData.name.trim()" name="hi-solid-check-circle" class="w-3.5 h-3.5 text-emerald-500" />
-                            <span v-else class="w-3.5 h-3.5 rounded-full border-2 border-gray-200 dark:border-gray-600 inline-block"></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[12px] text-gray-500 dark:text-gray-400">Password</span>
-                            <v-icon v-if="formData.password.trim()" name="hi-solid-check-circle" class="w-3.5 h-3.5 text-emerald-500" />
-                            <span v-else class="w-3.5 h-3.5 rounded-full border-2 border-gray-200 dark:border-gray-600 inline-block"></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[12px] text-gray-500 dark:text-gray-400">Participants</span>
-                            <v-icon v-if="formData.participants_count !== null" name="hi-solid-check-circle" class="w-3.5 h-3.5 text-emerald-500" />
-                            <span v-else class="w-3.5 h-3.5 rounded-full border-2 border-gray-200 dark:border-gray-600 inline-block"></span>
-                        </div>
-                    </div>
+                    <p class="mt-1.5 text-[12px] text-gray-400 dark:text-gray-500">
+                        This league requires exactly {{ formData.participants_count }} participants
+                    </p>
                 </div>
+
+                <!-- Drawer-style select: multiple options available -->
+                <SearchableSelectComponent
+                    v-else
+                    v-model="formData.participants_count"
+                    :options="participantOptions"
+                    value-key="value"
+                    label-key="label"
+                    label="Number of Participants *"
+                    placeholder="Select number of participants"
+                    :error="getFieldError('participants_count')"
+                    :disabled="isLoading || isLoadingOptions"
+                    :loading="isLoadingOptions"
+                    :required="true"
+                    :clearable="false"
+                    :searchable="false"
+                    accent-color="emerald"
+                    no-options-text="No options available"
+                />
             </div>
-        </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-3">
+                <ButtonComponent
+                    type="submit"
+                    :loading="isLoading"
+                    :disabled="!isFormValid"
+                    :always-full-width="true"
+                    class="sm:flex-1"
+                >
+                    <v-icon name="hi-solid-plus" class="w-4 h-4 mr-1.5" />
+                    Create League
+                </ButtonComponent>
+                <ButtonComponent
+                    @click="handleCancel"
+                    variant="outline"
+                    :disabled="isLoading"
+                    :always-full-width="true"
+                    class="sm:flex-1"
+                >
+                    Cancel
+                </ButtonComponent>
+            </div>
+        </form>
     </div>
 </template>
 
@@ -188,7 +117,7 @@ import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
-import { ButtonComponent, FormInput, SelectComponent } from '@/components/ui'
+import { ButtonComponent, FormInput, SearchableSelectComponent } from '@/components/ui'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import type { FantasyLeagueCreatePayload } from '@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload'
 
@@ -204,8 +133,14 @@ const participantOptions = ref<{ value: number; label: string }[]>([])
 const isFixedParticipants = ref(false)
 const isLoadingOptions = ref(false)
 
-// Simplified form data - only required fields
-const formData = reactive<FantasyLeagueCreatePayload>({
+// Simplified form data - only required fields. participants_count is kept as
+// `number | null` (not optional) so it binds cleanly to the drawer select.
+const formData = reactive<{
+    name: string
+    league_uuid: string
+    password: string
+    participants_count: number | null
+}>({
     name: '',
     league_uuid: '',
     password: '',
@@ -216,14 +151,6 @@ const isFormValid = computed(() => {
     return formData.name.trim() &&
            formData.password.trim() &&
            formData.participants_count !== null
-})
-
-const completedFields = computed(() => {
-    let count = 0
-    if (formData.name.trim()) count++
-    if (formData.password.trim()) count++
-    if (formData.participants_count !== null) count++
-    return count
 })
 
 // Validation helpers
@@ -246,12 +173,12 @@ const handleSubmit = async () => {
         }
 
         const response = await fantasyLeagueService.storeFantasyLeague(payload)
-        
+
         toast.success('Success!', `League "${response.name}" has been created successfully!`)
-        
+
         // Redirect to the league details or user leagues page
         router.push({ name: 'userFantasyLeague' })
-    
+
     } catch (error) {
         console.error('Error creating fantasy league:', error)
         // 422 errors are already handled by the interceptor in useApiFantasy
@@ -320,7 +247,25 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.tabular-nums {
-    font-variant-numeric: tabular-nums;
+/* Subtle entrance: fade + lift (matches the login / register cards) */
+.create-card {
+    animation: create-enter 0.4s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes create-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .create-card {
+        animation: none;
+    }
 }
 </style>
