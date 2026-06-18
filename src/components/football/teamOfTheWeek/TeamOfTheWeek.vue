@@ -6,6 +6,7 @@ import type { FootballRoundResponse } from "@/interfaces/football/round/Football
 import type { TeamOfTheWeekByRoundResponse } from "@/interfaces/football/teamOfTheWeek/TeamOfTheWeekByRoundResponse";
 import SearchableSelectComponent from "@/components/ui/SearchableSelectComponent.vue";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
+import TeamOfTheWeekSkeleton from "@/components/football/teamOfTheWeek/TeamOfTheWeekSkeleton.vue";
 
 interface Props {
   stageUuid: string;
@@ -232,10 +233,7 @@ onMounted(() => {
     <!-- ── Content ── -->
     <div class="px-4 pt-3 pb-6">
       <!-- Loading -->
-      <div v-if="isLoadingTotw" class="py-16 flex flex-col items-center text-center">
-        <v-icon name="pr-spinner" class="w-7 h-7 text-gray-300 dark:text-gray-600 mb-2" animation="spin" />
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">Loading team of the week…</p>
-      </div>
+      <TeamOfTheWeekSkeleton v-if="isLoadingTotw" />
 
       <!-- Error -->
       <div

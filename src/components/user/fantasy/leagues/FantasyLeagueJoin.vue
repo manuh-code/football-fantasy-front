@@ -2,8 +2,8 @@
     <div class="animate-page-enter space-y-4">
         <!-- Header — FotMob / Apple Sport style -->
         <div class="flex items-center gap-3.5 px-1">
-            <div class="w-11 h-11 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-500/20">
-                <v-icon name="bi-trophy-fill" class="w-5 h-5 text-white" />
+            <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <v-icon name="bi-trophy-fill" class="w-6 h-6 text-white" />
             </div>
             <div>
                 <h1 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight">Discover Leagues</h1>

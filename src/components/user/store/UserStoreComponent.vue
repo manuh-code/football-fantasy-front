@@ -1,129 +1,155 @@
 <template>
-    <div class="register-component">
-        <div class="animate-page-enter register-container">
-            <!-- Header -->
-            <div class="register-header">
-                <h1 class="register-title">Create Account</h1>
-                <p class="register-subtitle">Join Football Fantasy and start playing</p>
-            </div>
-
-            <!-- Form -->
-            <form @submit.prevent="handleRegister" class="register-form">
-                <!-- Name Fields Row -->
-                <div class="form-row">
-                    <!-- First Name -->
-                    <div class="form-col">
-                        <FormInput 
-                            v-model="payload.firstName" 
-                            label="First Name" 
-                            type="text" 
-                            icon="bi-person-fill"
-                            placeholder="Your first name" 
-                            autocomplete="given-name" 
-                            :error="errors.firstName" 
-                        />
-                    </div>
-
-                    <!-- Last Name -->
-                    <div class="form-col">
-                        <FormInput 
-                            v-model="payload.lastName" 
-                            label="Last Name" 
-                            type="text" 
-                            icon="bi-person-fill"
-                            placeholder="Your last name" 
-                            autocomplete="family-name" 
-                            :error="errors.lastName" 
-                        />
-                    </div>
-                </div>
-
-                <!-- Email Field -->
-                <div>
-                    <FormInput 
-                        v-model="payload.email" 
-                        label="Email" 
-                        type="email" 
-                        icon="bi-envelope-fill"
-                        placeholder="your@email.com" 
-                        autocomplete="email" 
-                        :error="errors.email" 
-                    />
-                </div>
-
-                <!-- Password Field -->
-                <div>
-                    <FormInput 
-                        v-model="payload.password" 
-                        label="Password" 
-                        type="password" 
-                        icon="bi-lock-fill"
-                        placeholder="••••••••" 
-                        autocomplete="new-password" 
-                        :error="errors.password" 
-                    />
-                    <div v-if="payload.password && !errors.password" class="password-strength">
-                        <div class="strength-bar">
-                            <div 
-                                class="strength-fill" 
-                                :class="passwordStrengthClass"
-                                :style="{ width: passwordStrengthWidth }"
-                            ></div>
-                        </div>
-                        <span class="strength-text" :class="passwordStrengthClass">
-                            {{ passwordStrengthText }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Confirm Password Field -->
-                <div>
-                    <FormInput 
-                        v-model="payload.password_confirmation" 
-                        label="Confirm Password" 
-                        type="password" 
-                        icon="bi-lock-fill"
-                        placeholder="••••••••" 
-                        autocomplete="new-password" 
-                        :error="errors.password_confirmation" 
-                    />
-                </div>
-
-                <!-- Terms and Conditions -->
-                <div class="terms-checkbox">
-                    <label class="terms-label">
-                        <input type="checkbox" v-model="acceptTerms" class="terms-input" />
-                        <span class="terms-text">
-                            I accept the <a href="#" class="link">terms and conditions</a> 
-                            and the <a href="#" class="link">privacy policy</a>
-                        </span>
-                    </label>
-                    <span v-if="errors.terms" class="form-error">{{ errors.terms }}</span>
-                </div>
-
-                <!-- Register Button -->
-                <div>
-                    <ButtonComponent 
-                        type="submit" 
-                        variant="primary" 
-                        size="md"
-                        :disabled="!isFormValid" 
-                        :loading="isLoading"
-                        :always-full-width="true"
-                        :text="isLoading ? 'Creating account...' : 'Create Account'"
-                    />
-                </div>
-            </form>
-
-            <!-- Footer -->
-            <div class="animate-fade-in animate-delay-450 register-footer">
-                <p class="text-muted">
-                    Already have an account?
-                    <router-link to="/login" class="link">Sign in here</router-link>
-                </p>
-            </div>
-        </div>
+  <div class="register-page">
+    <!-- Decorative emerald glow backdrop -->
+    <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -top-24 -right-20 w-72 h-72 rounded-full bg-emerald-400/20 blur-3xl" />
+      <div class="absolute -bottom-28 -left-20 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl" />
     </div>
+
+    <div
+      class="register-card relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-6 sm:p-8"
+    >
+      <!-- Brand -->
+      <div class="flex flex-col items-center text-center mb-7">
+        <div
+          class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-4"
+        >
+          <v-icon name="md-sportssoccer" class="w-7 h-7 text-white" />
+        </div>
+        <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          Create account
+        </h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Join Football Fantasy and start playing
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form @submit.prevent="handleRegister" class="space-y-4" novalidate>
+        <!-- Name fields -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <FormInput
+            v-model="payload.firstName"
+            label="First Name"
+            type="text"
+            icon="bi-person-fill"
+            placeholder="Your first name"
+            autocomplete="given-name"
+            :error="errors.firstName"
+            :disabled="isLoading"
+          />
+          <FormInput
+            v-model="payload.lastName"
+            label="Last Name"
+            type="text"
+            icon="bi-person-fill"
+            placeholder="Your last name"
+            autocomplete="family-name"
+            :error="errors.lastName"
+            :disabled="isLoading"
+          />
+        </div>
+
+        <!-- Email -->
+        <FormInput
+          v-model="payload.email"
+          label="Email"
+          type="email"
+          icon="bi-envelope-fill"
+          placeholder="your@email.com"
+          autocomplete="email"
+          :error="errors.email"
+          :disabled="isLoading"
+        />
+
+        <!-- Password + strength meter -->
+        <div>
+          <FormInput
+            v-model="payload.password"
+            label="Password"
+            type="password"
+            icon="bi-lock-fill"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            :error="errors.password"
+            :disabled="isLoading"
+          />
+          <div
+            v-if="payload.password && !errors.password"
+            class="flex items-center gap-3 mt-2"
+          >
+            <div class="flex-1 h-1 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-300"
+                :class="strengthBarClass"
+                :style="{ width: passwordStrengthWidth }"
+              />
+            </div>
+            <span
+              class="text-[11px] font-semibold w-12 text-right"
+              :class="strengthTextClass"
+            >
+              {{ passwordStrengthText }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Confirm password -->
+        <FormInput
+          v-model="payload.password_confirmation"
+          label="Confirm Password"
+          type="password"
+          icon="bi-lock-fill"
+          placeholder="••••••••"
+          autocomplete="new-password"
+          :error="errors.password_confirmation"
+          :disabled="isLoading"
+        />
+
+        <!-- Terms -->
+        <div>
+          <label class="flex items-start gap-2.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              v-model="acceptTerms"
+              class="w-4 h-4 mt-0.5 rounded accent-emerald-600 shrink-0"
+            />
+            <span class="text-[13px] leading-snug text-gray-600 dark:text-gray-300">
+              I accept the
+              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">terms and conditions</a>
+              and the
+              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">privacy policy</a>
+            </span>
+          </label>
+          <p v-if="errors.terms" class="mt-1.5 text-[12px] text-red-500 dark:text-red-400">
+            {{ errors.terms }}
+          </p>
+        </div>
+
+        <!-- Submit -->
+        <ButtonComponent
+          type="submit"
+          variant="primary"
+          size="md"
+          :disabled="!isFormValid"
+          :loading="isLoading"
+          :always-full-width="true"
+          :text="isLoading ? 'Creating account...' : 'Create Account'"
+        />
+      </form>
+
+      <!-- Footer -->
+      <p class="mt-7 text-center text-sm text-gray-500 dark:text-gray-400">
+        Already have an account?
+        <router-link
+          to="/login"
+          class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+        >
+          Sign in
+        </router-link>
+      </p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -185,19 +211,11 @@ const validateEmail = (email: string): boolean => {
     return regex.test(email);
 };
 
-// Strong password validation
+// Minimal password validation — only enforce a short minimum length so it stays
+// friendly for all users. The strength meter below is just an optional hint.
 const validatePassword = (password: string): { valid: boolean; message: string } => {
-    if (password.length < 8) {
-        return { valid: false, message: 'Password must be at least 8 characters' };
-    }
-    if (!/[A-Z]/.test(password)) {
-        return { valid: false, message: 'Password must contain at least one uppercase letter' };
-    }
-    if (!/[a-z]/.test(password)) {
-        return { valid: false, message: 'Password must contain at least one lowercase letter' };
-    }
-    if (!/\d/.test(password)) {
-        return { valid: false, message: 'Password must contain at least one number' };
+    if (password.length < 6) {
+        return { valid: false, message: 'Password must be at least 6 characters' };
     }
     return { valid: true, message: '' };
 };
@@ -206,14 +224,14 @@ const validatePassword = (password: string): { valid: boolean; message: string }
 const passwordStrength = computed(() => {
     const pwd = payload.value.password;
     let strength = 0;
-    
+
     if (pwd.length >= 8) strength++;
     if (pwd.length >= 12) strength++;
     if (/[A-Z]/.test(pwd)) strength++;
     if (/[a-z]/.test(pwd)) strength++;
     if (/\d/.test(pwd)) strength++;
     if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) strength++;
-    
+
     return strength;
 });
 
@@ -222,10 +240,16 @@ const passwordStrengthWidth = computed(() => {
     return `${percentage}%`;
 });
 
-const passwordStrengthClass = computed(() => {
-    if (passwordStrength.value <= 2) return 'strength-weak';
-    if (passwordStrength.value <= 4) return 'strength-medium';
-    return 'strength-strong';
+const strengthBarClass = computed(() => {
+    if (passwordStrength.value <= 2) return 'bg-red-500';
+    if (passwordStrength.value <= 4) return 'bg-amber-500';
+    return 'bg-emerald-500';
+});
+
+const strengthTextClass = computed(() => {
+    if (passwordStrength.value <= 2) return 'text-red-500 dark:text-red-400';
+    if (passwordStrength.value <= 4) return 'text-amber-500 dark:text-amber-400';
+    return 'text-emerald-600 dark:text-emerald-400';
 });
 
 const passwordStrengthText = computed(() => {
@@ -339,12 +363,12 @@ const handleServerErrors = (serverErrors: ValidationErrors) => {
 // Handle registration
 const handleRegister = async () => {
     if (!validateForm()) return;
-    
+
     isLoading.value = true;
 
     try {
         await getUserService().userStore(payload.value);
-        
+
         // Show success message
         toast.success(
             'Account created!',
@@ -363,11 +387,11 @@ const handleRegister = async () => {
 
         // Redirect to login
         await router.push('/login');
-        
+
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
             const { status, data } = error.response;
-            
+
             if (status === 422 && data.errors) {
                 // Handle server validation errors for inline display
                 handleServerErrors(data.errors);
@@ -380,185 +404,35 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
-.register-component {
+.register-page {
+    position: relative;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height - respects mobile keyboard */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
 }
 
-.register-container {
-    width: 100%;
-    max-width: 32rem;
-    background: var(--color-bg);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: var(--shadow-xl);
-    border: 1px solid var(--color-border);
+/* Subtle entrance: fade + lift */
+.register-card {
+    animation: register-enter 0.4s cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 
-.register-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.register-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--color-text);
-}
-
-.register-subtitle {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-}
-
-.register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.form-row {
-    display: flex;
-    gap: 1rem;
-}
-
-.form-col {
-    flex: 1;
-    min-width: 0;
-}
-
-/* Password Strength Indicator */
-.password-strength {
-    margin-top: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.strength-bar {
-    flex: 1;
-    height: 4px;
-    background: var(--color-border);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.strength-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.3s ease, background-color 0.3s ease;
-}
-
-.strength-fill.strength-weak {
-    background-color: #ef4444;
-}
-
-.strength-fill.strength-medium {
-    background-color: #f59e0b;
-}
-
-.strength-fill.strength-strong {
-    background-color: #22c55e;
-}
-
-.strength-text {
-    font-size: 0.75rem;
-    font-weight: 500;
-    min-width: 3rem;
-}
-
-.strength-text.strength-weak {
-    color: #ef4444;
-}
-
-.strength-text.strength-medium {
-    color: #f59e0b;
-}
-
-.strength-text.strength-strong {
-    color: #22c55e;
-}
-
-/* Terms Checkbox */
-.terms-checkbox {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.terms-label {
-    display: flex;
-    align-items: flex-start;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    gap: 0.5rem;
-}
-
-.terms-input {
-    width: 1rem;
-    height: 1rem;
-    margin-top: 0.125rem;
-    accent-color: var(--color-primary);
-    flex-shrink: 0;
-}
-
-.terms-text {
-    user-select: none;
-    line-height: 1.4;
-}
-
-.form-error {
-    font-size: 0.75rem;
-    color: #ef4444;
-    margin-top: 0.25rem;
-}
-
-.register-footer {
-    margin-top: 2rem;
-    text-align: center;
-}
-
-.link {
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-.link:hover {
-    color: var(--color-primary-hover);
-}
-
-.text-muted {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    margin: 0;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-    .register-component {
-        padding: 1rem;
+@keyframes register-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
     }
-
-    .register-container {
-        margin: 1rem;
-        padding: 1.5rem;
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
+}
 
-    .register-title {
-        font-size: 1.25rem;
-    }
-
-    .form-row {
-        flex-direction: column;
-        gap: 1.25rem;
+@media (prefers-reduced-motion: reduce) {
+    .register-card {
+        animation: none;
     }
 }
 </style>
