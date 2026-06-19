@@ -1,16 +1,7 @@
 <template>
   <div class="w-full">
     <!-- Loading -->
-    <div v-if="isLoading" class="flex items-center justify-center py-12">
-      <div class="flex flex-col items-center gap-3">
-        <v-icon
-          name="pr-spinner"
-          class="w-5 h-5 text-gray-300 dark:text-gray-600"
-          animation="spin"
-        />
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">Loading draft board...</p>
-      </div>
-    </div>
+    <DraftPlayerPickedSkeleton v-if="isLoading" />
 
     <!-- Error -->
     <div
@@ -149,6 +140,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
+import DraftPlayerPickedSkeleton from '@/components/fantasy/draft/DraftPlayerPickedSkeleton.vue';
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService';
 import type { FantasyDraftPlayerPicked } from '@/interfaces/fantasy/draft/FantasyDraftPlayerPicked';
 import type { FootballPlayerResponse } from '@/interfaces/football/player/FootballPlayerResponse';
