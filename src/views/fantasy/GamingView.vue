@@ -68,12 +68,14 @@
       </div>
     </div>
   </div>
+  <HomeMenu />
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useToast } from '@/composables/useToast'
+import HomeMenu from '@/components/home/HomeMenu.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
