@@ -1,20 +1,33 @@
 <template>
   <div class="w-full">
-    <!-- Loading Rounds State -->
+    <!-- Initial Loading Skeleton — mirrors the final layout (round selector +
+         matchup + actions + team) so the load is seamless: no spinner first,
+         then skeleton. The team skeleton matches FantasyTeamDisplay's exactly. -->
     <div
       v-if="isLoadingRounds && rounds.length === 0"
-      class="flex items-center justify-center min-h-[300px]"
+      class="mb-4 space-y-3"
     >
-      <div class="flex flex-col items-center gap-2">
-        <v-icon
-          name="pr-spinner"
-          class="w-5 h-5 text-gray-300 dark:text-gray-600"
-          animation="spin"
-        />
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">
-          Loading rounds...
-        </p>
+      <!-- Round selector skeleton -->
+      <div class="flex items-center justify-between px-1">
+        <div class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
+        <div class="flex flex-col items-center gap-1.5">
+          <div class="h-3.5 w-12 bg-gray-100 dark:bg-gray-700 rounded animate-pulse" />
+          <div class="h-2.5 w-16 bg-gray-50 dark:bg-gray-700/60 rounded animate-pulse" />
+        </div>
+        <div class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
       </div>
+
+      <!-- Matchup skeleton -->
+      <div class="h-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 animate-pulse" />
+
+      <!-- Quick actions skeleton -->
+      <div class="flex gap-2">
+        <div class="flex-1 h-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
+        <div class="flex-1 h-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
+      </div>
+
+      <!-- Team skeleton -->
+      <FantasyTeamDisplaySkeleton />
     </div>
 
     <!-- Error State -->
@@ -148,6 +161,7 @@ import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueSe
 import { useFantasyRounds } from "@/composables/useFantasyRounds";
 import RoundSelector from "@/components/fantasy/rounds/RoundSelector.vue";
 import FantasyTeamDisplay from "@/components/fantasy/lineup/FantasyTeamDisplay.vue";
+import FantasyTeamDisplaySkeleton from "@/components/fantasy/lineup/FantasyTeamDisplaySkeleton.vue";
 import MatchupByRoundAndUser from "@/components/fantasy/matchups/MatchupByRoundAndUser.vue";
 
 interface Props {
