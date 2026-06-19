@@ -196,7 +196,7 @@
               <h3
                 class="text-[13px] font-semibold text-gray-900 dark:text-white"
               >
-                Available Playerss
+                Available Players
               </h3>
             </div>
           </div>
