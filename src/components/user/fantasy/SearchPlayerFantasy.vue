@@ -10,9 +10,9 @@
       @swap-player="handleSwapPlayer"
     />
 
-    <!-- Loading Skeleton State -->
+    <!-- Loading Skeleton State (only on the very first load, never on re-searches) -->
     <div
-      v-if="isLoading && players.length === 0"
+      v-if="isLoading && !initialLoadComplete"
       class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
     >
       <!-- Skeleton Header -->
