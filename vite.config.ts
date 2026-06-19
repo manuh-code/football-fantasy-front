@@ -37,13 +37,15 @@ export default defineConfig({
       }
     },
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
+        id: '/',
+        lang: 'es',
         name: 'Football Fantasy',
         short_name: 'FootballFantasy',
         description: 'Una aplicación de fantasy football inspirada en el diseño de Laravel Cloud Dashboard',
-        theme_color: '#3b82f6',
+        theme_color: '#059669',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',

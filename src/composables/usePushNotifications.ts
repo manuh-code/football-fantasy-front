@@ -5,6 +5,7 @@ import { getFirebaseMessaging } from '@/firebase/config'
 import { useApiFantasy } from '@/composables/useApiFantasy'
 import { getDeviceUuid } from '@/utils/deviceUuid'
 import { useNotificationsStore } from '@/store/notifications'
+import { useAuthStore } from '@/store/auth/useAuthStore'
 
 const isPermissionGranted = ref(false)
 const isRegistering = ref(false)
@@ -12,23 +13,21 @@ const isRegistering = ref(false)
 export function usePushNotifications() {
   const { apiFantasyInstance } = useApiFantasy()
   const notificationsStore = useNotificationsStore()
+  const authStore = useAuthStore()
   const { fcmToken } = storeToRefs(notificationsStore)
 
   /**
    * Solicita permiso de notificaciones y registra el token en el backend.
    * Funciona tanto para usuarios anónimos como autenticados.
+   *
+   * Se ejecuta `getToken` en cada arranque para revalidar el token: FCM devuelve
+   * el mismo token si sigue vigente, o uno nuevo si fue rotado/expiró. Solo se
+   * llama al backend cuando el token realmente cambia (ver más abajo).
    */
   async function requestPermissionAndRegister(): Promise<string | null> {
 
     if (isRegistering.value) return notificationsStore.fcmToken
     isRegistering.value = true
-
-    // Si ya existe un token registrado en el store, evitar llamar al backend de nuevo
-    if (notificationsStore.isTokenRegistered && notificationsStore.fcmToken) {
-      isPermissionGranted.value = true
-      isRegistering.value = false
-      return notificationsStore.fcmToken
-    }
 
     try {
       // 1. Verificar que la API de Notification está disponible
@@ -125,7 +124,7 @@ export function usePushNotifications() {
       }
 
       // 6. Enviar token al backend solo si cambió respecto al token guardado
-      if (token === notificationsStore.fcmToken) {
+      if (token === notificationsStore.fcmToken && notificationsStore.isTokenRegistered) {
         console.log('FCM token unchanged, skipping backend registration')
       } else {
         await apiFantasyInstance.post('fcm-token', {
@@ -135,6 +134,13 @@ export function usePushNotifications() {
         })
         notificationsStore.setToken(token)
         console.log('FCM token registered successfully')
+
+        // Si el usuario ya está autenticado y el token cambió (p. ej. rotación),
+        // revincular el nuevo token a su cuenta. En el login el claim ya ocurre
+        // aparte, pero esto cubre rotaciones de token mitad de sesión.
+        if (authStore.getToken()) {
+          await claimTokensForUser()
+        }
       }
 
       return token
