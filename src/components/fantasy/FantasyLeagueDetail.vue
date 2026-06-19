@@ -396,25 +396,20 @@
 
             <!-- Action buttons -->
             <div class="pt-2 space-y-2">
-              <!-- Activate Draft (admin only, when not active/completed) -->
-              <ButtonComponent
-                v-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
-                variant="outline"
-                size="sm"
-                :text="isActivatingDraft ? 'Activating...' : 'Activate Draft'"
-                class="w-full"
-                :disabled="isActivatingDraft"
-                @click="handleActivateDraft"
-              />
-              <!-- Enter Draft Room -->
               <ButtonComponent
                 v-if="draftStatusValue !== 'COMPLETED'"
                 variant="primary"
                 size="sm"
-                text="Enter Draft Room"
+                :text="league.isAdmin && draftStatusValue !== 'ACTIVE' ? 'Go to Draft · Activate' : 'Enter Draft Room'"
                 class="w-full"
                 @click="goToDraft"
               />
+              <p
+                v-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
+                class="text-[10px] text-center text-gray-400 dark:text-gray-500 leading-tight"
+              >
+                You can activate the draft once you're inside the draft room.
+              </p>
             </div>
           </div>
         </div>
@@ -475,7 +470,6 @@ const errorMessage = ref<string>("");
 const showJoinModal = ref(false);
 const showCreateTeamModal = ref(false);
 const isJoining = ref(false);
-const isActivatingDraft = ref(false);
 const isDraftActivatedViaAbly = ref(false);
 const isAutoPick = ref(false);
 const isTogglingAutoPick = ref(false);
@@ -597,23 +591,6 @@ const handleToggleAutoPick = async () => {
     console.error('Error toggling auto-pick:', error);
   } finally {
     isTogglingAutoPick.value = false;
-  }
-};
-
-const handleActivateDraft = async () => {
-  if (!league.value) return;
-  try {
-    isActivatingDraft.value = true;
-    await fantasyLeagueService.activateDraft(league.value.uuid);
-    toast.success(
-      "Draft Activated",
-      "The draft has been activated successfully.",
-    );
-    await fetchLeague();
-  } catch (error) {
-    console.error("Error activating draft:", error);
-  } finally {
-    isActivatingDraft.value = false;
   }
 };
 
