@@ -4,7 +4,6 @@
     :visible="shouldShowMenu"
     :items="items"
     :active-key="activeTab"
-    fill
     aria-label="Main navigation"
     @select="onSelect"
   />
