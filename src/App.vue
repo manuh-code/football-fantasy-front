@@ -62,6 +62,10 @@
 
     <!-- Footer Menu - Fixed at bottom, outside transform context -->
     <FooterMenu />
+
+    <!-- PWA: update prompt + install banner (global, Teleported) -->
+    <PwaUpdateModal />
+    <PwaInstallBanner />
   </div>
 </template>
 
@@ -78,6 +82,8 @@ import { useSwipeNavigation, useToast } from "@/composables";
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
 import { useDevResetStores } from "@/composables/useDevResetStores";
 import { usePushNotifications } from "./composables/usePushNotifications";
+import PwaUpdateModal from "@/components/pwa/PwaUpdateModal.vue";
+import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
 
 const themeStore = useThemeStore();
 const store = useFootballLeagueStore();
