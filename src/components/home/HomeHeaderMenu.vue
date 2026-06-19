@@ -11,7 +11,7 @@
   >
     <div class="max-w-7xl mx-auto flex items-center gap-2 px-4 h-12 sm:h-14">
       <!-- Brand -->
-      <button
+      <!-- <button
         @click="handleGoHome"
         class="flex items-center -ml-1 px-1.5 py-1 rounded-xl active:bg-gray-100 dark:active:bg-gray-800 transition-colors duration-150 focus:outline-none shrink-0"
         aria-label="Go to home"
@@ -20,7 +20,7 @@
         <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[10px] flex items-center justify-center">
           <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
         </div>
-      </button>
+      </button> -->
 
       <!-- Stage switcher chip (opens bottom-sheet). Sizes to its content (capped + truncated),
            never stretches — the spacer below pushes the auth controls to the right. -->
@@ -195,7 +195,8 @@ const is404Error = (e: unknown): boolean => {
   return err?.status === 404 || (err?.response as Record<string, unknown>)?.status === 404;
 };
 
-/** Reset all Pinia stores, clear localStorage, and reload to show league selection modal. */
+/** Reset all Pinia stores, clear localStorage, and reload. With no league
+ *  selected, the router guard redirects to the league selection page. */
 const resetStoresAndShowLeagueModal = () => {
   const pinia = getActivePinia() as Pinia & { _s: Map<string, Store> };
   if (pinia) {

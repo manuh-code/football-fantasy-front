@@ -46,12 +46,6 @@
           : 'transform 0.3s ease-out',
       }"
     >
-      <!-- Global Football League Selection Modal -->
-      <FootballLeagueSelectionModal
-        :isVisible="showLeagueModal"
-        @close="showLeagueModal = false"
-      />
-
       <main class="flex-1 pb-24 main-content-safe">
         <router-view />
       </main>
@@ -70,14 +64,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import HeaderMenu from "@/components/HeaderMenu.vue";
 import { ToastContainer, FooterMenu } from "@/components/ui";
-import FootballLeagueSelectionModal from "@/components/football/leagues/FootballLeagueSelectionModal.vue";
 import { useThemeStore } from "./store/theme";
-import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import { useSwipeNavigation, useToast } from "@/composables";
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
 import { useDevResetStores } from "@/composables/useDevResetStores";
@@ -86,9 +78,7 @@ import PwaUpdateModal from "@/components/pwa/PwaUpdateModal.vue";
 import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
 
 const themeStore = useThemeStore();
-const store = useFootballLeagueStore();
 const router = useRouter();
-const showLeagueModal = ref(false);
 
 // Home renders its own header (HomeHeaderMenu); hide the global one there.
 const isHomeRoute = computed(() => router.currentRoute.value.name === "home");
@@ -107,19 +97,10 @@ if (import.meta.env.DEV) {
 }
 onBeforeUnmount(() => cleanupDevShortcut?.());
 
-// Función para verificar y mostrar modal si no hay liga seleccionada
-const checkLeagueSelection = () => {
-  if (!store.existLeague()) {
-    showLeagueModal.value = true;
-  }
-};
-
 onMounted(async () => {
   FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
   // Initialize theme on app mount
   themeStore.initTheme();
-  // Show league selection modal when no league is selected
-  checkLeagueSelection();
 
   // Registrar push notifications
 
@@ -150,23 +131,6 @@ onMounted(async () => {
     }
   });
 });
-
-// Watcher para cuando se selecciona una liga
-watch(
-  () => store.getLeague,
-  (newLeague) => {
-    if (newLeague) showLeagueModal.value = false;
-  },
-);
-
-// Watcher para cambios de ruta - verificar liga seleccionada
-watch(
-  () => router.currentRoute.value.path,
-  () => {
-    // Verificar si hay liga seleccionada cada vez que cambie de ruta
-    checkLeagueSelection();
-  },
-);
 </script>
 
 <style lang="scss">

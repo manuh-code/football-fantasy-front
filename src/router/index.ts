@@ -1,5 +1,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
+import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
+
+// Routes that do NOT require a selected football league. Everything else is
+// gated: without a selected league the user is redirected to the league
+// selection page and cannot leave it until one is chosen.
+const LEAGUE_EXEMPT_ROUTES = new Set([
+  'login',
+  'register',
+  'GoogleCallback',
+  'not-found',
+  'footballLeagues',
+])
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -190,6 +202,17 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/leagues',
+    name: 'footballLeagues',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "football-leagues" */ '@/views/football/leagues/FootballLeagueSelectionView.vue'),
+    meta: {
+      title: 'Select League - Football Fantasy',
+      description: 'Select the football league you want to follow',
+      requiresAuth: false
+    }
+  },
+  {
     path: '/gaming',
     name: 'gaming',
     // Route level code-splitting for better performance
@@ -271,6 +294,14 @@ router.beforeEach(async (to, from, next) => {
   // If user is authenticated and trying to access login or register page, redirect to dashboard
   if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
     return next({ name: "dashboard" });
+  }
+
+  // League gate: a football league must be selected to use the app. Without one,
+  // force the user into the league selection page (and keep them there until a
+  // league is chosen). Exempt routes (auth pages, the selector itself) pass through.
+  const footballLeagueStore = useFootballLeagueStore();
+  if (!footballLeagueStore.existLeague() && !LEAGUE_EXEMPT_ROUTES.has(to.name as string)) {
+    return next({ name: "footballLeagues", query: { redirect: to.fullPath } });
   }
 
   // Continue to the requested route
