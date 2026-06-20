@@ -74,16 +74,16 @@ function positionColor(developerName: string): string {
         <div class="flex items-center gap-2 flex-1 min-w-0">
           <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0 flex items-center justify-center">
             <img v-if="matchup.home.team.image_path" :src="matchup.home.team.image_path" :alt="matchup.home.team.team_name" class="w-full h-full object-cover" />
-            <span v-else class="text-[9px] font-bold text-gray-500">{{ matchup.home.team.team_name.substring(0, 2).toUpperCase() }}</span>
+            <span v-else class="text-2xs font-bold text-gray-500">{{ matchup.home.team.team_name.substring(0, 2).toUpperCase() }}</span>
           </div>
-          <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate">{{ matchup.home.team.team_name }}</p>
+          <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate">{{ matchup.home.team.team_name }}</p>
         </div>
         <!-- Score + close -->
         <div class="flex items-center gap-2 shrink-0">
           <div class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gray-50 dark:bg-gray-700/60">
-            <span class="text-[13px] font-extrabold tabular-nums leading-none" :class="isCompleted && matchup.winner === matchup.home.team.uuid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'">{{ matchup.home.score }}</span>
-            <span class="text-[10px] text-gray-300 dark:text-gray-600">–</span>
-            <span class="text-[13px] font-extrabold tabular-nums leading-none" :class="isCompleted && matchup.winner === matchup.away.team.uuid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'">{{ matchup.away.score }}</span>
+            <span class="text-footnote font-extrabold tabular-nums leading-none" :class="isCompleted && matchup.winner === matchup.home.team.uuid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'">{{ matchup.home.score }}</span>
+            <span class="text-2xs text-gray-300 dark:text-gray-600">–</span>
+            <span class="text-footnote font-extrabold tabular-nums leading-none" :class="isCompleted && matchup.winner === matchup.away.team.uuid ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'">{{ matchup.away.score }}</span>
           </div>
           <button
             class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all"
@@ -94,10 +94,10 @@ function positionColor(developerName: string): string {
         </div>
         <!-- Away team -->
         <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
-          <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate text-right">{{ matchup.away.team.team_name }}</p>
+          <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate text-right">{{ matchup.away.team.team_name }}</p>
           <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0 flex items-center justify-center">
             <img v-if="matchup.away.team.image_path" :src="matchup.away.team.image_path" :alt="matchup.away.team.team_name" class="w-full h-full object-cover" />
-            <span v-else class="text-[9px] font-bold text-gray-500">{{ matchup.away.team.team_name.substring(0, 2).toUpperCase() }}</span>
+            <span v-else class="text-2xs font-bold text-gray-500">{{ matchup.away.team.team_name.substring(0, 2).toUpperCase() }}</span>
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@ function positionColor(developerName: string): string {
     <!-- ── Error ── -->
     <div v-else-if="error" class="px-4 py-4 flex items-center gap-2">
       <v-icon name="hi-solid-exclamation-circle" class="w-5 h-5 text-red-500 shrink-0" />
-      <p class="text-[13px] text-red-700 dark:text-red-300">{{ error }}</p>
+      <p class="text-footnote text-red-700 dark:text-red-300">{{ error }}</p>
     </div>
 
     <!-- ── Versus rows ── -->
@@ -133,7 +133,7 @@ function positionColor(developerName: string): string {
       <!-- Starters subheader -->
       <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-100 dark:border-gray-700/60 flex items-center gap-2">
         <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Starters</h3>
+        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Starters</h3>
       </div>
 
       <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
@@ -150,10 +150,10 @@ function positionColor(developerName: string): string {
               class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
             />
             <div class="flex-1 min-w-0">
-              <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
                 {{ homeStarters[idx].football_player.display_name }}
               </p>
-              <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">
+              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
                 {{ homeStarters[idx].position?.name }}
               </p>
             </div>
@@ -164,19 +164,19 @@ function positionColor(developerName: string): string {
           <!-- Points + position badge -->
           <div class="flex items-center gap-1 shrink-0">
             <span
-              class="text-[12px] font-bold tabular-nums min-w-[26px] text-right"
+              class="text-xs font-bold tabular-nums min-w-[26px] text-right"
               :class="(homeStarters[idx]?.fantasy_points ?? 0) > (awayStarters[idx]?.fantasy_points ?? 0)
                 ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-gray-600 dark:text-gray-400'"
             >{{ homeStarters[idx]?.fantasy_points ?? 0 }}</span>
             <span
-              class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0"
+              class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0"
               :class="positionColor(homeStarters[idx]?.position?.developer_name ?? awayStarters[idx]?.position?.developer_name ?? '')"
             >
               {{ positionCode(homeStarters[idx] ?? awayStarters[idx]) }}
             </span>
             <span
-              class="text-[12px] font-bold tabular-nums min-w-[26px] text-left"
+              class="text-xs font-bold tabular-nums min-w-[26px] text-left"
               :class="(awayStarters[idx]?.fantasy_points ?? 0) > (homeStarters[idx]?.fantasy_points ?? 0)
                 ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-gray-600 dark:text-gray-400'"
@@ -186,10 +186,10 @@ function positionColor(developerName: string): string {
           <!-- Away player -->
           <template v-if="awayStarters[idx]">
             <div class="flex-1 min-w-0 text-right">
-              <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
                 {{ awayStarters[idx].football_player.display_name }}
               </p>
-              <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">
+              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
                 {{ awayStarters[idx].position?.name }}
               </p>
             </div>
@@ -210,7 +210,7 @@ function positionColor(developerName: string): string {
         class="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-y border-gray-100 dark:border-gray-700/60 flex items-center gap-2"
       >
         <v-icon name="hi-solid-users" class="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0" />
-        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Bench</h3>
+        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Bench</h3>
       </div>
 
       <div v-if="benchRows.length" class="divide-y divide-gray-100 dark:divide-gray-700/60">
@@ -227,10 +227,10 @@ function positionColor(developerName: string): string {
               class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
             />
             <div class="flex-1 min-w-0">
-              <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
                 {{ homeBench[idx].football_player.display_name }}
               </p>
-              <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">
+              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
                 {{ homeBench[idx].position?.name }}
               </p>
             </div>
@@ -240,16 +240,16 @@ function positionColor(developerName: string): string {
 
           <!-- Points + position badge -->
           <div class="flex items-center gap-1 shrink-0">
-            <span class="text-[12px] font-bold tabular-nums min-w-[26px] text-right text-gray-500 dark:text-gray-400">
+            <span class="text-xs font-bold tabular-nums min-w-[26px] text-right text-gray-500 dark:text-gray-400">
               {{ homeBench[idx]?.fantasy_points ?? '—' }}
             </span>
             <span
-              class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0"
+              class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0"
               :class="positionColor(homeBench[idx]?.position?.developer_name ?? awayBench[idx]?.position?.developer_name ?? '')"
             >
               {{ positionCode(homeBench[idx] ?? awayBench[idx]) }}
             </span>
-            <span class="text-[12px] font-bold tabular-nums min-w-[26px] text-left text-gray-500 dark:text-gray-400">
+            <span class="text-xs font-bold tabular-nums min-w-[26px] text-left text-gray-500 dark:text-gray-400">
               {{ awayBench[idx]?.fantasy_points ?? '—' }}
             </span>
           </div>
@@ -257,10 +257,10 @@ function positionColor(developerName: string): string {
           <!-- Away bench -->
           <template v-if="awayBench[idx]">
             <div class="flex-1 min-w-0 text-right">
-              <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
                 {{ awayBench[idx].football_player.display_name }}
               </p>
-              <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">
+              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
                 {{ awayBench[idx].position?.name }}
               </p>
             </div>
@@ -278,19 +278,19 @@ function positionColor(developerName: string): string {
       <!-- Total row -->
       <div class="px-4 py-3 border-t border-gray-100 dark:border-gray-700/60 bg-gray-50 dark:bg-gray-700/40 flex items-center">
         <span
-          class="text-[13px] font-bold tabular-nums flex-1"
+          class="text-footnote font-bold tabular-nums flex-1"
           :class="homeTotal > awayTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300'"
         >
           {{ homeTotal }}
-          <span class="text-[10px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
         </span>
-        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total</span>
+        <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total</span>
         <span
-          class="text-[13px] font-bold tabular-nums flex-1 text-right"
+          class="text-footnote font-bold tabular-nums flex-1 text-right"
           :class="awayTotal > homeTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300'"
         >
           {{ awayTotal }}
-          <span class="text-[10px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
         </span>
       </div>
 

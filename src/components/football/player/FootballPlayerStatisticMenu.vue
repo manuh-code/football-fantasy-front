@@ -6,7 +6,7 @@
       <div class="px-4 py-3">
         <div class="flex items-center gap-2">
           <v-icon name="hi-solid-chart-bar" class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0" />
-          <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white">Player Statistics</h2>
+          <h2 class="text-callout font-semibold text-gray-900 dark:text-white">Player Statistics</h2>
         </div>
       </div>
 
@@ -16,7 +16,7 @@
           <button
             @click="setActiveStatistic('statistics')"
             :class="[
-              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[12px] font-medium rounded-[10px] transition-all duration-200',
+              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[10px] transition-all duration-200',
               activeStatistic === 'statistics'
                 ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
                 : 'text-gray-500 dark:text-gray-400 active:bg-white/50 dark:active:bg-gray-600/50'
@@ -29,7 +29,7 @@
           <button
             @click="setActiveStatistic('topscorers')"
             :class="[
-              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[12px] font-medium rounded-[10px] transition-all duration-200',
+              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[10px] transition-all duration-200',
               activeStatistic === 'topscorers'
                 ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
                 : 'text-gray-500 dark:text-gray-400 active:bg-white/50 dark:active:bg-gray-600/50'
@@ -43,7 +43,7 @@
           <button
             @click="setActiveStatistic('fantasypoints')"
             :class="[
-              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[12px] font-medium rounded-[10px] transition-all duration-200',
+              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[10px] transition-all duration-200',
               activeStatistic === 'fantasypoints'
                 ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
                 : 'text-gray-500 dark:text-gray-400 active:bg-white/50 dark:active:bg-gray-600/50'

@@ -128,11 +128,11 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           :alt="fixture.league.name"
           class="w-4 h-4 object-contain shrink-0"
         />
-        <span class="text-[11px] font-medium text-gray-500 dark:text-gray-400 truncate">
+        <span class="text-2xs font-medium text-gray-500 dark:text-gray-400 truncate">
           {{ fixture.league?.name ?? "League" }}
         </span>
-        <span v-if="fixture.round?.name" class="text-[11px] text-gray-300 dark:text-gray-600">•</span>
-        <span v-if="fixture.round?.name" class="text-[11px] text-gray-500 dark:text-gray-400">
+        <span v-if="fixture.round?.name" class="text-2xs text-gray-300 dark:text-gray-600">•</span>
+        <span v-if="fixture.round?.name" class="text-2xs text-gray-500 dark:text-gray-400">
           Round {{ fixture.round.name }}
         </span>
       </div>
@@ -162,13 +162,13 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           :class="collapsed ? 'max-h-0 opacity-0' : 'max-h-12 opacity-100'"
         >
           <p
-            class="text-[14px] font-semibold truncate"
+            class="text-sm font-semibold truncate"
             :class="homeWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'"
             :title="teamName(homeTeam)"
           >
             {{ teamName(homeTeam) }}
           </p>
-          <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 tracking-wider">
+          <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wider">
             {{ shortCode(homeTeam) }}
           </p>
         </div>
@@ -180,17 +180,17 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           <div class="flex items-center gap-2">
             <span
               class="font-extrabold tabular-nums leading-none transition-all duration-300 ease-out"
-              :class="[collapsed ? 'text-[26px]' : 'text-[44px]', homeWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white']"
+              :class="[collapsed ? 'text-[1.625rem]' : 'text-5xl', homeWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white']"
             >
               {{ homeScore }}
             </span>
             <span
               class="font-light text-gray-300 dark:text-gray-600 transition-all duration-300 ease-out"
-              :class="collapsed ? 'text-[16px]' : 'text-[24px]'"
+              :class="collapsed ? 'text-base' : 'text-[1.5rem]'"
             >–</span>
             <span
               class="font-extrabold tabular-nums leading-none transition-all duration-300 ease-out"
-              :class="[collapsed ? 'text-[26px]' : 'text-[44px]', awayWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white']"
+              :class="[collapsed ? 'text-[1.625rem]' : 'text-5xl', awayWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white']"
             >
               {{ awayScore }}
             </span>
@@ -199,11 +199,11 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
         <template v-else>
           <span
             class="font-bold text-gray-400 dark:text-gray-500 tracking-wide transition-all duration-300 ease-out"
-            :class="collapsed ? 'text-[15px]' : 'text-[18px]'"
+            :class="collapsed ? 'text-callout' : 'text-lg'"
           >VS</span>
           <span
             v-if="!collapsed"
-            class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 whitespace-nowrap"
+            class="text-2xs text-gray-400 dark:text-gray-500 mt-1 whitespace-nowrap"
           >
             {{ formattedKickoff }}
           </span>
@@ -223,7 +223,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
             </span>
-            <span class="text-[10px] font-bold tracking-widest">{{ stateLabel }}</span>
+            <span class="text-2xs font-bold tracking-widest">{{ stateLabel }}</span>
           </div>
         </div>
       </div>
@@ -250,13 +250,13 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           :class="collapsed ? 'max-h-0 opacity-0' : 'max-h-12 opacity-100'"
         >
           <p
-            class="text-[14px] font-semibold truncate"
+            class="text-sm font-semibold truncate"
             :class="awayWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'"
             :title="teamName(awayTeam)"
           >
             {{ teamName(awayTeam) }}
           </p>
-          <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 tracking-wider">
+          <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wider">
             {{ shortCode(awayTeam) }}
           </p>
         </div>
@@ -271,7 +271,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
     >
       <div class="flex items-center justify-center gap-1.5 text-gray-500 dark:text-gray-400">
         <v-icon name="hi-solid-location-marker" class="w-3 h-3 shrink-0" />
-        <span class="text-[11px] truncate">
+        <span class="text-2xs truncate">
           {{ fixture.venue.name }}<span v-if="fixture.venue.city_name">, {{ fixture.venue.city_name }}</span>
         </span>
       </div>

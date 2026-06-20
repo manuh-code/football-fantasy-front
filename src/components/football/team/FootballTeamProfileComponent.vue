@@ -274,7 +274,7 @@ const onDragEnd = (e: PointerEvent) => {
                   class="w-12 h-12 rounded-md bg-gray-100 dark:bg-gray-800 animate-pulse shrink-0"
                 />
                 <div class="min-w-0">
-                  <h2 class="text-[16px] font-bold text-gray-900 dark:text-white truncate">
+                  <h2 class="text-base font-bold text-gray-900 dark:text-white truncate">
                     {{ profile?.team?.name ?? "Team profile" }}
                   </h2>
                   <div
@@ -287,7 +287,7 @@ const onDragEnd = (e: PointerEvent) => {
                       :alt="profile.team.country.name ?? ''"
                       class="w-3.5 h-3.5 rounded-full object-cover shrink-0"
                     />
-                    <span class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
+                    <span class="text-2xs text-gray-400 dark:text-gray-500 truncate">
                       {{ profile.team.country.name }}
                       <template v-if="profile.team.founded"> · Est. {{ profile.team.founded }}</template>
                     </span>
@@ -322,7 +322,7 @@ const onDragEnd = (e: PointerEvent) => {
                 role="tab"
                 :aria-selected="activeTab === tab.key"
                 @click="activeTab = tab.key"
-                class="shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-[12px] font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
+                class="shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
                 :class="
                   activeTab === tab.key
                     ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
@@ -352,10 +352,10 @@ const onDragEnd = (e: PointerEvent) => {
                 name="hi-solid-exclamation-circle"
                 class="w-9 h-9 text-red-400 dark:text-red-500 mb-3"
               />
-              <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ loadError }}</p>
+              <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ loadError }}</p>
               <button
                 @click="retry"
-                class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+                class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
                 Retry
               </button>
@@ -372,7 +372,7 @@ const onDragEnd = (e: PointerEvent) => {
                   name="hi-solid-inbox"
                   class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2"
                 />
-                <p class="text-[13px] text-gray-400 dark:text-gray-500">
+                <p class="text-footnote text-gray-400 dark:text-gray-500">
                   Nothing to show here yet.
                 </p>
               </div>
@@ -382,12 +382,12 @@ const onDragEnd = (e: PointerEvent) => {
                 <div key="team" v-if="activeTab === 'team'" class="px-4 py-4 space-y-4">
                   <div class="flex flex-col items-center text-center pt-2">
                     <TeamLogo :team="profile.team" size="xl" variant="square" />
-                    <h3 class="mt-3 text-[18px] font-bold text-gray-900 dark:text-white">
+                    <h3 class="mt-3 text-lg font-bold text-gray-900 dark:text-white">
                       {{ profile.team?.name }}
                     </h3>
                     <span
                       v-if="profile.team?.short_code"
-                      class="mt-1 text-[11px] font-semibold tracking-widest text-gray-400 dark:text-gray-500 uppercase"
+                      class="mt-1 text-2xs font-semibold tracking-widest text-gray-400 dark:text-gray-500 uppercase"
                     >
                       {{ profile.team.short_code }}
                     </span>
@@ -395,7 +395,7 @@ const onDragEnd = (e: PointerEvent) => {
 
                   <div class="grid grid-cols-2 gap-2.5">
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Country</p>
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Country</p>
                       <div class="flex items-center gap-1.5 mt-1">
                         <img
                           v-if="profile.team?.country?.image_path"
@@ -403,26 +403,26 @@ const onDragEnd = (e: PointerEvent) => {
                           :alt="profile.team.country.name ?? ''"
                           class="w-4 h-4 rounded-full object-cover shrink-0"
                         />
-                        <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">
+                        <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 truncate">
                           {{ profile.team?.country?.name ?? "—" }}
                         </p>
                       </div>
                     </div>
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Founded</p>
-                      <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 mt-1">
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Founded</p>
+                      <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1">
                         {{ profile.team?.founded ?? "—" }}
                       </p>
                     </div>
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Squad</p>
-                      <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 mt-1">
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Squad</p>
+                      <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1">
                         {{ profile.players.length }} players
                       </p>
                     </div>
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Stadium</p>
-                      <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 mt-1 truncate">
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Stadium</p>
+                      <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 truncate">
                         {{ profile.venue?.name ?? "—" }}
                       </p>
                     </div>
@@ -436,7 +436,7 @@ const onDragEnd = (e: PointerEvent) => {
                     :key="group.label"
                     class="mb-4 last:mb-0"
                   >
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5 px-1">
+                    <p class="text-2xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5 px-1">
                       {{ group.label }}
                     </p>
                     <div class="space-y-1.5">
@@ -445,7 +445,7 @@ const onDragEnd = (e: PointerEvent) => {
                         :key="tp.player.uuid"
                         class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-2.5"
                       >
-                        <span class="w-6 text-center text-[12px] font-bold text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
+                        <span class="w-6 text-center text-xs font-bold text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
                           {{ tp.jersey_number || "—" }}
                         </span>
                         <img
@@ -462,24 +462,24 @@ const onDragEnd = (e: PointerEvent) => {
                         </div>
                         <div class="min-w-0 flex-1">
                           <div class="flex items-center gap-1.5 min-w-0">
-                            <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">
+                            <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 truncate">
                               {{ tp.player.display_name }}
                             </p>
                             <span
                               v-if="tp.captain"
-                              class="shrink-0 inline-flex items-center justify-center w-4 h-4 rounded-full bg-amber-100 dark:bg-amber-900/40 text-[9px] font-bold text-amber-600 dark:text-amber-400"
+                              class="shrink-0 inline-flex items-center justify-center w-4 h-4 rounded-full bg-amber-100 dark:bg-amber-900/40 text-2xs font-bold text-amber-600 dark:text-amber-400"
                               title="Captain"
                             >
                               C
                             </span>
                           </div>
-                          <p class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
+                          <p class="text-2xs text-gray-400 dark:text-gray-500 truncate">
                             {{ tp.detailed_position?.name ?? tp.position?.name ?? "—" }}
                           </p>
                         </div>
                         <span
                           v-if="tp.player.age"
-                          class="shrink-0 text-[11px] text-gray-400 dark:text-gray-500 tabular-nums"
+                          class="shrink-0 text-2xs text-gray-400 dark:text-gray-500 tabular-nums"
                         >
                           {{ tp.player.age }}y
                         </span>
@@ -495,10 +495,10 @@ const onDragEnd = (e: PointerEvent) => {
                     :key="group.type + '-' + gIdx"
                   >
                     <div class="flex items-center justify-between mb-1.5 px-1">
-                      <p class="text-[12px] font-bold text-gray-800 dark:text-gray-200">
+                      <p class="text-xs font-bold text-gray-800 dark:text-gray-200">
                         {{ bestPlayerTitle(group) }}
                       </p>
-                      <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                      <span class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         {{ group.stat_group }}
                       </span>
                     </div>
@@ -508,7 +508,7 @@ const onDragEnd = (e: PointerEvent) => {
                         :key="stat.player.uuid + '-' + sIdx"
                         class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-2.5"
                       >
-                        <span class="w-5 text-center text-[12px] font-bold text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
+                        <span class="w-5 text-center text-xs font-bold text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
                           {{ sIdx + 1 }}
                         </span>
                         <img
@@ -523,10 +523,10 @@ const onDragEnd = (e: PointerEvent) => {
                         >
                           <v-icon name="hi-solid-user" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
                         </div>
-                        <p class="flex-1 min-w-0 text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">
+                        <p class="flex-1 min-w-0 text-footnote font-semibold text-gray-800 dark:text-gray-200 truncate">
                           {{ stat.player.display_name }}
                         </p>
-                        <span class="shrink-0 inline-flex items-center justify-center min-w-[36px] px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-[12px] font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+                        <span class="shrink-0 inline-flex items-center justify-center min-w-[36px] px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-xs font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                           {{ stat.value }}
                         </span>
                       </div>
@@ -542,7 +542,7 @@ const onDragEnd = (e: PointerEvent) => {
                     class="px-4 py-3"
                   >
                     <div class="text-center mb-2">
-                      <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide">
+                      <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
                         {{ fixture.starting_at }}
                       </span>
                     </div>
@@ -552,7 +552,7 @@ const onDragEnd = (e: PointerEvent) => {
                         <TeamLogo :team="getParticipant(fixture, 'home')" size="md" />
                         <span
                           :class="resultClass(fixture, 'home')"
-                          class="text-[13px] font-medium truncate"
+                          class="text-footnote font-medium truncate"
                         >
                           {{ teamName(getParticipant(fixture, "home")) }}
                         </span>
@@ -560,11 +560,11 @@ const onDragEnd = (e: PointerEvent) => {
 
                       <!-- Score -->
                       <div class="flex flex-col items-center shrink-0 min-w-[56px]">
-                        <div class="tabular-nums text-[20px] font-bold text-gray-900 dark:text-white">
+                        <div class="tabular-nums text-xl font-bold text-gray-900 dark:text-white">
                           <template v-if="hasScores(fixture)">
                             {{ score(getParticipant(fixture, "home")) }}<span class="text-gray-300 dark:text-gray-600 mx-0.5">-</span>{{ score(getParticipant(fixture, "away")) }}
                           </template>
-                          <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+                          <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
                         </div>
                       </div>
 
@@ -572,7 +572,7 @@ const onDragEnd = (e: PointerEvent) => {
                       <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                         <span
                           :class="resultClass(fixture, 'away')"
-                          class="text-[13px] font-medium truncate text-right"
+                          class="text-footnote font-medium truncate text-right"
                         >
                           {{ teamName(getParticipant(fixture, "away")) }}
                         </span>
@@ -603,19 +603,19 @@ const onDragEnd = (e: PointerEvent) => {
                         <v-icon name="hi-solid-user" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
                       </div>
                       <div class="min-w-0 flex-1">
-                        <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 truncate">
+                        <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 truncate">
                           {{ s.player.display_name }}
                         </p>
-                        <p class="text-[11px] text-red-500 dark:text-red-400 truncate">
+                        <p class="text-2xs text-red-500 dark:text-red-400 truncate">
                           {{ s.type?.name ?? s.category ?? "Sidelined" }}
                         </p>
                       </div>
                       <span
                         v-if="s.games_missed"
-                        class="shrink-0 text-[11px] text-gray-400 dark:text-gray-500 tabular-nums text-right"
+                        class="shrink-0 text-2xs text-gray-400 dark:text-gray-500 tabular-nums text-right"
                         :title="`${s.games_missed} games missed`"
                       >
-                        {{ s.games_missed }} <span class="text-[9px] uppercase">missed</span>
+                        {{ s.games_missed }} <span class="text-2xs uppercase">missed</span>
                       </span>
                     </div>
                   </div>
@@ -631,26 +631,26 @@ const onDragEnd = (e: PointerEvent) => {
                       class="w-full h-40 object-cover bg-gray-100 dark:bg-gray-700"
                     />
                     <div class="p-4">
-                      <h3 class="text-[15px] font-bold text-gray-900 dark:text-white">
+                      <h3 class="text-callout font-bold text-gray-900 dark:text-white">
                         {{ profile.venue?.name ?? "—" }}
                       </h3>
                       <p
                         v-if="profile.venue?.city_name"
-                        class="text-[12px] text-gray-400 dark:text-gray-500 mt-0.5"
+                        class="text-xs text-gray-400 dark:text-gray-500 mt-0.5"
                       >
                         {{ profile.venue.city_name }}<template v-if="profile.venue?.country?.name">, {{ profile.venue.country.name }}</template>
                       </p>
 
                       <div class="grid grid-cols-2 gap-2.5 mt-4">
                         <div class="rounded-xl bg-white dark:bg-gray-800 p-3">
-                          <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Capacity</p>
-                          <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 mt-1 tabular-nums">
+                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Capacity</p>
+                          <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 tabular-nums">
                             {{ profile.venue?.capacity ? profile.venue.capacity.toLocaleString() : "—" }}
                           </p>
                         </div>
                         <div class="rounded-xl bg-white dark:bg-gray-800 p-3">
-                          <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Surface</p>
-                          <p class="text-[13px] font-semibold text-gray-800 dark:text-gray-200 mt-1 capitalize">
+                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Surface</p>
+                          <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 capitalize">
                             {{ profile.venue?.surface ?? "—" }}
                           </p>
                         </div>
@@ -658,8 +658,8 @@ const onDragEnd = (e: PointerEvent) => {
                           v-if="profile.venue?.address"
                           class="col-span-2 rounded-xl bg-white dark:bg-gray-800 p-3"
                         >
-                          <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Address</p>
-                          <p class="text-[12px] text-gray-700 dark:text-gray-300 mt-1">
+                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Address</p>
+                          <p class="text-xs text-gray-700 dark:text-gray-300 mt-1">
                             {{ profile.venue.address }}
                           </p>
                         </div>

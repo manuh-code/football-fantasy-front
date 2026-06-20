@@ -7,7 +7,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Starters</h3>
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Starters</h3>
         </div>
         <slot name="header-action" />
       </div>
@@ -43,18 +43,18 @@
               @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] font-bold shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-2xs font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -74,12 +74,12 @@
           :class="{ 'bg-blue-50/50 dark:bg-blue-900/10': addingPlayerPosition === 'GOALKEEPER' }"
           @click="$emit('draftByPosition', 'GOALKEEPER')"
         >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'GOALKEEPER' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-400 dark:text-blue-500 opacity-60'">GK</span>
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition === 'GOALKEEPER' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-400 dark:text-blue-500 opacity-60'">GK</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'GOALKEEPER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
             <v-icon v-if="addingPlayerPosition === 'GOALKEEPER'" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-[12px]" :class="addingPlayerPosition === 'GOALKEEPER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'GOALKEEPER' ? 'Place here' : 'Add goalkeeper' }}</p>
+          <p class="text-xs" :class="addingPlayerPosition === 'GOALKEEPER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'GOALKEEPER' ? 'Place here' : 'Add goalkeeper' }}</p>
           <button
             v-if="!addingPlayerPosition && fantasyRoundUuid"
             class="ml-auto w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0 hover:bg-blue-100 dark:hover:bg-blue-900/30 active:scale-90 transition-all"
@@ -118,18 +118,18 @@
               @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-2xs font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -149,12 +149,12 @@
           :class="{ 'bg-green-50/50 dark:bg-green-900/10': addingPlayerPosition === 'DEFENDER' }"
           @click="$emit('draftByPosition', 'DEFENDER')"
         >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'DEFENDER' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-green-50 dark:bg-green-900/20 text-green-400 dark:text-green-500 opacity-60'">DF</span>
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition === 'DEFENDER' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 'bg-green-50 dark:bg-green-900/20 text-green-400 dark:text-green-500 opacity-60'">DF</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'DEFENDER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
             <v-icon v-if="addingPlayerPosition === 'DEFENDER'" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-[12px]" :class="addingPlayerPosition === 'DEFENDER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'DEFENDER' ? 'Place here' : 'Add defender' }}</p>
+          <p class="text-xs" :class="addingPlayerPosition === 'DEFENDER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'DEFENDER' ? 'Place here' : 'Add defender' }}</p>
           <button
             v-if="!addingPlayerPosition && fantasyRoundUuid"
             class="ml-auto w-7 h-7 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center shrink-0 hover:bg-green-100 dark:hover:bg-green-900/30 active:scale-90 transition-all"
@@ -193,18 +193,18 @@
               @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-2xs font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -224,12 +224,12 @@
           :class="{ 'bg-yellow-50/50 dark:bg-yellow-900/10': addingPlayerPosition === 'MIDFIELDER' }"
           @click="$emit('draftByPosition', 'MIDFIELDER')"
         >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'MIDFIELDER' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-400 dark:text-yellow-500 opacity-60'">MF</span>
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition === 'MIDFIELDER' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-400 dark:text-yellow-500 opacity-60'">MF</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'MIDFIELDER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
             <v-icon v-if="addingPlayerPosition === 'MIDFIELDER'" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-[12px]" :class="addingPlayerPosition === 'MIDFIELDER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'MIDFIELDER' ? 'Place here' : 'Add midfielder' }}</p>
+          <p class="text-xs" :class="addingPlayerPosition === 'MIDFIELDER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'MIDFIELDER' ? 'Place here' : 'Add midfielder' }}</p>
           <button
             v-if="!addingPlayerPosition && fantasyRoundUuid"
             class="ml-auto w-7 h-7 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center shrink-0 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 active:scale-90 transition-all"
@@ -268,18 +268,18 @@
               @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px] font-bold shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-2xs font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -299,12 +299,12 @@
           :class="{ 'bg-red-50/50 dark:bg-red-900/10': addingPlayerPosition === 'ATTACKER' }"
           @click="$emit('draftByPosition', 'ATTACKER')"
         >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition === 'ATTACKER' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 opacity-60'">FW</span>
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition === 'ATTACKER' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-red-50 dark:bg-red-900/20 text-red-400 dark:text-red-500 opacity-60'">FW</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition === 'ATTACKER' ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
             <v-icon v-if="addingPlayerPosition === 'ATTACKER'" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-[12px]" :class="addingPlayerPosition === 'ATTACKER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'ATTACKER' ? 'Place here' : 'Add forward' }}</p>
+          <p class="text-xs" :class="addingPlayerPosition === 'ATTACKER' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition === 'ATTACKER' ? 'Place here' : 'Add forward' }}</p>
           <button
             v-if="!addingPlayerPosition && fantasyRoundUuid"
             class="ml-auto w-7 h-7 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center shrink-0 hover:bg-red-100 dark:hover:bg-red-900/30 active:scale-90 transition-all"
@@ -343,18 +343,18 @@
               @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player.uuid)"
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player.uuid, $event)"
             >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-[10px] font-bold shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-2xs font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
+                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -374,12 +374,12 @@
           class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
           :class="{ 'bg-purple-50/50 dark:bg-purple-900/10': addingPlayerPosition != null }"
         >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition != null ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'bg-purple-50 dark:bg-purple-900/20 text-purple-400 dark:text-purple-500 opacity-60'">FX</span>
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition != null ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'bg-purple-50 dark:bg-purple-900/20 text-purple-400 dark:text-purple-500 opacity-60'">FX</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition != null ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
             <v-icon v-if="addingPlayerPosition != null" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-[12px]" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place here (Flex)' : 'Add flex player' }}</p>
+          <p class="text-xs" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place here (Flex)' : 'Add flex player' }}</p>
           <!-- Swap icon for empty flex slot -->
           <button
             v-if="!addingPlayerPosition && fantasyRoundUuid"

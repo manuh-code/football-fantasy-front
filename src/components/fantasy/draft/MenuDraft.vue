@@ -47,7 +47,7 @@
             : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300'"
         >
           <v-icon name="gi-soccer-ball" class="w-5 h-5" />
-          <span class="text-[10px] font-semibold tracking-tight leading-none">Draft</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">Draft</span>
         </button>
 
         <!-- Boards -->
@@ -62,7 +62,7 @@
             : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300'"
         >
           <v-icon name="hi-solid-clipboard-list" class="w-5 h-5" />
-          <span class="text-[10px] font-semibold tracking-tight leading-none">Boards</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">Boards</span>
         </button>
 
         <!-- League -->
@@ -73,7 +73,7 @@
           class="flex flex-col items-center justify-center gap-0.5 px-3.5 py-1.5 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300"
         >
           <v-icon name="bi-trophy-fill" class="w-5 h-5" />
-          <span class="text-[10px] font-semibold tracking-tight leading-none">League</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">League</span>
         </button>
       </div>
     </nav>

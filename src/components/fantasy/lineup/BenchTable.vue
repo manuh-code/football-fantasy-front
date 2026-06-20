@@ -6,7 +6,7 @@
     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
       <div class="flex items-center gap-2">
         <v-icon name="hi-solid-users" class="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0" />
-        <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Bench</h3>
+        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Bench</h3>
       </div>
     </div>
 
@@ -40,18 +40,18 @@
               @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player?.uuid ?? '')"
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player?.uuid ?? '', $event)"
             >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-[10px] font-bold shrink-0">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-2xs font-bold shrink-0">
                 {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
               </span>
               <img :src="player.football_player?.image_path || '/img/default-avatar.svg'" :alt="player.football_player?.display_name || 'Player'" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <p class="text-[13px] font-medium text-gray-900 dark:text-white truncate">{{ player.football_player?.display_name }}</p>
+                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player?.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-[12px] font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -74,12 +74,12 @@
           class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
           :class="{ 'bg-gray-50 dark:bg-gray-700/30': addingPlayerPosition != null }"
         >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold shrink-0" :class="addingPlayerPosition != null ? 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-60'">BN</span>
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition != null ? 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-60'">BN</span>
           <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition != null ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
             <v-icon v-if="addingPlayerPosition != null" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
             <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-[12px]" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place on bench' : 'Add bench player' }}</p>
+          <p class="text-xs" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place on bench' : 'Add bench player' }}</p>
           <button
             v-if="!addingPlayerPosition && fantasyRoundUuid"
             class="ml-auto w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all"

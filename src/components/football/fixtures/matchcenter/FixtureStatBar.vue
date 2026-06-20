@@ -42,16 +42,16 @@ const displayAway = computed(() =>
     <!-- Label + values row -->
     <div class="flex items-center justify-between mb-1.5">
       <span
-        class="text-[13px] font-bold tabular-nums w-10 text-left"
+        class="text-footnote font-bold tabular-nums w-10 text-left"
         :class="homeLeads ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400'"
       >
         {{ displayHome }}
       </span>
-      <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <span class="text-2xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
         {{ label }}
       </span>
       <span
-        class="text-[13px] font-bold tabular-nums w-10 text-right"
+        class="text-footnote font-bold tabular-nums w-10 text-right"
         :class="awayLeads ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400'"
       >
         {{ displayAway }}

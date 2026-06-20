@@ -59,7 +59,7 @@
           <!-- Top floating badges -->
           <div class="absolute top-3 left-3 right-3 flex items-center justify-between">
             <span
-              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md bg-white/15 text-white border border-white/20"
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-2xs font-bold uppercase tracking-wider backdrop-blur-md bg-white/15 text-white border border-white/20"
             >
               <v-icon
                 :name="league.is_private ? 'hi-solid-lock-closed' : 'hi-solid-globe-alt'"
@@ -69,13 +69,13 @@
             </span>
             <span
               v-if="league.isAdmin"
-              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/90 text-white backdrop-blur-md"
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-2xs font-bold uppercase tracking-wider bg-amber-500/90 text-white backdrop-blur-md"
             >
               <v-icon name="hi-solid-star" class="w-2.5 h-2.5" /> Admin
             </span>
             <span
               v-else-if="league.isMember"
-              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/90 text-white backdrop-blur-md"
+              class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-2xs font-bold uppercase tracking-wider bg-blue-500/90 text-white backdrop-blur-md"
             >
               <v-icon name="hi-solid-check-circle" class="w-2.5 h-2.5" /> Member
             </span>
@@ -101,10 +101,10 @@
                   v-if="(league.members_count || 0) > 5"
                   class="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm ring-2 ring-black/30 flex items-center justify-center"
                 >
-                  <span class="text-[9px] font-bold text-white">+{{ (league.members_count || 0) - 5 }}</span>
+                  <span class="text-2xs font-bold text-white">+{{ (league.members_count || 0) - 5 }}</span>
                 </div>
               </div>
-              <span class="text-[11px] font-medium text-white/80">
+              <span class="text-2xs font-medium text-white/80">
                 {{ league.members_count || 0 }} member{{ (league.members_count || 0) !== 1 ? 's' : '' }}
               </span>
             </div>
@@ -136,7 +136,7 @@
             <div class="w-5 h-5 rounded-md bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-user-group" class="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Members</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Members</span>
           </div>
           <div class="flex items-baseline gap-0.5">
             <span class="text-xl font-extrabold text-gray-900 dark:text-white tabular-nums">{{ league.members_count || 0 }}</span>
@@ -156,7 +156,7 @@
             <div class="w-5 h-5 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-lightning-bolt" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
             </div>
-            <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="relative flex h-2 w-2">
@@ -173,9 +173,9 @@
             <div class="w-5 h-5 rounded-md bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-calendar" class="w-3 h-3 text-orange-600 dark:text-orange-400" />
             </div>
-            <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Season</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Season</span>
           </div>
-          <p class="text-[11px] font-semibold text-gray-900 dark:text-white tabular-nums leading-tight">
+          <p class="text-2xs font-semibold text-gray-900 dark:text-white tabular-nums leading-tight">
             {{ formatDate(league.started_at) }}
           </p>
         </div>
@@ -195,7 +195,7 @@
           <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
             <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">My Team</span>
+          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">My Team</span>
         </button>
 
         <button
@@ -205,7 +205,7 @@
           <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
             <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-orange-600 dark:text-orange-400" />
           </div>
-          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">Stats</span>
+          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">Stats</span>
         </button>
 
         <button
@@ -215,7 +215,7 @@
           <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <v-icon name="gi-crossed-swords" class="w-4 h-4 text-red-600 dark:text-red-400" />
           </div>
-          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">Matchups</span>
+          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">Matchups</span>
         </button>
       </div>
 
@@ -229,8 +229,8 @@
         <div class="flex">
           <div class="w-1 bg-emerald-500 shrink-0" />
           <div class="px-4 py-3">
-            <h3 class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5">About</h3>
-            <p class="text-[13px] text-gray-600 dark:text-gray-400 leading-relaxed">
+            <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5">About</h3>
+            <p class="text-footnote text-gray-600 dark:text-gray-400 leading-relaxed">
               {{ league.description }}
             </p>
           </div>
@@ -246,9 +246,9 @@
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
               <v-icon name="hi-solid-users" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-              <h3 class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Participants</h3>
+              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Participants</h3>
             </div>
-            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
+            <span class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
               {{ league.members_count || 0 }}/{{ league.participants_count }}
             </span>
           </div>
@@ -265,7 +265,7 @@
                 class="relative flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/30 hover:border-emerald-200 dark:hover:border-emerald-800/40 transition-colors"
               >
                 <!-- Position badge -->
-                <span class="absolute top-1.5 left-1.5 text-[9px] font-bold text-gray-300 dark:text-gray-600 tabular-nums">
+                <span class="absolute top-1.5 left-1.5 text-2xs font-bold text-gray-300 dark:text-gray-600 tabular-nums">
                   {{ index + 1 }}
                 </span>
                 <!-- Admin crown -->
@@ -287,10 +287,10 @@
                   <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-700" />
                 </div>
                 <!-- Name -->
-                <p class="text-[11px] font-semibold text-gray-900 dark:text-white text-center truncate w-full leading-tight">
+                <p class="text-2xs font-semibold text-gray-900 dark:text-white text-center truncate w-full leading-tight">
                   {{ member.firstname }}
                 </p>
-                <p class="text-[9px] text-gray-400 dark:text-gray-500 text-center truncate w-full -mt-0.5">
+                <p class="text-2xs text-gray-400 dark:text-gray-500 text-center truncate w-full -mt-0.5">
                   {{ member.lastname }}
                 </p>
               </div>
@@ -305,7 +305,7 @@
               <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700/40 flex items-center justify-center">
                 <v-icon name="hi-solid-user-add" class="w-5 h-5 text-gray-300 dark:text-gray-600" />
               </div>
-              <p class="text-[10px] font-medium text-gray-300 dark:text-gray-600">Open</p>
+              <p class="text-2xs font-medium text-gray-300 dark:text-gray-600">Open</p>
             </div>
           </div>
 
@@ -336,11 +336,11 @@
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <v-icon name="gi-soccer-ball" class="w-4 h-4 text-orange-500 dark:text-orange-400" />
-              <h3 class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Draft</h3>
+              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Draft</h3>
             </div>
             <span
               :class="[
-                'text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider',
+                'text-2xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider',
                 draftStatusValue === 'ACTIVE'
                   ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
                   : draftStatusValue === 'COMPLETED'
@@ -406,7 +406,7 @@
               />
               <p
                 v-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
-                class="text-[10px] text-center text-gray-400 dark:text-gray-500 leading-tight"
+                class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
               >
                 You can activate the draft once you're inside the draft room.
               </p>

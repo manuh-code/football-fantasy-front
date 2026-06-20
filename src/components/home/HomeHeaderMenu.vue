@@ -36,7 +36,7 @@
           :alt="leagueName"
           class="w-6 h-6 rounded-md object-cover shrink-0"
         />
-        <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate min-w-0">
+        <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate min-w-0">
           {{ currentStageLabel || leagueName }}
         </span>
         <v-icon name="hi-solid-chevron-down" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
@@ -50,7 +50,7 @@
         <button
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
-          class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-[13px] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           aria-label="Login"
         >
           Login
@@ -71,7 +71,7 @@
           />
           <div
             v-else
-            class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-[11px] font-bold"
+            class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-2xs font-bold"
           >
             {{ userInitials }}
           </div>
@@ -118,7 +118,7 @@
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
             <div class="flex items-center justify-between px-4 pb-3 pt-1">
-              <h3 class="text-[15px] font-bold text-gray-900 dark:text-white">Stages</h3>
+              <h3 class="text-callout font-bold text-gray-900 dark:text-white">Stages</h3>
               <button
                 @click.stop="closeDrawer"
                 @pointerdown.stop

@@ -38,7 +38,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="hi-solid-star" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">No player stats available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">No player stats available yet</p>
     </div>
 
     <template v-else>
@@ -52,14 +52,14 @@ const rankLabel = ["🥇", "🥈", "🥉"];
         <div class="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-800">
           <div class="flex items-center gap-2">
             <v-icon name="hi-solid-star" class="w-3.5 h-3.5 text-amber-400" />
-            <span class="text-[12px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200">
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200">
               {{ stat.type.name }}
             </span>
           </div>
           <button
             v-if="stat.top.length > TOP_N"
             @click="drawerStat = stat"
-            class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+            class="text-2xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
           >
             View all
           </button>
@@ -74,7 +74,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
             :class="index === 0 ? 'bg-amber-50/60 dark:bg-amber-900/10' : ''"
           >
             <!-- Medal -->
-            <span class="w-6 shrink-0 text-center text-[16px] leading-none select-none">
+            <span class="w-6 shrink-0 text-center text-base leading-none select-none">
               {{ rankLabel[index] }}
             </span>
 
@@ -91,7 +91,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
 
             <!-- Name + team -->
             <div class="flex-1 min-w-0">
-              <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate leading-snug">
+              <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate leading-snug">
                 {{ entry.player.display_name }}
               </p>
               <div class="flex items-center gap-1.5 mt-0.5">
@@ -101,7 +101,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
                   class="w-3.5 h-3.5 object-contain shrink-0"
                   @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
                 />
-                <span class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
+                <span class="text-2xs text-gray-400 dark:text-gray-500 truncate">
                   {{ entry.team.short_code ?? entry.team.name }}
                 </span>
               </div>
@@ -109,7 +109,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
 
             <!-- Value -->
             <span
-              class="shrink-0 text-[16px] font-extrabold tabular-nums"
+              class="shrink-0 text-base font-extrabold tabular-nums"
               :class="index === 0
                 ? 'text-amber-500'
                 : index === 1

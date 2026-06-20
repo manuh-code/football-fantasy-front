@@ -40,7 +40,7 @@
               <p class="text-sm font-bold text-white leading-tight truncate">
                 {{ isMyTurn ? 'Your turn!' : `${turn.user?.firstname ?? 'Unknown'}'s turn` }}
               </p>
-              <p class="text-[11px] text-white/70 mt-0.5">
+              <p class="text-2xs text-white/70 mt-0.5">
                 Pick #{{ turn.pick ?? '-' }} · Round {{ turn.round ?? '-' }}
               </p>
             </div>
@@ -52,7 +52,7 @@
               >
                 {{ displayTime }}
               </span>
-              <p class="text-[9px] text-white/50 font-medium mt-0.5 uppercase tracking-wider">
+              <p class="text-2xs text-white/50 font-medium mt-0.5 uppercase tracking-wider">
                 {{ expired ? 'Expired' : 'sec' }}
               </p>
             </div>
@@ -85,7 +85,7 @@
               />
               <div
                 v-else
-                class="w-full h-full flex items-center justify-center bg-white/20 text-[9px] font-bold text-white"
+                class="w-full h-full flex items-center justify-center bg-white/20 text-2xs font-bold text-white"
               >
                 {{ getInitials(turn.user) }}
               </div>
@@ -137,7 +137,7 @@
               <p class="text-sm font-bold text-white leading-tight">
                 Waiting for draft...
               </p>
-              <p class="text-[11px] text-white/60 mt-0.5">
+              <p class="text-2xs text-white/60 mt-0.5">
                 The timer will start when a turn begins
               </p>
             </div>

@@ -57,20 +57,20 @@ function formatFixtureDate(dateStr: string): string {
         :alt="homeParticipant.short_code"
         class="w-3.5 h-3.5 rounded-full object-contain"
       />
-      <span class="text-[10px] font-semibold text-gray-700 dark:text-gray-200 leading-none">
+      <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 leading-none">
         {{ homeParticipant.short_code }}
       </span>
       <template v-if="hasScore">
-        <span class="text-[10px] font-bold text-gray-800 dark:text-gray-100 leading-none">
+        <span class="text-2xs font-bold text-gray-800 dark:text-gray-100 leading-none">
           {{ homeScore!.score.goals }}
         </span>
-        <span class="text-[9px] text-gray-400 dark:text-gray-500 leading-none">-</span>
-        <span class="text-[10px] font-bold text-gray-800 dark:text-gray-100 leading-none">
+        <span class="text-2xs text-gray-400 dark:text-gray-500 leading-none">-</span>
+        <span class="text-2xs font-bold text-gray-800 dark:text-gray-100 leading-none">
           {{ awayScore!.score.goals }}
         </span>
       </template>
-      <span v-else class="text-[9px] text-gray-400 dark:text-gray-500 leading-none">vs</span>
-      <span class="text-[10px] font-semibold text-gray-700 dark:text-gray-200 leading-none">
+      <span v-else class="text-2xs text-gray-400 dark:text-gray-500 leading-none">vs</span>
+      <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 leading-none">
         {{ awayParticipant.short_code }}
       </span>
       <img
@@ -78,7 +78,7 @@ function formatFixtureDate(dateStr: string): string {
         :alt="awayParticipant.short_code"
         class="w-3.5 h-3.5 rounded-full object-contain"
       />
-      <span class="text-[9px] text-gray-400 dark:text-gray-500 leading-none mx-0.5">·</span>
+      <span class="text-2xs text-gray-400 dark:text-gray-500 leading-none mx-0.5">·</span>
     </template>
     
   </div>

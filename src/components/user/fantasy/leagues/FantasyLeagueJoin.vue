@@ -84,10 +84,10 @@
             <!-- Results header -->
             <div class="flex items-center justify-between px-1 mb-2">
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                    <span class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                         Results
                     </span>
-                    <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
+                    <span class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
                         {{ leagues.length }}
                     </span>
                 </div>

@@ -40,7 +40,7 @@
                     :error="getFieldError('password')"
                     :disabled="isLoading"
                 />
-                <p class="mt-1.5 text-[12px] text-gray-400 dark:text-gray-500">
+                <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
                     Required for others to join your league
                 </p>
             </div>
@@ -54,13 +54,13 @@
                     </p>
                     <div class="flex items-center gap-2 px-3.5 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl">
                         <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-500 shrink-0" />
-                        <span class="text-[14px] font-semibold text-gray-900 dark:text-white">{{ formData.participants_count }}</span>
-                        <span class="text-[12px] text-gray-500 dark:text-gray-400">participants</span>
-                        <span class="ml-auto text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ formData.participants_count }}</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">participants</span>
+                        <span class="ml-auto text-2xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
                             Fixed
                         </span>
                     </div>
-                    <p class="mt-1.5 text-[12px] text-gray-400 dark:text-gray-500">
+                    <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
                         This league requires exactly {{ formData.participants_count }} participants
                     </p>
                 </div>

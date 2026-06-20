@@ -8,10 +8,10 @@
           <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
         </span>
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight">
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight">
             Draft Order
           </h3>
-          <p class="text-[11px] text-gray-500 dark:text-gray-400">
+          <p class="text-2xs text-gray-500 dark:text-gray-400">
             Round {{ currentRound }}/{{ totalRounds }}
             · <span class="text-green-500">{{ onlineCount }}</span>/{{ totalMembers }} online
           </p>
@@ -29,7 +29,7 @@
             <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
           </svg>
         </button>
-        <span class="text-[11px] font-bold text-gray-700 dark:text-gray-300 min-w-[2.5rem] text-center tabular-nums">
+        <span class="text-2xs font-bold text-gray-700 dark:text-gray-300 min-w-[2.5rem] text-center tabular-nums">
           Rd {{ currentRound }}
         </span>
         <button
@@ -110,7 +110,7 @@
 
             <!-- Pick badge -->
             <span
-              class="absolute -bottom-0.5 -right-0.5 z-20 text-[7px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none border border-white dark:border-gray-800 transition-all duration-300"
+              class="absolute -bottom-0.5 -right-0.5 z-20 text-2xs font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none border border-white dark:border-gray-800 transition-all duration-300"
               :class="isCurrentTurn(entry.user)
                 ? 'bg-amber-500 text-white'
                 : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'"
@@ -127,7 +127,7 @@
 
           <!-- Name -->
           <span
-            class="text-[10px] text-center leading-tight truncate w-full transition-colors duration-300"
+            class="text-2xs text-center leading-tight truncate w-full transition-colors duration-300"
             :class="isCurrentTurn(entry.user)
               ? 'font-bold text-amber-600 dark:text-amber-400'
               : isOnline(entry.user)

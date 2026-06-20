@@ -27,7 +27,7 @@ const view = ref<StatsView>("teams");
           role="tab"
           :aria-selected="view === 'teams'"
           @click="view = 'teams'"
-          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
+          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200"
           :class="view === 'teams'
             ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
@@ -40,7 +40,7 @@ const view = ref<StatsView>("teams");
           role="tab"
           :aria-selected="view === 'players'"
           @click="view = 'players'"
-          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
+          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200"
           :class="view === 'players'
             ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"

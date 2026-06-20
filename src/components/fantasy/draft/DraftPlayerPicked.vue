@@ -14,8 +14,8 @@
           class="w-5 h-5 text-red-500 dark:text-red-400 shrink-0"
         />
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Failed to load draft board</h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400 mt-0.5">{{ error }}</p>
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Failed to load draft board</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ error }}</p>
         </div>
       </div>
     </div>
@@ -28,8 +28,8 @@
       <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-3">
         <v-icon name="hi-solid-clipboard-list" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
       </div>
-      <h3 class="text-[14px] font-semibold text-gray-900 dark:text-white mb-1">No picks yet</h3>
-      <p class="text-[12px] text-gray-500 dark:text-gray-400">The draft board will update as players are picked.</p>
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">No picks yet</h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">The draft board will update as players are picked.</p>
     </div>
 
     <!-- Draft Board Grid -->
@@ -54,12 +54,12 @@
                   />
                   <div
                     v-else
-                    class="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-500 dark:text-gray-400"
+                    class="w-full h-full flex items-center justify-center text-2xs font-bold text-gray-500 dark:text-gray-400"
                   >
                     {{ userInitials(participant) }}
                   </div>
                 </div>
-                <span class="text-[9px] font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[72px] text-center leading-tight">
+                <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[72px] text-center leading-tight">
                   {{ participant.firstname ?? 'Team' }} {{ (idx + 1) }}
                 </span>
               </div>
@@ -86,7 +86,7 @@
               >
                 <!-- Pick label -->
                 <span
-                  class="text-[8px] font-bold px-1 py-px rounded-full"
+                  class="text-2xs font-bold px-1 py-px rounded-full"
                   :class="positionPillClass(cell.player?.position?.developer_name)"
                   style="font-variant-numeric: tabular-nums"
                 >
@@ -106,20 +106,20 @@
                   />
                   <div
                     v-else
-                    class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-[10px] font-bold text-gray-400 dark:text-gray-500"
+                    class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-2xs font-bold text-gray-400 dark:text-gray-500"
                   >
                     {{ playerInitials(cell.player) }}
                   </div>
                 </div>
 
                 <!-- Player name -->
-                <p class="text-[9px] sm:text-[10px] font-semibold text-gray-800 dark:text-gray-200 text-center leading-tight truncate w-full max-w-[72px] sm:max-w-[80px]">
+                <p class="text-2xs sm:text-2xs font-semibold text-gray-800 dark:text-gray-200 text-center leading-tight truncate w-full max-w-[72px] sm:max-w-[80px]">
                   {{ shortName(cell.player) }}
                 </p>
 
                 <!-- Position badge -->
                 <span
-                  class="text-[7px] sm:text-[8px] font-bold px-1.5 py-px rounded"
+                  class="text-2xs sm:text-2xs font-bold px-1.5 py-px rounded"
                   :class="positionBadgeClass(cell.player?.position?.developer_name)"
                 >
                   {{ cell.player?.position?.code ?? '—' }}

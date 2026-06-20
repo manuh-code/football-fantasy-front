@@ -129,10 +129,10 @@ const getTeamResultClass = (
       name="hi-solid-exclamation-circle"
       class="w-9 h-9 text-red-400 dark:text-red-500 mb-3"
     />
-    <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+    <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
     <button
       @click="emit('retry')"
-      class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+      class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
     >
       Retry
     </button>
@@ -144,7 +144,7 @@ const getTeamResultClass = (
     class="px-4 py-12 text-center text-gray-400 dark:text-gray-500"
   >
     <v-icon :name="emptyIcon" class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
-    <p class="text-[13px]">{{ emptyMessage }}</p>
+    <p class="text-footnote">{{ emptyMessage }}</p>
   </div>
 
   <!-- List -->
@@ -167,12 +167,12 @@ const getTeamResultClass = (
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
         </span>
-        <span class="text-[10px] font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+        <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
       </div>
 
       <!-- Date/time (not live) -->
       <div v-else class="text-center mb-2">
-        <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
+        <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
           {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
         </span>
       </div>
@@ -184,7 +184,7 @@ const getTeamResultClass = (
           <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
           <span
             :class="getTeamResultClass(fixture, 'home')"
-            class="text-[13px] font-medium truncate"
+            class="text-footnote font-medium truncate"
             :title="getTeamName(getHomeParticipant(fixture))"
           >
             {{ getTeamName(getHomeParticipant(fixture)) }}
@@ -197,17 +197,17 @@ const getTeamResultClass = (
             class="tabular-nums"
             :class="[
               hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-              isMatchLive(fixture) ? 'text-[22px]' : 'text-[20px]',
+              isMatchLive(fixture) ? 'text-2xl' : 'text-xl',
             ]"
           >
             <template v-if="hasScores(fixture)">
               {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
             </template>
-            <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+            <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
           </div>
           <span
             v-if="!isMatchLive(fixture)"
-            class="text-[10px] font-semibold mt-0.5 tracking-wide text-gray-400 dark:text-gray-500"
+            class="text-2xs font-semibold mt-0.5 tracking-wide text-gray-400 dark:text-gray-500"
           >
             {{ getFixtureStateText(fixture) }}
           </span>
@@ -217,7 +217,7 @@ const getTeamResultClass = (
         <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
           <span
             :class="getTeamResultClass(fixture, 'away')"
-            class="text-[13px] font-medium truncate text-right"
+            class="text-footnote font-medium truncate text-right"
             :title="getTeamName(getAwayParticipant(fixture))"
           >
             {{ getTeamName(getAwayParticipant(fixture)) }}

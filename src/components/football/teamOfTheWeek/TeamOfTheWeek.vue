@@ -173,10 +173,10 @@ onMounted(() => {
         v-else-if="roundsError"
         class="flex items-center justify-between gap-2 py-1"
       >
-        <p class="text-[12px] text-red-500 dark:text-red-400">{{ roundsError }}</p>
+        <p class="text-xs text-red-500 dark:text-red-400">{{ roundsError }}</p>
         <button
           @click="retryRounds"
-          class="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+          class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
           Retry
         </button>
@@ -196,12 +196,12 @@ onMounted(() => {
         no-options-text="No rounds available"
       >
         <template #selected="{ option }">
-          <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
+          <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
             Round {{ option.name }}
           </span>
           <span
             v-if="option.is_current"
-            class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
+            class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
           >
             Current
           </span>
@@ -211,13 +211,13 @@ onMounted(() => {
             <span class="text-sm font-medium truncate">Round {{ option.name }}</span>
             <span
               v-if="option.is_current"
-              class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
+              class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
             >
               Current
             </span>
             <span
               v-else-if="option.finished"
-              class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
+              class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
             >
               Done
             </span>
@@ -225,7 +225,7 @@ onMounted(() => {
         </template>
       </SearchableSelectComponent>
 
-      <div v-else class="text-center py-2 text-[12px] text-gray-400 dark:text-gray-500">
+      <div v-else class="text-center py-2 text-xs text-gray-400 dark:text-gray-500">
         No rounds available
       </div>
     </div>
@@ -241,10 +241,10 @@ onMounted(() => {
         class="py-12 flex flex-col items-center text-center"
       >
         <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-200 dark:text-red-900/60 mb-2" />
-        <p class="text-[13px] text-gray-500 dark:text-gray-400 mb-3">{{ totwError }}</p>
+        <p class="text-footnote text-gray-500 dark:text-gray-400 mb-3">{{ totwError }}</p>
         <button
           @click="retryTotw"
-          class="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+          class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
           Retry
         </button>
@@ -256,7 +256,7 @@ onMounted(() => {
         class="py-12 flex flex-col items-center text-center"
       >
         <v-icon name="bi-star" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">No team of the week for this round yet</p>
+        <p class="text-footnote text-gray-400 dark:text-gray-500">No team of the week for this round yet</p>
       </div>
 
       <!-- Pitch -->
@@ -265,13 +265,13 @@ onMounted(() => {
         <div class="flex items-center justify-between mb-2 px-1">
           <div class="flex items-center gap-1.5">
             <v-icon name="bi-star-fill" class="w-3.5 h-3.5 text-amber-400" />
-            <span class="text-[12px] font-semibold text-gray-900 dark:text-white">
+            <span class="text-xs font-semibold text-gray-900 dark:text-white">
               Team of the Week
             </span>
           </div>
           <span
             v-if="formation"
-            class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums"
+            class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums"
           >
             {{ formation }}
           </span>
@@ -328,12 +328,12 @@ onMounted(() => {
                   <!-- Rating -->
                   <span
                     v-if="p.entry.rating != null"
-                    class="absolute -bottom-1 -right-1 min-w-[18px] h-[15px] px-0.5 rounded-full bg-amber-400 text-gray-900 text-[9px] font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
+                    class="absolute -bottom-1 -right-1 min-w-[18px] h-[15px] px-0.5 rounded-full bg-amber-400 text-gray-900 text-2xs font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
                   >
                     {{ p.entry.rating.toFixed(1) }}
                   </span>
                 </div>
-                <span class="text-[10px] font-medium text-white leading-tight truncate max-w-full drop-shadow">
+                <span class="text-2xs font-medium text-white leading-tight truncate max-w-full drop-shadow">
                   {{ playerName(p.entry) }}
                 </span>
               </div>

@@ -51,7 +51,7 @@ const rankColor = (index: number): string => {
 
           <!-- Header -->
           <div class="shrink-0 flex items-center justify-between px-4 pb-3 border-b border-gray-100 dark:border-gray-800">
-            <h2 class="text-[15px] font-bold text-gray-900 dark:text-white">
+            <h2 class="text-callout font-bold text-gray-900 dark:text-white">
               {{ statistic.statistics[0]?.type.name }}
             </h2>
             <button
@@ -79,7 +79,7 @@ const rankColor = (index: number): string => {
               >
                 <!-- Rank -->
                 <span
-                  class="w-6 shrink-0 text-center text-[12px] font-extrabold tabular-nums"
+                  class="w-6 shrink-0 text-center text-xs font-extrabold tabular-nums"
                   :class="rankColor(index)"
                 >{{ index + 1 }}</span>
 
@@ -93,12 +93,12 @@ const rankColor = (index: number): string => {
 
                 <!-- Name -->
                 <div class="flex-1 min-w-0">
-                  <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate leading-snug">
+                  <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate leading-snug">
                     {{ detail.player.display_name }}
                   </p>
                   <span
                     v-if="detail.player.position?.name"
-                    class="text-[11px] text-gray-400 dark:text-gray-500"
+                    class="text-2xs text-gray-400 dark:text-gray-500"
                   >
                     {{ detail.player.position.name }}
                   </span>
@@ -106,7 +106,7 @@ const rankColor = (index: number): string => {
 
                 <!-- Value -->
                 <span
-                  class="shrink-0 text-[15px] font-extrabold tabular-nums"
+                  class="shrink-0 text-callout font-extrabold tabular-nums"
                   :class="index === 0
                     ? 'text-amber-500'
                     : 'text-emerald-600 dark:text-emerald-400'"

@@ -1,10 +1,10 @@
 <template>
   <Teleport to="#app">
-    <!-- Floating install banner — glass pill, sits above the footer nav. -->
+    <!-- Floating install banner — glass pill, sits above the footer nav (z-100). -->
     <Transition name="install-banner">
       <div
         v-if="shouldShowBanner"
-        class="fixed inset-x-0 z-[90] px-3 pointer-events-none flex justify-center"
+        class="fixed inset-x-0 z-[110] px-3 pointer-events-none flex justify-center"
         :style="bannerStyle"
       >
         <div
@@ -19,27 +19,27 @@
 
           <!-- Copy -->
           <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-gray-900 dark:text-white leading-tight">
-              Instala Football Fantasy
+            <p class="text-footnote font-bold text-gray-900 dark:text-white leading-tight">
+              Install Football Fantasy
             </p>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-tight truncate">
-              {{ isIOSSafari ? 'Añádela a tu pantalla de inicio' : 'Acceso rápido, como una app nativa' }}
+            <p class="text-2xs text-gray-500 dark:text-gray-400 leading-tight truncate">
+              {{ isIOSSafari ? 'Add it to your home screen' : 'Quick access, just like a native app' }}
             </p>
           </div>
 
           <!-- CTA -->
           <button
             type="button"
-            class="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-semibold text-white bg-emerald-600 active:scale-95 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
+            class="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold text-white bg-emerald-600 active:scale-95 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
             @click="onCta"
           >
-            {{ isIOSSafari ? 'Cómo' : 'Instalar' }}
+            {{ isIOSSafari ? 'How' : 'Install' }}
           </button>
 
           <!-- Dismiss -->
           <button
             type="button"
-            aria-label="Descartar"
+            aria-label="Dismiss"
             class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
             @click="snooze"
           >
@@ -52,8 +52,8 @@
     <!-- iOS manual instructions -->
     <BottomSheet
       :is-visible="showIosHelp"
-      title="Instalar en iPhone / iPad"
-      subtitle="Solo toma unos segundos"
+      title="Install on iPhone / iPad"
+      subtitle="It only takes a few seconds"
       icon="hi-solid-share"
       icon-variant="emerald"
       size="auto"
@@ -61,25 +61,25 @@
     >
       <ol class="space-y-3 py-1">
         <li class="flex items-start gap-3">
-          <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold flex items-center justify-center">1</span>
-          <p class="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
-            Toca el botón <strong>Compartir</strong>
+          <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center">1</span>
+          <p class="text-footnote text-gray-700 dark:text-gray-300 leading-relaxed">
+            Tap the <strong>Share</strong> button
             <v-icon name="hi-solid-share" class="inline w-4 h-4 mx-0.5 -mt-0.5 text-emerald-600 dark:text-emerald-400" />
-            en la barra de Safari.
+            in the Safari bar.
           </p>
         </li>
         <li class="flex items-start gap-3">
-          <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold flex items-center justify-center">2</span>
-          <p class="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
-            Desplázate y selecciona
-            <strong>Añadir a pantalla de inicio</strong>
+          <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center">2</span>
+          <p class="text-footnote text-gray-700 dark:text-gray-300 leading-relaxed">
+            Scroll down and select
+            <strong>Add to Home Screen</strong>
             <v-icon name="hi-solid-plus-circle" class="inline w-4 h-4 mx-0.5 -mt-0.5 text-emerald-600 dark:text-emerald-400" />.
           </p>
         </li>
         <li class="flex items-start gap-3">
-          <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[12px] font-bold flex items-center justify-center">3</span>
-          <p class="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed">
-            Confirma tocando <strong>Añadir</strong>. ¡Listo!
+          <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center">3</span>
+          <p class="text-footnote text-gray-700 dark:text-gray-300 leading-relaxed">
+            Confirm by tapping <strong>Add</strong>. You're all set!
           </p>
         </li>
       </ol>
@@ -88,7 +88,7 @@
         <ButtonComponent
           variant="primary"
           size="sm"
-          text="Entendido"
+          text="Got it"
           always-full-width
           @click="showIosHelp = false"
         />

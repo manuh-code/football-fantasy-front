@@ -204,7 +204,7 @@ const goBack = () => {
             <!-- Gradient header -->
             <div class="h-20 relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600">
               <div class="absolute inset-0 bg-black/5" />
-              <p class="absolute top-3 left-4 text-[10px] font-semibold uppercase tracking-widest text-white/70">Preview</p>
+              <p class="absolute top-3 left-4 text-2xs font-semibold uppercase tracking-widest text-white/70">Preview</p>
             </div>
 
             <!-- Team Identity Preview -->
@@ -230,7 +230,7 @@ const goBack = () => {
               <h3 class="text-lg font-bold text-gray-900 dark:text-white truncate max-w-full text-center">
                 {{ teamName || 'Your Team Name' }}
               </h3>
-              <span class="inline-flex items-center px-2.5 py-0.5 mt-1.5 rounded-full text-[11px] font-semibold tracking-wider uppercase bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+              <span class="inline-flex items-center px-2.5 py-0.5 mt-1.5 rounded-full text-2xs font-semibold tracking-wider uppercase bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
                 {{ previewInitials.toUpperCase() }}
               </span>
             </div>

@@ -31,7 +31,7 @@
         <!-- Privacy -->
         <span
           :class="[
-            'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold backdrop-blur-md',
+            'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-2xs font-semibold backdrop-blur-md',
             league.is_private
               ? 'bg-black/40 text-white/90'
               : 'bg-white/20 text-white/90',
@@ -48,7 +48,7 @@
         <span
           v-if="league.isAdmin || league.isMember"
           :class="[
-            'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold backdrop-blur-md',
+            'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-2xs font-semibold backdrop-blur-md',
             league.isAdmin
               ? 'bg-amber-500/80 text-white'
               : 'bg-white/20 text-white/90',
@@ -64,7 +64,7 @@
 
       <!-- League Name Overlay -->
       <div class="absolute bottom-2.5 left-3 right-3">
-        <h3 class="text-[15px] font-bold text-white drop-shadow-sm line-clamp-1">
+        <h3 class="text-callout font-bold text-white drop-shadow-sm line-clamp-1">
           {{ league.name }}
         </h3>
       </div>
@@ -75,7 +75,7 @@
       <!-- Description -->
       <p
         v-if="league.description"
-        class="text-[12px] text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed mb-3"
+        class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed mb-3"
       >
         {{ league.description }}
       </p>
@@ -85,7 +85,7 @@
         <!-- Date -->
         <div class="flex items-center gap-1.5 min-w-0">
           <v-icon name="hi-solid-calendar" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
-          <span class="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+          <span class="text-2xs text-gray-500 dark:text-gray-400 truncate">
             {{ formatDate(league.started_at) }}
           </span>
         </div>
@@ -95,10 +95,10 @@
         <!-- Participants -->
         <div class="flex items-center gap-1.5">
           <v-icon name="hi-solid-users" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
-          <span class="text-[12px] font-semibold text-gray-900 dark:text-white tabular-nums">
+          <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
             {{ league.participants_count }}
           </span>
-          <span class="text-[11px] text-gray-400 dark:text-gray-500">part.</span>
+          <span class="text-2xs text-gray-400 dark:text-gray-500">part.</span>
         </div>
 
         <div class="h-3 w-px bg-gray-200 dark:bg-gray-700" />
@@ -106,10 +106,10 @@
         <!-- Members -->
         <div class="flex items-center gap-1.5">
           <v-icon name="hi-solid-user-group" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
-          <span class="text-[12px] font-semibold text-gray-900 dark:text-white tabular-nums">
+          <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
             {{ league.members_count }}
           </span>
-          <span class="text-[11px] text-gray-400 dark:text-gray-500">memb.</span>
+          <span class="text-2xs text-gray-400 dark:text-gray-500">memb.</span>
         </div>
       </div>
 
@@ -120,7 +120,7 @@
         size="sm"
         :full-width="true"
         @click.stop="$emit('join', league)"
-        class="!rounded-xl !text-[13px] !font-semibold"
+        class="!rounded-xl !text-footnote !font-semibold"
       >
         <v-icon name="hi-solid-user-add" class="w-3.5 h-3.5 mr-1.5" />
         {{ league.is_private ? 'Request to Join' : 'Join League' }}

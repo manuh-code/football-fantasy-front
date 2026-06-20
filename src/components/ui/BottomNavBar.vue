@@ -92,7 +92,7 @@ const onSelect = (item: BottomNavItem): void => {
           :class="itemClasses(item)"
         >
           <v-icon :name="item.icon" class="w-5 h-5" />
-          <span class="text-[10px] font-semibold tracking-tight leading-none">{{ item.label }}</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">{{ item.label }}</span>
         </button>
       </div>
     </nav>

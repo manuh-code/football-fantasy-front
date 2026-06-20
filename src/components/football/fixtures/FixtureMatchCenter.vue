@@ -394,10 +394,10 @@ const onDragEnd = (e: PointerEvent) => {
                 name="hi-solid-exclamation-circle"
                 class="w-9 h-9 text-red-400 dark:text-red-500 mb-3"
               />
-              <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ loadError }}</p>
+              <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ loadError }}</p>
               <button
                 @click="retry"
-                class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+                class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
                 Retry
               </button>
@@ -495,7 +495,7 @@ const onDragEnd = (e: PointerEvent) => {
                     :default-open="false"
                   >
                     <template #trailing>
-                      <span class="text-[11px] font-normal text-gray-400 dark:text-gray-500 tabular-nums">
+                      <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 tabular-nums">
                         {{ fixture.sidelined.length }}
                       </span>
                     </template>
@@ -530,7 +530,7 @@ const onDragEnd = (e: PointerEvent) => {
                   />
                   <div v-else class="px-4 py-12 flex flex-col items-center text-center">
                     <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-                    <p class="text-[13px] text-gray-400 dark:text-gray-500">No statistics available yet</p>
+                    <p class="text-footnote text-gray-400 dark:text-gray-500">No statistics available yet</p>
                   </div>
                 </div>
 

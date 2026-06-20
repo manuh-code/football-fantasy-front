@@ -29,7 +29,7 @@ const minuteLabel = (c: FootballFixtureCommentResponse): string => {
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="bi-chat-left-dots-fill" class="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">No commentary available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">No commentary available yet</p>
     </div>
 
     <ol v-else class="space-y-2.5">
@@ -46,7 +46,7 @@ const minuteLabel = (c: FootballFixtureCommentResponse): string => {
         <!-- Minute + marker -->
         <div class="shrink-0 w-9 flex flex-col items-center gap-1 pt-0.5">
           <span
-            class="text-[11px] font-bold tabular-nums leading-none"
+            class="text-2xs font-bold tabular-nums leading-none"
             :class="c.is_goal
               ? 'text-emerald-600 dark:text-emerald-400'
               : c.is_important
@@ -69,7 +69,7 @@ const minuteLabel = (c: FootballFixtureCommentResponse): string => {
 
         <!-- Comment text -->
         <p
-          class="flex-1 min-w-0 text-[13px] leading-relaxed break-words"
+          class="flex-1 min-w-0 text-footnote leading-relaxed break-words"
           :class="c.is_goal
             ? 'font-semibold text-gray-900 dark:text-white'
             : 'text-gray-700 dark:text-gray-300'"

@@ -32,10 +32,10 @@ const roundsWithFixtures = computed(() =>
       name="hi-solid-exclamation-circle"
       class="w-9 h-9 text-red-400 dark:text-red-500 mb-3"
     />
-    <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+    <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
     <button
       @click="emit('retry')"
-      class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+      class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
     >
       Retry
     </button>
@@ -47,7 +47,7 @@ const roundsWithFixtures = computed(() =>
     class="px-4 py-12 text-center text-gray-400 dark:text-gray-500"
   >
     <v-icon name="md-sportssoccer" class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
-    <p class="text-[13px]">No matches for this team yet</p>
+    <p class="text-footnote">No matches for this team yet</p>
   </div>
 
   <!-- Schedule grouped by round -->
@@ -57,18 +57,18 @@ const roundsWithFixtures = computed(() =>
       <div
         class="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-800/40 border-y border-gray-100 dark:border-gray-700/50"
       >
-        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <span class="text-2xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
           Round {{ round.name }}
         </span>
         <span
           v-if="round.is_current"
-          class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase"
+          class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase"
         >
           Current
         </span>
         <span
           v-else-if="round.finished"
-          class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider"
+          class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider"
         >
           Done
         </span>

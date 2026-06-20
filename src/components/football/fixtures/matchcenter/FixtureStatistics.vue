@@ -137,7 +137,7 @@ const hasAnyStat = computed(() => headline.value.length > 0 || secondary.value.l
 
       <button
         @click="showMore = !showMore"
-        class="mt-3 w-full flex items-center justify-center gap-1 py-2 text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+        class="mt-3 w-full flex items-center justify-center gap-1 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
       >
         {{ showMore ? "Show less" : `Show ${secondary.length} more stats` }}
         <v-icon

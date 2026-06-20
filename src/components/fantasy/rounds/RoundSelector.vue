@@ -75,26 +75,26 @@ export default { name: 'RoundSelector' }
       <!-- Center: round info -->
       <div class="flex-1 flex flex-col items-center justify-center min-w-0 select-none">
         <div class="flex items-center gap-1.5">
-          <span class="text-[13px] font-bold text-gray-900 dark:text-white truncate">
+          <span class="text-footnote font-bold text-gray-900 dark:text-white truncate">
             {{ selectedRound ? extractRoundLabel(selectedRound.round.name) : '—' }}
           </span>
           <!-- Status badge -->
           <span
             v-if="selectedRound?.is_current"
-            class="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold uppercase rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 leading-none"
+            class="inline-flex items-center px-1.5 py-0.5 text-2xs font-bold uppercase rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 leading-none"
           >
             Live
           </span>
           <span
             v-else-if="selectedRound?.is_completed"
-            class="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold uppercase rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 leading-none"
+            class="inline-flex items-center px-1.5 py-0.5 text-2xs font-bold uppercase rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 leading-none"
           >
             Final
           </span>
         </div>
         <span
           v-if="selectedRound"
-          class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5"
+          class="text-2xs text-gray-400 dark:text-gray-500 mt-0.5"
         >
           {{ formatRoundDate(selectedRound.round.starting_at) }}
         </span>

@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
         role="tab"
         :aria-selected="active === tab.key"
         @click="select(tab.key)"
-        class="shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-[12px] font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
+        class="shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
         :class="
           active === tab.key
             ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'

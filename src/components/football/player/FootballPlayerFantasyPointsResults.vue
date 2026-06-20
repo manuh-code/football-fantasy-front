@@ -5,13 +5,13 @@
         <div class="flex items-center gap-2 min-w-0">
           <v-icon name="hi-solid-chart-bar" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
           <div class="min-w-0">
-            <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Fantasy Points Results</h3>
-            <p v-if="rangeDescription" class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums truncate">{{ rangeDescription }}</p>
+            <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Fantasy Points Results</h3>
+            <p v-if="rangeDescription" class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums truncate">{{ rangeDescription }}</p>
           </div>
         </div>
 
         <div v-if="fantasyPoints.length" class="flex items-center gap-2 shrink-0">
-          <label for="fantasy-points-per-page" class="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+          <label for="fantasy-points-per-page" class="text-2xs font-medium text-gray-500 dark:text-gray-400">
             Show
           </label>
           <SearchableSelectComponent
@@ -32,21 +32,21 @@
     <!-- Loading State -->
     <div v-if="isLoading" class="py-12 text-center">
       <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto mb-2" animation="spin" />
-      <p class="text-[12px] text-gray-400 dark:text-gray-500">Loading fantasy points…</p>
+      <p class="text-xs text-gray-400 dark:text-gray-500">Loading fantasy points…</p>
     </div>
 
     <!-- Initial State -->
     <div v-else-if="!hasSearched" class="py-12 text-center">
       <v-icon name="hi-solid-lightning-bolt" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-      <h3 class="text-[13px] font-medium text-gray-900 dark:text-white mb-1">Search fantasy points</h3>
-      <p class="text-[12px] text-gray-400 dark:text-gray-500">Adjust filters and press search.</p>
+      <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">Search fantasy points</h3>
+      <p class="text-xs text-gray-400 dark:text-gray-500">Adjust filters and press search.</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="!fantasyPoints.length" class="py-12 text-center">
       <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-      <h3 class="text-[13px] font-medium text-gray-900 dark:text-white mb-1">No results</h3>
-      <p class="text-[12px] text-gray-400 dark:text-gray-500">Try a different filter combination.</p>
+      <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">No results</h3>
+      <p class="text-xs text-gray-400 dark:text-gray-500">Try a different filter combination.</p>
     </div>
 
     <!-- Results -->
@@ -56,19 +56,19 @@
         <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700/60">
           <thead>
             <tr class="bg-gray-50/80 dark:bg-gray-750">
-              <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Player
               </th>
-              <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Team
               </th>
-              <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Pos
               </th>
-              <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 GP
               </th>
-              <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 <button
                   type="button"
                   class="inline-flex items-center gap-1 active:text-emerald-600 dark:active:text-emerald-400 transition-colors"
@@ -78,7 +78,7 @@
                   <v-icon :name="getSortIconName('total_points')" :class="['w-3 h-3', getSortIconClass('total_points')]" />
                 </button>
               </th>
-              <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 <button
                   type="button"
                   class="inline-flex items-center gap-1 active:text-emerald-600 dark:active:text-emerald-400 transition-colors"
@@ -100,10 +100,10 @@
                 <div class="flex items-center gap-2.5">
                   <PlayerAvatar :player="point.player" size="md" />
                   <div>
-                    <div class="text-[13px] font-medium text-gray-900 dark:text-white">
+                    <div class="text-footnote font-medium text-gray-900 dark:text-white">
                       {{ point.player.display_name }}
                     </div>
-                    <div class="text-[11px] text-gray-400 dark:text-gray-500">
+                    <div class="text-2xs text-gray-400 dark:text-gray-500">
                       Age: {{ point.player.age }}
                     </div>
                   </div>
@@ -113,27 +113,27 @@
                 <div class="flex items-center gap-2">
                   <TeamLogo :team="point.team" size="sm" variant="rounded" />
                   <div>
-                    <div class="text-[12px] font-medium text-gray-900 dark:text-white">
+                    <div class="text-xs font-medium text-gray-900 dark:text-white">
                       {{ point.team.name }}
                     </div>
-                    <div class="text-[10px] text-gray-400 dark:text-gray-500">
+                    <div class="text-2xs text-gray-400 dark:text-gray-500">
                       {{ point.team.short_code }}
                     </div>
                   </div>
                 </div>
               </td>
               <td class="px-3 py-2.5 whitespace-nowrap">
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-2xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                   {{ point.position?.name ?? 'N/D' }}
                 </span>
               </td>
-              <td class="px-3 py-2.5 whitespace-nowrap text-[12px] text-gray-600 dark:text-gray-300 tabular-nums">
+              <td class="px-3 py-2.5 whitespace-nowrap text-xs text-gray-600 dark:text-gray-300 tabular-nums">
                 {{ formatFixtures(point.total_fixtures) }}
               </td>
-              <td class="px-3 py-2.5 whitespace-nowrap text-[13px] font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+              <td class="px-3 py-2.5 whitespace-nowrap text-footnote font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {{ formatPoints(point.total_points) }}
               </td>
-              <td class="px-3 py-2.5 whitespace-nowrap text-[13px] font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+              <td class="px-3 py-2.5 whitespace-nowrap text-footnote font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {{ formatPoints(point.average_points) }}
               </td>
             </tr>
@@ -151,34 +151,34 @@
           <div class="flex items-center gap-2.5 mb-2.5">
             <PlayerAvatar :player="point.player" size="md" />
             <div class="flex-1 min-w-0">
-              <h4 class="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+              <h4 class="text-footnote font-medium text-gray-900 dark:text-white truncate">
                 {{ point.player.display_name }}
               </h4>
-              <p class="text-[11px] text-gray-400 dark:text-gray-500">
+              <p class="text-2xs text-gray-400 dark:text-gray-500">
                 {{ point.team.name }}
               </p>
             </div>
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-2xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
               {{ point.position?.code ?? 'N/D' }}
             </span>
           </div>
 
           <div class="grid grid-cols-3 gap-2 pt-2.5 border-t border-gray-100 dark:border-gray-600/50">
             <div class="text-center">
-              <p class="text-[10px] text-gray-400 dark:text-gray-500">Points</p>
-              <p class="text-[15px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+              <p class="text-2xs text-gray-400 dark:text-gray-500">Points</p>
+              <p class="text-callout font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {{ formatPoints(point.total_points) }}
               </p>
             </div>
             <div class="text-center">
-              <p class="text-[10px] text-gray-400 dark:text-gray-500">Average</p>
-              <p class="text-[15px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+              <p class="text-2xs text-gray-400 dark:text-gray-500">Average</p>
+              <p class="text-callout font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {{ formatPoints(point.average_points) }}
               </p>
             </div>
             <div class="text-center">
-              <p class="text-[10px] text-gray-400 dark:text-gray-500">GP</p>
-              <p class="text-[15px] font-bold text-gray-900 dark:text-white tabular-nums">
+              <p class="text-2xs text-gray-400 dark:text-gray-500">GP</p>
+              <p class="text-callout font-bold text-gray-900 dark:text-white tabular-nums">
                 {{ formatFixtures(point.total_fixtures) }}
               </p>
             </div>
@@ -190,19 +190,19 @@
       <div v-if="hasPagination" class="px-4 py-3 border-t border-gray-100 dark:border-gray-700/60 flex items-center justify-between">
         <button
           type="button"
-          class="inline-flex items-center px-3 py-1.5 text-[12px] font-medium rounded-lg text-gray-600 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-gray-600 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           :disabled="!hasPrev"
           @click="emit('change-page', 'prev')"
         >
           <v-icon name="hi-solid-chevron-left" class="w-3.5 h-3.5 mr-1" />
           Previous
         </button>
-        <span class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums">
+        <span class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums">
           Page {{ currentPage }}
         </span>
         <button
           type="button"
-          class="inline-flex items-center px-3 py-1.5 text-[12px] font-medium rounded-lg text-gray-600 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-gray-600 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           :disabled="!hasNext"
           @click="emit('change-page', 'next')"
         >

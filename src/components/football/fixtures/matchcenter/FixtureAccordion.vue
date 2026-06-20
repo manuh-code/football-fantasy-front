@@ -34,7 +34,7 @@ const toggle = () => {
           class="w-[18px] h-[18px] shrink-0"
           :class="iconClass ?? 'text-emerald-500 dark:text-emerald-400'"
         />
-        <h3 class="text-[15px] font-bold text-gray-900 dark:text-white truncate">
+        <h3 class="text-callout font-bold text-gray-900 dark:text-white truncate">
           {{ title }}
         </h3>
         <slot name="trailing" />

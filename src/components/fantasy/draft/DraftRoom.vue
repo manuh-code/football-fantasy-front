@@ -93,7 +93,7 @@
           <span class="text-2xl sm:text-3xl" aria-hidden="true">⚡</span>
           <div>
             <p class="text-base sm:text-xl font-bold leading-tight">It's your turn!</p>
-            <p class="text-[11px] sm:text-sm text-white/70">Pick a player for your team</p>
+            <p class="text-2xs sm:text-sm text-white/70">Pick a player for your team</p>
           </div>
         </div>
       </div>

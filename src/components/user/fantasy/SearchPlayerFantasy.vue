@@ -68,10 +68,10 @@
           class="w-5 h-5 text-red-500 dark:text-red-400 shrink-0"
         />
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
             Error loading players
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400 mt-0.5">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             {{ error }}
           </p>
         </div>
@@ -89,10 +89,10 @@
           class="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0"
         />
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
             No fantasy league selected
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400 mt-0.5">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             Please select a fantasy league to view available players.
           </p>
         </div>
@@ -123,10 +123,10 @@
               />
             </div>
             <div class="text-center space-y-1">
-              <p class="text-[16px] font-bold text-gray-800 dark:text-gray-100">
+              <p class="text-base font-bold text-gray-800 dark:text-gray-100">
                 Waiting for your turn...
               </p>
-              <p class="text-[13px] text-gray-400 dark:text-gray-500">
+              <p class="text-footnote text-gray-400 dark:text-gray-500">
                 You can pick a player when it's your turn.
               </p>
             </div>
@@ -173,7 +173,7 @@
                 class="w-4 h-4 text-gray-400 dark:text-gray-500"
                 animation="spin"
               />
-              <p class="text-[12px] text-gray-500 dark:text-gray-400 font-medium">
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
                 Filtering...
               </p>
             </div>
@@ -194,7 +194,7 @@
                 class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0"
               />
               <h3
-                class="text-[13px] font-semibold text-gray-900 dark:text-white"
+                class="text-footnote font-semibold text-gray-900 dark:text-white"
               >
                 Available Players
               </h3>
@@ -209,35 +209,35 @@
               >
                 <tr>
                   <th
-                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-16"
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-16"
                   ></th>
                   <th
-                    class="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    class="px-3 py-2.5 text-left text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Player
                   </th>
                   <th
-                    class="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    class="px-3 py-2.5 text-left text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Team
                   </th>
                   <th
-                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Pos
                   </th>
                   <th
-                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Total
                   </th>
                   <th
-                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Avg
                   </th>
                   <th
-                    class="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     GP
                   </th>
@@ -294,12 +294,12 @@
                       />
                       <div class="min-w-0">
                         <p
-                          class="text-[13px] font-medium text-gray-900 dark:text-white truncate"
+                          class="text-footnote font-medium text-gray-900 dark:text-white truncate"
                         >
                           {{ player.player.display_name }}
                         </p>
                         <p
-                          class="text-[11px] text-gray-400 dark:text-gray-500 truncate"
+                          class="text-2xs text-gray-400 dark:text-gray-500 truncate"
                         >
                           {{ player.player.common_name }}
                         </p>
@@ -316,7 +316,7 @@
                         class="w-5 h-5 object-contain shrink-0"
                       />
                       <span
-                        class="text-[12px] font-medium text-gray-600 dark:text-gray-400"
+                        class="text-xs font-medium text-gray-600 dark:text-gray-400"
                       >
                         {{ player.team.short_code }}
                       </span>
@@ -326,7 +326,7 @@
                   <!-- Position -->
                   <td class="px-3 py-2.5 text-center">
                     <span
-                      class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-bold"
+                      class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-2xs font-bold"
                       :class="
                         getPositionColorClass(player.position.developer_name)
                       "
@@ -338,7 +338,7 @@
                   <!-- Total Points -->
                   <td class="px-3 py-2.5 text-center">
                     <span
-                      class="text-[13px] font-bold text-gray-900 dark:text-white tabular-nums"
+                      class="text-footnote font-bold text-gray-900 dark:text-white tabular-nums"
                     >
                       {{ formatNumber(player.total_points, 1) }}
                     </span>
@@ -347,7 +347,7 @@
                   <!-- Average Points -->
                   <td class="px-3 py-2.5 text-center">
                     <span
-                      class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
+                      class="text-xs font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
                     >
                       {{ formatNumber(player.average_points, 2) }}
                     </span>
@@ -356,7 +356,7 @@
                   <!-- Fixtures -->
                   <td class="px-3 py-2.5 text-center">
                     <span
-                      class="text-[12px] text-gray-500 dark:text-gray-400 tabular-nums"
+                      class="text-xs text-gray-500 dark:text-gray-400 tabular-nums"
                     >
                       {{ player.total_fixtures ?? 0 }}
                     </span>
@@ -416,12 +416,12 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <p
-                      class="text-[13px] font-medium text-gray-900 dark:text-white truncate"
+                      class="text-footnote font-medium text-gray-900 dark:text-white truncate"
                     >
                       {{ player.player.display_name }}
                     </p>
                     <span
-                      class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
+                      class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-2xs font-bold shrink-0"
                       :class="
                         getPositionColorClass(player.position.developer_name)
                       "
@@ -435,7 +435,7 @@
                       :alt="player.team.name"
                       class="w-3.5 h-3.5 object-contain"
                     />
-                    <span class="text-[11px] text-gray-400 dark:text-gray-500">
+                    <span class="text-2xs text-gray-400 dark:text-gray-500">
                       {{ player.team.short_code }}
                     </span>
                   </div>
@@ -445,21 +445,21 @@
                 <div class="flex items-center gap-3 shrink-0">
                   <div class="text-right">
                     <p
-                      class="text-[13px] font-bold text-gray-900 dark:text-white tabular-nums"
+                      class="text-footnote font-bold text-gray-900 dark:text-white tabular-nums"
                     >
                       {{ formatNumber(player.total_points, 1) }}
                     </p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">
+                    <p class="text-2xs text-gray-400 dark:text-gray-500">
                       pts
                     </p>
                   </div>
                   <div class="text-right">
                     <p
-                      class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
+                      class="text-xs font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
                     >
                       {{ formatNumber(player.average_points, 2) }}
                     </p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">
+                    <p class="text-2xs text-gray-400 dark:text-gray-500">
                       avg
                     </p>
                   </div>
@@ -480,7 +480,7 @@
 
         <!-- End of List Indicator -->
         <div v-else-if="!hasMoreData" class="py-4 text-center">
-          <p class="text-[12px] text-gray-400 dark:text-gray-500">
+          <p class="text-xs text-gray-400 dark:text-gray-500">
             {{ players.length }} players loaded
           </p>
         </div>
@@ -509,7 +509,7 @@
           />
         </div>
         <h3
-          class="text-[15px] font-semibold text-gray-900 dark:text-white mb-1"
+          class="text-callout font-semibold text-gray-900 dark:text-white mb-1"
         >
           {{
             selectedPosition === "ALL"
@@ -517,7 +517,7 @@
               : "No players found"
           }}
         </h3>
-        <p class="text-[13px] text-gray-500 dark:text-gray-400">
+        <p class="text-footnote text-gray-500 dark:text-gray-400">
           {{
             selectedPosition === "ALL"
               ? "There are no players available at this moment."
@@ -527,7 +527,7 @@
         <button
           v-if="selectedPosition !== 'ALL'"
           @click="handleFilterChange('ALL')"
-          class="mt-4 px-4 py-2 bg-blue-500 active:bg-blue-600 text-white text-[13px] font-medium rounded-xl transition-colors"
+          class="mt-4 px-4 py-2 bg-blue-500 active:bg-blue-600 text-white text-footnote font-medium rounded-xl transition-colors"
         >
           View all positions
         </button>

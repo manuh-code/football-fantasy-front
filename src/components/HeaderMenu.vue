@@ -13,7 +13,7 @@
           <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
         </div>
         <div class="hidden sm:flex flex-col items-start">
-          <span class="text-[15px] font-bold text-gray-900 dark:text-white leading-tight tracking-tight">Fantasy MX</span>
+          <span class="text-callout font-bold text-gray-900 dark:text-white leading-tight tracking-tight">Fantasy MX</span>
         </div>
       </button>
 
@@ -26,7 +26,7 @@
         <button
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
-          class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-[13px] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           aria-label="Login"
         >
           Login
@@ -48,7 +48,7 @@
           />
           <div 
             v-else 
-            class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-[11px] font-bold"
+            class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-2xs font-bold"
           >
             {{ userInitials }}
           </div>
