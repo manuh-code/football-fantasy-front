@@ -348,12 +348,12 @@ const selectedRoundName = computed(() => {
                   name="md-sportssoccer"
                   class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0"
                 />
-                <h2 class="text-[15px] font-bold text-gray-900 dark:text-white truncate">
+                <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
                   Rounds
                 </h2>
                 <span
                   v-if="selectedRoundName"
-                  class="text-[11px] text-gray-400 dark:text-gray-500 truncate"
+                  class="text-2xs text-gray-400 dark:text-gray-500 truncate"
                 >
                   Round {{ selectedRoundName }}
                 </span>
@@ -388,10 +388,10 @@ const selectedRoundName = computed(() => {
               v-else-if="roundsError"
               class="flex items-center justify-between gap-2 py-2"
             >
-              <p class="text-[12px] text-red-500 dark:text-red-400">{{ roundsError }}</p>
+              <p class="text-xs text-red-500 dark:text-red-400">{{ roundsError }}</p>
               <button
                 @click="retryRounds"
-                class="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+                class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
               >
                 Retry
               </button>
@@ -416,7 +416,7 @@ const selectedRoundName = computed(() => {
                 </span>
                 <span
                   v-if="option.is_current"
-                  class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
+                  class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
                 >
                   Current
                 </span>
@@ -426,13 +426,13 @@ const selectedRoundName = computed(() => {
                   <span class="text-sm font-medium truncate">Round {{ option.name }}</span>
                   <span
                     v-if="option.is_current"
-                    class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
+                    class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
                   >
                     Current
                   </span>
                   <span
                     v-else-if="option.finished"
-                    class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
+                    class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
                   >
                     Done
                   </span>
@@ -443,7 +443,7 @@ const selectedRoundName = computed(() => {
             <!-- Empty rounds -->
             <div
               v-else
-              class="text-center py-3 text-[12px] text-gray-400 dark:text-gray-500"
+              class="text-center py-3 text-xs text-gray-400 dark:text-gray-500"
             >
               No rounds available
             </div>
@@ -475,10 +475,10 @@ const selectedRoundName = computed(() => {
                 name="hi-solid-exclamation-circle"
                 class="w-9 h-9 text-red-400 dark:text-red-500 mb-3"
               />
-              <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ fixturesError }}</p>
+              <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ fixturesError }}</p>
               <button
                 @click="retryFixtures"
-                class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+                class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
                 Retry
               </button>
@@ -493,7 +493,7 @@ const selectedRoundName = computed(() => {
                 name="md-sportssoccer"
                 class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
               />
-              <p class="text-[13px]">No matches in this round</p>
+              <p class="text-footnote">No matches in this round</p>
             </div>
 
             <!-- Fixtures list -->
@@ -519,12 +519,12 @@ const selectedRoundName = computed(() => {
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                   </span>
-                  <span class="text-[10px] font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+                  <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
                 </div>
 
                 <!-- Date/time (not live) -->
                 <div v-else class="text-center mb-2">
-                  <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
+                  <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
                     {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
                   </span>
                 </div>
@@ -536,7 +536,7 @@ const selectedRoundName = computed(() => {
                     <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
                     <span
                       :class="getTeamResultClass(fixture, 'home')"
-                      class="text-[13px] font-medium truncate"
+                      class="text-footnote font-medium truncate"
                       :title="getTeamName(getHomeParticipant(fixture))"
                     >
                       {{ getTeamName(getHomeParticipant(fixture)) }}
@@ -549,18 +549,18 @@ const selectedRoundName = computed(() => {
                       class="tabular-nums"
                       :class="[
                         hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                        isMatchLive(fixture) ? 'text-[22px]' : 'text-[20px]',
+                        isMatchLive(fixture) ? 'text-2xl' : 'text-xl',
                       ]"
                     >
                       <template v-if="hasScores(fixture)">
                         {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
                       </template>
-                      <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+                      <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
                     </div>
                     <span
                       v-if="!isMatchLive(fixture)"
                       :class="getFixtureStateClass(fixture)"
-                      class="text-[9px] px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
+                      class="text-2xs px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
                     >
                       {{ getFixtureStateText(fixture) }}
                     </span>
@@ -570,7 +570,7 @@ const selectedRoundName = computed(() => {
                   <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                     <span
                       :class="getTeamResultClass(fixture, 'away')"
-                      class="text-[13px] font-medium truncate text-right"
+                      class="text-footnote font-medium truncate text-right"
                       :title="getTeamName(getAwayParticipant(fixture))"
                     >
                       {{ getTeamName(getAwayParticipant(fixture)) }}

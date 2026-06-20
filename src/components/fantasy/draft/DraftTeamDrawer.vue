@@ -27,7 +27,7 @@
               <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
               <h2
                 v-if="desktopState !== 'peek'"
-                class="text-[13px] font-semibold text-gray-900 dark:text-white truncate"
+                class="text-footnote font-semibold text-gray-900 dark:text-white truncate"
               >
                 My Team
               </h2>
@@ -127,12 +127,12 @@
             <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
             <div>
               <h3
-                class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight"
+                class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight"
               >
                 My Team
               </h3>
               <p
-                class="text-[11px] text-gray-500 dark:text-gray-400 leading-tight"
+                class="text-2xs text-gray-500 dark:text-gray-400 leading-tight"
               >
                 {{
                   mobileState === "peek"

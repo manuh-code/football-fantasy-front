@@ -1,8 +1,8 @@
 <template>
   <BottomSheet
     :is-visible="needRefresh"
-    title="Nueva versión disponible"
-    subtitle="Hay una actualización lista para instalar"
+    title="New version available"
+    subtitle="An update is ready to install"
     icon="hi-solid-refresh"
     icon-variant="emerald"
     size="auto"
@@ -15,9 +15,9 @@
       >
         <v-icon name="hi-solid-refresh" class="w-8 h-8 text-white" />
       </div>
-      <p class="text-[13px] text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs">
-        Mejoramos la app con nuevas funciones y correcciones. Actualiza para obtener
-        la última versión.
+      <p class="text-footnote text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs">
+        We've improved the app with new features and fixes. Update to get the
+        latest version.
       </p>
     </div>
 
@@ -26,7 +26,7 @@
         <ButtonComponent
           variant="outline"
           size="sm"
-          text="Después"
+          text="Later"
           always-full-width
           :disabled="isUpdating"
           @click="dismiss"
@@ -34,7 +34,7 @@
         <ButtonComponent
           variant="primary"
           size="sm"
-          text="Actualizar"
+          text="Update"
           always-full-width
           :loading="isUpdating"
           @click="onApply"
@@ -68,7 +68,7 @@ async function onApply() {
 // Show a one-time toast when the app is first cached for offline use.
 watch(offlineReady, (ready) => {
   if (ready) {
-    toast.success('Listo para usar offline', 'La app ahora funciona sin conexión.')
+    toast.success('Ready to use offline', 'The app now works without a connection.')
     clearOfflineReady()
   }
 })

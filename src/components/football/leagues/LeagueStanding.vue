@@ -7,12 +7,12 @@
 
     <!-- No stage selected -->
     <div v-else-if="!stageUuid" class="flex items-center justify-center py-12">
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">No stage selected.</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">No stage selected.</p>
     </div>
 
     <!-- Error -->
     <div v-else-if="error" class="text-center py-10 px-4">
-      <p class="text-[13px] text-red-500 dark:text-red-400">{{ error }}</p>
+      <p class="text-footnote text-red-500 dark:text-red-400">{{ error }}</p>
     </div>
 
     <!-- Empty -->

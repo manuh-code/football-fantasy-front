@@ -34,14 +34,14 @@
             <!-- Loading State -->
             <div v-if="isLoadingLeague" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
               <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto" animation="spin" />
-              <p class="text-[13px] text-gray-400 dark:text-gray-500 mt-3">Loading management data...</p>
+              <p class="text-footnote text-gray-400 dark:text-gray-500 mt-3">Loading management data...</p>
             </div>
             
             <!-- No Scoring Data -->
             <div v-else-if="!scoringData" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
               <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-              <h3 class="text-[15px] font-semibold text-gray-900 dark:text-white mb-1">No Scoring Rules</h3>
-              <p class="text-[13px] text-gray-400 dark:text-gray-500">
+              <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">No Scoring Rules</h3>
+              <p class="text-footnote text-gray-400 dark:text-gray-500">
                 This league doesn't have scoring rules configured yet.
               </p>
             </div>

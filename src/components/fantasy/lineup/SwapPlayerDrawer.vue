@@ -21,10 +21,10 @@
             <div class="flex items-center gap-2 min-w-0">
               <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
               <div v-if="desktopState !== 'peek'" class="min-w-0">
-                <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white truncate">
+                <h2 class="text-footnote font-semibold text-gray-900 dark:text-white truncate">
                   Swap — {{ positionLabel }}
                 </h2>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate">Select a player to swap</p>
+                <p class="text-2xs text-gray-500 dark:text-gray-400 truncate">Select a player to swap</p>
               </div>
             </div>
             <button
@@ -96,10 +96,10 @@
           <div class="flex items-center gap-2 flex-1 min-w-0" @click="toggleMobile">
             <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
             <div class="min-w-0">
-              <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight truncate">
+              <h3 class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight truncate">
                 Swap — {{ positionLabel }}
               </h3>
-              <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-tight">
+              <p class="text-2xs text-gray-500 dark:text-gray-400 leading-tight">
                 {{ mobileState === 'peek' ? 'Swipe up to view' : 'Select a player to swap' }}
               </p>
             </div>

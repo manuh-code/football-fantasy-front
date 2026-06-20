@@ -125,7 +125,7 @@ const fallbackSides = computed(() => {
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="hi-solid-users" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">Lineups not available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">Lineups not available yet</p>
     </div>
 
     <template v-else>
@@ -135,18 +135,18 @@ const fallbackSides = computed(() => {
         <div class="flex items-center justify-between mb-2 px-1">
           <div class="flex items-center gap-2 min-w-0">
             <TeamLogo :team="homeTeam" size="xs" />
-            <span class="text-[12px] font-semibold text-gray-900 dark:text-white truncate">
+            <span class="text-xs font-semibold text-gray-900 dark:text-white truncate">
               {{ homeTeam?.short_code || homeTeam?.name }}
             </span>
-            <span v-if="homeFormation" class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+            <span v-if="homeFormation" class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
               {{ homeFormation }}
             </span>
           </div>
           <div class="flex items-center gap-2 min-w-0 justify-end">
-            <span v-if="awayFormation" class="text-[11px] font-bold text-sky-600 dark:text-sky-400 tabular-nums">
+            <span v-if="awayFormation" class="text-2xs font-bold text-sky-600 dark:text-sky-400 tabular-nums">
               {{ awayFormation }}
             </span>
-            <span class="text-[12px] font-semibold text-gray-900 dark:text-white truncate">
+            <span class="text-xs font-semibold text-gray-900 dark:text-white truncate">
               {{ awayTeam?.short_code || awayTeam?.name }}
             </span>
             <TeamLogo :team="awayTeam" size="xs" />
@@ -193,18 +193,18 @@ const fallbackSides = computed(() => {
                     />
                     <div
                       v-else
-                      class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-sky-400 shadow flex items-center justify-center text-[12px] font-bold text-gray-800"
+                      class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-sky-400 shadow flex items-center justify-center text-xs font-bold text-gray-800"
                     >
                       {{ p.lineup.jersey_number ?? "" }}
                     </div>
                     <span
                       v-if="p.lineup.player?.image_path && p.lineup.jersey_number != null"
-                      class="absolute -bottom-1 -right-1 min-w-[15px] h-[15px] px-0.5 rounded-full bg-sky-500 text-white text-[9px] font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
+                      class="absolute -bottom-1 -right-1 min-w-[15px] h-[15px] px-0.5 rounded-full bg-sky-500 text-white text-2xs font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
                     >
                       {{ p.lineup.jersey_number }}
                     </span>
                   </div>
-                  <span class="text-[10px] font-medium text-white leading-tight truncate max-w-full drop-shadow">
+                  <span class="text-2xs font-medium text-white leading-tight truncate max-w-full drop-shadow">
                     {{p.lineup.player?.common_name}}
                   </span>
                 </div>
@@ -233,18 +233,18 @@ const fallbackSides = computed(() => {
                     />
                     <div
                       v-else
-                      class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-emerald-300 shadow flex items-center justify-center text-[12px] font-bold text-gray-800"
+                      class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-emerald-300 shadow flex items-center justify-center text-xs font-bold text-gray-800"
                     >
                       {{ p.lineup.jersey_number ?? "" }}
                     </div>
                     <span
                       v-if="p.lineup.player?.image_path && p.lineup.jersey_number != null"
-                      class="absolute -bottom-1 -right-1 min-w-[15px] h-[15px] px-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
+                      class="absolute -bottom-1 -right-1 min-w-[15px] h-[15px] px-0.5 rounded-full bg-emerald-500 text-white text-2xs font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
                     >
                       {{ p.lineup.jersey_number }}
                     </span>
                   </div>
-                  <span class="text-[10px] font-medium text-white leading-tight truncate max-w-full drop-shadow">
+                  <span class="text-2xs font-medium text-white leading-tight truncate max-w-full drop-shadow">
                     {{ p.lineup.player?.common_name }}
                   </span>
                 </div>
@@ -265,10 +265,10 @@ const fallbackSides = computed(() => {
         >
           <div class="flex items-center gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700/40">
             <TeamLogo :team="b.team" size="xs" />
-            <span class="text-[12px] font-semibold text-gray-700 dark:text-gray-200 truncate">
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">
               {{ b.team?.name }}
             </span>
-            <span class="text-[11px] text-gray-400 dark:text-gray-500">Substitutes</span>
+            <span class="text-2xs text-gray-400 dark:text-gray-500">Substitutes</span>
           </div>
           <div class="divide-y divide-gray-100 dark:divide-gray-700/30">
             <div
@@ -276,7 +276,7 @@ const fallbackSides = computed(() => {
               :key="`${b.side}-sub-${p.player?.uuid ?? p.player_name ?? i}`"
               class="flex items-center gap-3 px-3 py-2"
             >
-              <span class="w-5 text-[11px] font-bold text-gray-400 dark:text-gray-500 tabular-nums text-center shrink-0">
+              <span class="w-5 text-2xs font-bold text-gray-400 dark:text-gray-500 tabular-nums text-center shrink-0">
                 {{ p.jersey_number ?? "-" }}
               </span>
               <img
@@ -291,12 +291,12 @@ const fallbackSides = computed(() => {
               >
                 <v-icon name="hi-solid-user" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
               </div>
-              <span class="text-[12px] font-medium text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">
+              <span class="text-xs font-medium text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">
                 {{ p.player?.display_name ?? p.player_name ?? "Player" }}
               </span>
               <span
                 v-if="p.position?.name || p.detailed_position?.name"
-                class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0"
+                class="text-2xs text-gray-400 dark:text-gray-500 shrink-0"
               >
                 {{ p.detailed_position?.name ?? p.position?.name }}
               </span>
@@ -314,7 +314,7 @@ const fallbackSides = computed(() => {
         >
           <div class="flex items-center gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700/40">
             <TeamLogo :team="b.team" size="xs" />
-            <span class="text-[12px] font-semibold text-gray-700 dark:text-gray-200 truncate">
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">
               {{ b.team?.name }}
             </span>
           </div>
@@ -324,15 +324,15 @@ const fallbackSides = computed(() => {
               :key="`${b.side}-fb-${p.player?.uuid ?? p.player_name ?? i}`"
               class="flex items-center gap-3 px-3 py-2"
             >
-              <span class="w-5 text-[11px] font-bold text-gray-400 dark:text-gray-500 tabular-nums text-center shrink-0">
+              <span class="w-5 text-2xs font-bold text-gray-400 dark:text-gray-500 tabular-nums text-center shrink-0">
                 {{ p.jersey_number ?? "-" }}
               </span>
-              <span class="text-[12px] font-medium text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">
+              <span class="text-xs font-medium text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">
                 {{ p.player?.display_name ?? p.player_name ?? "Player" }}
               </span>
               <span
                 v-if="p.position?.name"
-                class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0"
+                class="text-2xs text-gray-400 dark:text-gray-500 shrink-0"
               >
                 {{ p.position.name }}
               </span>

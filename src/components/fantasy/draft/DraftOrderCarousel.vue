@@ -70,10 +70,10 @@
           />
         </div>
         <div class="flex items-center justify-between mt-1">
-          <span class="text-[10px] text-white/50 font-medium">
+          <span class="text-2xs text-white/50 font-medium">
             {{ timerExpired ? 'Skipping...' : 'Time remaining' }}
           </span>
-          <span class="text-[10px] text-white/50 font-medium tabular-nums">
+          <span class="text-2xs text-white/50 font-medium tabular-nums">
             {{ formattedTime }} / {{ pickTime }}s
           </span>
         </div>
@@ -100,11 +100,11 @@
           />
           <div>
             <h3
-              class="text-[13px] font-semibold text-gray-900 dark:text-white leading-tight"
+              class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight"
             >
               Draft Order
             </h3>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400">
+            <p class="text-2xs text-gray-500 dark:text-gray-400">
               Round {{ currentRound }} · Pick {{ currentPickInRound }} of
               {{ totalPicksPerRound }}
               <span v-if="totalParticipants > 0" class="ml-1">
@@ -169,7 +169,7 @@
           <div class="relative mb-1">
             <!-- Pick number badge (absolute on top-right of avatar) -->
             <span
-              class="absolute -top-1.5 -right-1.5 z-20 text-[9px] font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none transition-all duration-300"
+              class="absolute -top-1.5 -right-1.5 z-20 text-2xs font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none transition-all duration-300"
               :class="pickBadgeClasses(pick)"
             >
               {{ pick.pick_in_round }}
@@ -219,7 +219,7 @@
 
           <!-- User name (truncated) -->
           <span
-            class="text-[10px] md:text-xs text-center leading-tight truncate w-full transition-colors duration-300"
+            class="text-2xs md:text-xs text-center leading-tight truncate w-full transition-colors duration-300"
             :class="pickNameClasses(pick)"
           >
             {{ pick.user.firstname }}

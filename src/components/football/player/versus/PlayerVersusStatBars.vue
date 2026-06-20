@@ -31,7 +31,7 @@ const winsB = (a: number | null, b: number | null): boolean =>
       <!-- Group header -->
       <div class="flex items-center gap-2 mb-2.5">
         <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
-        <span class="text-[10px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
+        <span class="text-2xs font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
           {{ groupLabel(grp.group) }}
         </span>
         <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
@@ -41,13 +41,13 @@ const winsB = (a: number | null, b: number | null): boolean =>
       <div class="space-y-3">
         <div v-for="stat in grp.stats" :key="stat.key">
           <!-- Label -->
-          <p class="text-center text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">
+          <p class="text-center text-2xs font-medium text-gray-500 dark:text-gray-400 mb-1">
             {{ stat.label }}
           </p>
           <!-- Values + mirrored bars -->
           <div class="flex items-center gap-2">
             <span
-              class="w-9 text-right text-[12px] font-bold tabular-nums"
+              class="w-9 text-right text-xs font-bold tabular-nums"
               :class="winsA(stat.a, stat.b)
                 ? 'text-gray-900 dark:text-white'
                 : 'text-gray-400 dark:text-gray-500'"
@@ -73,7 +73,7 @@ const winsB = (a: number | null, b: number | null): boolean =>
             </div>
 
             <span
-              class="w-9 text-left text-[12px] font-bold tabular-nums"
+              class="w-9 text-left text-xs font-bold tabular-nums"
               :class="winsB(stat.a, stat.b)
                 ? 'text-gray-900 dark:text-white'
                 : 'text-gray-400 dark:text-gray-500'"

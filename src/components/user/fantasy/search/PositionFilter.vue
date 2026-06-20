@@ -31,7 +31,7 @@ const emit = defineEmits<{
         :key="filter.code"
         @click="emit('update:selectedPosition', filter.code)"
         :disabled="disabled"
-        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.96] shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.96] shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
         :class="[
           selectedPosition === filter.code
             ? filter.activeClasses + ' shadow-sm'

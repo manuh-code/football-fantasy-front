@@ -91,20 +91,20 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                 :alt="matchup.home.team.team_name"
                 class="w-full h-full object-cover"
               />
-              <span v-else class="text-[12px] font-bold text-gray-500">
+              <span v-else class="text-xs font-bold text-gray-500">
                 {{ matchup?.home.team.team_name?.substring(0, 2).toUpperCase() }}
               </span>
             </div>
-            <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-300 truncate w-full text-center px-1">
+            <p class="text-2xs font-semibold text-gray-700 dark:text-gray-300 truncate w-full text-center px-1">
               {{ homeName }}
             </p>
           </div>
 
           <!-- Score -->
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-gray-50 dark:bg-gray-800 shrink-0">
-            <span class="text-[20px] font-extrabold tabular-nums text-gray-900 dark:text-white">{{ homeScore }}</span>
-            <span class="text-[13px] text-gray-300 dark:text-gray-600">–</span>
-            <span class="text-[20px] font-extrabold tabular-nums text-gray-900 dark:text-white">{{ awayScore }}</span>
+            <span class="text-xl font-extrabold tabular-nums text-gray-900 dark:text-white">{{ homeScore }}</span>
+            <span class="text-footnote text-gray-300 dark:text-gray-600">–</span>
+            <span class="text-xl font-extrabold tabular-nums text-gray-900 dark:text-white">{{ awayScore }}</span>
           </div>
 
           <!-- Away avatar -->
@@ -121,11 +121,11 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                 :alt="matchup.away.team.team_name"
                 class="w-full h-full object-cover"
               />
-              <span v-else class="text-[12px] font-bold text-gray-500">
+              <span v-else class="text-xs font-bold text-gray-500">
                 {{ matchup?.away.team.team_name?.substring(0, 2).toUpperCase() }}
               </span>
             </div>
-            <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-300 truncate w-full text-center px-1">
+            <p class="text-2xs font-semibold text-gray-700 dark:text-gray-300 truncate w-full text-center px-1">
               {{ awayName }}
             </p>
           </div>
@@ -163,7 +163,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
           class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-center gap-2"
         >
           <v-icon name="hi-solid-exclamation-circle" class="w-5 h-5 text-red-500 shrink-0" />
-          <p class="text-[13px] text-red-700 dark:text-red-300">{{ props.error }}</p>
+          <p class="text-footnote text-red-700 dark:text-red-300">{{ props.error }}</p>
         </div>
 
         <!-- Lineups -->
@@ -171,7 +171,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
 
           <!-- Section: Starters -->
           <div>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Starters</p>
+            <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Starters</p>
             <div class="space-y-2">
               <div
                 v-for="(_, idx) in sortedStarters(versusData!.home_lineup.players)"
@@ -187,13 +187,13 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                     class="w-7 h-7 rounded-full object-cover bg-gray-100 dark:bg-gray-700 shrink-0"
                   />
                   <div v-else class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                    <span class="text-[9px] font-bold text-gray-400">{{ sortedStarters(versusData!.home_lineup.players)[idx]?.position?.code }}</span>
+                    <span class="text-2xs font-bold text-gray-400">{{ sortedStarters(versusData!.home_lineup.players)[idx]?.position?.code }}</span>
                   </div>
                   <div class="min-w-0">
-                    <p class="text-[12px] font-medium text-gray-800 dark:text-gray-200 truncate leading-tight">
+                    <p class="text-xs font-medium text-gray-800 dark:text-gray-200 truncate leading-tight">
                       {{ sortedStarters(versusData!.home_lineup.players)[idx]?.football_player.display_name }}
                     </p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">
+                    <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
                       {{ sortedStarters(versusData!.home_lineup.players)[idx]?.position?.name }}
                     </p>
                   </div>
@@ -202,7 +202,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                 <!-- Points -->
                 <div class="flex items-center gap-1.5 shrink-0">
                   <span
-                    class="text-[13px] font-bold tabular-nums min-w-[28px] text-right"
+                    class="text-footnote font-bold tabular-nums min-w-[28px] text-right"
                     :class="(sortedStarters(versusData!.home_lineup.players)[idx]?.fantasy_points ?? 0) >
                       (sortedStarters(versusData!.away_lineup.players)[idx]?.fantasy_points ?? 0)
                       ? 'text-emerald-600 dark:text-emerald-400'
@@ -210,9 +210,9 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                   >
                     {{ sortedStarters(versusData!.home_lineup.players)[idx]?.fantasy_points ?? 0 }}
                   </span>
-                  <span class="text-[10px] text-gray-300 dark:text-gray-600">vs</span>
+                  <span class="text-2xs text-gray-300 dark:text-gray-600">vs</span>
                   <span
-                    class="text-[13px] font-bold tabular-nums min-w-[28px] text-left"
+                    class="text-footnote font-bold tabular-nums min-w-[28px] text-left"
                     :class="(sortedStarters(versusData!.away_lineup.players)[idx]?.fantasy_points ?? 0) >
                       (sortedStarters(versusData!.home_lineup.players)[idx]?.fantasy_points ?? 0)
                       ? 'text-emerald-600 dark:text-emerald-400'
@@ -225,10 +225,10 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                 <!-- Away player -->
                 <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                   <div class="min-w-0 text-right">
-                    <p class="text-[12px] font-medium text-gray-800 dark:text-gray-200 truncate leading-tight">
+                    <p class="text-xs font-medium text-gray-800 dark:text-gray-200 truncate leading-tight">
                       {{ sortedStarters(versusData!.away_lineup.players)[idx]?.football_player.display_name }}
                     </p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">
+                    <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
                       {{ sortedStarters(versusData!.away_lineup.players)[idx]?.position?.name }}
                     </p>
                   </div>
@@ -239,7 +239,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                     class="w-7 h-7 rounded-full object-cover bg-gray-100 dark:bg-gray-700 shrink-0"
                   />
                   <div v-else class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                    <span class="text-[9px] font-bold text-gray-400">{{ sortedStarters(versusData!.away_lineup.players)[idx]?.position?.code }}</span>
+                    <span class="text-2xs font-bold text-gray-400">{{ sortedStarters(versusData!.away_lineup.players)[idx]?.position?.code }}</span>
                   </div>
                 </div>
               </div>
@@ -251,7 +251,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
 
           <!-- Section: Bench -->
           <div v-if="sortedBench(versusData!.home_lineup.players).length || sortedBench(versusData!.away_lineup.players).length">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Bench</p>
+            <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Bench</p>
             <div class="space-y-2">
               <div
                 v-for="(_, idx) in Array.from({ length: Math.max(sortedBench(versusData!.home_lineup.players).length, sortedBench(versusData!.away_lineup.players).length) })"
@@ -268,9 +268,9 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                       class="w-7 h-7 rounded-full object-cover bg-gray-100 dark:bg-gray-700 shrink-0"
                     />
                     <div v-else class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                      <span class="text-[9px] font-bold text-gray-400">{{ sortedBench(versusData!.home_lineup.players)[idx]?.position?.code }}</span>
+                      <span class="text-2xs font-bold text-gray-400">{{ sortedBench(versusData!.home_lineup.players)[idx]?.position?.code }}</span>
                     </div>
-                    <p class="text-[12px] font-medium text-gray-700 dark:text-gray-400 truncate">
+                    <p class="text-xs font-medium text-gray-700 dark:text-gray-400 truncate">
                       {{ sortedBench(versusData!.home_lineup.players)[idx].football_player.display_name }}
                     </p>
                   </template>
@@ -279,11 +279,11 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
 
                 <!-- Points -->
                 <div class="flex items-center gap-1.5 shrink-0">
-                  <span class="text-[13px] font-bold tabular-nums min-w-[28px] text-right text-gray-600 dark:text-gray-400">
+                  <span class="text-footnote font-bold tabular-nums min-w-[28px] text-right text-gray-600 dark:text-gray-400">
                     {{ sortedBench(versusData!.home_lineup.players)[idx]?.fantasy_points ?? '—' }}
                   </span>
-                  <span class="text-[10px] text-gray-300 dark:text-gray-600">vs</span>
-                  <span class="text-[13px] font-bold tabular-nums min-w-[28px] text-left text-gray-600 dark:text-gray-400">
+                  <span class="text-2xs text-gray-300 dark:text-gray-600">vs</span>
+                  <span class="text-footnote font-bold tabular-nums min-w-[28px] text-left text-gray-600 dark:text-gray-400">
                     {{ sortedBench(versusData!.away_lineup.players)[idx]?.fantasy_points ?? '—' }}
                   </span>
                 </div>
@@ -291,7 +291,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                 <!-- Away bench -->
                 <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                   <template v-if="sortedBench(versusData!.away_lineup.players)[idx]">
-                    <p class="text-[12px] font-medium text-gray-700 dark:text-gray-400 truncate text-right">
+                    <p class="text-xs font-medium text-gray-700 dark:text-gray-400 truncate text-right">
                       {{ sortedBench(versusData!.away_lineup.players)[idx].football_player.display_name }}
                     </p>
                     <img
@@ -301,7 +301,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
                       class="w-7 h-7 rounded-full object-cover bg-gray-100 dark:bg-gray-700 shrink-0"
                     />
                     <div v-else class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                      <span class="text-[9px] font-bold text-gray-400">{{ sortedBench(versusData!.away_lineup.players)[idx]?.position?.code }}</span>
+                      <span class="text-2xs font-bold text-gray-400">{{ sortedBench(versusData!.away_lineup.players)[idx]?.position?.code }}</span>
                     </div>
                   </template>
                   <div v-else class="flex-1" />
@@ -312,14 +312,14 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
 
           <!-- Total points row -->
           <div class="rounded-2xl bg-gray-50 dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
-            <span class="text-[13px] font-bold text-gray-700 dark:text-gray-300">
+            <span class="text-footnote font-bold text-gray-700 dark:text-gray-300">
               {{ versusData!.home_lineup.players.reduce((acc, p) => acc + (p.fantasy_points ?? 0), 0) }}
-              <span class="text-[10px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+              <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
             </span>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total</span>
-            <span class="text-[13px] font-bold text-gray-700 dark:text-gray-300">
+            <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total</span>
+            <span class="text-footnote font-bold text-gray-700 dark:text-gray-300">
               {{ versusData!.away_lineup.players.reduce((acc, p) => acc + (p.fantasy_points ?? 0), 0) }}
-              <span class="text-[10px] font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+              <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
             </span>
           </div>
 

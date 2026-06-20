@@ -134,16 +134,12 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
-// Import Inter font from Google Fonts
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
-
 #app {
+  // Fuente nativa del sistema: SF Pro en iOS, Roboto en Android, Segoe UI en Windows.
   font-family:
-    "Inter",
-    ui-sans-serif,
-    system-ui,
     -apple-system,
     BlinkMacSystemFont,
+    system-ui,
     "Segoe UI",
     Roboto,
     "Helvetica Neue",

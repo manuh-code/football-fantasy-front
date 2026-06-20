@@ -86,7 +86,7 @@
               />
             </div>
             <span
-              class="text-[11px] font-semibold w-12 text-right"
+              class="text-2xs font-semibold w-12 text-right"
               :class="strengthTextClass"
             >
               {{ passwordStrengthText }}
@@ -114,14 +114,14 @@
               v-model="acceptTerms"
               class="w-4 h-4 mt-0.5 rounded accent-emerald-600 shrink-0"
             />
-            <span class="text-[13px] leading-snug text-gray-600 dark:text-gray-300">
+            <span class="text-footnote leading-snug text-gray-600 dark:text-gray-300">
               I accept the
               <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">terms and conditions</a>
               and the
               <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">privacy policy</a>
             </span>
           </label>
-          <p v-if="errors.terms" class="mt-1.5 text-[12px] text-red-500 dark:text-red-400">
+          <p v-if="errors.terms" class="mt-1.5 text-xs text-red-500 dark:text-red-400">
             {{ errors.terms }}
           </p>
         </div>

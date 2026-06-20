@@ -31,11 +31,11 @@ const onImgError = (e: Event) => {
 
     <!-- Player info -->
     <div class="flex-1 min-w-0">
-      <p class="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-0.5">
+      <p class="flex items-center gap-1 text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-0.5">
         <v-icon name="hi-solid-star" class="w-3 h-3 text-amber-400" />
         Man of the Match
       </p>
-      <p class="text-[14px] font-bold text-gray-900 dark:text-white truncate leading-tight">
+      <p class="text-sm font-bold text-gray-900 dark:text-white truncate leading-tight">
         {{ manOfTheMatch.player?.display_name }}
       </p>
       <div class="flex items-center gap-1.5 mt-0.5 min-w-0">
@@ -45,7 +45,7 @@ const onImgError = (e: Event) => {
           class="w-3.5 h-3.5 object-contain shrink-0"
           @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
         />
-        <span class="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+        <span class="text-2xs text-gray-500 dark:text-gray-400 truncate">
           {{ manOfTheMatch.team?.name }}
           <template v-if="manOfTheMatch.player?.position?.name">
             · {{ manOfTheMatch.player.position.name }}
@@ -56,10 +56,10 @@ const onImgError = (e: Event) => {
 
     <!-- Rating -->
     <div class="shrink-0 text-right">
-      <p class="text-[20px] font-extrabold tabular-nums leading-none text-gray-900 dark:text-white">
+      <p class="text-xl font-extrabold tabular-nums leading-none text-gray-900 dark:text-white">
         {{ manOfTheMatch.rating?.toFixed(1) ?? "–" }}
       </p>
-      <p class="text-[9px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mt-1">
+      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mt-1">
         Rating
       </p>
     </div>

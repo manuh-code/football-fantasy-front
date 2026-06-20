@@ -29,10 +29,10 @@ defineProps<Props>();
           <v-icon name="hi-solid-user" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-[12px] font-semibold text-gray-800 dark:text-gray-200 truncate">
+          <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">
             {{ s.player?.display_name ?? "Player" }}
           </p>
-          <p class="text-[10px] text-red-500 dark:text-red-400 truncate">
+          <p class="text-2xs text-red-500 dark:text-red-400 truncate">
             {{ s.type?.name ?? "Injured" }}
           </p>
         </div>

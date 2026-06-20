@@ -58,11 +58,11 @@
                 v-model="payload.remember"
                 class="w-4 h-4 rounded accent-emerald-600"
               />
-              <span class="text-[13px] text-gray-600 dark:text-gray-300">Remember me</span>
+              <span class="text-footnote text-gray-600 dark:text-gray-300">Remember me</span>
             </label>
             <a
               href="#"
-              class="text-[13px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+              class="text-footnote font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
             >
               Forgot password?
             </a>
@@ -84,7 +84,7 @@
       <!-- Separator -->
       <div class="flex items-center gap-3 my-5">
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-        <span class="text-[11px] font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap">
+        <span class="text-2xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap">
           Or continue with
         </span>
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />

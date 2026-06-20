@@ -47,7 +47,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           role="tab"
           :aria-selected="mode === 'regular'"
           @click="mode = 'regular'"
-          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
+          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200"
           :class="mode === 'regular'
             ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
@@ -60,7 +60,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           role="tab"
           :aria-selected="mode === 'playoffs'"
           @click="mode = 'playoffs'"
-          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
+          class="flex-1 flex items-center justify-center gap-1.5 h-8 px-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200"
           :class="mode === 'playoffs'
             ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
@@ -80,10 +80,10 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           v-else-if="roundsError"
           class="flex items-center justify-between gap-2 py-1"
         >
-          <p class="text-[12px] text-red-500 dark:text-red-400">{{ roundsError }}</p>
+          <p class="text-xs text-red-500 dark:text-red-400">{{ roundsError }}</p>
           <button
             @click="emit('retry-rounds')"
-            class="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+            class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
           >
             Retry
           </button>
@@ -103,12 +103,12 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           no-options-text="No rounds available"
         >
           <template #selected="{ option }">
-            <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
+            <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
               Round {{ option.name }}
             </span>
             <span
               v-if="option.is_current"
-              class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
+              class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
             >
               Current
             </span>
@@ -118,13 +118,13 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
               <span class="text-sm font-medium truncate">Round {{ option.name }}</span>
               <span
                 v-if="option.is_current"
-                class="text-[9px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
+                class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
               >
                 Current
               </span>
               <span
                 v-else-if="option.finished"
-                class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
+                class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
               >
                 Done
               </span>
@@ -132,7 +132,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           </template>
         </SearchableSelectComponent>
 
-        <div v-else class="text-center py-2 text-[12px] text-gray-400 dark:text-gray-500">
+        <div v-else class="text-center py-2 text-xs text-gray-400 dark:text-gray-500">
           No rounds available
         </div>
       </template>
@@ -143,10 +143,10 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           v-if="stagesError"
           class="flex items-center justify-between gap-2 py-1"
         >
-          <p class="text-[12px] text-red-500 dark:text-red-400">{{ stagesError }}</p>
+          <p class="text-xs text-red-500 dark:text-red-400">{{ stagesError }}</p>
           <button
             @click="emit('retry-stages')"
-            class="text-[12px] font-semibold text-amber-600 dark:text-amber-400 hover:underline"
+            class="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline"
           >
             Retry
           </button>
@@ -168,12 +168,12 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           :clearable="false"
         >
           <template #selected="{ option }">
-            <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
+            <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
               {{ (option.name_complete as string | null) || option.name }}
             </span>
             <span
               v-if="option.is_current"
-              class="text-[9px] font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0 ml-2"
+              class="text-2xs font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0 ml-2"
             >
               Current
             </span>
@@ -185,13 +185,13 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
               </span>
               <span
                 v-if="option.is_current"
-                class="text-[9px] font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0"
+                class="text-2xs font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0"
               >
                 Current
               </span>
               <span
                 v-else-if="option.finished"
-                class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
+                class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
               >
                 Done
               </span>
@@ -207,10 +207,10 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
         v-if="teamsError"
         class="flex items-center justify-between gap-2 py-1"
       >
-        <p class="text-[12px] text-red-500 dark:text-red-400">{{ teamsError }}</p>
+        <p class="text-xs text-red-500 dark:text-red-400">{{ teamsError }}</p>
         <button
           @click="emit('retry-teams')"
-          class="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+          class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
           Retry
         </button>
@@ -235,7 +235,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
         no-options-text="No teams available"
       >
         <template #selected="{ option }">
-          <span class="text-[13px] font-semibold text-gray-900 dark:text-white truncate flex-1">
+          <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
             {{ option.name }}
           </span>
         </template>

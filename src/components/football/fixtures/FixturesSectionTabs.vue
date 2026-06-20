@@ -41,7 +41,7 @@ watch(
         role="tab"
         :aria-selected="activeTab === 'regular'"
         @click="activeTab = 'regular'"
-        class="flex-1 flex items-center justify-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
+        class="flex-1 flex items-center justify-center gap-1.5 h-8 px-3 rounded-full text-xs font-semibold tracking-wide transition-all duration-200"
         :class="activeTab === 'regular'
           ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
           : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
@@ -55,7 +55,7 @@ watch(
         role="tab"
         :aria-selected="activeTab === 'playoffs'"
         @click="activeTab = 'playoffs'"
-        class="flex-1 flex items-center justify-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-semibold tracking-wide transition-all duration-200"
+        class="flex-1 flex items-center justify-center gap-1.5 h-8 px-3 rounded-full text-xs font-semibold tracking-wide transition-all duration-200"
         :class="activeTab === 'playoffs'
           ? 'bg-white dark:bg-gray-700 text-amber-600 dark:text-amber-400 shadow-sm'
           : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"

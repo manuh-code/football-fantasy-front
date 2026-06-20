@@ -176,7 +176,7 @@ onBeforeUnmount(() => {
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
             <div class="flex items-center justify-between px-4 pb-2.5 pt-1">
-              <h3 class="text-[15px] font-bold text-gray-900 dark:text-white">Select player</h3>
+              <h3 class="text-callout font-bold text-gray-900 dark:text-white">Select player</h3>
               <button
                 @click.stop="emit('close')"
                 @pointerdown.stop
@@ -218,10 +218,10 @@ onBeforeUnmount(() => {
             <!-- Error -->
             <div v-else-if="error" class="py-8 flex flex-col items-center text-center">
               <v-icon name="hi-solid-exclamation-circle" class="w-8 h-8 text-red-400 dark:text-red-500 mb-2" />
-              <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+              <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
               <button
                 @click="retry"
-                class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+                class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
                 Retry
               </button>
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
             <!-- Hint (query too short) -->
             <div
               v-else-if="query.trim().length < MIN_QUERY"
-              class="py-10 text-center text-[13px] text-gray-400 dark:text-gray-500"
+              class="py-10 text-center text-footnote text-gray-400 dark:text-gray-500"
             >
               Type at least {{ MIN_QUERY }} characters to search
             </div>
@@ -241,7 +241,7 @@ onBeforeUnmount(() => {
               class="py-10 flex flex-col items-center text-center"
             >
               <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-              <p class="text-[13px] text-gray-400 dark:text-gray-500">No players found for "{{ query.trim() }}"</p>
+              <p class="text-footnote text-gray-400 dark:text-gray-500">No players found for "{{ query.trim() }}"</p>
             </div>
 
             <!-- Results -->
@@ -253,12 +253,12 @@ onBeforeUnmount(() => {
                 >
                   <PlayerAvatar :player="player" size="md" variant="circle" />
                   <div class="flex-1 min-w-0">
-                    <p class="text-[14px] font-semibold text-gray-900 dark:text-white truncate">
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
                       {{ player.display_name }}
                     </p>
                     <p
                       v-if="player.position?.name"
-                      class="text-[11px] text-gray-400 dark:text-gray-500 truncate"
+                      class="text-2xs text-gray-400 dark:text-gray-500 truncate"
                     >
                       {{ player.position.name }}
                     </p>

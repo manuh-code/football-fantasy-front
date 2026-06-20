@@ -178,7 +178,7 @@ const showEmptyMatchingFilters = computed(
         role="tab"
         :aria-selected="isAllActive"
         @click="clearFilters"
-        class="shrink-0 inline-flex items-center gap-1.5 h-7 px-3 rounded-full text-[11px] font-semibold tracking-wide whitespace-nowrap transition-colors"
+        class="shrink-0 inline-flex items-center gap-1.5 h-7 px-3 rounded-full text-2xs font-semibold tracking-wide whitespace-nowrap transition-colors"
         :class="isAllActive
           ? 'bg-emerald-500 text-white shadow-sm'
           : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
@@ -194,7 +194,7 @@ const showEmptyMatchingFilters = computed(
         role="tab"
         :aria-selected="isFilterActive(filter.developer_name)"
         @click="toggleFilter(filter.developer_name)"
-        class="shrink-0 inline-flex items-center gap-1.5 h-7 px-3 rounded-full text-[11px] font-semibold tracking-wide whitespace-nowrap transition-colors"
+        class="shrink-0 inline-flex items-center gap-1.5 h-7 px-3 rounded-full text-2xs font-semibold tracking-wide whitespace-nowrap transition-colors"
         :class="isFilterActive(filter.developer_name)
           ? 'bg-emerald-500 text-white shadow-sm'
           : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
@@ -228,7 +228,7 @@ const showEmptyMatchingFilters = computed(
         <!-- Period header -->
         <div class="flex items-center gap-2 mb-3">
           <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700/60" />
-          <span class="text-[10px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
+          <span class="text-2xs font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
             {{ group.label }}
           </span>
           <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700/60" />
@@ -257,10 +257,10 @@ const showEmptyMatchingFilters = computed(
       class="text-center py-6 text-gray-400 dark:text-gray-500"
     >
       <v-icon name="hi-solid-filter" class="w-7 h-7 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
-      <p class="text-[12px]">No events match the selected filters</p>
+      <p class="text-xs">No events match the selected filters</p>
       <button
         @click="clearFilters"
-        class="mt-2 text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+        class="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
       >
         Clear filters
       </button>
@@ -272,7 +272,7 @@ const showEmptyMatchingFilters = computed(
       class="text-center py-6 text-gray-400 dark:text-gray-500"
     >
       <v-icon name="md-sportssoccer" class="w-7 h-7 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
-      <p class="text-[12px]">No events yet</p>
+      <p class="text-xs">No events yet</p>
     </div>
   </div>
 </template>

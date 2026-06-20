@@ -1,36 +1,26 @@
 <template>
-  <div class="space-y-4">
-    <!-- Header -->
-    <div class="flex items-center gap-3">
-      <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 shrink-0">
-        <v-icon name="hi-solid-collection" class="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <h1 class="text-lg font-extrabold text-gray-900 dark:text-white leading-tight">
-          Select your league
-        </h1>
-        <p class="text-[12px] text-gray-500 dark:text-gray-400 leading-tight">
-          Tap a league to see relevant news and matches
-        </p>
-      </div>
-    </div>
+  <div class="max-w-md mx-auto">
+
 
     <!-- Required notice (only when there is no league selected yet) -->
     <div
       v-if="!hasLeague"
-      class="flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/60 dark:border-amber-800/40"
+      class="mb-4 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-amber-50 dark:bg-amber-900/15"
     >
-      <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
-      <p class="text-[12px] text-amber-700 dark:text-amber-300 leading-relaxed">
-        You must select a league to continue. You can change it anytime from here.
+      <v-icon name="hi-solid-information-circle" class="w-[18px] h-[18px] text-amber-500 dark:text-amber-400 shrink-0" />
+      <p class="text-footnote text-amber-700 dark:text-amber-300 leading-snug">
+        Pick a league to continue — you can change it anytime
       </p>
     </div>
 
-    <!-- Loading -->
-    <div v-if="loading" class="py-12">
-      <div class="flex flex-col items-center gap-3">
-        <div class="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-        <p class="text-sm text-gray-500 dark:text-gray-400">Loading leagues...</p>
+    <!-- Loading — skeleton rows keep the layout stable -->
+    <div
+      v-if="loading"
+      class="rounded-2xl overflow-hidden bg-white dark:bg-gray-800/60 divide-y divide-gray-100 dark:divide-gray-700/50"
+    >
+      <div v-for="i in 5" :key="i" class="flex items-center gap-3.5 px-4 py-3">
+        <div class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse shrink-0" />
+        <div class="h-3.5 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" :style="{ width: `${40 + ((i * 17) % 45)}%` }" />
       </div>
     </div>
 
@@ -43,48 +33,72 @@
       <ButtonComponent variant="outline" size="sm" text="Retry" @click="loadLeagues" />
     </div>
 
-    <!-- Leagues grid — tapping a card switches the league immediately -->
-    <div v-else class="grid grid-cols-3 sm:grid-cols-4 gap-3 pb-24">
-      <button
-        v-for="league in leagues"
-        :key="league.uuid"
-        type="button"
-        :disabled="isSaving"
-        @click="selectLeague(league)"
-        :class="[
-          'relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 disabled:active:scale-100',
-          currentLeagueUuid === league.uuid
-            ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700/50 ring-2 ring-emerald-500 shadow-sm'
-            : 'bg-white dark:bg-gray-800/60 border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-200 dark:hover:border-gray-600',
-          isSaving && savingUuid !== league.uuid ? 'opacity-50' : '',
-        ]"
-      >
-        <!-- Current badge -->
-        <span
-          v-if="currentLeagueUuid === league.uuid"
-          class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500/90 text-white text-[8px] font-bold uppercase tracking-wider leading-none"
-        >
-          Current
-        </span>
+    <!-- Section header + Leagues list -->
+    <template v-else>
+      <p class="px-1 mb-1.5 text-2xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+        Available Leagues
+      </p>
 
-        <!-- Saving overlay on the tapped card -->
-        <div
-          v-if="savingUuid === league.uuid"
-          class="absolute inset-0 rounded-2xl bg-white/70 dark:bg-gray-900/70 flex items-center justify-center z-10"
+      <div class="rounded-2xl overflow-hidden bg-white dark:bg-gray-800/60 divide-y divide-gray-100 dark:divide-gray-700/50 pb-px">
+        <button
+          v-for="league in leagues"
+          :key="league.uuid"
+          type="button"
+          :disabled="isSaving"
+          @click="selectLeague(league)"
+          :class="[
+            'group w-full flex items-center gap-3.5 px-4 py-3 text-left transition-colors active:bg-gray-100/70 dark:active:bg-gray-700/40 focus:outline-none focus-visible:bg-gray-100/70 dark:focus-visible:bg-gray-700/40',
+            isSaving && savingUuid !== league.uuid ? 'opacity-40' : '',
+          ]"
         >
-          <div class="w-6 h-6 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-        </div>
+          <!-- Crest -->
+          <div
+            :class="[
+              'w-11 h-11 rounded-full flex items-center justify-center overflow-hidden shrink-0 ring-1 transition-shadow',
+              currentLeagueUuid === league.uuid
+                ? 'ring-emerald-500/30'
+                : 'ring-black/5 dark:ring-white/10',
+            ]"
+          >
+            <img
+              :src="league.image_path || '/img/default-avatar.svg'"
+              class="w-full h-full object-cover"
+              :alt="league.name"
+            />
+          </div>
 
-        <img
-          :src="league.image_path || '/img/default-avatar.svg'"
-          class="w-14 h-14 rounded-full object-cover shadow-sm"
-          :alt="league.name"
-        />
-        <span class="text-xs font-semibold text-gray-900 dark:text-white truncate w-full">
-          {{ league.name }}
-        </span>
-      </button>
-    </div>
+          <!-- Name -->
+          <span
+            :class="[
+              'flex-1 min-w-0 text-callout leading-tight truncate',
+              currentLeagueUuid === league.uuid
+                ? 'font-semibold text-gray-900 dark:text-white'
+                : 'font-medium text-gray-800 dark:text-gray-100',
+            ]"
+          >
+            {{ league.name }}
+          </span>
+
+          <!-- Trailing accessory: spinner while saving, check if current, chevron otherwise -->
+          <div
+            v-if="savingUuid === league.uuid"
+            class="w-5 h-5 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin shrink-0"
+          />
+          <v-icon
+            v-else-if="currentLeagueUuid === league.uuid"
+            name="hi-solid-check"
+            class="w-5 h-5 text-emerald-500 shrink-0"
+          />
+          <v-icon
+            v-else
+            name="hi-solid-chevron-right"
+            class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+          />
+        </button>
+      </div>
+    </template>
+
+    <div class="h-28" />
   </div>
 </template>
 

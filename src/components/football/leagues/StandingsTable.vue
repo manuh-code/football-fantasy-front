@@ -117,7 +117,7 @@ const formatGD = (val: string | number | undefined) => {
               class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
               :class="positionZoneColor(row.position)"
             />
-            <span class="text-[12px] font-semibold text-gray-500 dark:text-gray-400 tabular-nums">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 tabular-nums">
               {{ row.position }}
             </span>
           </td>
@@ -126,7 +126,7 @@ const formatGD = (val: string | number | undefined) => {
           <td class="py-2 pl-2 pr-1 standings-sticky-left left-8 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
             <div class="flex items-center gap-2 min-w-0">
               <TeamLogo :team="row.team" size="sm" variant="square" />
-              <span class="text-[12px] font-medium text-gray-900 dark:text-white truncate">
+              <span class="text-xs font-medium text-gray-900 dark:text-white truncate">
                 {{ row.team?.name }}
               </span>
             </div>
@@ -165,7 +165,7 @@ const formatGD = (val: string | number | undefined) => {
           <!-- GD -->
           <td class="py-2.5 px-1 text-center">
             <span
-              class="text-[11px] tabular-nums font-semibold"
+              class="text-2xs tabular-nums font-semibold"
               :class="gdColor(getStat(row.statistics, 'goal-difference'))"
             >
               {{ formatGD(getStat(row.statistics, 'goal-difference')) }}
@@ -179,7 +179,7 @@ const formatGD = (val: string | number | undefined) => {
                 <div
                   :class="[
                     formColor(f.form),
-                    'w-[18px] h-[18px] rounded-[4px] flex items-center justify-center text-white text-[9px] font-bold leading-none',
+                    'w-[18px] h-[18px] rounded-[4px] flex items-center justify-center text-white text-2xs font-bold leading-none',
                   ]"
                 >
                   {{ f.form }}
@@ -190,7 +190,7 @@ const formatGD = (val: string | number | undefined) => {
 
           <!-- Points -->
           <td class="py-2.5 px-1 text-center standings-sticky-right right-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
-            <span class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-[13px] font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+            <span class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-footnote font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
               {{ getStat(row.statistics, "overall-points") }}
             </span>
           </td>
@@ -204,7 +204,7 @@ const formatGD = (val: string | number | undefined) => {
 /* Compact header cells */
 .standings-th {
   padding: 8px 4px;
-  font-size: 10px;
+  font-size: 0.6875rem; /* 11px — mínimo legible */
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -219,7 +219,7 @@ const formatGD = (val: string | number | undefined) => {
 .standings-cell {
   padding: 10px 4px;
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem; /* 11px — mínimo legible */
   font-variant-numeric: tabular-nums;
   color: #4b5563; /* gray-600 */
   white-space: nowrap;

@@ -4,7 +4,7 @@
     <Transition name="bottomsheet-backdrop">
       <div
         v-if="isVisible"
-        class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px]"
+        class="fixed inset-0 z-[120] bg-black/40 backdrop-blur-[2px]"
         @click="onBackdropClick"
       />
     </Transition>
@@ -15,7 +15,7 @@
         v-if="isVisible"
         ref="sheetRef"
         :class="[
-          'fixed z-50 bottom-0 inset-x-0 md:inset-x-auto md:left-1/2 md:-translate-x-1/2',
+          'fixed z-[120] bottom-0 inset-x-0 md:inset-x-auto md:left-1/2 md:-translate-x-1/2',
           'bg-white dark:bg-gray-900 rounded-t-2xl md:rounded-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2',
           'shadow-[0_-8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_40px_rgba(0,0,0,0.5)]',
           'flex flex-col overflow-hidden',

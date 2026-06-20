@@ -71,7 +71,24 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+        // Fuente nativa del sistema: SF Pro en iOS, Roboto en Android, Segoe UI en Windows.
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+      },
+      // Escala tipográfica móvil [font-size, line-height] en rem (base 16px),
+      // alineada a iOS HIG / Material 3. Mínimo legible: 11px (2xs).
+      fontSize: {
+        '2xs': ['0.6875rem', '0.875rem'],   // 11px — caption2 / label-small (mínimo, tablas densas)
+        'xs': ['0.75rem', '1rem'],           // 12px — caption1
+        'footnote': ['0.8125rem', '1.125rem'], // 13px — footnote
+        'sm': ['0.875rem', '1.25rem'],       // 14px — subheadline / body-medium
+        'callout': ['0.9375rem', '1.3125rem'], // 15px — callout
+        'base': ['1rem', '1.5rem'],          // 16px — body (Material)
+        'lg': ['1.0625rem', '1.5rem'],       // 17px — body / headline (iOS)
+        'xl': ['1.25rem', '1.625rem'],       // 20px — title3
+        '2xl': ['1.375rem', '1.75rem'],      // 22px — title2
+        '3xl': ['1.75rem', '2.125rem'],      // 28px — title1
+        '4xl': ['2.125rem', '2.5rem'],       // 34px — largeTitle
+        '5xl': ['2.75rem', '3rem'],          // 44px — display
       },
       boxShadow: {
         'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',

@@ -5,7 +5,7 @@
       <div class="px-4 py-3">
         <div class="flex items-center gap-2">
           <v-icon name="bi-trophy-fill" class="w-[16px] h-[16px] text-amber-500 dark:text-amber-400 shrink-0" />
-          <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white">Top Scorers</h2>
+          <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">Top Scorers</h2>
         </div>
       </div>
 
@@ -29,11 +29,11 @@
               accent-color="amber"
               @change="onSeasonChange"
             />
-            <div v-if="isLoadingSeasons" class="mt-1 text-[11px] text-gray-400">
+            <div v-if="isLoadingSeasons" class="mt-1 text-2xs text-gray-400">
               <v-icon name="pr-spinner" class="w-3 h-3 inline mr-1" animation="spin" />
               Loading seasons...
             </div>
-            <div v-if="seasonError" class="mt-1 text-[11px] text-red-500 dark:text-red-400">
+            <div v-if="seasonError" class="mt-1 text-2xs text-red-500 dark:text-red-400">
               {{ seasonError }}
             </div>
           </div>
@@ -86,8 +86,8 @@
           <div class="flex items-center gap-2">
             <v-icon name="bi-trophy-fill" class="w-[16px] h-[16px] text-amber-500 dark:text-amber-400 shrink-0" />
             <div class="min-w-0">
-              <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">Top Scorers Results</h3>
-              <p v-if="topScorers.length" class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums">
+              <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Top Scorers Results</h3>
+              <p v-if="topScorers.length" class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums">
                 {{ paginationData?.from }}-{{ paginationData?.to }} of {{ paginationData?.total || 0 }} players
               </p>
             </div>
@@ -95,7 +95,7 @@
           
           <!-- Items per page selector -->
           <div v-if="topScorers.length" class="flex items-center gap-2">
-            <label for="per-page-select" class="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+            <label for="per-page-select" class="text-2xs font-medium text-gray-500 dark:text-gray-400">
               Show
             </label>
             <SearchableSelectComponent
@@ -116,7 +116,7 @@
       <!-- Loading State -->
       <div v-if="loadingTopScorers" class="py-12 text-center">
         <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto mb-2" animation="spin" />
-        <p class="text-[12px] text-gray-400 dark:text-gray-500">Loading top scorers...</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500">Loading top scorers...</p>
       </div>
 
       <!-- Error State -->
@@ -124,8 +124,8 @@
         <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/50">
           <v-icon name="hi-solid-exclamation-circle" class="w-4 h-4 text-red-500 shrink-0" />
           <div>
-            <p class="text-[12px] font-medium text-red-800 dark:text-red-200">Error loading data</p>
-            <p class="text-[11px] text-red-600 dark:text-red-300">{{ error }}</p>
+            <p class="text-xs font-medium text-red-800 dark:text-red-200">Error loading data</p>
+            <p class="text-2xs text-red-600 dark:text-red-300">{{ error }}</p>
           </div>
         </div>
       </div>
@@ -133,15 +133,15 @@
       <!-- Empty State -->
       <div v-else-if="!loadingTopScorers && topScorers.length === 0 && hasSearched" class="py-12 text-center">
         <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-        <h3 class="text-[13px] font-medium text-gray-900 dark:text-white mb-1">No results found</h3>
-        <p class="text-[12px] text-gray-400 dark:text-gray-500">Try adjusting your filters.</p>
+        <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">No results found</h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500">Try adjusting your filters.</p>
       </div>
 
       <!-- Initial State -->
       <div v-else-if="!hasSearched" class="py-12 text-center">
         <v-icon name="bi-trophy-fill" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-        <h3 class="text-[13px] font-medium text-gray-900 dark:text-white mb-1">Search Top Scorers</h3>
-        <p class="text-[12px] text-gray-400 dark:text-gray-500">Select a season and score type to view rankings.</p>
+        <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">Search Top Scorers</h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500">Select a season and score type to view rankings.</p>
       </div>
 
       <!-- Results Table -->
@@ -151,22 +151,22 @@
           <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700/60">
             <thead>
               <tr class="bg-gray-50/80 dark:bg-gray-750">
-                <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   #
                 </th>
-                <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Player
                 </th>
-                <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Team
                 </th>
-                <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Country
                 </th>
-                <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Total
                 </th>
-                <th class="px-3 py-2 text-left text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-2xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Type
                 </th>
               </tr>
@@ -177,7 +177,7 @@
                 <td class="px-3 py-2.5 whitespace-nowrap">
                   <span 
                     :class="[
-                      'inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold tabular-nums',
+                      'inline-flex items-center justify-center w-6 h-6 rounded-full text-2xs font-bold tabular-nums',
                       scorer.position === 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
                       scorer.position === 2 ? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300' :
                       scorer.position === 3 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
@@ -197,10 +197,10 @@
                       variant="circle"
                     />
                     <div>
-                      <div class="text-[13px] font-medium text-gray-900 dark:text-white">
+                      <div class="text-footnote font-medium text-gray-900 dark:text-white">
                         {{ scorer.player.display_name }}
                       </div>
-                      <div class="text-[11px] text-gray-400 dark:text-gray-500">
+                      <div class="text-2xs text-gray-400 dark:text-gray-500">
                         Age: {{ scorer.player.age }}
                       </div>
                     </div>
@@ -216,10 +216,10 @@
                       variant="rounded"
                     />
                     <div>
-                      <div class="text-[12px] font-medium text-gray-900 dark:text-white">
+                      <div class="text-xs font-medium text-gray-900 dark:text-white">
                         {{ scorer.team.name }}
                       </div>
-                      <div class="text-[10px] text-gray-400 dark:text-gray-500">
+                      <div class="text-2xs text-gray-400 dark:text-gray-500">
                         {{ scorer.team.short_code }}
                       </div>
                     </div>
@@ -235,7 +235,7 @@
                       :alt="scorer.player.country.name || 'Unknown'"
                       class="w-4 h-4 rounded"
                     />
-                    <span class="text-[12px] text-gray-600 dark:text-gray-300">
+                    <span class="text-xs text-gray-600 dark:text-gray-300">
                       {{ scorer.player.country.fifa_name }}
                     </span>
                   </div>
@@ -243,14 +243,14 @@
 
                 <!-- Total -->
                 <td class="px-3 py-2.5 whitespace-nowrap">
-                  <span class="text-[15px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                  <span class="text-callout font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                     {{ scorer.total }}
                   </span>
                 </td>
 
                 <!-- Type -->
                 <td class="px-3 py-2.5 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
                     {{ scorer.type.name }}
                   </span>
                 </td>
@@ -269,7 +269,7 @@
               <div class="flex items-center gap-2.5">
                 <span 
                   :class="[
-                    'inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-bold tabular-nums',
+                    'inline-flex items-center justify-center w-7 h-7 rounded-full text-2xs font-bold tabular-nums',
                     scorer.position === 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
                     scorer.position === 2 ? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300' :
                     scorer.position === 3 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
@@ -284,19 +284,19 @@
                   variant="circle"
                 />
                 <div class="min-w-0">
-                  <h4 class="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+                  <h4 class="text-footnote font-medium text-gray-900 dark:text-white truncate">
                     {{ scorer.player.display_name }}
                   </h4>
-                  <p class="text-[11px] text-gray-400 dark:text-gray-500">
+                  <p class="text-2xs text-gray-400 dark:text-gray-500">
                     Age: {{ scorer.player.age }}
                   </p>
                 </div>
               </div>
               <div class="text-right">
-                <p class="text-[18px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                <p class="text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {{ scorer.total }}
                 </p>
-                <span class="text-[10px] text-gray-400 dark:text-gray-500">{{ scorer.type.name }}</span>
+                <span class="text-2xs text-gray-400 dark:text-gray-500">{{ scorer.type.name }}</span>
               </div>
             </div>
 
@@ -308,7 +308,7 @@
                   size="xs"
                   variant="rounded"
                 />
-                <span class="text-[11px] text-gray-600 dark:text-gray-300 truncate">{{ scorer.team.name }}</span>
+                <span class="text-2xs text-gray-600 dark:text-gray-300 truncate">{{ scorer.team.name }}</span>
               </div>
               <div class="flex items-center gap-1">
                 <img 
@@ -317,7 +317,7 @@
                   :alt="scorer.player.country.name || ''" 
                   class="w-3.5 h-3.5 rounded" 
                 />
-                <span class="text-[11px] text-gray-600 dark:text-gray-300">{{ scorer.player.country.fifa_name }}</span>
+                <span class="text-2xs text-gray-600 dark:text-gray-300">{{ scorer.player.country.fifa_name }}</span>
               </div>
             </div>
           </div>

@@ -120,7 +120,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
     <!-- No season context -->
     <div v-if="!seasonUuid" class="px-4 py-12 flex flex-col items-center text-center">
       <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">Select a league to compare players</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">Select a league to compare players</p>
     </div>
 
     <template v-else>
@@ -144,21 +144,21 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             </span>
             <PlayerAvatar :player="playerA" size="xl" variant="circle" />
             <div class="text-center w-full min-w-0">
-              <p class="text-[13px] font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
-              <p v-if="positionName(playerA)" class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
+              <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
+              <p v-if="positionName(playerA)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
             </div>
           </template>
           <template v-else>
             <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
               <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
             </div>
-            <span class="text-[12px] font-semibold text-gray-500 dark:text-gray-400">Add player</span>
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Add player</span>
           </template>
         </button>
 
         <!-- VS -->
         <div class="flex items-center justify-center">
-          <span class="text-[12px] font-extrabold tracking-widest text-gray-300 dark:text-gray-600">VS</span>
+          <span class="text-xs font-extrabold tracking-widest text-gray-300 dark:text-gray-600">VS</span>
         </div>
 
         <!-- Slot B -->
@@ -179,15 +179,15 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             </span>
             <PlayerAvatar :player="playerB" size="xl" variant="circle" />
             <div class="text-center w-full min-w-0">
-              <p class="text-[13px] font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
-              <p v-if="positionName(playerB)" class="text-[10px] text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
+              <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
+              <p v-if="positionName(playerB)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
             </div>
           </template>
           <template v-else>
             <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
               <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
             </div>
-            <span class="text-[12px] font-semibold text-gray-500 dark:text-gray-400">Add player</span>
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Add player</span>
           </template>
         </button>
       </div>
@@ -197,7 +197,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
         <!-- Prompt: need both players -->
         <div v-if="!bothSelected" class="px-4 py-12 flex flex-col items-center text-center">
           <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-          <p class="text-[13px] text-gray-400 dark:text-gray-500">Pick two players to see the comparison</p>
+          <p class="text-footnote text-gray-400 dark:text-gray-500">Pick two players to see the comparison</p>
         </div>
 
         <!-- Loading skeleton -->
@@ -232,10 +232,10 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
         <!-- Error -->
         <div v-else-if="error" class="px-4 py-12 flex flex-col items-center text-center">
           <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-400 dark:text-red-500 mb-3" />
-          <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+          <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
           <button
             @click="loadVersus"
-            class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+            class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
           >
             Retry
           </button>
@@ -244,7 +244,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
         <!-- Empty: no comparable stats -->
         <div v-else-if="!hasStats" class="px-4 py-12 flex flex-col items-center text-center">
           <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-          <p class="text-[13px] text-gray-400 dark:text-gray-500">No comparable stats for these players</p>
+          <p class="text-footnote text-gray-400 dark:text-gray-500">No comparable stats for these players</p>
         </div>
 
         <!-- Comparison -->
@@ -253,11 +253,11 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
           <div class="flex items-center justify-center gap-4 mb-3">
             <span class="flex items-center gap-1.5 min-w-0">
               <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: COLOR_A }" />
-              <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerA?.display_name }}</span>
+              <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerA?.display_name }}</span>
             </span>
             <span class="flex items-center gap-1.5 min-w-0">
               <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: COLOR_B }" />
-              <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerB?.display_name }}</span>
+              <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerB?.display_name }}</span>
             </span>
           </div>
 

@@ -8,10 +8,10 @@
         class="w-9 h-9 rounded-lg object-cover shadow-sm ring-1 ring-gray-100 dark:ring-gray-700 shrink-0"
       />
       <div class="min-w-0">
-        <p class="text-[14px] font-semibold text-gray-900 dark:text-white truncate">
+        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
           {{ leagueName }}
         </p>
-        <p class="text-[11px] text-gray-400 dark:text-gray-500">Choose a stage</p>
+        <p class="text-2xs text-gray-400 dark:text-gray-500">Choose a stage</p>
       </div>
     </div>
 
@@ -50,7 +50,7 @@
       >
         <div class="min-w-0 flex-1">
           <p
-            class="text-[14px] font-medium truncate"
+            class="text-sm font-medium truncate"
             :class="stage.uuid === selectedStageUuid
               ? 'text-blue-600 dark:text-blue-400'
               : 'text-gray-900 dark:text-white'"
@@ -60,7 +60,7 @@
         </div>
         <span
           v-if="stage.is_current"
-          class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full shrink-0"
+          class="text-2xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full shrink-0"
         >
           Current
         </span>
@@ -73,7 +73,7 @@
 
       <p
         v-if="filteredStages.length === 0"
-        class="px-3 py-6 text-center text-[12px] text-gray-400 dark:text-gray-500"
+        class="px-3 py-6 text-center text-xs text-gray-400 dark:text-gray-500"
       >
         No stages found.
       </p>

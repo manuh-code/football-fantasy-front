@@ -105,7 +105,7 @@ const resultTextClass = (result: Result | null): string => {
         <!-- Team header -->
         <div class="flex items-center gap-2.5 mb-3">
           <TeamLogo :team="form.team" size="sm" />
-          <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate min-w-0">
+          <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate min-w-0">
             {{ form.team.name }}
           </p>
         </div>
@@ -119,7 +119,7 @@ const resultTextClass = (result: Result | null): string => {
           >
             <TeamLogo :team="entry.homeSide" size="xs" />
             <span
-              class="text-[13px] font-bold tabular-nums"
+              class="text-footnote font-bold tabular-nums"
               :class="resultTextClass(entry.result)"
             >
               {{ entry.homeGoals ?? "-" }}–{{ entry.awayGoals ?? "-" }}
@@ -132,7 +132,7 @@ const resultTextClass = (result: Result | null): string => {
 
     <!-- Empty state -->
     <div v-else class="py-6 text-center">
-      <p class="text-[12px] text-gray-400 dark:text-gray-500">No recent matches available.</p>
+      <p class="text-xs text-gray-400 dark:text-gray-500">No recent matches available.</p>
     </div>
   </div>
 </template>

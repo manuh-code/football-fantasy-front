@@ -125,7 +125,7 @@ const isHome = computed(() => props.side === "home");
     <div
       class="shrink-0 min-w-[40px] h-6 px-2 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 mt-0.5"
     >
-      <span class="text-[10px] font-bold tabular-nums text-gray-700 dark:text-gray-300">
+      <span class="text-2xs font-bold tabular-nums text-gray-700 dark:text-gray-300">
         {{ minuteLabel }}
       </span>
     </div>
@@ -145,24 +145,24 @@ const isHome = computed(() => props.side === "home");
     <div class="flex-1 min-w-0" :class="isHome ? 'text-left' : 'text-right'">
       <div class="flex items-start gap-1.5" :class="isHome ? 'justify-start' : 'justify-end'">
         <p
-          class="text-[13px] font-semibold text-gray-900 dark:text-white break-words"
+          class="text-footnote font-semibold text-gray-900 dark:text-white break-words"
           :class="isCancelledPenalty ? 'line-through text-gray-400 dark:text-gray-500' : ''"
         >
           {{ event.player_name }}
         </p>
         <span
           v-if="developerName === 'PENALTY'"
-          class="text-[9px] font-bold px-1 py-px rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 shrink-0 mt-0.5"
+          class="text-2xs font-bold px-1 py-px rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 shrink-0 mt-0.5"
         >
           P
         </span>
       </div>
-      <p class="text-[11px] text-gray-500 dark:text-gray-400 break-words">
+      <p class="text-2xs text-gray-500 dark:text-gray-400 break-words">
         {{ eventTitle }}
       </p>
       <p
         v-if="secondaryLine"
-        class="text-[10px] text-gray-400 dark:text-gray-500 break-words italic"
+        class="text-2xs text-gray-400 dark:text-gray-500 break-words italic"
       >
         {{ secondaryLine }}
       </p>

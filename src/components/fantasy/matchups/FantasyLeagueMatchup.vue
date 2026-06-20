@@ -198,7 +198,7 @@ onMounted(async () => {
           <div class="flex items-center justify-center px-4 pt-3 pb-1">
             <span
               :class="[
-                'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase',
+                'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-2xs font-bold uppercase',
                 getStatusBadge(matchup.status).class,
               ]"
             >
@@ -273,7 +273,7 @@ onMounted(async () => {
                 <!-- Draw badge -->
                 <span
                   v-if="matchup.status === 'completed' && matchup.is_draw"
-                  class="mt-1 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase"
+                  class="mt-1 text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase"
                 >
                   Draw
                 </span>

@@ -142,7 +142,7 @@
                         getStateClass(fixture.state),
                         isMatchInProgress(fixture) ? 'animate-pulse' : '',
                       ]"
-                      class="text-[10px] px-1.5 py-0.5 rounded-full mt-0.5 font-medium"
+                      class="text-2xs px-1.5 py-0.5 rounded-full mt-0.5 font-medium"
                     >
                       {{ getStateText(fixture.state) }}
                     </span>
@@ -195,7 +195,7 @@
                       getStateClass(fixture.state),
                       isMatchInProgress(fixture) ? 'animate-pulse' : '',
                     ]"
-                    class="text-[10px] leading-tight px-1.5 py-px rounded-full font-medium"
+                    class="text-2xs leading-tight px-1.5 py-px rounded-full font-medium"
                   >
                     {{ getStateText(fixture.state) }}
                   </span>
@@ -214,7 +214,7 @@
                 </div>
 
                 <!-- Time (desktop) -->
-                <span class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
+                <span class="text-2xs text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
                   {{ formatMatchTime(fixture.starting_at) }}
                 </span>
               </div>

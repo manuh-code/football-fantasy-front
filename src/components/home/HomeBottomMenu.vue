@@ -32,12 +32,12 @@
           <!-- "Soon" mini badge -->
           <span
             v-if="tab.badge"
-            class="absolute -top-1.5 -right-3 text-[7px] font-bold text-white bg-gray-400 dark:bg-gray-600 rounded-full px-1 py-px leading-none"
+            class="absolute -top-1.5 -right-3 text-2xs font-bold text-white bg-gray-400 dark:bg-gray-600 rounded-full px-1 py-px leading-none"
           >
             {{ tab.badge }}
           </span>
         </div>
-        <span class="text-[10px] font-semibold leading-tight">{{ tab.label }}</span>
+        <span class="text-2xs font-semibold leading-tight">{{ tab.label }}</span>
       </button>
     </div>
   </nav>

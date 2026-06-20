@@ -41,10 +41,10 @@
           class="w-5 h-5 text-red-500 shrink-0"
         />
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
             Error loading team
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
             {{ error }}
           </p>
         </div>
@@ -62,10 +62,10 @@
           class="w-5 h-5 text-amber-500 shrink-0"
         />
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
             No fantasy league selected
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
             Please select a fantasy league to view your team.
           </p>
         </div>
@@ -101,7 +101,7 @@
           class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 active:scale-[0.97] transition-all"
         >
           <v-icon name="hi-solid-user-add" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-          <span class="text-[12px] font-semibold text-gray-700 dark:text-gray-300">Add Players</span>
+          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Add Players</span>
         </button>
 
         <button
@@ -109,7 +109,7 @@
           class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 opacity-40 cursor-not-allowed"
         >
           <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-blue-500 dark:text-blue-400" />
-          <span class="text-[12px] font-semibold text-gray-700 dark:text-gray-300">Trades</span>
+          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Trades</span>
         </button>
       </div>
 
@@ -138,10 +138,10 @@
           class="w-5 h-5 text-amber-500 shrink-0"
         />
         <div>
-          <h3 class="text-[13px] font-semibold text-gray-900 dark:text-white">
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
             No rounds available
           </h3>
-          <p class="text-[12px] text-gray-500 dark:text-gray-400">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
             There are no rounds configured for this fantasy league yet.
           </p>
         </div>

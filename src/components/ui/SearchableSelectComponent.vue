@@ -122,7 +122,7 @@
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
             <div class="flex items-center justify-between px-4 pb-2.5 pt-1">
-              <h3 class="text-[15px] font-bold text-gray-900 dark:text-white truncate">
+              <h3 class="text-callout font-bold text-gray-900 dark:text-white truncate">
                 {{ label || placeholder }}
               </h3>
               <button

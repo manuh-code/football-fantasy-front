@@ -3,7 +3,7 @@
     <div class="px-4 py-3">
       <div class="flex items-center gap-2">
         <v-icon name="hi-solid-lightning-bolt" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
-        <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white">Fantasy Points Filters</h2>
+        <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">Fantasy Points Filters</h2>
       </div>
     </div>
 
@@ -62,7 +62,7 @@
 
         <!-- Initial state -->
         <div v-if="disabled && isInitializing">
-          <div class="px-3 py-2 text-[12px] text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-dashed border-gray-200 dark:border-gray-600">
+          <div class="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/60 rounded-xl border border-dashed border-gray-200 dark:border-gray-600">
             <v-icon name="pr-spinner" class="w-3 h-3 mr-1.5" animation="spin" />
             Preparing league data…
           </div>
@@ -70,7 +70,7 @@
 
         <!-- Message when there is no active season -->
         <div v-else-if="disabled && !isInitializing">
-          <div class="px-3 py-2 text-[12px] text-gray-500 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-100 dark:border-amber-700/50">
+          <div class="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-100 dark:border-amber-700/50">
             <v-icon name="hi-solid-information-circle" class="w-3.5 h-3.5 mr-1.5 text-amber-500 dark:text-amber-400" />
             This league does not have an active season.
           </div>

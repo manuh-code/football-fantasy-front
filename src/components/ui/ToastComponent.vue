@@ -26,10 +26,10 @@
 
       <!-- Content -->
       <div class="flex-1 min-w-0">
-        <p :class="['text-[15px] font-semibold leading-tight', titleColorClass]">
+        <p :class="['text-callout font-semibold leading-tight', titleColorClass]">
           {{ props.toast.title }}
         </p>
-        <p v-if="props.toast.message" :class="['text-[13px] leading-snug mt-0.5', messageColorClass]">
+        <p v-if="props.toast.message" :class="['text-footnote leading-snug mt-0.5', messageColorClass]">
           {{ props.toast.message }}
         </p>
       </div>

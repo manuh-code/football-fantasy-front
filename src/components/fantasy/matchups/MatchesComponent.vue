@@ -145,7 +145,7 @@ onMounted(async () => {
       class="mx-4 mt-8 flex flex-col items-center gap-3 text-center"
     >
       <v-icon name="gi-crossed-swords" class="w-12 h-12 text-gray-200 dark:text-gray-700" />
-      <p class="text-[14px] text-gray-400 dark:text-gray-500">Select a fantasy league to view matches.</p>
+      <p class="text-sm text-gray-400 dark:text-gray-500">Select a fantasy league to view matches.</p>
     </div>
 
     <!-- No rounds -->
@@ -154,8 +154,8 @@ onMounted(async () => {
       class="mx-4 mt-8 flex flex-col items-center gap-3 text-center"
     >
       <v-icon name="hi-solid-calendar" class="w-12 h-12 text-gray-200 dark:text-gray-700" />
-      <p class="text-[14px] font-medium text-gray-700 dark:text-gray-300">No rounds available</p>
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">Rounds will appear once the season starts.</p>
+      <p class="text-sm font-medium text-gray-700 dark:text-gray-300">No rounds available</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">Rounds will appear once the season starts.</p>
     </div>
 
     <!-- Main content -->
@@ -178,31 +178,31 @@ onMounted(async () => {
           <div class="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 px-4 py-2.5 flex items-center justify-between min-h-[44px]">
             <div class="flex flex-col gap-0.5">
               <div class="flex items-center gap-2">
-                <span class="text-[15px] font-bold text-gray-900 dark:text-white leading-none">
+                <span class="text-callout font-bold text-gray-900 dark:text-white leading-none">
                   {{ selectedRound ? getRoundLabel(selectedRound) : '—' }}
                 </span>
                 <!-- Status badges -->
                 <span
                   v-if="selectedRound && !selectedRound.round.finished && selectedRound.round.is_current"
-                  class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold uppercase tracking-wide leading-none"
+                  class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-2xs font-bold uppercase tracking-wide leading-none"
                 >
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                   Live
                 </span>
                 <span
                   v-else-if="selectedRound?.round.finished"
-                  class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-bold uppercase tracking-wide leading-none"
+                  class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-2xs font-bold uppercase tracking-wide leading-none"
                 >
                   Final
                 </span>
               </div>
-              <span v-if="selectedRound" class="text-[11px] text-gray-400 dark:text-gray-500 leading-none">
+              <span v-if="selectedRound" class="text-2xs text-gray-400 dark:text-gray-500 leading-none">
                 {{ formatRoundDate(selectedRound.round.starting_at) }}
                 <template v-if="selectedRound.round.ending_at"> – {{ formatRoundDate(selectedRound.round.ending_at) }}</template>
               </span>
             </div>
             <!-- Round count -->
-            <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
+            <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
               {{ (rounds.findIndex(r => r.uuid === selectedRoundUuid) + 1) }} / {{ rounds.length }}
             </span>
           </div>
@@ -243,7 +243,7 @@ onMounted(async () => {
       <div v-else-if="error" class="mx-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl p-4">
         <div class="flex items-center gap-2">
           <v-icon name="hi-solid-exclamation-circle" class="w-5 h-5 text-red-500 shrink-0" />
-          <p class="text-[13px] text-red-700 dark:text-red-300">{{ error }}</p>
+          <p class="text-footnote text-red-700 dark:text-red-300">{{ error }}</p>
         </div>
       </div>
 
@@ -253,8 +253,8 @@ onMounted(async () => {
         class="mx-4 flex flex-col items-center gap-3 text-center py-8"
       >
         <v-icon name="gi-crossed-swords" class="w-12 h-12 text-gray-200 dark:text-gray-700" />
-        <p class="text-[14px] font-medium text-gray-700 dark:text-gray-300">No matchups yet</p>
-        <p class="text-[13px] text-gray-400 dark:text-gray-500">Matchups for this round haven't been scheduled.</p>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">No matchups yet</p>
+        <p class="text-footnote text-gray-400 dark:text-gray-500">Matchups for this round haven't been scheduled.</p>
       </div>
 
       <!-- ── Matchup cards (carousel) ── -->

@@ -101,10 +101,10 @@ const retry = () => load();
     <!-- Error -->
     <div v-else-if="error" class="py-12 flex flex-col items-center text-center">
       <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-400 dark:text-red-500 mb-3" />
-      <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+      <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
       <button
         @click="retry"
-        class="px-4 py-2 text-[12px] font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+        class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
       >
         Retry
       </button>
@@ -116,7 +116,7 @@ const retry = () => load();
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-[13px] text-gray-400 dark:text-gray-500">No team statistics available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">No team statistics available yet</p>
     </div>
 
     <!-- Stat groups -->
@@ -125,7 +125,7 @@ const retry = () => load();
         <!-- Group header -->
         <div class="flex items-center gap-2 mb-2.5">
           <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
-          <span class="text-[10px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
+          <span class="text-2xs font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
             {{ groupLabel(group.stat_group) }}
           </span>
           <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
@@ -141,14 +141,14 @@ const retry = () => load();
           <div class="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-800">
             <div class="flex items-center gap-2 min-w-0">
               <v-icon name="hi-solid-chart-bar" class="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span class="text-[12px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 truncate">
+              <span class="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 truncate">
                 {{ stat.type.name }}
               </span>
             </div>
             <button
               v-if="stat.teams.length > TOP_N"
               @click="drawerStat = stat"
-              class="shrink-0 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+              class="shrink-0 text-2xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
             >
               View all
             </button>
@@ -163,7 +163,7 @@ const retry = () => load();
               :class="index === 0 ? 'bg-amber-50/60 dark:bg-amber-900/10' : ''"
             >
               <!-- Medal -->
-              <span class="w-6 shrink-0 text-center text-[16px] leading-none select-none">
+              <span class="w-6 shrink-0 text-center text-base leading-none select-none">
                 {{ rankLabel[index] }}
               </span>
 
@@ -180,17 +180,17 @@ const retry = () => load();
 
               <!-- Name + short code -->
               <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-semibold text-gray-900 dark:text-white truncate leading-snug">
+                <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate leading-snug">
                   {{ team.name }}
                 </p>
-                <span class="text-[11px] text-gray-400 dark:text-gray-500">
+                <span class="text-2xs text-gray-400 dark:text-gray-500">
                   {{ team.short_code }}
                 </span>
               </div>
 
               <!-- Value -->
               <span
-                class="shrink-0 text-[16px] font-extrabold tabular-nums"
+                class="shrink-0 text-base font-extrabold tabular-nums"
                 :class="index === 0
                   ? 'text-amber-500'
                   : index === 1

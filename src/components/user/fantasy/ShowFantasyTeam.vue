@@ -121,7 +121,7 @@ const goToTeam = () => {
       <!-- Status Badge -->
       <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-        <span class="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Active</span>
+        <span class="text-2xs font-medium text-emerald-700 dark:text-emerald-400">Active</span>
       </div>
     </div>
   </div>

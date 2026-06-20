@@ -10,10 +10,10 @@
             class="w-[18px] h-[18px] text-amber-500 dark:text-amber-400 shrink-0"
           />
           <div class="flex flex-col sm:flex-row sm:items-baseline sm:gap-2 min-w-0 flex-1 leading-tight">
-            <h2 class="text-[15px] font-semibold text-gray-900 dark:text-white truncate">
+            <h2 class="text-callout font-semibold text-gray-900 dark:text-white truncate">
               Playoffs
             </h2>
-            <span v-if="selectedKnockoutLabel" class="text-[11px] text-gray-400 dark:text-gray-500 truncate">
+            <span v-if="selectedKnockoutLabel" class="text-2xs text-gray-400 dark:text-gray-500 truncate">
               {{ selectedKnockoutLabel }}
             </span>
           </div>
@@ -22,7 +22,7 @@
         <div class="flex items-center gap-1.5 shrink-0">
           <!-- Carousel navigation dots + arrows -->
           <template v-if="maxSlides > 1">
-            <span class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums">
+            <span class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums">
               {{ currentSlide + 1 }}/{{ maxSlides }}
             </span>
             <button
@@ -64,7 +64,7 @@
             </span>
             <span
               v-if="option.is_current"
-              class="text-[9px] font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0 ml-2"
+              class="text-2xs font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0 ml-2"
             >
               Current
             </span>
@@ -76,13 +76,13 @@
               </span>
               <span
                 v-if="option.is_current"
-                class="text-[9px] font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0"
+                class="text-2xs font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0"
               >
                 Current
               </span>
               <span
                 v-else-if="option.finished"
-                class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
+                class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
               >
                 Done
               </span>
@@ -93,10 +93,10 @@
 
       <!-- Stages load error -->
       <div v-else class="flex items-center justify-between gap-2 py-1">
-        <p class="text-[12px] text-red-500 dark:text-red-400">{{ stagesError }}</p>
+        <p class="text-xs text-red-500 dark:text-red-400">{{ stagesError }}</p>
         <button
           @click="loadKnockoutStages(props.stageUuid)"
-          class="text-[12px] font-semibold text-amber-600 dark:text-amber-400 hover:underline"
+          class="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline"
         >
           Retry
         </button>
@@ -119,10 +119,10 @@
 
       <!-- Fixtures error -->
       <div v-else-if="fixturesError" class="text-center py-10 px-4">
-        <p class="text-[13px] text-red-500 dark:text-red-400 mb-3">{{ fixturesError }}</p>
+        <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ fixturesError }}</p>
         <button
           @click="retryFixtures"
-          class="text-[13px] font-medium text-red-500 dark:text-red-400 hover:underline"
+          class="text-footnote font-medium text-red-500 dark:text-red-400 hover:underline"
         >
           Retry
         </button>
@@ -137,7 +137,7 @@
           name="bi-trophy"
           class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
         />
-        <p class="text-[13px]">No playoffs available yet</p>
+        <p class="text-footnote">No playoffs available yet</p>
       </div>
 
       <!-- Empty: stage selected but no fixtures -->
@@ -149,7 +149,7 @@
           name="md-sportssoccer"
           class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
         />
-        <p class="text-[13px]">No matches in this stage</p>
+        <p class="text-footnote">No matches in this stage</p>
       </div>
 
       <!-- Carousel -->
@@ -187,12 +187,12 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                     </span>
-                    <span class="text-[10px] font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+                    <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
                   </div>
 
                   <!-- Time label (when NOT live) -->
                   <div v-else class="text-center mb-2">
-                    <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
+                    <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
                       {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
                     </span>
                   </div>
@@ -203,7 +203,7 @@
                       <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
                       <span
                         :class="getTeamResultClass(fixture, 'home')"
-                        class="text-[13px] font-medium truncate"
+                        class="text-footnote font-medium truncate"
                         :title="getTeamName(getHomeParticipant(fixture))"
                       >
                         {{ getTeamName(getHomeParticipant(fixture)) }}
@@ -215,18 +215,18 @@
                         class="tabular-nums"
                         :class="[
                           hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                          isMatchLive(fixture) ? 'text-[22px]' : 'text-[20px]',
+                          isMatchLive(fixture) ? 'text-2xl' : 'text-xl',
                         ]"
                       >
                         <template v-if="hasScores(fixture)">
                           {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
                         </template>
-                        <span v-else class="text-[11px] font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+                        <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
                       </div>
                       <span
                         v-if="!isMatchLive(fixture)"
                         :class="getFixtureStateClass(fixture)"
-                        class="text-[9px] px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
+                        class="text-2xs px-1.5 py-px rounded-full font-semibold mt-0.5 tracking-wide"
                       >
                         {{ getFixtureStateText(fixture) }}
                       </span>
@@ -235,7 +235,7 @@
                     <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                       <span
                         :class="getTeamResultClass(fixture, 'away')"
-                        class="text-[13px] font-medium truncate text-right"
+                        class="text-footnote font-medium truncate text-right"
                         :title="getTeamName(getAwayParticipant(fixture))"
                       >
                         {{ getTeamName(getAwayParticipant(fixture)) }}
@@ -267,14 +267,14 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
                     </span>
-                    <span class="text-[9px] font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">Live</span>
+                    <span class="text-2xs font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">Live</span>
                   </div>
 
                   <div class="flex items-center gap-2 px-3 py-2.5" :class="isMatchLive(fixture) ? 'pt-1' : ''">
                     <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
                       <span
                         :class="getTeamResultClass(fixture, 'home')"
-                        class="text-[12px] font-medium truncate text-right"
+                        class="text-xs font-medium truncate text-right"
                         :title="getTeamName(getHomeParticipant(fixture))"
                       >
                         {{ getTeamName(getHomeParticipant(fixture)) }}
@@ -287,18 +287,18 @@
                         class="tabular-nums"
                         :class="[
                           hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                          isMatchLive(fixture) ? 'text-[15px]' : 'text-[13px]',
+                          isMatchLive(fixture) ? 'text-callout' : 'text-footnote',
                         ]"
                       >
                         <template v-if="hasScores(fixture)">
                           {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-px' : 'text-gray-300 dark:text-gray-600 mx-px'">-</span>{{ getAwayScore(fixture) }}
                         </template>
-                        <span v-else class="text-[10px] font-semibold text-gray-300 dark:text-gray-600">vs</span>
+                        <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600">vs</span>
                       </div>
                       <span
                         v-if="!isMatchLive(fixture)"
                         :class="getFixtureStateClass(fixture)"
-                        class="text-[9px] leading-none px-1.5 py-px rounded-full font-semibold"
+                        class="text-2xs leading-none px-1.5 py-px rounded-full font-semibold"
                       >
                         {{ getFixtureStateText(fixture) }}
                       </span>
@@ -308,14 +308,14 @@
                       <TeamLogo :team="getAwayParticipant(fixture)" size="sm" />
                       <span
                         :class="getTeamResultClass(fixture, 'away')"
-                        class="text-[12px] font-medium truncate"
+                        class="text-xs font-medium truncate"
                         :title="getTeamName(getAwayParticipant(fixture))"
                       >
                         {{ getTeamName(getAwayParticipant(fixture)) }}
                       </span>
                     </div>
 
-                    <span v-if="!isMatchLive(fixture)" class="text-[10px] text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
+                    <span v-if="!isMatchLive(fixture)" class="text-2xs text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
                       {{ formatMatchTime(fixture.starting_at) }}
                     </span>
                   </div>
