@@ -220,6 +220,28 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Fantasy Games - Football Fantasy',
       description: 'Manage your fantasy games and leagues',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/pools',
+    name: 'pools',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "pools" */ '@/views/pool/PoolView.vue'),
+    meta: {
+      title: 'Pools - Football Fantasy',
+      description: 'View the pools you are participating in',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/pools/:uuid',
+    name: 'poolGroup',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "pool-group" */ '@/views/pool/PoolGroupView.vue'),
+    meta: {
+      title: 'Pool Group - Football Fantasy',
+      description: 'View your pool group details, predictions and standings',
       requiresAuth: true
     }
   },

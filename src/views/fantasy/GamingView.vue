@@ -41,21 +41,27 @@
         </div>
       </div>
 
-      <!-- Quiniela Card -->
-      <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden opacity-60">
+      <!-- Pools Card -->
+      <button
+        @click="handleNavigation('pools')"
+        class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden active:scale-[0.98] transition-transform duration-150 focus:outline-none text-left"
+      >
         <div class="flex items-center gap-4 px-4 py-3.5">
           <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shrink-0">
             <v-icon name="hi-solid-document-text" class="w-6 h-6 text-white" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">Quiniela</h3>
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">Pools</h3>
             <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">Predict match results and compete</p>
           </div>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 shrink-0">
-            Soon
-          </span>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+              Live
+            </span>
+            <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
+          </div>
         </div>
-      </div>
+      </button>
 
       <!-- Info banner — subtle -->
       <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl px-4 py-3 border border-blue-100 dark:border-blue-800/40">
@@ -98,8 +104,8 @@ const handleNavigation = async (gameMode: string) => {
     case 'survivor':
       info('Survivor mode coming soon!')
       break
-    case 'quiniela':
-      info('Quiniela mode coming soon!')
+    case 'pools':
+      router.push({ name: 'pools' })
       break
     default:
       break
