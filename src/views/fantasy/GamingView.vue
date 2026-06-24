@@ -25,22 +25,6 @@
         </div>
       </button>
 
-      <!-- Survivor Card -->
-      <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden opacity-60">
-        <div class="flex items-center gap-4 px-4 py-3.5">
-          <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center shrink-0">
-            <v-icon name="hi-solid-fire" class="w-6 h-6 text-white" />
-          </div>
-          <div class="flex-1 min-w-0">
-            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">Survivor</h3>
-            <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">Pick one team per week to win</p>
-          </div>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 shrink-0">
-            Soon
-          </span>
-        </div>
-      </div>
-
       <!-- Pools Card -->
       <button
         @click="handleNavigation('pools')"
@@ -62,16 +46,6 @@
           </div>
         </div>
       </button>
-
-      <!-- Info banner — subtle -->
-      <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl px-4 py-3 border border-blue-100 dark:border-blue-800/40">
-        <div class="flex items-center gap-2.5">
-          <v-icon name="hi-solid-information-circle" class="w-[18px] h-[18px] text-blue-400 shrink-0" />
-          <p class="text-footnote text-blue-600 dark:text-blue-300 leading-snug">
-            More game modes coming soon. Stay tuned!
-          </p>
-        </div>
-      </div>
     </div>
   </div>
   <HomeMenu />
@@ -100,9 +74,6 @@ const handleNavigation = async (gameMode: string) => {
   switch (gameMode) {
     case 'fantasy':
       router.push({ name: 'userFantasyLeague' })
-      break
-    case 'survivor':
-      info('Survivor mode coming soon!')
       break
     case 'pools':
       router.push({ name: 'pools' })

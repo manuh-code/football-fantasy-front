@@ -133,6 +133,12 @@
         </div>
       </div>
     </transition>
+
+    <!-- Ad: only once real standings are loaded. -->
+    <AdUnit
+      v-if="!loadingStandings && !standingsError && rankedStandings.length > 0"
+      :slot="AD_SLOTS.poolStandings"
+    />
   </div>
 </template>
 
@@ -141,6 +147,8 @@ import { computed, onMounted, ref, watch } from "vue";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
 import PoolRoundsCarousel from "@/components/pool/PoolRoundsCarousel.vue";
+import AdUnit from "@/components/ads/AdUnit.vue";
+import { AD_SLOTS } from "@/config/ads";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { PoolStandingResponse } from "@/interfaces/pool/PoolStandingResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";

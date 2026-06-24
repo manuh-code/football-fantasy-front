@@ -44,12 +44,6 @@
         </div>
       </div>
     </div>
-
-    <!-- More settings placeholder -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
-      <v-icon name="hi-solid-sparkles" class="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-      <p class="text-sm font-medium text-gray-400 dark:text-gray-500">More settings coming soon</p>
-    </div>
   </div>
 </template>
 

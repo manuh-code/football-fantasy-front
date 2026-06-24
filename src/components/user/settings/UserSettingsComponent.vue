@@ -64,7 +64,7 @@
       <!-- System Settings -->
       <button
         @click="navigateTo('system-settings')"
-        class="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+        class="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 border-b border-gray-100 dark:border-gray-700"
       >
         <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
           <v-icon name="hi-solid-cog" class="w-5 h-5 text-purple-600 dark:text-purple-400" />
@@ -72,6 +72,21 @@
         <div class="flex-1 text-left min-w-0">
           <p class="text-sm font-medium text-gray-900 dark:text-white">System Settings</p>
           <p class="text-xs text-gray-500 dark:text-gray-400">Theme, language, and preferences</p>
+        </div>
+        <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+      </button>
+
+      <!-- Privacy Notice -->
+      <button
+        @click="navigateTo('privacy')"
+        class="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+      >
+        <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center flex-shrink-0">
+          <v-icon name="hi-solid-document-text" class="w-5 h-5 text-gray-600 dark:text-gray-300" />
+        </div>
+        <div class="flex-1 text-left min-w-0">
+          <p class="text-sm font-medium text-gray-900 dark:text-white">Aviso de Privacidad</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">How we handle your personal data</p>
         </div>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
