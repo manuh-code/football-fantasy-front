@@ -112,6 +112,17 @@
           Sign up
         </router-link>
       </p>
+
+      <!-- Privacy notice -->
+      <p class="mt-3 text-center text-2xs text-gray-400 dark:text-gray-500">
+        Al continuar aceptas nuestro
+        <router-link
+          to="/privacy"
+          class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+        >
+          Aviso de Privacidad
+        </router-link>
+      </p>
     </div>
   </div>
 </template>

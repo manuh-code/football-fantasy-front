@@ -2,6 +2,37 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 
+// For anonymous visitors (and search/AdSense crawlers) we auto-select the first
+// league returned by the API so public content is reachable without forcing the
+// selection screen. Deduped across navigations; retries on a later attempt if it fails.
+let defaultLeaguePromise: Promise<boolean> | null = null
+async function ensureDefaultLeague(
+  store: ReturnType<typeof useFootballLeagueStore>
+): Promise<boolean> {
+  if (store.existLeague()) return true
+  if (!defaultLeaguePromise) {
+    defaultLeaguePromise = (async () => {
+      try {
+        // Lazy import: importing CatalogService at the top level instantiates its
+        // singleton (which calls useApiFantasy → imports the router) during module
+        // evaluation, creating a startup-crashing circular dependency. Loading it
+        // here defers instantiation until runtime, after everything is initialized.
+        const { default: catalogService } = await import('@/services/catalog/CatalogService')
+        const leagues = await catalogService.getFootballLeagues()
+        if (Array.isArray(leagues) && leagues.length > 0) {
+          store.setLeague(leagues[0])
+          return true
+        }
+      } catch (e) {
+        console.error('Failed to set a default league:', e)
+      }
+      defaultLeaguePromise = null
+      return false
+    })()
+  }
+  return defaultLeaguePromise
+}
+
 // Routes that do NOT require a selected football league. Everything else is
 // gated: without a selected league the user is redirected to the league
 // selection page and cannot leave it until one is chosen.
@@ -11,6 +42,7 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'GoogleCallback',
   'not-found',
   'footballLeagues',
+  'privacy',
 ])
 
 const routes: Array<RouteRecordRaw> = [
@@ -256,6 +288,17 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: true
     }
   },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "privacy" */ '@/views/legal/PrivacyView.vue'),
+    meta: {
+      title: 'Aviso de Privacidad - Football Fantasy',
+      description: 'Aviso de privacidad de Football Fantasy conforme a la LFPDPPP',
+      requiresAuth: false
+    }
+  },
   // Catch-all route for 404 pages
   {
     path: '/:pathMatch(.*)*',
@@ -323,6 +366,11 @@ router.beforeEach(async (to, from, next) => {
   // league is chosen). Exempt routes (auth pages, the selector itself) pass through.
   const footballLeagueStore = useFootballLeagueStore();
   if (!footballLeagueStore.existLeague() && !LEAGUE_EXEMPT_ROUTES.has(to.name as string)) {
+    // Anonymous visitors get a default league so the content is reachable;
+    // authenticated users still choose their own on the selection screen.
+    if (!isAuthenticated && (await ensureDefaultLeague(footballLeagueStore))) {
+      return next();
+    }
     return next({ name: "footballLeagues", query: { redirect: to.fullPath } });
   }
 

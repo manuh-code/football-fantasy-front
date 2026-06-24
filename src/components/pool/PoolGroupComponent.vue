@@ -158,12 +158,16 @@
         :stage-uuid="pool.stage.uuid"
         :pool-group-uuid="pool.uuid"
       />
-      <UnderConstruction
+      <div
         v-else-if="activeTab === 'predictions'"
-        icon="hi-solid-clipboard-list"
-        title="Predictions"
-        message="Predictions will be available once a stage is assigned to this pool."
-      />
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center"
+      >
+        <v-icon name="hi-solid-clipboard-list" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
+        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">Predictions unavailable</h3>
+        <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
+          This pool doesn't have a stage assigned yet.
+        </p>
+      </div>
 
       <!-- Standings tab -->
       <PoolStandingComponent
@@ -182,7 +186,6 @@ import { useToast } from "@/composables/useToast";
 import PoolGroupSkeleton from "@/components/pool/PoolGroupSkeleton.vue";
 import PoolPredictionComponent from "@/components/pool/PoolPredictionComponent.vue";
 import PoolStandingComponent from "@/components/pool/PoolStandingComponent.vue";
-import UnderConstruction from "@/components/pool/UnderConstruction.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
