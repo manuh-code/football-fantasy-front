@@ -14,7 +14,7 @@ export const ADSENSE_CLIENT = "ca-pub-9871390969430404";
 // the real ids.
 export const AD_SLOTS = {
   /** Below the Home content panels (standings / fixtures / statistics). */
-  homeContent: "[HOME_CONTENT_SLOT_ID]",
+  homeContent: "2724260479",
   /** In-feed unit after the pool standings list. */
   poolStandings: "[POOL_STANDINGS_SLOT_ID]",
 } as const;
