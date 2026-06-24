@@ -1,14 +1,12 @@
 <template>
-  <div class="p-6 text-center">
-    <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-      <v-icon :name="props.icon" class="w-10 h-10 text-gray-400 dark:text-gray-300" />
-    </div>
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ props.title }}</h3>
-    <p v-if="props.description" class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ props.description }}</p>
+  <div class="py-12 px-6 text-center">
+    <v-icon :name="props.icon" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
+    <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ props.title }}</h3>
+    <p v-if="props.description" class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">{{ props.description }}</p>
 
     <slot name="extra"></slot>
 
-    <div v-if="props.buttonText" class="mt-2">
+    <div v-if="props.buttonText" class="mt-4">
       <ButtonComponent :text="props.buttonText" variant="outline" size="md" @click="handleAction" />
     </div>
   </div>

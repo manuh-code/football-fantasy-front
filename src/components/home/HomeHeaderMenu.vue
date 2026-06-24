@@ -17,7 +17,7 @@
         aria-label="Go to home"
         title="Go to Home"
       >
-        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[10px] flex items-center justify-center">
+        <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-[10px] flex items-center justify-center">
           <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
         </div>
       </button> -->
@@ -50,7 +50,7 @@
         <button
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
-          class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
           aria-label="Login"
         >
           Login
@@ -59,7 +59,7 @@
         <button
           v-else
           @click="handleViewProfile"
-          class="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-100 dark:ring-gray-700 hover:ring-blue-500/50 dark:hover:ring-blue-400/50 transition-all duration-150 focus:outline-none active:scale-95"
+          class="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-100 dark:ring-gray-700 hover:ring-emerald-500/50 dark:hover:ring-emerald-400/50 transition-all duration-150 focus:outline-none active:scale-95"
           :title="`Go to ${userName} profile`"
           aria-label="Go to profile"
         >
@@ -71,7 +71,7 @@
           />
           <div
             v-else
-            class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-2xs font-bold"
+            class="w-full h-full flex items-center justify-center bg-emerald-500 text-white text-2xs font-bold"
           >
             {{ userInitials }}
           </div>

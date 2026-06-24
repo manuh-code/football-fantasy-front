@@ -156,6 +156,7 @@
       <PoolPredictionComponent
         v-else-if="activeTab === 'predictions' && pool.stage"
         :stage-uuid="pool.stage.uuid"
+        :pool-group-uuid="pool.uuid"
       />
       <UnderConstruction
         v-else-if="activeTab === 'predictions'"
@@ -164,11 +165,11 @@
         message="Predictions will be available once a stage is assigned to this pool."
       />
 
-      <!-- Standings tab — under construction -->
-      <UnderConstruction
+      <!-- Standings tab -->
+      <PoolStandingComponent
         v-else-if="activeTab === 'standings'"
-        icon="bi-trophy-fill"
-        title="Standings"
+        :pool-group-uuid="pool.uuid"
+        :stage-uuid="pool.stage?.uuid"
       />
     </template>
   </div>
@@ -180,6 +181,7 @@ import { poolService } from "@/services/pool/poolService";
 import { useToast } from "@/composables/useToast";
 import PoolGroupSkeleton from "@/components/pool/PoolGroupSkeleton.vue";
 import PoolPredictionComponent from "@/components/pool/PoolPredictionComponent.vue";
+import PoolStandingComponent from "@/components/pool/PoolStandingComponent.vue";
 import UnderConstruction from "@/components/pool/UnderConstruction.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";

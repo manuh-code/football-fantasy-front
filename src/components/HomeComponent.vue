@@ -40,16 +40,14 @@
     </template>
 
     <template v-else>
-      <div class="text-center py-8 sm:py-12">
-        <div class="text-gray-400 dark:text-gray-500">
-          <v-icon name="md-sportssoccer" class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-          <h3 class="text-lg sm:text-xl font-medium text-gray-900 dark:text-white mb-2">
-            Select a league
-          </h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            Choose your favorite league to view fixtures and statistics
-          </p>
-        </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 px-6 text-center">
+        <v-icon name="md-sportssoccer" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
+        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">
+          Select a league
+        </h3>
+        <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
+          Choose your favorite league to view fixtures and statistics
+        </p>
       </div>
     </template>
   </div>

@@ -20,7 +20,7 @@
                     :class="[
                         'px-3 py-2 text-sm rounded-lg text-left transition-colors',
                         sortBy === column 
-                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' 
+                            ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' 
                             : 'bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500'
                     ]">
                     <div class="flex items-center justify-between">
@@ -39,7 +39,7 @@
                         :class="[
                             'px-3 py-2 text-sm rounded-lg text-left transition-colors',
                             sortBy === statKey 
-                                ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' 
+                                ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' 
                                 : 'bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500'
                         ]">
                         <div class="flex items-center justify-between">
@@ -121,7 +121,7 @@
                 <!-- Show more stats button if there are more than 4 -->
                 <button v-if="dynamicStatColumns.length > 4" 
                     @click="togglePlayerStats(player.uuid)"
-                    class="mt-2 w-full text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                    class="mt-2 w-full text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
                     {{ expandedPlayers.includes(player.uuid) ? 'Show Less' : `Show ${dynamicStatColumns.length - 4} More Stats` }}
                 </button>
                 

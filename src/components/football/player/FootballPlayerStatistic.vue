@@ -5,7 +5,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
             <div class="px-4 py-3">
                 <div class="flex items-center gap-2">
-                    <v-icon name="bi-funnel-fill" class="w-[16px] h-[16px] text-blue-500 dark:text-blue-400 shrink-0" />
+                    <v-icon name="bi-funnel-fill" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
                     <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">Search Filters</h2>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                             Player Name
                         </label>
                         <input id="player-name" v-model="filters.name" type="text" placeholder="Search by player name"
-                            class="w-full px-3 py-2 text-footnote border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" />
+                            class="w-full px-3 py-2 text-footnote border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white" />
                     </div>
 
                     <!-- Statistic Types -->
@@ -107,11 +107,11 @@
                     
                     <!-- Current Sort Indicator -->
                     <div v-if="sortBy && sortDirection">
-                        <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl text-xs border border-blue-100 dark:border-blue-800/50">
+                        <div class="flex items-center gap-2 px-3 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs border border-emerald-100 dark:border-emerald-800/50">
                             <v-icon :name="sortDirection === 'asc' ? 'hi-solid-sort-ascending' : 'hi-solid-sort-descending'" class="w-3.5 h-3.5" />
                             <span>Sorted by <strong>{{ formatStatColumnName(sortBy) }}</strong> ({{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }})</span>
-                            <button @click="sortBy = null; sortDirection = 'desc'; searchPlayers(1)" 
-                                    class="ml-auto text-blue-500 active:text-blue-700 transition-colors shrink-0"
+                            <button @click="sortBy = null; sortDirection = 'desc'; searchPlayers(1)"
+                                    class="ml-auto text-emerald-500 active:text-emerald-700 transition-colors shrink-0"
                                     title="Clear sorting">
                                 <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
                             </button>

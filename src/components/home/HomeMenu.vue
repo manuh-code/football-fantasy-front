@@ -28,7 +28,7 @@ const items: BottomNavItem[] = [
     key: "home",
     label: "Home",
     icon: "hi-solid-home",
-    accent: "blue",
+    accent: "emerald",
   },
   {
     key: "leagues",
@@ -36,7 +36,7 @@ const items: BottomNavItem[] = [
     icon: "hi-solid-collection",
     accent: "emerald",
   },
-  { key: "gaming", label: "Gaming", icon: "bi-trophy-fill", accent: "blue" },
+  { key: "gaming", label: "Gaming", icon: "bi-trophy-fill", accent: "emerald" },
 ];
 
 const activeKey = computed(() => {

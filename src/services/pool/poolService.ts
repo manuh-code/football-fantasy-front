@@ -1,9 +1,13 @@
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
+import { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import { PoolJoinPayload } from "@/interfaces/pool/PoolJoinPayload";
 import { PoolPayload } from "@/interfaces/pool/PoolPayload";
+import { PoolPredictionResponse } from "@/interfaces/pool/PoolPredictionResponse";
 import { PoolResponse } from "@/interfaces/pool/PoolResponse";
+import { PoolSavePredictionPayload } from "@/interfaces/pool/PoolSavePredictionPayload";
+import { PoolStandingResponse } from "@/interfaces/pool/PoolStandingResponse";
 
 export class PoolService {
     private api;
@@ -57,6 +61,43 @@ export class PoolService {
         }
 
         throw new Error('Failed to fetch stage pools by league UUID');
+    }
+
+    async savePoolPrediction(payload: PoolSavePredictionPayload): Promise<PoolPredictionResponse> {
+
+        const response = await this.api.post<ApiResponse<PoolPredictionResponse>>("/pool/prediction", payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to save pool prediction');
+    }
+
+    async getPoolFixtures(poolGroupUuid: string, roundUuid: string): Promise<FootballFixtureResponse[]> {
+        const response = await this.api.get<ApiResponse<FootballFixtureResponse[]>>(`/pool/fixtures/prediction/${poolGroupUuid}/round/${roundUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to fetch pool fixtures');
+    }
+
+    async getPoolStandingsByRound(poolGroupUuid: string, roundUuid: string): Promise<PoolStandingResponse[]> {
+        const response = await this.api.get<ApiResponse<PoolStandingResponse[]>>(`/pool/standings/${poolGroupUuid}/round/${roundUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to fetch pool standings');
+    }
+
+    async getPoolStandingOverall(poolGroupUuid: string): Promise<PoolStandingResponse[]> {
+        const response = await this.api.get<ApiResponse<PoolStandingResponse[]>>(`/pool/standings/${poolGroupUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to fetch pool overall standings');
     }
 }
 

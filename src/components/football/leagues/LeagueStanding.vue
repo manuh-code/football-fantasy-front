@@ -11,8 +11,15 @@
     </div>
 
     <!-- Error -->
-    <div v-else-if="error" class="text-center py-10 px-4">
-      <p class="text-footnote text-red-500 dark:text-red-400">{{ error }}</p>
+    <div v-else-if="error" class="py-12 px-6 text-center">
+      <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+      <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ error }}</p>
+      <button
+        @click="fetchStandings"
+        class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
+      >
+        Try Again
+      </button>
     </div>
 
     <!-- Empty -->

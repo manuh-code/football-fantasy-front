@@ -6,7 +6,7 @@
                     <th
                         :class="[
                             'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none',
-                            sortBy === 'display_name' ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-500 dark:text-gray-300'
+                            sortBy === 'display_name' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'text-gray-500 dark:text-gray-300'
                         ]"
                         @click="$emit('sort', 'display_name')">
                         <div class="flex items-center justify-between min-w-[150px]">
@@ -17,7 +17,7 @@
                     <th
                         :class="[
                             'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none',
-                            sortBy === 'team' ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-500 dark:text-gray-300'
+                            sortBy === 'team' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'text-gray-500 dark:text-gray-300'
                         ]"
                         @click="$emit('sort', 'team')">
                         <div class="flex items-center justify-between min-w-[120px]">
@@ -28,7 +28,7 @@
                     <th
                         :class="[
                             'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none',
-                            sortBy === 'position' ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-500 dark:text-gray-300'
+                            sortBy === 'position' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'text-gray-500 dark:text-gray-300'
                         ]"
                         @click="$emit('sort', 'position')">
                         <div class="flex items-center justify-between min-w-[100px]">
@@ -39,7 +39,7 @@
                     <th
                         :class="[
                             'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none',
-                            sortBy === 'age' ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-500 dark:text-gray-300'
+                            sortBy === 'age' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'text-gray-500 dark:text-gray-300'
                         ]"
                         @click="$emit('sort', 'age')">
                         <div class="flex items-center justify-between min-w-[80px]">
@@ -51,7 +51,7 @@
                     <th v-for="statKey in dynamicStatColumns.slice(0, 3)" :key="statKey"
                         :class="[
                             'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors select-none',
-                            sortBy === statKey ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-500 dark:text-gray-300'
+                            sortBy === statKey ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'text-gray-500 dark:text-gray-300'
                         ]"
                         @click="$emit('sort', statKey)">
                         <div class="flex items-center justify-between min-w-[100px]">

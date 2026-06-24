@@ -8,7 +8,7 @@
         class="w-9 h-9 rounded-lg object-cover shadow-sm ring-1 ring-gray-100 dark:ring-gray-700 shrink-0"
       />
       <div class="min-w-0">
-        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+        <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate">
           {{ leagueName }}
         </p>
         <p class="text-2xs text-gray-400 dark:text-gray-500">Choose a stage</p>
@@ -26,14 +26,14 @@
           v-model="query"
           type="text"
           placeholder="Search stage..."
-          class="w-full h-10 pl-9 pr-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+          class="w-full h-10 pl-9 pr-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-footnote text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
         />
       </div>
     </div>
 
     <!-- Loading -->
     <div v-if="loading" class="px-4 py-10 flex justify-center">
-      <span class="w-6 h-6 rounded-full border-2 border-gray-200 dark:border-gray-700 border-t-blue-500 animate-spin" />
+      <span class="w-6 h-6 rounded-full border-2 border-gray-200 dark:border-gray-700 border-t-emerald-500 animate-spin" />
     </div>
 
     <!-- Stage list -->
@@ -45,14 +45,14 @@
         @click="select(stage)"
         class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors"
         :class="stage.uuid === selectedStageUuid
-          ? 'bg-blue-50 dark:bg-blue-900/20'
+          ? 'bg-emerald-50 dark:bg-emerald-900/20'
           : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 active:bg-gray-100 dark:active:bg-gray-800'"
       >
         <div class="min-w-0 flex-1">
           <p
-            class="text-sm font-medium truncate"
+            class="text-footnote font-medium truncate"
             :class="stage.uuid === selectedStageUuid
-              ? 'text-blue-600 dark:text-blue-400'
+              ? 'text-emerald-600 dark:text-emerald-400'
               : 'text-gray-900 dark:text-white'"
           >
             {{ (stage.name_complete as string | null) || stage.name }}
@@ -67,7 +67,7 @@
         <v-icon
           v-if="stage.uuid === selectedStageUuid"
           name="hi-solid-check"
-          class="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0"
+          class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0"
         />
       </button>
 
