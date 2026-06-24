@@ -59,7 +59,7 @@
           :clearable="false"
         >
           <template #selected="{ option }">
-            <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+            <span class="text-footnote font-medium text-gray-900 dark:text-white truncate flex-1">
               {{ (option.name_complete as string | null) || option.name }}
             </span>
             <span
@@ -71,7 +71,7 @@
           </template>
           <template #option="{ option }">
             <div class="flex-1 min-w-0 flex items-center gap-2">
-              <span class="text-sm font-medium truncate">
+              <span class="text-footnote font-medium truncate">
                 {{ (option.name_complete as string | null) || option.name }}
               </span>
               <span

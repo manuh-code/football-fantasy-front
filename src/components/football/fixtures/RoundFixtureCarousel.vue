@@ -120,7 +120,7 @@
                   />
                   <span
                     :class="resultClass(fixture, 0)"
-                    class="mt-2 text-sm text-center max-w-[90px] truncate"
+                    class="mt-2 text-footnote text-center max-w-[90px] truncate"
                     >{{ fixture.participants[0]?.name || "Team 1" }}</span
                   >
                 </div>
@@ -151,7 +151,7 @@
                   />
                   <span
                     :class="resultClass(fixture, 1)"
-                    class="mt-2 text-sm text-center max-w-[90px] truncate"
+                    class="mt-2 text-footnote text-center max-w-[90px] truncate"
                     >{{ fixture.participants[1]?.name || "Team 2" }}</span
                   >
                 </div>

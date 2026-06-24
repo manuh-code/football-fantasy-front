@@ -162,7 +162,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           :class="collapsed ? 'max-h-0 opacity-0' : 'max-h-12 opacity-100'"
         >
           <p
-            class="text-sm font-semibold truncate"
+            class="text-footnote font-semibold truncate"
             :class="homeWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'"
             :title="teamName(homeTeam)"
           >
@@ -186,7 +186,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
             </span>
             <span
               class="font-light text-gray-300 dark:text-gray-600 transition-all duration-300 ease-out"
-              :class="collapsed ? 'text-base' : 'text-[1.5rem]'"
+              :class="collapsed ? 'text-callout' : 'text-[1.5rem]'"
             >–</span>
             <span
               class="font-extrabold tabular-nums leading-none transition-all duration-300 ease-out"
@@ -199,7 +199,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
         <template v-else>
           <span
             class="font-bold text-gray-400 dark:text-gray-500 tracking-wide transition-all duration-300 ease-out"
-            :class="collapsed ? 'text-callout' : 'text-lg'"
+            :class="collapsed ? 'text-callout' : 'text-xl'"
           >VS</span>
           <span
             v-if="!collapsed"
@@ -250,7 +250,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           :class="collapsed ? 'max-h-0 opacity-0' : 'max-h-12 opacity-100'"
         >
           <p
-            class="text-sm font-semibold truncate"
+            class="text-footnote font-semibold truncate"
             :class="awayWinner ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'"
             :title="teamName(awayTeam)"
           >
