@@ -126,7 +126,7 @@
               <!-- Center: result or prediction inputs -->
               <div class="flex flex-col items-center justify-center">
                 <template v-if="isPredictable(fixture)">
-                  <div class="flex items-start gap-2.5">
+                  <div class="flex items-start gap-2.5 touch-manipulation">
                     <!-- Home stepper -->
                     <div class="flex flex-col items-center gap-1.5">
                       <button
@@ -138,7 +138,7 @@
                         <v-icon name="hi-solid-plus" class="w-4 h-4" />
                       </button>
                       <span
-                        class="w-9 text-center text-2xl font-bold tabular-nums select-none"
+                        class="w-9 text-center text-2xl font-bold tabular-nums select-none touch-manipulation"
                         :class="predictions[fixture.uuid].home === null ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-white'"
                       >
                         {{ predictions[fixture.uuid].home ?? '–' }}
@@ -167,7 +167,7 @@
                         <v-icon name="hi-solid-plus" class="w-4 h-4" />
                       </button>
                       <span
-                        class="w-9 text-center text-2xl font-bold tabular-nums select-none"
+                        class="w-9 text-center text-2xl font-bold tabular-nums select-none touch-manipulation"
                         :class="predictions[fixture.uuid].away === null ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-white'"
                       >
                         {{ predictions[fixture.uuid].away ?? '–' }}
@@ -440,6 +440,11 @@ onBeforeUnmount(() => {
   color: rgb(107 114 128); /* gray-500 */
   background: rgb(243 244 246); /* gray-100 */
   transition: all 0.15s ease;
+  /* Prevent the browser from treating rapid taps as a double-tap-to-zoom gesture
+     (and remove the ~300ms tap delay). Pinch-zoom elsewhere is unaffected. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .dark .stepper-btn {
   color: rgb(209 213 219); /* gray-300 */
