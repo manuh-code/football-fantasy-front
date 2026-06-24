@@ -16,6 +16,7 @@ import { FootballFixtureFormationResponse } from "./FootballFixtureFormationResp
 import { FootballFixtureCommentResponse } from "./FootballFixtureCommentResponse";
 import { FootballFixtureLineupStatsResponse } from "./FootballFixtureLineupStatsResponse";
 import { FootballFixtureManOfTheMatchResponse } from "./FootballFixtureManOfTheMatchResponse";
+import { PoolPredictionResponse } from "@/interfaces/pool/PoolPredictionResponse";
 
 export interface FootballFixtureResponse {
     uuid: string;
@@ -37,6 +38,7 @@ export interface FootballFixtureResponse {
     comments: FootballFixtureCommentResponse[] | null;
     lineupStats: FootballFixtureLineupStatsResponse[] | null;
     manOfTheMatch: FootballFixtureManOfTheMatchResponse | null;
+    prediction?: PoolPredictionResponse | null;
 
     name: string;
     starting_at: string;

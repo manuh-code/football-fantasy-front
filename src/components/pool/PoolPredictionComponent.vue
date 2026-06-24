@@ -137,13 +137,16 @@
                       >
                         <v-icon name="hi-solid-plus" class="w-4 h-4" />
                       </button>
-                      <span class="w-9 text-center text-2xl font-bold text-gray-900 dark:text-white tabular-nums select-none">
-                        {{ predictions[fixture.uuid].home }}
+                      <span
+                        class="w-9 text-center text-2xl font-bold tabular-nums select-none"
+                        :class="predictions[fixture.uuid].home === null ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-white'"
+                      >
+                        {{ predictions[fixture.uuid].home ?? '–' }}
                       </span>
                       <button
                         type="button"
                         @click="adjustScore(fixture.uuid, 'home', -1)"
-                        :disabled="predictions[fixture.uuid].home <= 0"
+                        :disabled="(predictions[fixture.uuid].home ?? 0) <= 0"
                         :aria-label="`Decrease ${homeTeam(fixture)?.name || 'home'} score`"
                         class="stepper-btn"
                       >
@@ -163,13 +166,16 @@
                       >
                         <v-icon name="hi-solid-plus" class="w-4 h-4" />
                       </button>
-                      <span class="w-9 text-center text-2xl font-bold text-gray-900 dark:text-white tabular-nums select-none">
-                        {{ predictions[fixture.uuid].away }}
+                      <span
+                        class="w-9 text-center text-2xl font-bold tabular-nums select-none"
+                        :class="predictions[fixture.uuid].away === null ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-white'"
+                      >
+                        {{ predictions[fixture.uuid].away ?? '–' }}
                       </span>
                       <button
                         type="button"
                         @click="adjustScore(fixture.uuid, 'away', -1)"
-                        :disabled="predictions[fixture.uuid].away <= 0"
+                        :disabled="(predictions[fixture.uuid].away ?? 0) <= 0"
                         :aria-label="`Decrease ${awayTeam(fixture)?.name || 'away'} score`"
                         class="stepper-btn"
                       >
@@ -177,7 +183,33 @@
                       </button>
                     </div>
                   </div>
-                  <span class="text-2xs text-gray-400 dark:text-gray-500 mt-2">Tap to set your prediction</span>
+                  <!-- Auto-save status (saved 1-by-1 once both scores are set) -->
+                  <span
+                    v-if="saveStatus[fixture.uuid] === 'saving'"
+                    class="flex items-center gap-1 text-2xs text-gray-400 dark:text-gray-500 mt-2"
+                  >
+                    <v-icon name="pr-spinner" class="w-3 h-3" animation="spin" />
+                    Saving…
+                  </span>
+                  <span
+                    v-else-if="saveStatus[fixture.uuid] === 'saved'"
+                    class="flex items-center gap-1 text-2xs text-emerald-500 mt-2"
+                  >
+                    <v-icon name="hi-solid-check" class="w-3 h-3" />
+                    Saved
+                  </span>
+                  <button
+                    v-else-if="saveStatus[fixture.uuid] === 'error'"
+                    type="button"
+                    @click="savePrediction(fixture.uuid)"
+                    class="flex items-center gap-1 text-2xs text-red-500 mt-2"
+                  >
+                    <v-icon name="hi-solid-exclamation" class="w-3 h-3" />
+                    Couldn't save · Retry
+                  </button>
+                  <span v-else class="text-2xs text-gray-400 dark:text-gray-500 mt-2">
+                    Tap to set your prediction
+                  </span>
                 </template>
                 <template v-else>
                   <span class="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
@@ -200,17 +232,6 @@
               </div>
             </div>
           </div>
-
-        <!-- Save (endpoint pending) -->
-        <button
-          v-if="hasPredictableFixtures"
-          type="button"
-          @click="savePredictions"
-          class="w-full py-3 rounded-xl text-sm font-semibold text-white bg-emerald-600 active:scale-[0.98] shadow-sm shadow-emerald-500/30 transition-all flex items-center justify-center gap-2"
-        >
-          <v-icon name="hi-solid-save" class="w-4 h-4" />
-          Save predictions
-        </button>
       </div>
       </transition>
     </template>
@@ -218,45 +239,86 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { catalogService } from "@/services/catalog/CatalogService";
-import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
-import { useToast } from "@/composables/useToast";
+import { poolService } from "@/services/pool/poolService";
 import PoolRoundsCarousel from "@/components/pool/PoolRoundsCarousel.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 
-const props = defineProps<{ stageUuid: string }>();
-
-const { info } = useToast();
+const props = defineProps<{ stageUuid: string; poolGroupUuid: string }>();
 
 // Rounds
 const rounds = ref<FootballRoundResponse[]>([]);
 const loadingRounds = ref(false);
 const roundsError = ref("");
 const selectedIndex = ref(0);
+const selectedRound = computed(() => rounds.value[selectedIndex.value] || null);
 
-// Fixtures
+// Fixtures of the selected round (with embedded predictions).
 const fixtures = ref<FootballFixtureResponse[]>([]);
 const loadingFixtures = ref(false);
 const fixturesError = ref("");
 
-// Local prediction state, keyed by fixture uuid (no persistence endpoint yet).
-type Prediction = { home: number; away: number };
+// Local prediction state, keyed by fixture uuid. Scores start empty (null) so we
+// can detect when the user has set BOTH of them (NFL pick'em style).
+type Prediction = { home: number | null; away: number | null };
 const predictions = reactive<Record<string, Prediction>>({});
+
+// Per-fixture auto-save status shown next to the stepper.
+type SaveState = "saving" | "saved" | "error";
+const saveStatus = reactive<Record<string, SaveState>>({});
+
+// Debounce timers and last-saved snapshot per fixture (avoid redundant requests).
+const saveTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+const lastSaved: Record<string, string> = {};
 
 // Reasonable upper bound for a football scoreline.
 const MAX_SCORE = 20;
 
-// Increment / decrement a predicted score (clamped to [0, MAX_SCORE]).
+// Persist a single fixture's prediction (1-by-1).
+const savePrediction = async (fixtureUuid: string) => {
+  const entry = predictions[fixtureUuid];
+  if (!entry || entry.home === null || entry.away === null) return;
+
+  const snapshot = `${entry.home}-${entry.away}`;
+  if (lastSaved[fixtureUuid] === snapshot && saveStatus[fixtureUuid] !== "error") return;
+
+  saveStatus[fixtureUuid] = "saving";
+  try {
+    await poolService.savePoolPrediction({
+      pool_group_uuid: props.poolGroupUuid,
+      fixture_uuid: fixtureUuid,
+      home_score: entry.home,
+      away_score: entry.away,
+    });
+    lastSaved[fixtureUuid] = snapshot;
+    saveStatus[fixtureUuid] = "saved";
+  } catch (e) {
+    // The API interceptor already surfaces an error toast.
+    console.error("Error saving prediction:", e);
+    saveStatus[fixtureUuid] = "error";
+  }
+};
+
+// Once both scores are set, debounce a save so rapid taps collapse into one call.
+const maybeSave = (fixtureUuid: string) => {
+  const entry = predictions[fixtureUuid];
+  if (!entry || entry.home === null || entry.away === null) return;
+  clearTimeout(saveTimers[fixtureUuid]);
+  saveTimers[fixtureUuid] = setTimeout(() => savePrediction(fixtureUuid), 600);
+};
+
+// Increment / decrement a predicted score. A score starts at null and the first
+// "+" sets it to 0; "−" is disabled while null or 0. Clamped to [0, MAX_SCORE].
 const adjustScore = (fixtureUuid: string, side: "home" | "away", delta: number) => {
   const entry = predictions[fixtureUuid];
   if (!entry) return;
-  entry[side] = Math.min(MAX_SCORE, Math.max(0, entry[side] + delta));
+  const current = entry[side];
+  entry[side] = current === null ? 0 : Math.min(MAX_SCORE, Math.max(0, current + delta));
+  maybeSave(fixtureUuid);
 };
-
-const selectedRound = computed(() => rounds.value[selectedIndex.value] || null);
 
 // --- Team / score helpers ---
 const homeTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
@@ -276,8 +338,6 @@ const goalsFor = (fixture: FootballFixtureResponse, location: "home" | "away"): 
   const score = fixture.scores?.find((s) => s.score?.participant === location);
   return typeof score?.score?.goals === "number" ? score.score.goals : 0;
 };
-
-const hasPredictableFixtures = computed(() => fixtures.value.some(isPredictable));
 
 // --- Formatting ---
 const formatKickoff = (value?: string): string => {
@@ -316,43 +376,41 @@ const loadRounds = async () => {
 
 const loadFixtures = async () => {
   const round = selectedRound.value;
-  if (!round || !props.stageUuid) return;
+  if (!round || !props.poolGroupUuid) return;
 
   loadingFixtures.value = true;
   fixturesError.value = "";
   try {
-    fixtures.value = await footballFixtureService.getFixuresByStageAndRound(props.stageUuid, round.uuid);
-    // Seed local prediction state for predictable fixtures.
+    fixtures.value = await poolService.getPoolFixtures(props.poolGroupUuid, round.uuid);
+    // Seed local prediction state from each fixture's embedded prediction.
     fixtures.value.forEach((fixture) => {
-      if (isPredictable(fixture) && !predictions[fixture.uuid]) {
-        predictions[fixture.uuid] = { home: 0, away: 0 };
+      if (!isPredictable(fixture) || predictions[fixture.uuid]) return;
+      const p = fixture.prediction;
+      if (p) {
+        predictions[fixture.uuid] = { home: p.home_score, away: p.away_score };
+        lastSaved[fixture.uuid] = `${p.home_score}-${p.away_score}`;
+        saveStatus[fixture.uuid] = "saved";
+      } else {
+        predictions[fixture.uuid] = { home: null, away: null };
       }
     });
   } catch (e) {
-    console.error("Error loading fixtures:", e);
+    console.error("Error loading pool fixtures:", e);
     fixturesError.value = "Failed to load fixtures. Please try again later.";
   } finally {
     loadingFixtures.value = false;
   }
 };
 
-const savePredictions = () => {
-  // Persistence endpoint is not available yet.
-  info("Coming soon", "Saving predictions will be available soon.");
-};
+// Load the selected round's fixtures whenever the round (or pool) changes.
+watch(selectedRound, loadFixtures);
+watch(() => props.stageUuid, loadRounds);
+watch(() => props.poolGroupUuid, loadFixtures);
 
-// Reload fixtures whenever the selected round changes (centering lives in the carousel).
-watch(selectedIndex, loadFixtures);
+onMounted(loadRounds);
 
-// Reset everything if the stage changes.
-watch(
-  () => props.stageUuid,
-  () => loadRounds()
-);
-
-onMounted(async () => {
-  await loadRounds();
-  await loadFixtures();
+onBeforeUnmount(() => {
+  Object.values(saveTimers).forEach(clearTimeout);
 });
 </script>
 

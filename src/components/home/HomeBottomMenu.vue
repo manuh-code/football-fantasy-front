@@ -69,8 +69,8 @@ const tabs: TabItem[] = [
     key: "home",
     label: "Home",
     icon: "hi-solid-home",
-    activeText: "text-blue-600 dark:text-blue-400",
-    activeBg: "bg-blue-500/15 dark:bg-blue-400/15",
+    activeText: "text-emerald-600 dark:text-emerald-400",
+    activeBg: "bg-emerald-500/15 dark:bg-emerald-400/15",
   },
   {
     key: "games",

@@ -250,7 +250,7 @@
 
                 <!-- Type -->
                 <td class="px-3 py-2.5 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
                     {{ scorer.type.name }}
                   </span>
                 </td>
