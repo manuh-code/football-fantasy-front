@@ -2,10 +2,10 @@
     <div class="md:hidden space-y-4 p-4">
         <!-- Sort Controls for Mobile -->
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Players</h3>
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white">Players</h3>
             <div class="flex items-center gap-2">
                 <button @click="showMobileSortMenu = !showMobileSortMenu"
-                    class="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    class="flex items-center gap-2 px-3 py-2 text-footnote bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                     <v-icon name="ri-arrow-up-down-fill" class="w-4 h-4" />
                     <span>Sort</span>
                 </button>
@@ -18,7 +18,7 @@
                 <button v-for="column in ['display_name', 'team', 'position', 'age', 'country']" :key="column"
                     @click="$emit('sort', column); showMobileSortMenu = false"
                     :class="[
-                        'px-3 py-2 text-sm rounded-lg text-left transition-colors',
+                        'px-3 py-2 text-footnote rounded-lg text-left transition-colors',
                         sortBy === column 
                             ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' 
                             : 'bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500'
@@ -37,7 +37,7 @@
                     <button v-for="statKey in dynamicStatColumns.slice(0, 6)" :key="statKey"
                         @click="$emit('sort', statKey); showMobileSortMenu = false"
                         :class="[
-                            'px-3 py-2 text-sm rounded-lg text-left transition-colors',
+                            'px-3 py-2 text-footnote rounded-lg text-left transition-colors',
                             sortBy === statKey 
                                 ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' 
                                 : 'bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500'
@@ -61,10 +61,10 @@
                     class="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
                     @error="handleImageError" />
                 <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                    <h4 class="text-footnote font-medium text-gray-900 dark:text-white truncate">
                         {{ player.display_name }}
                     </h4>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    <p class="text-footnote text-gray-500 dark:text-gray-400 truncate">
                         {{ player.common_name }}
                     </p>
                 </div>
@@ -79,20 +79,20 @@
                         @error="handleTeamImageError" />
                     <div class="min-w-0">
                         <p class="text-xs text-gray-500 dark:text-gray-400">Team</p>
-                        <p class="text-sm text-gray-900 dark:text-white truncate">{{ player.team.name }}</p>
+                        <p class="text-footnote text-gray-900 dark:text-white truncate">{{ player.team.name }}</p>
                     </div>
                 </div>
 
                 <!-- Position -->
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Position</p>
-                    <p class="text-sm text-gray-900 dark:text-white">{{ player.position?.name || '-' }}</p>
+                    <p class="text-footnote text-gray-900 dark:text-white">{{ player.position?.name || '-' }}</p>
                 </div>
 
                 <!-- Age -->
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Age</p>
-                    <p class="text-sm text-gray-900 dark:text-white">{{ player.age }}</p>
+                    <p class="text-footnote text-gray-900 dark:text-white">{{ player.age }}</p>
                 </div>
 
                 <!-- Country -->
@@ -101,7 +101,7 @@
                         :alt="player.country.name ?? ''" class="w-4 h-4 rounded" />
                     <div class="min-w-0">
                         <p class="text-xs text-gray-500 dark:text-gray-400">Country</p>
-                        <p class="text-sm text-gray-900 dark:text-white truncate">{{ player.country.name }}</p>
+                        <p class="text-footnote text-gray-900 dark:text-white truncate">{{ player.country.name }}</p>
                     </div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div v-for="statKey in dynamicStatColumns.slice(0, 4)" :key="statKey" class="text-center">
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ formatStatColumnName(statKey) }}</p>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                        <p class="text-footnote font-medium text-gray-900 dark:text-white">
                             {{ formatStatValue(player.statistics?.details?.[statKey]) }}
                         </p>
                     </div>
@@ -121,7 +121,7 @@
                 <!-- Show more stats button if there are more than 4 -->
                 <button v-if="dynamicStatColumns.length > 4" 
                     @click="togglePlayerStats(player.uuid)"
-                    class="mt-2 w-full text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+                    class="mt-2 w-full text-footnote text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
                     {{ expandedPlayers.includes(player.uuid) ? 'Show Less' : `Show ${dynamicStatColumns.length - 4} More Stats` }}
                 </button>
                 
@@ -130,7 +130,7 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div v-for="statKey in dynamicStatColumns.slice(4)" :key="statKey" class="text-center">
                             <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ formatStatColumnName(statKey) }}</p>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            <p class="text-footnote font-medium text-gray-900 dark:text-white">
                                 {{ formatStatValue(player.statistics?.details?.[statKey]) }}
                             </p>
                         </div>

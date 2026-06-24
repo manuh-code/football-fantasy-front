@@ -411,7 +411,7 @@ const selectedRoundName = computed(() => {
               no-options-text="No rounds available"
             >
               <template #selected="{ option }">
-                <span class="text-sm font-medium text-gray-900 dark:text-white truncate flex-1">
+                <span class="text-footnote font-medium text-gray-900 dark:text-white truncate flex-1">
                   Round {{ option.name }}
                 </span>
                 <span
@@ -423,7 +423,7 @@ const selectedRoundName = computed(() => {
               </template>
               <template #option="{ option }">
                 <div class="flex-1 min-w-0 flex items-center gap-2">
-                  <span class="text-sm font-medium truncate">Round {{ option.name }}</span>
+                  <span class="text-footnote font-medium truncate">Round {{ option.name }}</span>
                   <span
                     v-if="option.is_current"
                     class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"

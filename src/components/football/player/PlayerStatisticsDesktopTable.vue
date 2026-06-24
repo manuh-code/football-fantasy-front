@@ -84,10 +84,10 @@
                                 variant="circle"
                             />
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="text-footnote font-medium text-gray-900 dark:text-white">
                                     {{ player.display_name }}
                                 </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                <div class="text-footnote text-gray-500 dark:text-gray-400">
                                     {{ player.common_name }}
                                 </div>
                             </div>
@@ -104,19 +104,19 @@
                                     variant="square"
                                 />
                             </div>
-                            <span class="text-sm text-gray-900 dark:text-white">
+                            <span class="text-footnote text-gray-900 dark:text-white">
                                 {{ player.team.name }}
                             </span>
                         </div>
                     </td>
 
                     <!-- Position -->
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white">
                         {{ player.position?.name || '-' }}
                     </td>
 
                     <!-- Age -->
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white">
                         {{ player.age }}
                     </td>
 
@@ -125,7 +125,7 @@
                         <div class="flex items-center">
                             <img v-if="player.country.image_path" :src="player.country.image_path"
                                 :alt="player.country.name ?? 'Unknown Country'" class="w-5 h-5 rounded mr-2" />
-                            <span class="text-sm text-gray-900 dark:text-white">
+                            <span class="text-footnote text-gray-900 dark:text-white">
                                 {{ player.country.name }}
                             </span>
                         </div>
@@ -133,7 +133,7 @@
 
                     <!-- Dynamic Statistics -->
                     <td v-for="statKey in dynamicStatColumns" :key="`${player.uuid}-${statKey}`"
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white">
                         {{ formatStatValue(player.statistics?.details?.[statKey]) }}
                     </td>
                 </tr>

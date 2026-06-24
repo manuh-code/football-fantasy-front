@@ -35,7 +35,7 @@ const onImgError = (e: Event) => {
         <v-icon name="hi-solid-star" class="w-3 h-3 text-amber-400" />
         Man of the Match
       </p>
-      <p class="text-sm font-bold text-gray-900 dark:text-white truncate leading-tight">
+      <p class="text-footnote font-bold text-gray-900 dark:text-white truncate leading-tight">
         {{ manOfTheMatch.player?.display_name }}
       </p>
       <div class="flex items-center gap-1.5 mt-0.5 min-w-0">

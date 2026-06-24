@@ -163,7 +163,7 @@ const retry = () => load();
               :class="index === 0 ? 'bg-amber-50/60 dark:bg-amber-900/10' : ''"
             >
               <!-- Medal -->
-              <span class="w-6 shrink-0 text-center text-base leading-none select-none">
+              <span class="w-6 shrink-0 text-center text-callout leading-none select-none">
                 {{ rankLabel[index] }}
               </span>
 
@@ -190,7 +190,7 @@ const retry = () => load();
 
               <!-- Value -->
               <span
-                class="shrink-0 text-base font-extrabold tabular-nums"
+                class="shrink-0 text-callout font-extrabold tabular-nums"
                 :class="index === 0
                   ? 'text-amber-500'
                   : index === 1

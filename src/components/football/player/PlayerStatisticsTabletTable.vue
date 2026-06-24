@@ -72,7 +72,7 @@
                                 class="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
                                 @error="handleImageError" />
                             <div class="ml-3">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">
+                                <div class="text-footnote font-medium text-gray-900 dark:text-white truncate max-w-[120px]">
                                     {{ player.display_name }}
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]">
@@ -88,25 +88,25 @@
                             <img v-if="player.team.image_path" :src="player.team.image_path"
                                 :alt="player.team.name" class="w-5 h-5 rounded mr-2"
                                 @error="handleTeamImageError" />
-                            <span class="text-sm text-gray-900 dark:text-white truncate max-w-[100px]">
+                            <span class="text-footnote text-gray-900 dark:text-white truncate max-w-[100px]">
                                 {{ player.team.name }}
                             </span>
                         </div>
                     </td>
 
                     <!-- Position -->
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td class="px-4 py-3 whitespace-nowrap text-footnote text-gray-900 dark:text-white">
                         {{ player.position?.name || '-' }}
                     </td>
 
                     <!-- Age -->
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td class="px-4 py-3 whitespace-nowrap text-footnote text-gray-900 dark:text-white">
                         {{ player.age }}
                     </td>
 
                     <!-- Dynamic Statistics (limited) -->
                     <td v-for="statKey in dynamicStatColumns.slice(0, 3)" :key="`${player.uuid}-${statKey}`"
-                        class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        class="px-4 py-3 whitespace-nowrap text-footnote text-gray-900 dark:text-white">
                         {{ formatStatValue(player.statistics?.details?.[statKey]) }}
                     </td>
                 </tr>

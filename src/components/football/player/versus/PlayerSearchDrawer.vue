@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
                 v-model="query"
                 type="text"
                 placeholder="Search a player by name..."
-                class="w-full h-11 pl-9 pr-3 text-sm bg-gray-100 dark:bg-gray-800 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full h-11 pl-9 pr-3 text-footnote bg-gray-100 dark:bg-gray-800 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
           </div>
@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
                 >
                   <PlayerAvatar :player="player" size="md" variant="circle" />
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate">
                       {{ player.display_name }}
                     </p>
                     <p

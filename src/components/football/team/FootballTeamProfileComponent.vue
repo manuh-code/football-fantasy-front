@@ -274,7 +274,7 @@ const onDragEnd = (e: PointerEvent) => {
                   class="w-12 h-12 rounded-md bg-gray-100 dark:bg-gray-800 animate-pulse shrink-0"
                 />
                 <div class="min-w-0">
-                  <h2 class="text-base font-bold text-gray-900 dark:text-white truncate">
+                  <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
                     {{ profile?.team?.name ?? "Team profile" }}
                   </h2>
                   <div
@@ -382,7 +382,7 @@ const onDragEnd = (e: PointerEvent) => {
                 <div key="team" v-if="activeTab === 'team'" class="px-4 py-4 space-y-4">
                   <div class="flex flex-col items-center text-center pt-2">
                     <TeamLogo :team="profile.team" size="xl" variant="square" />
-                    <h3 class="mt-3 text-lg font-bold text-gray-900 dark:text-white">
+                    <h3 class="mt-3 text-xl font-bold text-gray-900 dark:text-white">
                       {{ profile.team?.name }}
                     </h3>
                     <span

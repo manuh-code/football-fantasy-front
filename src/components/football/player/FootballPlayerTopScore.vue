@@ -293,7 +293,7 @@
                 </div>
               </div>
               <div class="text-right">
-                <p class="text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                <p class="text-callout font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {{ scorer.total }}
                 </p>
                 <span class="text-2xs text-gray-400 dark:text-gray-500">{{ scorer.type.name }}</span>

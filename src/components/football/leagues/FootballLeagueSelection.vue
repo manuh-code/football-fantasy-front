@@ -29,7 +29,7 @@
       <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full mx-auto mb-3 flex items-center justify-center">
         <v-icon name="hi-solid-exclamation" class="w-6 h-6 text-red-500" />
       </div>
-      <p class="text-sm text-red-600 dark:text-red-400 mb-4">{{ error }}</p>
+      <p class="text-footnote text-red-600 dark:text-red-400 mb-4">{{ error }}</p>
       <ButtonComponent variant="outline" size="sm" text="Retry" @click="loadLeagues" />
     </div>
 

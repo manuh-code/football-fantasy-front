@@ -9,7 +9,7 @@
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900 dark:text-white">League Standings</h2>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Current standings for the selected league</p>
+                    <p class="text-footnote text-gray-600 dark:text-gray-400">Current standings for the selected league</p>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 <tr v-for="(row, idx) in standings" :key="row.team?.uuid || idx"
                                     class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{
+                                    <td class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white">{{
                                         row.position }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
@@ -99,35 +99,35 @@
                                                 variant="square"
                                             />
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{
+                                                <div class="text-footnote font-medium text-gray-900 dark:text-white">{{
                                                     row.team?.name }}</div>
-                                                <div class="text-sm text-gray-500 dark:text-gray-400">{{
+                                                <div class="text-footnote text-gray-500 dark:text-gray-400">{{
                                                     row.team?.short_code || '' }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'overall-matches-played') }}</td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'overall-won') }}</td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'overall-draw') }}</td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'overall-lost') }}</td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'overall-goals-for') }}</td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'overall-goals-against') }}</td>
                                     <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-center">
+                                        class="px-6 py-4 whitespace-nowrap text-footnote text-gray-900 dark:text-white text-center">
                                         {{ getStat(row.statistics, 'goal-difference') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <td class="px-6 py-4 whitespace-nowrap text-footnote">
                                         <div class="flex items-center justify-start gap-1">
                                             <template v-for="(f, i) in lastFive(row.form)" :key="i">
                                                 <span :title="f.form" class="w-3.5 h-3.5 rounded-full inline-block"
@@ -146,7 +146,7 @@
                             class="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg p-3">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                    <div class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ row.position
+                                    <div class="text-footnote font-semibold text-gray-800 dark:text-gray-100">{{ row.position
                                         }}.</div>
                                     <TeamLogo 
                                         :team="row.team"
@@ -154,7 +154,7 @@
                                         variant="square"
                                     />
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-gray-800 dark:text-gray-100">{{
+                                        <span class="text-footnote font-medium text-gray-800 dark:text-gray-100">{{
                                             row.team?.name }}</span>
                                         <span class="text-xs text-gray-400">M {{ getStat(row.statistics,
                                             'overall-matches-played') }} · Pts
@@ -162,13 +162,13 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <div class="text-sm text-gray-700 dark:text-gray-200">{{ getStat(row.statistics,
+                                    <div class="text-footnote text-gray-700 dark:text-gray-200">{{ getStat(row.statistics,
                                         'goal-difference') }}
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-3 flex items-center justify-between">
-                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-200">
+                                <div class="flex items-center gap-3 text-footnote text-gray-700 dark:text-gray-200">
                                     <div>W {{ getStat(row.statistics, 'overall-won') }}</div>
                                     <div>D {{ getStat(row.statistics, 'overall-draw') }}</div>
                                     <div>L {{ getStat(row.statistics, 'overall-lost') }}</div>

@@ -13,7 +13,7 @@
     <div v-if="loading" class="py-10">
       <div class="flex flex-col items-center gap-3">
         <div class="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-        <p class="text-sm text-gray-500 dark:text-gray-400">Loading leagues...</p>
+        <p class="text-footnote text-gray-500 dark:text-gray-400">Loading leagues...</p>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
       <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full mx-auto mb-3 flex items-center justify-center">
         <v-icon name="hi-solid-exclamation" class="w-6 h-6 text-red-500" />
       </div>
-      <p class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
+      <p class="text-footnote text-red-600 dark:text-red-400">{{ error }}</p>
     </div>
 
     <!-- Leagues grid -->
