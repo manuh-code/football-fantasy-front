@@ -32,13 +32,13 @@
                 {{ pool.name }}
               </h1>
               <span
-                v-if="pool.stage"
+                v-if="stageBadgeInfo"
                 :class="[
                   'inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold shrink-0',
-                  stageBadge(pool.stage).classes,
+                  stageBadgeInfo.classes,
                 ]"
               >
-                {{ stageBadge(pool.stage).label }}
+                {{ stageBadgeInfo.label }}
               </span>
             </div>
             <p v-if="pool.description" class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-1">
@@ -81,36 +81,69 @@
           </div>
         </div>
 
+        <!-- Scoring rules -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <v-icon name="hi-solid-clipboard-list" class="w-4 h-4 text-emerald-500 shrink-0" />
+            <h2 class="text-callout font-semibold text-gray-900 dark:text-white">Scoring rules</h2>
+          </div>
+
+          <div class="space-y-2">
+            <div
+              v-for="rule in scoringRules"
+              :key="rule.label"
+              class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900/40 rounded-xl px-3 py-2.5"
+            >
+              <div class="w-8 h-8 rounded-lg bg-white dark:bg-gray-800 flex items-center justify-center shrink-0 ring-1 ring-gray-100 dark:ring-gray-700">
+                <v-icon :name="rule.icon" class="w-4 h-4 text-emerald-500" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-footnote font-medium text-gray-900 dark:text-white leading-tight">{{ rule.label }}</p>
+                <p class="text-2xs text-gray-400 dark:text-gray-500 leading-snug">{{ rule.hint }}</p>
+              </div>
+              <span class="inline-flex items-center justify-center min-w-[2.75rem] px-2 py-1 rounded-lg text-footnote font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shrink-0">
+                +{{ rule.points }}
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- Access code (admin can copy and share it) -->
         <div v-if="pool.access_code" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4">
           <p class="text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
             Access code
           </p>
-          <button
-            type="button"
-            @click="copyAccessCode"
-            :title="copied ? 'Copied!' : 'Copy access code'"
-            class="group w-full flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-          >
-            <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
-              {{ pool.access_code }}
-            </span>
-            <v-icon
-              :name="copied ? 'hi-solid-check' : 'hi-solid-duplicate'"
-              :class="[
-                'w-4 h-4 shrink-0 transition-colors',
-                copied ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
-              ]"
-            />
-            <span
-              :class="[
-                'text-2xs font-semibold shrink-0 transition-colors',
-                copied ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
-              ]"
+          <div class="flex items-center gap-2">
+            <!-- Code chip (tap to copy just the code) -->
+            <button
+              type="button"
+              @click="copyAccessCode"
+              :title="copied ? 'Copied!' : 'Copy access code'"
+              class="group flex-1 min-w-0 flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
             >
-              {{ copied ? 'Copied' : 'Copy' }}
-            </span>
-          </button>
+              <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
+                {{ pool.access_code }}
+              </span>
+              <v-icon
+                :name="copied ? 'hi-solid-check' : 'hi-solid-duplicate'"
+                :class="[
+                  'w-4 h-4 shrink-0 transition-colors',
+                  copied ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
+                ]"
+              />
+            </button>
+
+            <!-- Share invite link (native share sheet / copy link fallback) -->
+            <button
+              type="button"
+              @click="sharePool"
+              :title="shared ? 'Link copied!' : 'Share invite link'"
+              class="shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 py-2 transition-all active:scale-[0.98] shadow-sm shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+            >
+              <v-icon :name="shared ? 'hi-solid-check' : 'hi-solid-share'" class="w-4 h-4" />
+              <span class="text-2xs font-semibold">{{ shared ? 'Copied' : 'Share' }}</span>
+            </button>
+          </div>
         </div>
 
         <!-- Members -->
@@ -187,7 +220,6 @@ import PoolGroupSkeleton from "@/components/pool/PoolGroupSkeleton.vue";
 import PoolPredictionComponent from "@/components/pool/PoolPredictionComponent.vue";
 import PoolStandingComponent from "@/components/pool/PoolStandingComponent.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
-import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
 const props = withDefaults(
@@ -206,19 +238,56 @@ const pool = ref<PoolResponse | null>(null);
 const copied = ref(false);
 let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
+// Invite-link share feedback (clipboard fallback when the native share sheet
+// isn't available).
+const shared = ref(false);
+let shareResetTimer: ReturnType<typeof setTimeout> | undefined;
+
+// Build the public invite link. Opening it lands the recipient on the Pools page
+// with the Join sheet pre-filled with this access code (handled in PoolView).
+const buildInviteLink = (accessCode: string) =>
+  `${window.location.origin}/pools?join=${encodeURIComponent(accessCode)}`;
+
+// Copy arbitrary text, falling back to a hidden textarea on non-secure contexts
+// or older browsers that lack the async clipboard API.
+const copyToClipboard = async (text: string) => {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+};
+
 const members = computed<UserDataInterface[]>(() => pool.value?.memberships || []);
 const memberCount = computed(() => members.value.length);
 
-// Resolve the badge shown for a pool's stage based on its lifecycle.
-const stageBadge = (stage: FootballStageResponse) => {
+// Scoring rules shown to participants so they know how points are awarded.
+const scoringRules = [
+  { label: "Exact score", hint: "Nail the final result", points: 3, icon: "hi-solid-hashtag" },
+  { label: "Correct winner", hint: "Right team to win", points: 1, icon: "bi-trophy-fill" },
+  { label: "Correct draw", hint: "Called the tie", points: 1, icon: "hi-solid-switch-horizontal" },
+];
+
+// Badge shown for the pool's stage based on its lifecycle. Upcoming stages show
+// no badge (the "Upcoming" label was intentionally removed).
+const stageBadgeInfo = computed(() => {
+  const stage = pool.value?.stage;
+  if (!stage) return null;
   if (stage.is_current) {
     return { label: "Live", classes: "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" };
   }
   if (stage.finished) {
     return { label: "Finished", classes: "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500" };
   }
-  return { label: "Upcoming", classes: "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" };
-};
+  return null;
+});
 
 const memberName = (member: UserDataInterface) => {
   const full = [member.firstname, member.lastname].filter(Boolean).join(" ").trim();
@@ -244,18 +313,7 @@ const copyAccessCode = async () => {
   if (!code) return;
 
   try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(code);
-    } else {
-      const textarea = document.createElement("textarea");
-      textarea.value = code;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      textarea.remove();
-    }
+    await copyToClipboard(code);
 
     copied.value = true;
     success("Access code copied", "Share it so others can join your pool.");
@@ -264,6 +322,45 @@ const copyAccessCode = async () => {
   } catch (e) {
     console.error("Failed to copy access code:", e);
     error("Couldn't copy", "Please copy the access code manually.");
+  }
+};
+
+// Share the invite link. On supported devices opens the native share sheet
+// (WhatsApp, Telegram, etc.); otherwise falls back to copying the link.
+const sharePool = async () => {
+  const code = pool.value?.access_code;
+  if (!code) return;
+
+  const url = buildInviteLink(code);
+  const shareData: ShareData = {
+    title: `Join "${pool.value?.name}"`,
+    text: `Join my pool "${pool.value?.name}" on Football Fantasy. Access code: ${code}`,
+    url,
+  };
+
+  if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+    try {
+      await navigator.share(shareData);
+    } catch (e) {
+      // The user dismissing the share sheet rejects with AbortError — not an error.
+      if ((e as DOMException)?.name !== "AbortError") {
+        console.error("Failed to share pool:", e);
+      }
+    }
+    return;
+  }
+
+  // Fallback: copy the invite link.
+  try {
+    await copyToClipboard(url);
+
+    shared.value = true;
+    success("Invite link copied", "Share it so others can join your pool.");
+    clearTimeout(shareResetTimer);
+    shareResetTimer = setTimeout(() => (shared.value = false), 2000);
+  } catch (e) {
+    console.error("Failed to copy invite link:", e);
+    error("Couldn't copy", "Please copy the invite link manually.");
   }
 };
 
@@ -287,5 +384,8 @@ watch(() => props.poolUuid, loadPool);
 
 onMounted(loadPool);
 
-onUnmounted(() => clearTimeout(copyResetTimer));
+onUnmounted(() => {
+  clearTimeout(copyResetTimer);
+  clearTimeout(shareResetTimer);
+});
 </script>
