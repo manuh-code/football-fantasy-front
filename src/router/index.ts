@@ -362,13 +362,13 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // League gate: a football league must be selected to use the app. Without one,
-  // force the user into the league selection page (and keep them there until a
-  // league is chosen). Exempt routes (auth pages, the selector itself) pass through.
+  // we auto-select the default league (the first the API returns — Liga MX) for
+  // everyone (anonymous and authenticated alike) so nobody is forced through the
+  // selection screen; they can still change it later from the league selector.
+  // Only if the default can't be resolved do we fall back to the selection page.
   const footballLeagueStore = useFootballLeagueStore();
   if (!footballLeagueStore.existLeague() && !LEAGUE_EXEMPT_ROUTES.has(to.name as string)) {
-    // Anonymous visitors get a default league so the content is reachable;
-    // authenticated users still choose their own on the selection screen.
-    if (!isAuthenticated && (await ensureDefaultLeague(footballLeagueStore))) {
+    if (await ensureDefaultLeague(footballLeagueStore)) {
       return next();
     }
     return next({ name: "footballLeagues", query: { redirect: to.fullPath } });

@@ -48,12 +48,18 @@
 
     <!-- Create / Join modals -->
     <PoolCreateModal :is-visible="isCreateOpen" @close="isCreateOpen = false" @created="onCreated" />
-    <PoolJoinModal :is-visible="isJoinOpen" @close="isJoinOpen = false" @joined="onJoined" />
+    <PoolJoinModal
+      :is-visible="isJoinOpen"
+      :initial-code="joinInitialCode"
+      @close="isJoinOpen = false"
+      @joined="onJoined"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useToast } from "@/composables/useToast";
 import PoolComponent from "@/components/pool/PoolComponent.vue";
 import PoolCreateModal from "@/components/pool/PoolCreateModal.vue";
@@ -64,6 +70,8 @@ import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 document.title = "Pools - Football Fantasy";
 
 const { success } = useToast();
+const route = useRoute();
+const router = useRouter();
 
 // Refs
 const poolComponentRef = ref<InstanceType<typeof PoolComponent> | null>(null);
@@ -72,6 +80,9 @@ const poolComponentRef = ref<InstanceType<typeof PoolComponent> | null>(null);
 const isFabMenuOpen = ref(false);
 const isCreateOpen = ref(false);
 const isJoinOpen = ref(false);
+
+// Access code pre-filled into the Join sheet when arriving from an invite link.
+const joinInitialCode = ref("");
 
 // FAB
 const toggleFabMenu = () => {
@@ -85,6 +96,7 @@ const openCreate = () => {
 
 const openJoin = () => {
   isFabMenuOpen.value = false;
+  joinInitialCode.value = ""; // FAB flow starts from an empty form.
   isJoinOpen.value = true;
 };
 
@@ -100,6 +112,17 @@ const onJoined = (pool: PoolResponse) => {
   success("Pool joined", `You're now part of "${pool.name}".`);
   poolComponentRef.value?.reload();
 };
+
+// Arriving from a shared invite link (/pools?join=CODE): open the Join sheet
+// pre-filled with the code, then strip the query so a refresh doesn't reopen it.
+onMounted(() => {
+  const code = route.query.join;
+  if (typeof code === "string" && code.trim()) {
+    joinInitialCode.value = code.trim();
+    isJoinOpen.value = true;
+    router.replace({ query: { ...route.query, join: undefined } });
+  }
+});
 
 // Cleanup: close FAB menu when leaving the view
 onUnmounted(() => {

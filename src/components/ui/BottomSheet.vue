@@ -235,9 +235,26 @@ function onBackdropClick() {
   }
 }
 
-// Lock body scroll when open
+// Lock body scroll when open and restore exact position when closed.
+// The position: fixed + top trick prevents the browser from jumping to top
+// (or staying at bottom after the virtual keyboard closes) when overflow
+// is toggled. We save scrollY before locking and restore it on unlock.
+let lockedScrollY = 0
+
 watch(() => props.isVisible, (visible) => {
-  document.body.style.overflow = visible ? 'hidden' : ''
+  if (visible) {
+    lockedScrollY = window.scrollY || document.documentElement.scrollTop
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${lockedScrollY}px`
+    document.body.style.width = '100%'
+  } else {
+    document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.top = ''
+    document.body.style.width = ''
+    window.scrollTo({ top: lockedScrollY, behavior: 'instant' })
+  }
 })
 
 // Escape key
@@ -251,6 +268,9 @@ onMounted(() => document.addEventListener('keydown', handleKeydown))
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
   document.body.style.overflow = ''
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.width = ''
 })
 </script>
 

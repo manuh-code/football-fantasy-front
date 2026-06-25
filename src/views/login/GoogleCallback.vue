@@ -12,10 +12,12 @@ onMounted(async () => {
         const queryString = window.location.search;
         console.log(queryString);
         await authStore.loginWithGoogle(queryString);
-        
-        
-        // Si todo sale bien, redirigir al gaming hub
-        router.push('/gaming');
+
+        // Restore the page the user was headed to before the OAuth round-trip
+        // (e.g. a shared invite link /pools?join=CODE). Falls back to the gaming hub.
+        const redirect = sessionStorage.getItem('post_auth_redirect');
+        sessionStorage.removeItem('post_auth_redirect');
+        router.push(redirect || '/gaming');
     } catch (error) {
         console.error("Falló el login", error);
         // router.push('/login?error=social_auth_failed');

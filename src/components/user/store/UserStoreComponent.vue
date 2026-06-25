@@ -24,8 +24,43 @@
         </p>
       </div>
 
+      <!-- Social signup — the primary, fastest way to join -->
+      <div class="space-y-3">
+        <ButtonComponent
+          variant="google"
+          size="md"
+          icon="bi-google"
+          :loading="isGoogleLoading"
+          :disabled="isLoading"
+          :always-full-width="true"
+          :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
+          @click="handleGoogleSignup"
+        />
+        <!-- Add Facebook, Apple, etc. here once the backend supports them. -->
+      </div>
+
+      <!-- Separator -->
+      <div class="flex items-center gap-3 my-5">
+        <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+        <span class="text-2xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap">
+          or
+        </span>
+        <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+      </div>
+
+      <!-- Email signup — secondary, revealed on demand to keep social first -->
+      <button
+        v-if="!showEmailForm"
+        type="button"
+        @click="showEmailForm = true"
+        class="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 dark:border-gray-700 text-footnote font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 active:scale-[0.99] transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+      >
+        <v-icon name="hi-solid-mail" class="w-4 h-4" />
+        Sign up with email
+      </button>
+
       <!-- Form -->
-      <form @submit.prevent="handleRegister" class="space-y-4" novalidate>
+      <form v-if="showEmailForm" @submit.prevent="handleRegister" class="space-y-4 reveal-form" novalidate>
         <!-- Name fields -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormInput
@@ -165,10 +200,11 @@
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { FormInput, ButtonComponent } from '@/components/ui';
 import { UserStorePayload } from '@/interfaces/user/store/userStorePayload';
 import { getUserService } from '@/services/user/UserService';
+import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useToast } from '@/composables/useToast';
 import { AxiosError } from 'axios';
 
@@ -187,12 +223,21 @@ interface ValidationErrors {
 
 // Router
 const router = useRouter();
+const route = useRoute();
 
 // Toast
 const toast = useToast();
 
 // Loading state
 const isLoading: Ref<boolean> = ref(false);
+
+// Auth store (for social signup)
+const authStore = useAuthStore();
+const isGoogleLoading: Ref<boolean> = ref(false);
+
+// Social signup is the primary path; the email form stays collapsed until the
+// user explicitly chooses "Sign up with email".
+const showEmailForm = ref(false);
 
 // Terms acceptance
 const acceptTerms: Ref<boolean> = ref(false);
@@ -371,6 +416,23 @@ const handleServerErrors = (serverErrors: ValidationErrors) => {
     });
 };
 
+// Continue with Google — social login also creates the account on first sign-in.
+const handleGoogleSignup = async () => {
+    isGoogleLoading.value = true;
+    try {
+        const url = await authStore.fetchGoogleLoginUrl();
+        // Preserve any post-auth redirect across the Google OAuth round-trip
+        // (restored in GoogleCallback.vue).
+        const redirect = route.query.redirect as string | undefined;
+        if (redirect) sessionStorage.setItem('post_auth_redirect', redirect);
+        window.location.href = url;
+    } catch (error) {
+        console.error('Google signup error:', error);
+    } finally {
+        isGoogleLoading.value = false;
+    }
+};
+
 // Handle registration
 const handleRegister = async () => {
     if (!validateForm()) return;
@@ -441,8 +503,25 @@ const handleRegister = async () => {
     }
 }
 
+/* Reveal the email form smoothly when "Sign up with email" is tapped. */
+.reveal-form {
+    animation: reveal-form 0.25s ease both;
+}
+
+@keyframes reveal-form {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .register-card {
+    .register-card,
+    .reveal-form {
         animation: none;
     }
 }

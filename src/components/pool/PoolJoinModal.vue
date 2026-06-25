@@ -52,9 +52,17 @@ import { poolService } from "@/services/pool/poolService";
 import { useValidationStore } from "@/store/validation/useValidationStore";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 
-const props = withDefaults(defineProps<{ isVisible?: boolean }>(), {
-  isVisible: false,
-});
+const props = withDefaults(
+  defineProps<{
+    isVisible?: boolean;
+    /** Pre-fill the access code (e.g. when opened from an invite link). */
+    initialCode?: string;
+  }>(),
+  {
+    isVisible: false,
+    initialCode: "",
+  }
+);
 
 const emit = defineEmits<{
   close: [];
@@ -69,12 +77,13 @@ const isLoading = ref(false);
 // 422 validation errors for "access_code" are stored by the API interceptor.
 const accessCodeError = computed(() => validationStore.getFieldError("access_code")[0] || "");
 
-// Reset the form whenever the sheet opens.
+// Reset the form whenever the sheet opens, pre-filling any code passed in
+// (e.g. when the sheet is opened from a shared invite link).
 watch(
   () => props.isVisible,
   (visible) => {
     if (visible) {
-      accessCode.value = "";
+      accessCode.value = props.initialCode ?? "";
       validationStore.clearFieldError("access_code");
     }
   }
