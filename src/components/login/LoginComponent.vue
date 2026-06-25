@@ -17,90 +17,105 @@
           <v-icon name="md-sportssoccer" class="w-7 h-7 text-white" />
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Welcome back
+          Welcome
         </h1>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Sign in to your Football Fantasy account
+          Sign in or create your account
         </p>
       </div>
 
-      <!-- Form -->
-      <form @submit.prevent="handleLogin" class="space-y-4" novalidate>
-        <!-- Email -->
-        <FormInput
-          v-model="payload.email"
-          label="Email"
-          type="email"
-          icon="bi-person-fill"
-          placeholder="your@email.com"
-          autocomplete="email"
-          :error="errors.email"
-          :disabled="isLoginLoading"
-        />
-
-        <!-- Password + helper row -->
-        <div class="space-y-2">
-          <FormInput
-            v-model="payload.password"
-            label="Password"
-            type="password"
-            icon="bi-lock-fill"
-            placeholder="••••••••"
-            autocomplete="current-password"
-            :error="errors.password"
-            :disabled="isLoginLoading"
-          />
-
-          <div class="flex items-center justify-between">
-            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                v-model="payload.remember"
-                class="w-4 h-4 rounded accent-emerald-600"
-              />
-              <span class="text-footnote text-gray-600 dark:text-gray-300">Remember me</span>
-            </label>
-            <a
-              href="#"
-              class="text-footnote font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
-            >
-              Forgot password?
-            </a>
-          </div>
-        </div>
-
-        <!-- Submit -->
+      <!-- Social login — the primary, fastest way in -->
+      <div class="space-y-3">
         <ButtonComponent
-          type="submit"
-          variant="primary"
+          variant="google"
           size="md"
-          :disabled="!isFormValid"
-          :loading="isLoginLoading"
+          icon="bi-google"
+          :loading="isGoogleLoading"
+          :disabled="isLoginLoading"
           :always-full-width="true"
-          :text="isLoginLoading ? 'Signing in...' : 'Sign In'"
+          :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
+          @click="handleGoogleLogin"
         />
-      </form>
+        <!-- Add Facebook, Apple, etc. here once the backend supports them. -->
+      </div>
 
       <!-- Separator -->
       <div class="flex items-center gap-3 my-5">
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
         <span class="text-2xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap">
-          Or continue with
+          or
         </span>
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
       </div>
 
-      <!-- Google -->
-      <ButtonComponent
-        variant="google"
-        size="md"
-        icon="bi-google"
-        :loading="isGoogleLoading"
-        :disabled="isLoginLoading"
-        :always-full-width="true"
-        :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
-        @click="handleGoogleLogin"
-      />
+      <!-- Email/password — secondary, revealed on demand to keep social first -->
+      <button
+        v-if="!showEmailForm"
+        type="button"
+        @click="showEmailForm = true"
+        class="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 dark:border-gray-700 text-footnote font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 active:scale-[0.99] transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+      >
+        <v-icon name="hi-solid-mail" class="w-4 h-4" />
+        Continue with email
+      </button>
+
+      <Transition name="reveal">
+        <form v-if="showEmailForm" @submit.prevent="handleLogin" class="space-y-4" novalidate>
+          <!-- Email -->
+          <FormInput
+            v-model="payload.email"
+            label="Email"
+            type="email"
+            icon="bi-person-fill"
+            placeholder="your@email.com"
+            autocomplete="email"
+            :error="errors.email"
+            :disabled="isLoginLoading"
+          />
+
+          <!-- Password + helper row -->
+          <div class="space-y-2">
+            <FormInput
+              v-model="payload.password"
+              label="Password"
+              type="password"
+              icon="bi-lock-fill"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              :error="errors.password"
+              :disabled="isLoginLoading"
+            />
+
+            <div class="flex items-center justify-between">
+              <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  v-model="payload.remember"
+                  class="w-4 h-4 rounded accent-emerald-600"
+                />
+                <span class="text-footnote text-gray-600 dark:text-gray-300">Remember me</span>
+              </label>
+              <a
+                href="#"
+                class="text-footnote font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <ButtonComponent
+            type="submit"
+            variant="primary"
+            size="md"
+            :disabled="!isFormValid"
+            :loading="isLoginLoading"
+            :always-full-width="true"
+            :text="isLoginLoading ? 'Signing in...' : 'Sign In'"
+          />
+        </form>
+      </Transition>
 
       <!-- Footer -->
       <p class="mt-7 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -148,6 +163,10 @@ const authStore = useAuthStore()
 
 const isLoginLoading: Ref<boolean> = ref(false);
 const isGoogleLoading: Ref<boolean> = ref(false);
+
+// Social login is the primary path; the email/password form stays collapsed
+// until the user explicitly chooses "Continue with email".
+const showEmailForm = ref(false);
 
 // Reactive states
 const payload = ref<LoginPayload>({
@@ -226,6 +245,11 @@ const handleGoogleLogin = async () => {
 
     try {
         const url = await authStore.fetchGoogleLoginUrl();
+        // Preserve the post-login redirect across the Google OAuth round-trip: the
+        // ?redirect= query param is gone once we navigate to Google's domain, so we
+        // stash it and the callback restores it (see GoogleCallback.vue).
+        const redirect = route.query.redirect as string | undefined;
+        if (redirect) sessionStorage.setItem('post_auth_redirect', redirect);
         window.location.href = url;
     } catch (error) {
         console.error('Google login error:', error)
@@ -262,9 +286,28 @@ const handleGoogleLogin = async () => {
     }
 }
 
+/* Reveal the email form smoothly when "Continue with email" is tapped. */
+.reveal-enter-active {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.reveal-enter-from {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+.reveal-leave-active {
+    transition: opacity 0.15s ease;
+}
+.reveal-leave-to {
+    opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .login-card {
         animation: none;
+    }
+    .reveal-enter-active,
+    .reveal-leave-active {
+        transition: none;
     }
 }
 </style>

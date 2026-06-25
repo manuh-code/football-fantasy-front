@@ -75,35 +75,44 @@
               <p class="text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
                 Access code
               </p>
-              <button
-                type="button"
-                @click.stop="copyAccessCode(pool)"
-                :title="copiedUuid === pool.uuid ? 'Copied!' : 'Copy access code'"
-                class="group w-full flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-              >
-                <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
-                  {{ pool.access_code }}
-                </span>
-                <v-icon
-                  :name="copiedUuid === pool.uuid ? 'hi-solid-check' : 'hi-solid-duplicate'"
-                  :class="[
-                    'w-4 h-4 shrink-0 transition-colors',
-                    copiedUuid === pool.uuid
-                      ? 'text-emerald-500'
-                      : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
-                  ]"
-                />
-                <span
-                  :class="[
-                    'text-2xs font-semibold shrink-0 transition-colors',
-                    copiedUuid === pool.uuid
-                      ? 'text-emerald-500'
-                      : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
-                  ]"
+              <div class="flex items-center gap-2">
+                <!-- Code chip (tap to copy just the code) -->
+                <button
+                  type="button"
+                  @click.stop="copyAccessCode(pool)"
+                  :title="copiedUuid === pool.uuid ? 'Copied!' : 'Copy access code'"
+                  class="group flex-1 min-w-0 flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                 >
-                  {{ copiedUuid === pool.uuid ? 'Copied' : 'Copy' }}
-                </span>
-              </button>
+                  <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
+                    {{ pool.access_code }}
+                  </span>
+                  <v-icon
+                    :name="copiedUuid === pool.uuid ? 'hi-solid-check' : 'hi-solid-duplicate'"
+                    :class="[
+                      'w-4 h-4 shrink-0 transition-colors',
+                      copiedUuid === pool.uuid
+                        ? 'text-emerald-500'
+                        : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
+                    ]"
+                  />
+                </button>
+
+                <!-- Share invite link (native share sheet / copy link fallback) -->
+                <button
+                  type="button"
+                  @click.stop="sharePool(pool)"
+                  :title="sharedUuid === pool.uuid ? 'Link copied!' : 'Share invite link'"
+                  class="shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 py-2 transition-all active:scale-[0.98] shadow-sm shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                >
+                  <v-icon
+                    :name="sharedUuid === pool.uuid ? 'hi-solid-check' : 'hi-solid-share'"
+                    class="w-4 h-4"
+                  />
+                  <span class="text-2xs font-semibold">
+                    {{ sharedUuid === pool.uuid ? 'Copied' : 'Share' }}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -147,6 +156,32 @@ const pools = ref<PoolResponse[]>([]);
 const copiedUuid = ref<string | null>(null);
 let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
+// Tracks which pool's invite link was just copied (clipboard fallback feedback).
+const sharedUuid = ref<string | null>(null);
+let shareResetTimer: ReturnType<typeof setTimeout> | undefined;
+
+// Build the public invite link for a pool. Opening it lands the recipient on the
+// Pools page with the Join sheet pre-filled with this access code (see PoolView).
+const buildInviteLink = (accessCode: string) =>
+  `${window.location.origin}/pools?join=${encodeURIComponent(accessCode)}`;
+
+// Copy arbitrary text, falling back to a hidden textarea on non-secure contexts
+// or older browsers that lack the async clipboard API.
+const copyToClipboard = async (text: string) => {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+};
+
 // Resolve the badge shown for a pool's stage based on its lifecycle.
 const stageBadge = (stage: FootballStageResponse) => {
   if (stage.is_current) {
@@ -172,19 +207,7 @@ const copyAccessCode = async (pool: PoolResponse) => {
   if (!pool.access_code) return;
 
   try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(pool.access_code);
-    } else {
-      // Fallback for non-secure contexts or older browsers.
-      const textarea = document.createElement("textarea");
-      textarea.value = pool.access_code;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      textarea.remove();
-    }
+    await copyToClipboard(pool.access_code);
 
     copiedUuid.value = pool.uuid;
     success("Access code copied", "Share it so others can join your pool.");
@@ -196,6 +219,49 @@ const copyAccessCode = async (pool: PoolResponse) => {
   } catch (e) {
     console.error("Failed to copy access code:", e);
     error("Couldn't copy", "Please copy the access code manually.");
+  }
+};
+
+// Share a pool's invite link. On supported devices (mobile/PWA) this opens the
+// native share sheet (WhatsApp, Telegram, etc.); elsewhere it falls back to
+// copying the link to the clipboard.
+const sharePool = async (pool: PoolResponse) => {
+  if (!pool.access_code) return;
+
+  const url = buildInviteLink(pool.access_code);
+  const shareData: ShareData = {
+    title: `Join "${pool.name}"`,
+    text: `Join my pool "${pool.name}" on Football Fantasy. Access code: ${pool.access_code}`,
+    url,
+  };
+
+  // Prefer the native share sheet when available.
+  if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+    try {
+      await navigator.share(shareData);
+    } catch (e) {
+      // The user dismissing the share sheet rejects with AbortError — not an error.
+      if ((e as DOMException)?.name !== "AbortError") {
+        console.error("Failed to share pool:", e);
+      }
+    }
+    return;
+  }
+
+  // Fallback: copy the invite link.
+  try {
+    await copyToClipboard(url);
+
+    sharedUuid.value = pool.uuid;
+    success("Invite link copied", "Share it so others can join your pool.");
+
+    clearTimeout(shareResetTimer);
+    shareResetTimer = setTimeout(() => {
+      if (sharedUuid.value === pool.uuid) sharedUuid.value = null;
+    }, 2000);
+  } catch (e) {
+    console.error("Failed to copy invite link:", e);
+    error("Couldn't copy", "Please copy the invite link manually.");
   }
 };
 
@@ -221,6 +287,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearTimeout(copyResetTimer);
+  clearTimeout(shareResetTimer);
 });
 
 // Let the parent view refresh the list after creating/joining a pool.
