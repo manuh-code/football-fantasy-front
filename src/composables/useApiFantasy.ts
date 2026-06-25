@@ -44,6 +44,7 @@ export function useApiFantasy() {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'TimeZone': getTimezone(),
+            'Accept-Language': navigator.language || 'en', // Use browser's language setting
         }
     });
 
