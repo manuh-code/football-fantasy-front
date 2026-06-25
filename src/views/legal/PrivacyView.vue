@@ -256,13 +256,13 @@ const router = useRouter();
 const company = {
   legalName: "[Razón social o nombre del Responsable]",
   appName: "Football Fantasy",
-  address: "[Calle, número, colonia, municipio/alcaldía, estado, C.P., México]",
-  contactEmail: "[privacidad@tudominio.com]",
-  website: "[https://tudominio.com]",
-  pushProvider: "[p. ej. Firebase Cloud Messaging]",
-  analyticsProvider: "[p. ej. Google Analytics]",
+  address: "[Opalo, 142a, Colinas de plata, Leon, Guanajuato, 37210, México]",
+  contactEmail: "[hola@fantasymx.cloud]",
+  website: "[https://fantasymx.cloud]",
+  pushProvider: "[Firebase Cloud Messaging]",
+  analyticsProvider: "[Google Analytics]",
   minAge: "18",
-  lastUpdated: "[DD de mes de AAAA]",
+  lastUpdated: "[25 de junio de 2026]",
 };
 
 const goBack = () => {

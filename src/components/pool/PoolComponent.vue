@@ -197,7 +197,7 @@ const stageBadge = (stage: FootballStageResponse) => {
     };
   }
   return {
-    label: "Upcoming",
+    label: "",
     classes: "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
   };
 };
