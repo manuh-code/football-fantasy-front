@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ably/laravel-echo": "^1.0.6",
+    "@popperjs/core": "^2.11.8",
     "ably": "^1.2.50",
     "axios": "^1.11.0",
     "chart.js": "^4.5.1",
