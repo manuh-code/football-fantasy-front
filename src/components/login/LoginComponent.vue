@@ -17,10 +17,10 @@
           <v-icon name="md-sportssoccer" class="w-7 h-7 text-white" />
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Welcome
+          {{ $t('auth.login.welcome') }}
         </h1>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Sign in or create your account
+          {{ $t('auth.login.subtitle') }}
         </p>
       </div>
 
@@ -33,7 +33,7 @@
           :loading="isGoogleLoading"
           :disabled="isLoginLoading"
           :always-full-width="true"
-          :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
+          :text="isGoogleLoading ? $t('auth.login.googleConnecting') : $t('auth.login.continueGoogle')"
           @click="handleGoogleLogin"
         />
         <!-- Add Facebook, Apple, etc. here once the backend supports them. -->
@@ -43,7 +43,7 @@
       <div class="flex items-center gap-3 my-5">
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
         <span class="text-2xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap">
-          or
+          {{ $t('auth.login.or') }}
         </span>
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
       </div>
@@ -56,7 +56,7 @@
         class="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 dark:border-gray-700 text-footnote font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 active:scale-[0.99] transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
       >
         <v-icon name="hi-solid-mail" class="w-4 h-4" />
-        Continue with email
+        {{ $t('auth.login.continueEmail') }}
       </button>
 
       <Transition name="reveal">
@@ -64,10 +64,10 @@
           <!-- Email -->
           <FormInput
             v-model="payload.email"
-            label="Email"
+            :label="$t('auth.login.email.label')"
             type="email"
             icon="bi-person-fill"
-            placeholder="your@email.com"
+            :placeholder="$t('auth.login.email.placeholder')"
             autocomplete="email"
             :error="errors.email"
             :disabled="isLoginLoading"
@@ -77,10 +77,10 @@
           <div class="space-y-2">
             <FormInput
               v-model="payload.password"
-              label="Password"
+              :label="$t('auth.login.password.label')"
               type="password"
               icon="bi-lock-fill"
-              placeholder="••••••••"
+              :placeholder="$t('auth.login.password.placeholder')"
               autocomplete="current-password"
               :error="errors.password"
               :disabled="isLoginLoading"
@@ -93,13 +93,13 @@
                   v-model="payload.remember"
                   class="w-4 h-4 rounded accent-emerald-600"
                 />
-                <span class="text-footnote text-gray-600 dark:text-gray-300">Remember me</span>
+                <span class="text-footnote text-gray-600 dark:text-gray-300">{{ $t('auth.login.rememberMe') }}</span>
               </label>
               <a
                 href="#"
                 class="text-footnote font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
               >
-                Forgot password?
+                {{ $t('auth.login.forgotPassword') }}
               </a>
             </div>
           </div>
@@ -112,30 +112,30 @@
             :disabled="!isFormValid"
             :loading="isLoginLoading"
             :always-full-width="true"
-            :text="isLoginLoading ? 'Signing in...' : 'Sign In'"
+            :text="isLoginLoading ? $t('auth.login.signingIn') : $t('auth.login.signIn')"
           />
         </form>
       </Transition>
 
       <!-- Footer -->
       <p class="mt-7 text-center text-sm text-gray-500 dark:text-gray-400">
-        Don't have an account?
+        {{ $t('auth.login.noAccount') }}
         <router-link
           to="/register"
           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Sign up
+          {{ $t('auth.login.signUp') }}
         </router-link>
       </p>
 
       <!-- Privacy notice -->
       <p class="mt-3 text-center text-2xs text-gray-400 dark:text-gray-500">
-        Al continuar aceptas nuestro
+        {{ $t('auth.login.privacyPrefix') }}
         <router-link
           to="/privacy"
           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Aviso de Privacidad
+          {{ $t('auth.login.privacyLink') }}
         </router-link>
       </p>
     </div>
@@ -145,6 +145,7 @@
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { FormInput, ButtonComponent } from '@/components/ui'
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { LoginPayload } from '@/interfaces/login/LoginPayload';
@@ -157,6 +158,7 @@ interface FormErrors {
 // Router
 const router = useRouter()
 const route = useRoute()
+const { t } = useI18n()
 
 // Auth store
 const authStore = useAuthStore()
@@ -194,16 +196,16 @@ const validateForm = (): boolean => {
 
     // Validate email
     if (!payload.value.email) {
-        errors.value.email = 'Email is required'
+        errors.value.email = t('auth.login.validation.emailRequired')
         isValid = false
     } else if (!validateEmail(payload.value.email)) {
-        errors.value.email = 'Please enter a valid email'
+        errors.value.email = t('auth.login.validation.emailInvalid')
         isValid = false
     }
 
     // Validate password
     if (!payload.value.password) {
-        errors.value.password = 'Password is required'
+        errors.value.password = t('auth.login.validation.passwordRequired')
         isValid = false
     }
 

@@ -6,7 +6,7 @@
       <div class="px-4 py-3">
         <div class="flex items-center gap-2">
           <v-icon name="hi-solid-chart-bar" class="w-[18px] h-[18px] text-emerald-500 dark:text-emerald-400 shrink-0" />
-          <h2 class="text-callout font-semibold text-gray-900 dark:text-white">Player Statistics</h2>
+          <h2 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('football.player.menu.title') }}</h2>
         </div>
       </div>
 
@@ -23,7 +23,7 @@
             ]"
           >
             <v-icon name="hi-solid-table" class="w-3.5 h-3.5" />
-            <span class="hidden sm:inline">Details</span>
+            <span class="hidden sm:inline">{{ $t('football.player.menu.details') }}</span>
           </button>
 
           <button
@@ -36,8 +36,8 @@
             ]"
           >
             <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5" />
-            <span class="hidden sm:inline">Top Scorers</span>
-            <span class="sm:hidden">Top</span>
+            <span class="hidden sm:inline">{{ $t('football.player.menu.topScorers') }}</span>
+            <span class="sm:hidden">{{ $t('football.player.menu.top') }}</span>
           </button>
 
           <button
@@ -50,7 +50,7 @@
             ]"
           >
             <v-icon name="gi-soccer-ball" class="w-3.5 h-3.5" />
-            <span class="hidden sm:inline">Fantasy</span>
+            <span class="hidden sm:inline">{{ $t('football.player.menu.fantasy') }}</span>
           </button>
         </div>
       </div>

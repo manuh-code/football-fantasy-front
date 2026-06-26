@@ -177,7 +177,7 @@ const orderedFixtures = computed(() =>
         @click="retry"
         class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
       >
-        Retry
+      {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -187,7 +187,7 @@ const orderedFixtures = computed(() =>
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">No head-to-head history yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.noHeadToHead') }}</p>
     </div>
 
     <template v-else>
@@ -204,19 +204,19 @@ const orderedFixtures = computed(() =>
             <p class="text-[1.625rem] font-extrabold leading-none text-emerald-600 dark:text-emerald-400 tabular-nums">
               {{ homeWins }}
             </p>
-            <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 mt-1">Home wins</p>
+            <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 mt-1">{{ $t('football.matchCenter.homeWins') }}</p>
           </div>
           <div class="text-center">
             <p class="text-[1.625rem] font-extrabold leading-none text-gray-500 dark:text-gray-400 tabular-nums">
               {{ draws }}
             </p>
-            <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 mt-1">Draws</p>
+            <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 mt-1">{{ $t('football.matchCenter.draws') }}</p>
           </div>
           <div class="text-center">
             <p class="text-[1.625rem] font-extrabold leading-none text-sky-600 dark:text-sky-400 tabular-nums">
               {{ awayWins }}
             </p>
-            <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 mt-1">Away wins</p>
+            <p class="text-2xs font-medium text-gray-400 dark:text-gray-500 mt-1">{{ $t('football.matchCenter.awayWins') }}</p>
           </div>
         </div>
 
@@ -233,7 +233,7 @@ const orderedFixtures = computed(() =>
         <div class="flex items-center gap-2 mb-3">
           <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700/60" />
           <span class="text-2xs font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">
-            Previous meetings
+            {{ $t('football.matchCenter.previousMeetings') }}
           </span>
           <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700/60" />
         </div>

@@ -1,8 +1,8 @@
 <template>
   <BottomSheet
     :is-visible="isVisible"
-    title="Create Pool"
-    subtitle="Set up a new pool for your group"
+    :title="$t('pool.create.title')"
+    :subtitle="$t('pool.create.subtitle')"
     icon="hi-solid-sparkles"
     icon-variant="emerald"
     size="auto"
@@ -15,9 +15,9 @@
         id="pool-name"
         v-model="name"
         type="text"
-        label="Name"
+        :label="$t('pool.create.nameLabel')"
         icon="hi-solid-document-text"
-        placeholder="e.g. league friends, office pool, family"
+        :placeholder="$t('pool.create.namePlaceholder')"
         :error="fieldError('name')"
         :disabled="isLoading"
       />
@@ -25,13 +25,13 @@
       <!-- Description -->
       <div class="flex flex-col gap-1.5">
         <label for="pool-description" class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Description <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+          {{ $t('pool.create.descLabel') }} <span class="font-normal text-gray-400 dark:text-gray-500">({{ $t('common.states.optional') }})</span>
         </label>
         <textarea
           id="pool-description"
           v-model="description"
           rows="3"
-          placeholder="What's this pool about?"
+          :placeholder="$t('pool.create.descPlaceholder')"
           :disabled="isLoading"
           :class="[
             'w-full px-4 py-3 rounded-xl border-[1.5px] bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-base md:text-sm placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-colors focus:outline-none focus:ring-2 disabled:opacity-60',
@@ -45,7 +45,7 @@
 
       <!-- Stage — auto-resolved for the current league (read-only) -->
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Stage</label>
+        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('pool.create.stage') }}</label>
 
         <!-- Loading -->
         <div v-if="loadingStage" class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3.5">
@@ -66,14 +66,14 @@
               {{ stage.name_complete || stage.name }}
             </p>
             <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-              Your pool will be created for this stage
+              {{ $t('pool.create.stageInfo') }}
             </p>
           </div>
           <span
             v-if="stage.is_current"
             class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shrink-0"
           >
-            Current
+            {{ $t('pool.create.current') }} 
           </span>
         </div>
 
@@ -81,7 +81,7 @@
         <div v-else class="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3.5">
           <v-icon name="hi-solid-exclamation" class="w-4 h-4 text-amber-500 shrink-0" />
           <p class="text-xs text-amber-600 dark:text-amber-400">
-            Couldn't determine the stage. Please try again.
+            {{ $t('pool.create.stageResolveError') }}
           </p>
         </div>
       </div>
@@ -94,7 +94,7 @@
           :disabled="isLoading"
           class="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-50"
         >
-          Cancel
+          {{ $t('common.actions.cancel') }}
         </button>
         <button
           @click="handleCreate"
@@ -103,7 +103,7 @@
         >
           <div v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           <v-icon v-else name="hi-solid-plus-circle" class="w-4 h-4" />
-          Create Pool
+          {{ $t('pool.create.title') }}
         </button>
       </div>
     </template>

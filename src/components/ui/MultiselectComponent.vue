@@ -92,7 +92,7 @@
             type="button"
             @click.stop="handleClearAll"
             class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            title="Clear all"
+            :title="$t('ui.select.clearAll')"
           >
             <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
           </button>

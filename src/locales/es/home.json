@@ -1,0 +1,46 @@
+{
+  "header": {
+    "mainNav": "Navegación principal",
+    "goHome": "Ir al inicio",
+    "login": "Iniciar sesión",
+    "profileAria": "Ir al perfil",
+    "profileTitle": "Ir al perfil de {name}",
+    "changeStage": "Cambiar etapa"
+  },
+  "stage": {
+    "ariaLabel": "Seleccionar etapa",
+    "title": "Etapas"
+  },
+  "nav": {
+    "ariaLabel": "Navegación de inicio",
+    "home": "Inicio",
+    "games": "Juegos",
+    "leagues": "Ligas",
+    "gaming": "Jugar",
+    "following": "Siguiendo",
+    "soon": "Pronto"
+  },
+  "following": {
+    "soonTitle": "Próximamente",
+    "soonMessage": "¡La función de seguimiento estará disponible pronto!"
+  },
+  "league": {
+    "sectionsAriaLabel": "Secciones de la liga",
+    "tabs": {
+      "standings": "Posiciones",
+      "fixtures": "Partidos",
+      "statistics": "Estadísticas",
+      "versus": "Versus",
+      "totw": "TOTW"
+    },
+    "empty": {
+      "title": "Selecciona una liga",
+      "subtitle": "Elige tu liga favorita para ver partidos y estadísticas"
+    },
+    "fallbackName": "Liga",
+    "notFound": {
+      "title": "Liga no encontrada",
+      "message": "Selecciona una nueva liga para continuar."
+    }
+  }
+}

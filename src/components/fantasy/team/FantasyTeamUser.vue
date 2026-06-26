@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useToast } from '@/composables/useToast'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import type { FantasyUserTeamPayload } from '@/interfaces/fantasy/team/FantasyUserTeamPayload'
@@ -14,6 +15,7 @@ const props = defineProps<Props>()
 
 // Composables
 const router = useRouter()
+const { t } = useI18n()
 const toast = useToast()
 
 // ─── Form State ─────────────────────────────────────────────
@@ -46,11 +48,11 @@ const handleDrop = (event: DragEvent) => {
 
 const processFile = (file: File) => {
   if (!ALLOWED_TYPES.has(file.type)) {
-    toast.error('Invalid format', 'Only JPG, PNG and WebP images are allowed.')
+    toast.error(t('fantasy.teamCreate.invalidFormatTitle'), t('fantasy.teamCreate.invalidFormatMessage'))
     return
   }
   if (file.size > MAX_IMAGE_SIZE) {
-    toast.error('File too large', 'Maximum image size is 2MB.')
+    toast.error(t('fantasy.teamCreate.fileTooLargeTitle'), t('fantasy.teamCreate.fileTooLargeMessage'))
     return
   }
 
@@ -148,7 +150,7 @@ const handleSubmit = async () => {
     }
 
     await fantasyLeagueService.addTeam(payload)
-    toast.success('Team Created!', `"${teamName.value}" is ready to compete.`)
+    toast.success(t('fantasy.teamCreate.createdTitle'), t('fantasy.teamCreate.createdMessage', { name: teamName.value }))
 
     router.push({
       name: 'fantasyLeagueDetail',
@@ -204,7 +206,7 @@ const goBack = () => {
             <!-- Gradient header -->
             <div class="h-20 relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600">
               <div class="absolute inset-0 bg-black/5" />
-              <p class="absolute top-3 left-4 text-2xs font-semibold uppercase tracking-widest text-white/70">Preview</p>
+              <p class="absolute top-3 left-4 text-2xs font-semibold uppercase tracking-widest text-white/70">{{ $t('fantasy.teamCreate.preview') }}</p>
             </div>
 
             <!-- Team Identity Preview -->
@@ -240,9 +242,9 @@ const goBack = () => {
           <div class="hidden lg:flex items-start gap-3 mt-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20">
             <v-icon name="hi-solid-light-bulb" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
             <div>
-              <p class="text-xs font-medium text-amber-800 dark:text-amber-300">Tip</p>
+              <p class="text-xs font-medium text-amber-800 dark:text-amber-300">{{ $t('fantasy.teamCreate.tip') }}</p>
               <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5 leading-relaxed">
-                Upload your team's logo for a personalized look. You can change it anytime from your team settings.
+                {{ $t('fantasy.teamCreate.tipBody') }}
               </p>
             </div>
           </div>
@@ -254,26 +256,26 @@ const goBack = () => {
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div class="p-5 md:p-6">
             <div class="mb-5">
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Team Identity</h2>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Choose a name and initials for your team</p>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.teamCreate.identity') }}</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('fantasy.teamCreate.identitySub') }}</p>
             </div>
 
             <div v-if="isExistingTeam" class="mb-4 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 flex items-center justify-between">
-              <div class="text-sm text-emerald-800 dark:text-emerald-200">You already have a team in this league.</div>
-              <button @click="() => router.push({ name: 'fantasyLeagueDetail', params: { uuid: props.fantasyLeagueUuid } })" type="button" class="px-3 py-1.5 rounded-md bg-emerald-500 text-white text-sm">View Team</button>
+              <div class="text-sm text-emerald-800 dark:text-emerald-200">{{ $t('fantasy.teamCreate.alreadyHaveTeam') }}</div>
+              <button @click="() => router.push({ name: 'fantasyLeagueDetail', params: { uuid: props.fantasyLeagueUuid } })" type="button" class="px-3 py-1.5 rounded-md bg-emerald-500 text-white text-sm">{{ $t('fantasy.teamCreate.viewTeam') }}</button>
             </div>
 
             <div class="space-y-5">
               <!-- Team Name -->
               <div>
-                <label for="team-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Team Name</label>
+                <label for="team-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">{{ $t('fantasy.teamCreate.teamName') }}</label>
                 <div class="relative">
                   <input
                     id="team-name"
                     v-model="teamName"
                     type="text"
                     maxlength="30"
-                    placeholder="e.g. Thunder FC"
+                    :placeholder="$t('fantasy.teamCreate.teamNamePlaceholder')"
                     class="w-full pl-4 pr-16 py-3.5 rounded-xl border text-sm bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-700"
                     :class="teamNameError
                       ? 'border-red-300 dark:border-red-500'
@@ -292,8 +294,8 @@ const goBack = () => {
               <!-- Initials -->
               <div>
                 <label for="team-initials" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Team Initials
-                  <span class="text-xs text-gray-400 font-normal ml-1">(1-4 chars)</span>
+                  {{ $t('fantasy.teamCreate.initialsLabel') }}
+                  <span class="text-xs text-gray-400 font-normal ml-1">{{ $t('fantasy.teamCreate.initialsHint') }}</span>
                 </label>
                 <div class="flex gap-2">
                   <div class="relative flex-1">
@@ -303,7 +305,7 @@ const goBack = () => {
                       @input="onInitialsInput"
                       type="text"
                       maxlength="4"
-                      placeholder="e.g. TFC"
+                      :placeholder="$t('fantasy.teamCreate.initialsPlaceholder')"
                       class="w-full px-4 py-3.5 rounded-xl border text-sm bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 uppercase tracking-[0.25em] font-bold text-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-700"
                       :class="initialsError
                         ? 'border-red-300 dark:border-red-500'
@@ -313,7 +315,7 @@ const goBack = () => {
                   <button
                     @click="generateInitials"
                     type="button"
-                    title="Auto-generate from team name"
+                    :title="$t('fantasy.teamCreate.autoGenerate')"
                     class="px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400 dark:hover:border-emerald-800 transition-all"
                   >
                     <v-icon name="hi-solid-sparkles" class="w-5 h-5" />
@@ -328,7 +330,7 @@ const goBack = () => {
 
             <!-- Team Image Upload -->
             <div class="mt-6">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="team-logo">Team Logo</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="team-logo">{{ $t('fantasy.teamCreate.teamLogo') }}</label>
               <input
                 id="team-logo"
                 ref="fileInputRef"
@@ -355,7 +357,7 @@ const goBack = () => {
                     <v-icon name="hi-solid-photograph" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
                   </div>
                   <p class="text-sm font-medium text-gray-600 dark:text-gray-300">
-                    <span class="text-emerald-600 dark:text-emerald-400">Click to upload</span>
+                    <span class="text-emerald-600 dark:text-emerald-400">{{ $t('fantasy.teamCreate.clickToUpload') }}</span>
                     or drag & drop
                   </p>
                   <p class="text-xs text-gray-400 dark:text-gray-500">JPG, PNG or WebP (max. 2MB)</p>
@@ -385,7 +387,7 @@ const goBack = () => {
                     @click="openFilePicker"
                     type="button"
                     class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                    title="Change image"
+                    :title="$t('fantasy.teamCreate.changeImage')"
                   >
                     <v-icon name="hi-solid-pencil" class="w-4 h-4" />
                   </button>
@@ -393,14 +395,14 @@ const goBack = () => {
                     @click="removeImage"
                     type="button"
                     class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 transition-colors"
-                    title="Remove image"
+                    :title="$t('fantasy.teamCreate.removeImage')"
                   >
                     <v-icon name="hi-solid-trash" class="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5">Optional. If not provided, a default image will be assigned.</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5">{{ $t('fantasy.teamCreate.logoOptional') }}</p>
             </div>
           </div>
 
@@ -422,7 +424,7 @@ const goBack = () => {
             >
               <span v-if="isSaving" class="flex items-center gap-2">
                 <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Creating...
+                {{ $t('fantasy.teamCreate.creating') }}
               </span>
               <span v-else-if="isExistingTeam" class="flex items-center gap-2">
                 <v-icon name="hi-solid-eye" class="w-4 h-4" />
@@ -430,7 +432,7 @@ const goBack = () => {
               </span>
               <span v-else class="flex items-center gap-2">
                 <v-icon name="hi-solid-check" class="w-4 h-4" />
-                Create Team
+                {{ $t('fantasy.teamCreate.createTeam') }}
               </span>
             </button>
           </div>

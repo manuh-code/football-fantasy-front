@@ -18,48 +18,49 @@ interface StatConfig {
   isPercentage?: boolean;
 }
 
+// `label` holds an i18n key resolved with $t in the template.
 const HEADLINE_STATS: StatConfig[] = [
-  { code: "BALL_POSSESSION", label: "Possession", isPercentage: true },
-  { code: "SHOTS_TOTAL", label: "Shots" },
-  { code: "SHOTS_ON_TARGET", label: "Shots on Target" },
-  { code: "CORNERS", label: "Corners" },
-  { code: "FOULS", label: "Fouls" },
-  { code: "YELLOWCARDS", label: "Yellow Cards" },
-  { code: "REDCARDS", label: "Red Cards" },
+  { code: "BALL_POSSESSION", label: "football.stats.possession", isPercentage: true },
+  { code: "SHOTS_TOTAL", label: "football.stats.shots" },
+  { code: "SHOTS_ON_TARGET", label: "football.stats.shotsOnTarget" },
+  { code: "CORNERS", label: "football.stats.corners" },
+  { code: "FOULS", label: "football.stats.fouls" },
+  { code: "YELLOWCARDS", label: "football.stats.yellowCards" },
+  { code: "REDCARDS", label: "football.stats.redCards" },
 ];
 
 const SECONDARY_STATS: StatConfig[] = [
-  { code: "SHOTS_OFF_TARGET", label: "Shots off Target" },
-  { code: "SHOTS_INSIDEBOX", label: "Shots Inside Box" },
-  { code: "SHOTS_OUTSIDEBOX", label: "Shots Outside Box" },
-  { code: "SHOTS_BLOCKED", label: "Shots Blocked" },
-  { code: "OFFSIDES", label: "Offsides" },
-  { code: "PASSES", label: "Passes" },
-  { code: "SUCCESSFUL_PASSES", label: "Accurate Passes" },
-  { code: "SUCCESSFUL_PASSES_PERCENTAGE", label: "Pass Accuracy", isPercentage: true },
-  { code: "KEY_PASSES", label: "Key Passes" },
-  { code: "LONG_PASSES", label: "Long Passes" },
-  { code: "SUCCESSFUL_LONG_PASSES", label: "Accurate Long Passes" },
-  { code: "TACKLES", label: "Tackles" },
-  { code: "INTERCEPTIONS", label: "Interceptions" },
-  { code: "SAVES", label: "Saves" },
-  { code: "BIG_CHANCES_CREATED", label: "Big Chances Created" },
-  { code: "BIG_CHANCES_MISSED", label: "Big Chances Missed" },
-  { code: "DUELS_WON", label: "Duels Won" },
-  { code: "DRIBBLED_ATTEMPTS", label: "Dribble Attempts" },
-  { code: "SUCCESSFUL_DRIBBLES", label: "Successful Dribbles" },
-  { code: "ATTACKS", label: "Attacks" },
-  { code: "DANGEROUS_ATTACKS", label: "Dangerous Attacks" },
-  { code: "TOTAL_CROSSES", label: "Crosses" },
-  { code: "ACCURATE_CROSSES", label: "Accurate Crosses" },
-  { code: "GOAL_ATTEMPTS", label: "Goal Attempts" },
-  { code: "FREE_KICKS", label: "Free Kicks" },
-  { code: "GOAL_KICKS", label: "Goal Kicks" },
-  { code: "THROWINS", label: "Throw Ins" },
-  { code: "PENALTIES", label: "Penalties" },
-  { code: "HIT_WOODWORK", label: "Hit Woodwork" },
-  { code: "SUBSTITUTIONS", label: "Substitutions" },
-  { code: "INJURIES", label: "Injuries" },
+  { code: "SHOTS_OFF_TARGET", label: "football.stats.shotsOffTarget" },
+  { code: "SHOTS_INSIDEBOX", label: "football.stats.shotsInsideBox" },
+  { code: "SHOTS_OUTSIDEBOX", label: "football.stats.shotsOutsideBox" },
+  { code: "SHOTS_BLOCKED", label: "football.stats.shotsBlocked" },
+  { code: "OFFSIDES", label: "football.stats.offsides" },
+  { code: "PASSES", label: "football.stats.passes" },
+  { code: "SUCCESSFUL_PASSES", label: "football.stats.accuratePasses" },
+  { code: "SUCCESSFUL_PASSES_PERCENTAGE", label: "football.stats.passAccuracy", isPercentage: true },
+  { code: "KEY_PASSES", label: "football.stats.keyPasses" },
+  { code: "LONG_PASSES", label: "football.stats.longPasses" },
+  { code: "SUCCESSFUL_LONG_PASSES", label: "football.stats.accurateLongPasses" },
+  { code: "TACKLES", label: "football.stats.tackles" },
+  { code: "INTERCEPTIONS", label: "football.stats.interceptions" },
+  { code: "SAVES", label: "football.stats.saves" },
+  { code: "BIG_CHANCES_CREATED", label: "football.stats.bigChancesCreated" },
+  { code: "BIG_CHANCES_MISSED", label: "football.stats.bigChancesMissed" },
+  { code: "DUELS_WON", label: "football.stats.duelsWon" },
+  { code: "DRIBBLED_ATTEMPTS", label: "football.stats.dribbleAttempts" },
+  { code: "SUCCESSFUL_DRIBBLES", label: "football.stats.successfulDribbles" },
+  { code: "ATTACKS", label: "football.stats.attacks" },
+  { code: "DANGEROUS_ATTACKS", label: "football.stats.dangerousAttacks" },
+  { code: "TOTAL_CROSSES", label: "football.stats.crosses" },
+  { code: "ACCURATE_CROSSES", label: "football.stats.accurateCrosses" },
+  { code: "GOAL_ATTEMPTS", label: "football.stats.goalAttempts" },
+  { code: "FREE_KICKS", label: "football.stats.freeKicks" },
+  { code: "GOAL_KICKS", label: "football.stats.goalKicks" },
+  { code: "THROWINS", label: "football.stats.throwIns" },
+  { code: "PENALTIES", label: "football.stats.penalties" },
+  { code: "HIT_WOODWORK", label: "football.stats.hitWoodwork" },
+  { code: "SUBSTITUTIONS", label: "football.stats.substitutions" },
+  { code: "INJURIES", label: "football.stats.injuries" },
 ];
 
 interface ResolvedStat {
@@ -106,7 +107,7 @@ const hasAnyStat = computed(() => headline.value.length > 0 || secondary.value.l
       <FixtureStatBar
         v-for="stat in headline"
         :key="stat.config.code"
-        :label="stat.config.label"
+        :label="$t(stat.config.label)"
         :home-value="stat.home"
         :away-value="stat.away"
         :is-percentage="stat.config.isPercentage"
@@ -127,7 +128,7 @@ const hasAnyStat = computed(() => headline.value.length > 0 || secondary.value.l
           <FixtureStatBar
             v-for="stat in secondary"
             :key="stat.config.code"
-            :label="stat.config.label"
+            :label="$t(stat.config.label)"
             :home-value="stat.home"
             :away-value="stat.away"
             :is-percentage="stat.config.isPercentage"
@@ -139,7 +140,7 @@ const hasAnyStat = computed(() => headline.value.length > 0 || secondary.value.l
         @click="showMore = !showMore"
         class="mt-3 w-full flex items-center justify-center gap-1 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
       >
-        {{ showMore ? "Show less" : `Show ${secondary.length} more stats` }}
+        {{ showMore ? $t('football.matchCenter.showLess') : $t('football.matchCenter.showMoreStats', { count: secondary.length }) }}
         <v-icon
           name="hi-chevron-down"
           class="w-3.5 h-3.5 transition-transform duration-200"

@@ -26,7 +26,7 @@
               @click="openCreate"
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
             >
-              <span class="text-sm font-semibold">Create Pool</span>
+              <span class="text-sm font-semibold">{{ $t('pool.create.title') }}</span>
               <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <v-icon name="hi-solid-plus-circle" class="w-5 h-5 text-white" />
               </div>
@@ -36,7 +36,7 @@
               @click="openJoin"
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
             >
-              <span class="text-sm font-semibold">Join Pool</span>
+              <span class="text-sm font-semibold">{{ $t('pool.join.title') }}</span>
               <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <v-icon name="hi-solid-key" class="w-5 h-5 text-white" />
               </div>

@@ -87,16 +87,16 @@ const formatGD = (val: string | number | undefined) => {
       <thead>
         <tr class="border-b border-gray-100 dark:border-gray-700/60">
           <th class="standings-th standings-sticky-left left-0 z-10 w-8 text-center bg-white dark:bg-gray-800">#</th>
-          <th class="standings-th standings-sticky-left left-8 z-10 text-left pl-2 bg-white dark:bg-gray-800">Team</th>
-          <th class="standings-th w-8 text-center">MP</th>
-          <th class="standings-th w-8 text-center">W</th>
-          <th class="standings-th w-8 text-center">D</th>
-          <th class="standings-th w-8 text-center">L</th>
-          <th class="standings-th w-9 text-center">GF</th>
-          <th class="standings-th w-9 text-center">GA</th>
-          <th class="standings-th w-9 text-center">GD</th>
-          <th class="standings-th w-24 text-center">Form</th>
-          <th class="standings-th standings-sticky-right right-0 z-10 w-12 text-center bg-white dark:bg-gray-800">Pts</th>
+          <th class="standings-th standings-sticky-left left-8 z-10 text-left pl-2 bg-white dark:bg-gray-800">{{ $t('football.standings.team') }}</th>
+          <th class="standings-th w-8 text-center">{{ $t('football.standings.mp') }}</th>
+          <th class="standings-th w-8 text-center">{{ $t('football.standings.w') }}</th>
+          <th class="standings-th w-8 text-center">{{ $t('football.standings.d') }}</th>
+          <th class="standings-th w-8 text-center">{{ $t('football.standings.l') }}</th>
+          <th class="standings-th w-9 text-center">{{ $t('football.standings.gf') }}</th>
+          <th class="standings-th w-9 text-center">{{ $t('football.standings.ga') }}</th>
+          <th class="standings-th w-9 text-center">{{ $t('football.standings.gd') }}</th>
+          <th class="standings-th w-24 text-center">{{ $t('football.standings.form') }}</th>
+          <th class="standings-th standings-sticky-right right-0 z-10 w-12 text-center bg-white dark:bg-gray-800">{{ $t('football.standings.pts') }}</th>
         </tr>
       </thead>
 

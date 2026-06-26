@@ -11,7 +11,7 @@
         @click="loadPools"
         class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
       >
-        Try Again
+        {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -19,8 +19,8 @@
     <template v-else-if="pools.length > 0">
       <!-- Section Header -->
       <div class="px-1">
-        <h2 class="text-callout font-semibold text-gray-900 dark:text-white">My Pools</h2>
-        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ pools.length }} pool{{ pools.length !== 1 ? 's' : '' }}</p>
+        <h2 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('pool.myPools') }}</h2>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ $t('pool.list.count', { count: pools.length }, pools.length) }}</p>
       </div>
 
       <!-- Pools Grid -->
@@ -62,7 +62,7 @@
             <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-50 dark:border-gray-700/40">
               <div class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 shrink-0">
                 <v-icon name="hi-solid-users" class="w-3.5 h-3.5" />
-                <span>Up to {{ pool.max_participants }}</span>
+                <span>{{ $t('pool.list.upTo', { count: pool.max_participants }) }}</span>
               </div>
               <div v-if="pool.stage" class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 min-w-0">
                 <v-icon name="hi-solid-calendar" class="w-3.5 h-3.5 shrink-0" />
@@ -73,14 +73,14 @@
             <!-- Access code — admin can copy and share it to invite participants -->
             <div v-if="pool.access_code" class="mt-3 pt-3 border-t border-gray-50 dark:border-gray-700/40">
               <p class="text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
-                Access code
+                {{ $t('pool.group.accessCode') }}
               </p>
               <div class="flex items-center gap-2">
                 <!-- Code chip (tap to copy just the code) -->
                 <button
                   type="button"
                   @click.stop="copyAccessCode(pool)"
-                  :title="copiedUuid === pool.uuid ? 'Copied!' : 'Copy access code'"
+                  :title="copiedUuid === pool.uuid ? $t('pool.group.copiedTitle') : $t('pool.group.copyAccessCode')"
                   class="group flex-1 min-w-0 flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                 >
                   <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
@@ -101,7 +101,7 @@
                 <button
                   type="button"
                   @click.stop="sharePool(pool)"
-                  :title="sharedUuid === pool.uuid ? 'Link copied!' : 'Share invite link'"
+                  :title="sharedUuid === pool.uuid ? $t('pool.group.linkCopiedTitle') : $t('pool.group.shareInvite')"
                   class="shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 py-2 transition-all active:scale-[0.98] shadow-sm shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                 >
                   <v-icon
@@ -109,7 +109,7 @@
                     class="w-4 h-4"
                   />
                   <span class="text-2xs font-semibold">
-                    {{ sharedUuid === pool.uuid ? 'Copied' : 'Share' }}
+                    {{ sharedUuid === pool.uuid ? $t('common.actions.copied') : $t('common.actions.share') }}
                   </span>
                 </button>
               </div>
@@ -122,9 +122,9 @@
     <!-- Empty State -->
     <div v-else class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center">
       <v-icon name="hi-solid-document-text" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-      <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">No Pools Yet</h3>
+      <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('pool.emptyTitle') }}</h3>
       <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
-        You are not participating in any pool yet. Once you join one, it will show up here.
+        {{ $t('pool.emptyBody') }}
       </p>
     </div>
   </div>
@@ -137,9 +137,11 @@ import { poolService } from "@/services/pool/poolService";
 import { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import { useToast } from "@/composables/useToast";
+import { useI18n } from "vue-i18n";
 import PoolListSkeleton from "@/components/pool/PoolListSkeleton.vue";
 
 const router = useRouter();
+const { t } = useI18n();
 const { success, error } = useToast();
 
 // Navigate to the pool group detail view.
@@ -186,13 +188,13 @@ const copyToClipboard = async (text: string) => {
 const stageBadge = (stage: FootballStageResponse) => {
   if (stage.is_current) {
     return {
-      label: "Live",
+      label: t("pool.group.badge.live"),
       classes: "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
     };
   }
   if (stage.finished) {
     return {
-      label: "Finished",
+      label: t("pool.group.badge.finished"),
       classes: "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500",
     };
   }
@@ -210,7 +212,7 @@ const copyAccessCode = async (pool: PoolResponse) => {
     await copyToClipboard(pool.access_code);
 
     copiedUuid.value = pool.uuid;
-    success("Access code copied", "Share it so others can join your pool.");
+    success(t("pool.group.toast.codeCopiedTitle"), t("pool.group.toast.shareBody"));
 
     clearTimeout(copyResetTimer);
     copyResetTimer = setTimeout(() => {
@@ -218,7 +220,7 @@ const copyAccessCode = async (pool: PoolResponse) => {
     }, 2000);
   } catch (e) {
     console.error("Failed to copy access code:", e);
-    error("Couldn't copy", "Please copy the access code manually.");
+    error(t("pool.group.toast.copyFailedTitle"), t("pool.group.toast.copyCodeFailedBody"));
   }
 };
 
@@ -230,8 +232,8 @@ const sharePool = async (pool: PoolResponse) => {
 
   const url = buildInviteLink(pool.access_code);
   const shareData: ShareData = {
-    title: `Join "${pool.name}"`,
-    text: `Join my pool "${pool.name}" on Football Fantasy. Access code: ${pool.access_code}`,
+    title: t("pool.group.share.title", { name: pool.name }),
+    text: t("pool.group.share.text", { name: pool.name, code: pool.access_code }),
     url,
   };
 
@@ -253,7 +255,7 @@ const sharePool = async (pool: PoolResponse) => {
     await copyToClipboard(url);
 
     sharedUuid.value = pool.uuid;
-    success("Invite link copied", "Share it so others can join your pool.");
+    success(t("pool.group.toast.linkCopiedTitle"), t("pool.group.toast.shareBody"));
 
     clearTimeout(shareResetTimer);
     shareResetTimer = setTimeout(() => {
@@ -261,7 +263,7 @@ const sharePool = async (pool: PoolResponse) => {
     }, 2000);
   } catch (e) {
     console.error("Failed to copy invite link:", e);
-    error("Couldn't copy", "Please copy the invite link manually.");
+    error(t("pool.group.toast.copyFailedTitle"), t("pool.group.toast.copyLinkFailedBody"));
   }
 };
 
@@ -274,7 +276,7 @@ const loadPools = async () => {
     pools.value = await poolService.getMyPools();
   } catch (error) {
     console.error("Error loading pools:", error);
-    errorMessage.value = "Failed to load your pools. Please try again later.";
+    errorMessage.value = t("pool.loadError");
   } finally {
     isLoading.value = false;
   }

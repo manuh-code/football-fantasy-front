@@ -1,0 +1,19 @@
+{
+  "overview": "Resumen del panel",
+  "summary": "Resumen de tu rendimiento en FantasyMX",
+  "totalTeams": "Equipos totales",
+  "points": "Puntos",
+  "rank": "Posición",
+  "streak": "Racha",
+  "recentActivity": "Actividad reciente",
+  "recentActivitySub": "Tus últimas novedades de fantasy",
+  "welcome": "Bienvenido a tu panel de FantasyMX",
+  "justNow": "Justo ahora",
+  "leaguesLoaded": "Ligas de fútbol cargadas correctamente",
+  "themesSupported": "El panel admite temas claro y oscuro",
+  "footballLeagues": "Ligas de fútbol",
+  "loadingLeagues": "Cargando ligas...",
+  "noLeagues": "No hay ligas disponibles",
+  "noLeaguesSub": "Vuelve más tarde para ver las competencias disponibles",
+  "loadError": "No se pudieron cargar las ligas de fútbol"
+}

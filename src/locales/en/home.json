@@ -1,0 +1,46 @@
+{
+  "header": {
+    "mainNav": "Main navigation",
+    "goHome": "Go to home",
+    "login": "Login",
+    "profileAria": "Go to profile",
+    "profileTitle": "Go to {name} profile",
+    "changeStage": "Change stage"
+  },
+  "stage": {
+    "ariaLabel": "Select stage",
+    "title": "Stages"
+  },
+  "nav": {
+    "ariaLabel": "Home navigation",
+    "home": "Home",
+    "games": "Games",
+    "leagues": "Leagues",
+    "gaming": "Gaming",
+    "following": "Following",
+    "soon": "Soon"
+  },
+  "following": {
+    "soonTitle": "Coming Soon",
+    "soonMessage": "Following feature will be available soon!"
+  },
+  "league": {
+    "sectionsAriaLabel": "League sections",
+    "tabs": {
+      "standings": "Standings",
+      "fixtures": "Fixtures",
+      "statistics": "Statistics",
+      "versus": "Versus",
+      "totw": "TOTW"
+    },
+    "empty": {
+      "title": "Select a league",
+      "subtitle": "Choose your favorite league to view fixtures and statistics"
+    },
+    "fallbackName": "League",
+    "notFound": {
+      "title": "League not found",
+      "message": "Please select a new league to continue."
+    }
+  }
+}

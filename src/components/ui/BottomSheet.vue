@@ -57,7 +57,7 @@
                 v-if="dismissible"
                 @click="close"
                 class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
-                aria-label="Close"
+                :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-solid-x" class="w-4 h-4" />
               </button>

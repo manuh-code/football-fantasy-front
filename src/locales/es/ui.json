@@ -1,0 +1,46 @@
+{
+  "menu": {
+    "userMenu": "Menú de usuario",
+    "viewProfile": "Ver perfil",
+    "viewProfileSub": "Administra tu cuenta",
+    "changePassword": "Cambiar contraseña",
+    "changePasswordSub": "Actualiza tu contraseña",
+    "favoriteTeam": "Equipo favorito",
+    "favoriteTeamSub": "Elige tu equipo",
+    "fantasyLeagues": "Ligas Fantasy",
+    "fantasyLeaguesSub": "Administra tus ligas",
+    "signOut": "Cerrar sesión",
+    "signOutSub": "Cierra la sesión de tu cuenta"
+  },
+  "pagination": {
+    "aria": "Paginación",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "tabs": {
+    "aria": "Navegación por pestañas"
+  },
+  "select": {
+    "clearSelection": "Limpiar selección",
+    "clearAll": "Limpiar todo",
+    "placeholder": "Selecciona una opción",
+    "searchPlaceholder": "Buscar...",
+    "noResults": "Sin resultados para",
+    "noOptions": "No hay opciones disponibles",
+    "all": "Todos"
+  },
+  "menuHint": {
+    "show": "Mostrar menú",
+    "label": "Menú"
+  },
+  "avatar": {
+    "uploadError": "Error al subir",
+    "closeError": "Cerrar mensaje de error"
+  },
+  "ads": {
+    "label": "Publicidad"
+  },
+  "about": {
+    "title": "Acerca de"
+  }
+}

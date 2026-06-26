@@ -10,7 +10,7 @@
                         ]"
                         @click="$emit('sort', 'display_name')">
                         <div class="flex items-center justify-between">
-                            <span>Player</span>
+                            <span>{{ $t('football.player.table.player') }}</span>
                             <v-icon :name="getSortIcon('display_name')" class="w-4 h-4" />
                         </div>
                     </th>
@@ -21,7 +21,7 @@
                         ]"
                         @click="$emit('sort', 'team')">
                         <div class="flex items-center justify-between">
-                            <span>Team</span>
+                            <span>{{ $t('football.player.table.team') }}</span>
                             <v-icon :name="getSortIcon('team')" class="w-4 h-4" />
                         </div>
                     </th>
@@ -32,7 +32,7 @@
                         ]"
                         @click="$emit('sort', 'position')">
                         <div class="flex items-center justify-between">
-                            <span>Position</span>
+                            <span>{{ $t('football.player.table.position') }}</span>
                             <v-icon :name="getSortIcon('position')" class="w-4 h-4" />
                         </div>
                     </th>
@@ -43,7 +43,7 @@
                         ]"
                         @click="$emit('sort', 'age')">
                         <div class="flex items-center justify-between">
-                            <span>Age</span>
+                            <span>{{ $t('football.player.table.age') }}</span>
                             <v-icon :name="getSortIcon('age')" class="w-4 h-4" />
                         </div>
                     </th>
@@ -54,7 +54,7 @@
                         ]"
                         @click="$emit('sort', 'country')">
                         <div class="flex items-center justify-between">
-                            <span>Country</span>
+                            <span>{{ $t('football.player.table.country') }}</span>
                             <v-icon :name="getSortIcon('country')" class="w-4 h-4" />
                         </div>
                     </th>

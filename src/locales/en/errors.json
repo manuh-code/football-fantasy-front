@@ -1,0 +1,34 @@
+{
+  "generic": {
+    "title": "Error",
+    "message": "An unexpected error occurred"
+  },
+  "connection": {
+    "title": "Connection Error",
+    "message": "Please check your internet connection and try again."
+  },
+  "400": {
+    "title": "Bad Request",
+    "message": "Bad Request - Invalid data sent"
+  },
+  "401": {
+    "title": "Authentication Failed",
+    "message": "Authentication error. Please verify your credentials."
+  },
+  "403": {
+    "title": "Forbidden",
+    "message": "Forbidden - Access denied"
+  },
+  "404": {
+    "title": "Not Found",
+    "message": "Not Found - Resource not found"
+  },
+  "422": {
+    "title": "Validation Error",
+    "message": "Validation error. Please check your data."
+  },
+  "500": {
+    "title": "Server Error",
+    "message": "Server Error - Please try again later"
+  }
+}

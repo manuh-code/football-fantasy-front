@@ -3,7 +3,7 @@
     <div class="px-4 py-3">
       <div class="flex items-center gap-2">
         <v-icon name="hi-solid-lightning-bolt" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
-        <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">Fantasy Points Filters</h2>
+        <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('football.player.fantasyPoints.filtersTitle') }}</h2>
       </div>
     </div>
 
@@ -19,11 +19,11 @@
             value-key="uuid"
             label-key="name"
             label="Teams"
-            placeholder="Select teams"
+            :placeholder="$t('football.player.fantasyPoints.selectTeams')"
             :disabled="disabled || isLoadingTeams || !teamOptions.length"
             :loading="isLoadingTeams"
             no-result-text="No teams found."
-            :no-options-text="isLoadingTeams ? 'Loading teams…' : 'No teams available'"
+            :no-options-text="isLoadingTeams ? $t('football.player.fantasyPoints.loadingTeams') : $t('football.player.fantasyPoints.noTeams')"
           />
         </div>
 
@@ -35,11 +35,11 @@
             value-key="uuid"
             label-key="name"
             label="Positions"
-            placeholder="Select positions"
+            :placeholder="$t('football.player.fantasyPoints.selectPositions')"
             :disabled="disabled || isLoadingPositions || !positionOptions.length"
             :loading="isLoadingPositions"
             no-result-text="No positions found."
-            :no-options-text="isLoadingPositions ? 'Loading positions…' : 'No positions available'"
+            :no-options-text="isLoadingPositions ? $t('football.player.fantasyPoints.loadingPositions') : $t('football.player.fantasyPoints.noPositions')"
           />
         </div>
 
@@ -51,11 +51,11 @@
             value-key="uuid"
             label-key="name"
             label="Stages"
-            placeholder="Select stages"
+            :placeholder="$t('football.player.fantasyPoints.selectStages')"
             :disabled="disabled || isLoadingStages || !stageOptions.length"
             :loading="isLoadingStages"
             no-result-text="No stages found."
-            :no-options-text="isLoadingStages ? 'Loading stages…' : 'No stages available'"
+            :no-options-text="isLoadingStages ? $t('football.player.fantasyPoints.loadingStages') : $t('football.player.fantasyPoints.noStages')"
           />
         </div>
         </div>

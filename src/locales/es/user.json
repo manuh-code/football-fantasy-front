@@ -1,0 +1,180 @@
+{
+  "settings": {
+    "accountFallbackName": "Usuario",
+    "menu": {
+      "profile": {
+        "title": "Perfil",
+        "subtitle": "Ver y editar tu información personal"
+      },
+      "changePassword": {
+        "title": "Cambiar contraseña",
+        "subtitle": "Actualiza la contraseña de tu cuenta"
+      },
+      "systemSettings": {
+        "title": "Configuración",
+        "subtitle": "Tema, idioma y preferencias"
+      },
+      "privacy": {
+        "title": "Aviso de Privacidad",
+        "subtitle": "Cómo manejamos tus datos personales"
+      },
+      "logout": {
+        "title": "Cerrar sesión",
+        "loading": "Cerrando sesión...",
+        "subtitle": "Cierra tu sesión"
+      }
+    },
+    "logoutSuccess": {
+      "title": "Sesión cerrada",
+      "message": "Tu sesión se cerró correctamente"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "subtitle": "Personaliza cómo se ve la app en tu dispositivo",
+      "darkMode": "Modo oscuro",
+      "darkActive": "El modo oscuro está activo",
+      "lightActive": "El modo claro está activo",
+      "switchToDark": "Cambiar a modo oscuro",
+      "switchToLight": "Cambiar a modo claro"
+    },
+    "language": {
+      "title": "Idioma",
+      "subtitle": "Elige el idioma de la aplicación",
+      "label": "Idioma",
+      "current": "Idioma actual",
+      "es": "Español",
+      "en": "Inglés"
+    }
+  },
+  "profile": {
+    "title": "Información del perfil",
+    "subtitle": "Actualiza tu información personal y tu avatar",
+    "playerRole": "Jugador de Football Fantasy",
+    "fields": {
+      "firstName": {
+        "label": "Nombre",
+        "placeholder": "Ingresa tu nombre"
+      },
+      "lastName": {
+        "label": "Apellido",
+        "placeholder": "Ingresa tu apellido"
+      },
+      "email": {
+        "label": "Correo electrónico",
+        "placeholder": "Ingresa tu correo electrónico"
+      },
+      "phone": {
+        "label": "Teléfono",
+        "placeholder": "Ingresa tu número de teléfono",
+        "notProvided": "No proporcionado"
+      }
+    },
+    "edit": "Editar perfil",
+    "cancel": "Cancelar",
+    "save": "Actualizar perfil",
+    "saving": "Actualizando perfil...",
+    "stats": {
+      "title": "Resumen",
+      "leagues": {
+        "title": "Ligas Fantasy",
+        "subtitle": "Administra tu participación en ligas"
+      },
+      "team": {
+        "title": "Preferencias de equipo",
+        "subtitle": "Elige tu equipo de fútbol favorito"
+      },
+      "account": {
+        "title": "Ajustes de la cuenta",
+        "subtitle": "Actualiza contraseña y preferencias"
+      }
+    },
+    "noData": {
+      "title": "No hay datos de perfil disponibles",
+      "subtitle": "Inicia sesión para ver tu información de perfil o intenta recargar la página.",
+      "goToLogin": "Ir a iniciar sesión"
+    },
+    "updated": {
+      "title": "Perfil actualizado",
+      "message": "¡Tu perfil se actualizó correctamente!"
+    }
+  },
+  "password": {
+    "title": "Cambiar contraseña",
+    "subtitle": "Actualiza la contraseña de tu cuenta",
+    "fields": {
+      "current": {
+        "label": "Contraseña actual",
+        "placeholder": "Ingresa tu contraseña actual"
+      },
+      "new": {
+        "label": "Nueva contraseña",
+        "placeholder": "Ingresa tu nueva contraseña"
+      },
+      "confirm": {
+        "label": "Confirmar nueva contraseña",
+        "placeholder": "Confirma tu nueva contraseña"
+      }
+    },
+    "clear": "Limpiar",
+    "save": "Actualizar contraseña",
+    "saving": "Actualizando contraseña...",
+    "tips": {
+      "title": "Consejos de seguridad",
+      "strong": {
+        "title": "Usa contraseñas seguras",
+        "subtitle": "Incluye mayúsculas, minúsculas, números y símbolos"
+      },
+      "length": {
+        "title": "Mínimo 8 caracteres",
+        "subtitle": "Las contraseñas más largas son más seguras"
+      },
+      "common": {
+        "title": "Evita palabras comunes",
+        "subtitle": "No uses palabras del diccionario ni datos personales"
+      },
+      "unique": {
+        "title": "Contraseña única",
+        "subtitle": "No reutilices contraseñas de otras cuentas"
+      }
+    },
+    "updated": {
+      "title": "Contraseña actualizada",
+      "message": "¡Tu contraseña se actualizó correctamente!"
+    }
+  },
+  "favoriteTeam": {
+    "title": "Equipo de fútbol favorito",
+    "subtitle": "Elige tu equipo favorito para personalizar tu experiencia",
+    "currentTitle": "Equipo favorito actual",
+    "favorite": "Favorito",
+    "chooseDifferent": "Elige un equipo diferente",
+    "selectFavorite": "Selecciona tu equipo favorito",
+    "searchTeam": "Buscar equipo...",
+    "newPreview": "Vista previa del nuevo equipo",
+    "newChoice": "Nueva elección",
+    "alreadyFav": "Este ya es tu equipo favorito",
+    "alreadyFavSub": "Selecciona un equipo diferente para hacer cambios",
+    "whyTitle": "¿Por qué elegir un equipo?",
+    "why": {
+      "personalizedTitle": "Experiencia personalizada",
+      "personalizedSub": "Recibe noticias y novedades de tu equipo favorito",
+      "betterTitle": "Mejores recomendaciones",
+      "betterSub": "Recibe sugerencias de fantasy a tu medida",
+      "dashboardTitle": "Panel personalizado",
+      "dashboardSub": "Ve el rendimiento y las estadísticas de tu equipo",
+      "easyTitle": "Cambios fáciles",
+      "easySub": "Siempre puedes cambiar tu equipo favorito después"
+    },
+    "loading": "Cargando equipos de fútbol...",
+    "loadError": "No se pudieron cargar los equipos. Inténtalo de nuevo más tarde.",
+    "noChangesTitle": "Sin cambios",
+    "noChangesMsg": "¡Este equipo ya es tu favorito!",
+    "savedTitle": "¡Equipo guardado!",
+    "savedSet": "¡{name} se estableció como tu equipo favorito!",
+    "savedUpdated": "¡{name} se actualizó como tu equipo favorito!",
+    "updating": "Actualizando equipo...",
+    "setting": "Estableciendo equipo...",
+    "updateBtn": "Actualizar equipo favorito",
+    "setBtn": "Establecer equipo favorito"
+  }
+}

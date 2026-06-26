@@ -57,12 +57,12 @@
                 <div class="w-7 h-7 md:w-8 md:h-8 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
                   <v-icon name="hi-solid-exclamation" class="w-3.5 h-3.5 md:w-4 md:h-4 text-red-500 dark:text-red-400" />
                 </div>
-                <h4 class="text-xs md:text-sm font-semibold text-gray-900 dark:text-white">Upload Error</h4>
+                <h4 class="text-xs md:text-sm font-semibold text-gray-900 dark:text-white">{{ $t('ui.avatar.uploadError') }}</h4>
               </div>
               <button 
                 @click="clearAvatarError"
                 class="w-5 h-5 md:w-6 md:h-6 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center justify-center transition-all duration-200"
-                aria-label="Close error message"
+                :aria-label="$t('ui.avatar.closeError')"
               >
                 <v-icon name="hi-solid-x-mark" class="w-3.5 h-3.5 md:w-4 md:h-4" />
               </button>

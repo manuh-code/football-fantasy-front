@@ -4,7 +4,8 @@
 
       <!-- Game Mode Cards — compact iOS-style -->
       <!-- Fantasy Card -->
-      <button
+      
+      <!-- <button
         @click="handleNavigation('fantasy')"
         class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden active:scale-[0.98] transition-transform duration-150 focus:outline-none text-left"
       >
@@ -13,17 +14,17 @@
             <v-icon name="bi-trophy-fill" class="w-6 h-6 text-white" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">Fantasy</h3>
-            <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">Build your dream team and compete</p>
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">{{ $t('fantasy.gaming.fantasy.title') }}</h3>
+            <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">{{ $t('fantasy.gaming.fantasy.subtitle') }}</p>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-              Live
+              {{ $t('fantasy.gaming.live') }}
             </span>
             <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
           </div>
         </div>
-      </button>
+      </button> -->
 
       <!-- Pools Card -->
       <button
@@ -35,12 +36,12 @@
             <v-icon name="hi-solid-document-text" class="w-6 h-6 text-white" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">Pools</h3>
-            <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">Predict match results and compete</p>
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">{{ $t('fantasy.gaming.pools.title') }}</h3>
+            <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">{{ $t('fantasy.gaming.pools.subtitle') }}</p>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-              Live
+              {{ $t('fantasy.gaming.live') }}
             </span>
             <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
           </div>
@@ -53,11 +54,13 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useToast } from '@/composables/useToast'
 import HomeMenu from '@/components/home/HomeMenu.vue'
 
 const router = useRouter()
+const { t } = useI18n()
 const authStore = useAuthStore()
 const { info } = useToast()
 
@@ -66,7 +69,7 @@ const handleNavigation = async (gameMode: string) => {
   const isAuthenticated = await authStore.isAuthenticated()
   
   if (!isAuthenticated) {
-    info('Please login to access Fantasy games')
+    info(t('fantasy.gaming.loginRequired'))
     router.push({ name: 'login', query: { redirect: '/gaming' } })
     return
   }

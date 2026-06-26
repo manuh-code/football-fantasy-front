@@ -50,8 +50,8 @@
           :options="knockoutStages"
           value-key="uuid"
           label-key="name"
-          placeholder="Select playoff stage"
-          search-placeholder="Search stage..."
+          :placeholder="$t('football.fixtures.selectPlayoffStage')"
+          search-:placeholder="$t('football.fixtures.searchStage')"
           :disabled="loadingStages || knockoutStages.length === 0"
           :loading="loadingStages"
           accent-color="amber"
@@ -98,7 +98,7 @@
           @click="loadKnockoutStages(props.stageUuid)"
           class="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline"
         >
-          Retry
+         {{ $t('common.actions.retry') }}
         </button>
       </div>
     </div>
@@ -124,7 +124,7 @@
           @click="retryFixtures"
           class="text-footnote font-medium text-red-500 dark:text-red-400 hover:underline"
         >
-          Retry
+         {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -137,7 +137,7 @@
           name="bi-trophy"
           class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
         />
-        <p class="text-footnote">No playoffs available yet</p>
+        <p class="text-footnote">{{ $t('football.fixtures.noPlayoffs') }}</p>
       </div>
 
       <!-- Empty: stage selected but no fixtures -->
@@ -149,7 +149,7 @@
           name="md-sportssoccer"
           class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
         />
-        <p class="text-footnote">No matches in this stage</p>
+        <p class="text-footnote">{{ $t('football.fixtures.noStageMatches') }}</p>
       </div>
 
       <!-- Carousel -->
@@ -187,7 +187,7 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                     </span>
-                    <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+                    <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
                   </div>
 
                   <!-- Time label (when NOT live) -->
@@ -267,7 +267,7 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
                     </span>
-                    <span class="text-2xs font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">Live</span>
+                    <span class="text-2xs font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
                   </div>
 
                   <div class="flex items-center gap-2 px-3 py-2.5" :class="isMatchLive(fixture) ? 'pt-1' : ''">

@@ -1,8 +1,8 @@
 <template>
   <BottomSheet
     :is-visible="isVisible"
-    title="Welcome to the League!"
-    subtitle="One more step to start competing"
+    :title="$t('fantasy.createTeamModal.title')"
+    :subtitle="$t('fantasy.createTeamModal.subtitle')"
     icon="hi-solid-sparkles"
     icon-variant="emerald"
     size="sm"
@@ -22,22 +22,22 @@
       </div>
 
       <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
-        Create Your Fantasy Team
+        {{ $t('fantasy.createTeamModal.heading') }}
       </h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs">
-        You don't have a team in this league yet. Set up your team name and start building your dream squad!
+        {{ $t('fantasy.createTeamModal.body') }}
       </p>
 
       <!-- Feature highlights -->
       <div class="flex items-center justify-center gap-4 mt-5 mb-2">
         <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
           <v-icon name="hi-solid-lightning-bolt" class="w-3.5 h-3.5 text-amber-500" />
-          <span>Quick setup</span>
+          <span>{{ $t('fantasy.createTeamModal.quickSetup') }}</span>
         </div>
         <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
         <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
           <v-icon name="hi-solid-clock" class="w-3.5 h-3.5 text-blue-500" />
-          <span>Less than 1 min</span>
+          <span>{{ $t('fantasy.createTeamModal.lessThanMin') }}</span>
         </div>
       </div>
     </div>
@@ -50,14 +50,14 @@
           class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
         >
           <v-icon name="hi-solid-plus-circle" class="w-5 h-5" />
-          Create My Team
+          {{ $t('fantasy.createTeamModal.createMyTeam') }}
         </button>
         <!-- Secondary -->
         <button
           @click="$emit('close')"
           class="w-full py-3 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          Maybe Later
+          {{ $t('fantasy.createTeamModal.maybeLater') }}
         </button>
       </div>
     </template>

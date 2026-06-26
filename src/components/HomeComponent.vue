@@ -12,7 +12,7 @@
         <TabsMenu
           :model-value="activeTab"
           :tabs="tabs"
-          aria-label="League sections"
+          :aria-label="$t('home.league.sectionsAriaLabel')"
           @update:model-value="selectTab"
         />
 
@@ -46,10 +46,10 @@
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 px-6 text-center">
         <v-icon name="md-sportssoccer" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
         <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">
-          Select a league
+          {{ $t('home.league.empty.title') }}
         </h3>
         <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
-          Choose your favorite league to view fixtures and statistics
+          {{ $t('home.league.empty.subtitle') }}
         </p>
       </div>
     </template>
@@ -58,6 +58,7 @@
 
 <script setup lang="ts">
 import { ref, computed, defineAsyncComponent, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import HomeHeaderMenu from "@/components/home/HomeHeaderMenu.vue";
 import TabsMenu from "@/components/ui/TabsMenu.vue";
@@ -79,6 +80,7 @@ const LeagueStatistics = defineAsyncComponent(loadStatistics);
 const PlayerVersus = defineAsyncComponent(loadVersus);
 const TeamOfTheWeek = defineAsyncComponent(loadTotw);
 
+const { t } = useI18n();
 const store = useFootballLeagueStore();
 const hasLeague = computed(() => store.existLeague());
 
@@ -89,13 +91,13 @@ const selectedSeasonUuid = ref("");
 // ── Tabs ──
 type TabKey = "standings" | "fixtures" | "statistics" | "versus" | "totw";
 
-const tabs: { key: TabKey; label: string; icon: string }[] = [
-  { key: "standings", label: "Standings", icon: "bi-trophy-fill" },
-  { key: "fixtures", label: "Fixtures", icon: "md-sportssoccer" },
-  { key: "statistics", label: "Statistics", icon: "hi-solid-chart-bar" },
-  { key: "versus", label: "Versus", icon: "md-comparearrows-round" },
-  { key: "totw", label: "TOTW", icon: "bi-star-fill" },
-];
+const tabs = computed<{ key: TabKey; label: string; icon: string }[]>(() => [
+  { key: "standings", label: t("home.league.tabs.standings"), icon: "bi-trophy-fill" },
+  { key: "fixtures", label: t("home.league.tabs.fixtures"), icon: "md-sportssoccer" },
+  { key: "statistics", label: t("home.league.tabs.statistics"), icon: "hi-solid-chart-bar" },
+  { key: "versus", label: t("home.league.tabs.versus"), icon: "md-comparearrows-round" },
+  { key: "totw", label: t("home.league.tabs.totw"), icon: "bi-star-fill" },
+]);
 
 const activeTab = ref<TabKey>("standings");
 
@@ -103,7 +105,7 @@ const activeTab = ref<TabKey>("standings");
 const transitionName = ref<"slide-next" | "slide-prev">("slide-next");
 const isAnimating = ref(false);
 
-const tabIndex = (key: string) => tabs.findIndex((t) => t.key === key);
+const tabIndex = (key: string) => tabs.value.findIndex((tab) => tab.key === key);
 
 const selectTab = (key: string) => {
   if (key === activeTab.value) return;

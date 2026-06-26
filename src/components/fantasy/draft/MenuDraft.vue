@@ -28,7 +28,7 @@
     <!-- Nav bar — floating glass pill (matches BottomNavBar), centered in the
          area to the right of the drawer so it tracks the drawer width. -->
     <nav
-      aria-label="Draft navigation"
+      :aria-label="$t('fantasy.draft.menu.nav')"
       class="fixed right-0 bottom-0 z-[100] pointer-events-none flex justify-center transition-[left] duration-300"
       :style="{ left: `${leftOffset}px`, paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }"
     >
@@ -39,7 +39,7 @@
         <button
           @click="handleTabChange('draft')"
           type="button"
-          aria-label="Draft Room"
+          :aria-label="$t('fantasy.draft.menu.room')"
           :aria-current="activeTab === null || activeTab === 'draft' ? 'page' : undefined"
           class="flex flex-col items-center justify-center gap-0.5 px-3.5 py-1.5 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
           :class="activeTab === null || activeTab === 'draft'
@@ -47,14 +47,14 @@
             : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300'"
         >
           <v-icon name="gi-soccer-ball" class="w-5 h-5" />
-          <span class="text-2xs font-semibold tracking-tight leading-none">Draft</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">{{ $t('fantasy.draft.menu.draft') }}</span>
         </button>
 
         <!-- Boards -->
         <button
           @click="handleTabChange('boards')"
           type="button"
-          aria-label="Draft Board"
+          :aria-label="$t('fantasy.draft.menu.board')"
           :aria-current="activeTab === 'boards' ? 'page' : undefined"
           class="flex flex-col items-center justify-center gap-0.5 px-3.5 py-1.5 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
           :class="activeTab === 'boards'
@@ -62,18 +62,18 @@
             : 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300'"
         >
           <v-icon name="hi-solid-clipboard-list" class="w-5 h-5" />
-          <span class="text-2xs font-semibold tracking-tight leading-none">Boards</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">{{ $t('fantasy.draft.menu.boards') }}</span>
         </button>
 
         <!-- League -->
         <button
           @click="handleTabChange('league')"
           type="button"
-          aria-label="League Detail"
+          :aria-label="$t('fantasy.draft.menu.leagueDetail')"
           class="flex flex-col items-center justify-center gap-0.5 px-3.5 py-1.5 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300"
         >
           <v-icon name="bi-trophy-fill" class="w-5 h-5" />
-          <span class="text-2xs font-semibold tracking-tight leading-none">League</span>
+          <span class="text-2xs font-semibold tracking-tight leading-none">{{ $t('fantasy.draft.menu.league') }}</span>
         </button>
       </div>
     </nav>

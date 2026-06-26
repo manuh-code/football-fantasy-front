@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[80dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
-          aria-label="Select player"
+          :aria-label="$t('football.versus.selectPlayer')"
         >
           <!-- Draggable header -->
           <div
@@ -176,12 +176,12 @@ onBeforeUnmount(() => {
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
             <div class="flex items-center justify-between px-4 pb-2.5 pt-1">
-              <h3 class="text-callout font-bold text-gray-900 dark:text-white">Select player</h3>
+              <h3 class="text-callout font-bold text-gray-900 dark:text-white">{{ $t('football.versus.selectPlayer') }}</h3>
               <button
                 @click.stop="emit('close')"
                 @pointerdown.stop
                 class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Close"
+                :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-x" class="w-4 h-4" />
               </button>
@@ -199,7 +199,7 @@ onBeforeUnmount(() => {
                 ref="searchInput"
                 v-model="query"
                 type="text"
-                placeholder="Search a player by name..."
+                :placeholder="$t('football.versus.searchPlayer')"
                 class="w-full h-11 pl-9 pr-3 text-footnote bg-gray-100 dark:bg-gray-800 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
                 @click="retry"
                 class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
-                Retry
+               {{ $t('common.actions.retry') }}
               </button>
             </div>
 
@@ -232,7 +232,7 @@ onBeforeUnmount(() => {
               v-else-if="query.trim().length < MIN_QUERY"
               class="py-10 text-center text-footnote text-gray-400 dark:text-gray-500"
             >
-              Type at least {{ MIN_QUERY }} characters to search
+              {{ $t('football.versus.typeAtLeast', { count: MIN_QUERY }) }}
             </div>
 
             <!-- Empty -->
@@ -241,7 +241,7 @@ onBeforeUnmount(() => {
               class="py-10 flex flex-col items-center text-center"
             >
               <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-              <p class="text-footnote text-gray-400 dark:text-gray-500">No players found for "{{ query.trim() }}"</p>
+              <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.noPlayersFound', { query: query.trim() }) }}</p>
             </div>
 
             <!-- Results -->

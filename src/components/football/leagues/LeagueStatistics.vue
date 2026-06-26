@@ -20,7 +20,7 @@ const view = ref<StatsView>("teams");
       <div
         class="flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800"
         role="tablist"
-        aria-label="Statistics view"
+        :aria-label="$t('football.statistics.viewAria')"
       >
         <button
           type="button"
@@ -33,7 +33,7 @@ const view = ref<StatsView>("teams");
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
         >
           <v-icon name="ri-team-line" class="w-3.5 h-3.5 shrink-0" />
-          <span>Teams</span>
+          <span>{{ $t('football.statistics.teams') }}</span>
         </button>
         <button
           type="button"
@@ -46,7 +46,7 @@ const view = ref<StatsView>("teams");
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
         >
           <v-icon name="hi-solid-users" class="w-3.5 h-3.5 shrink-0" />
-          <span>Players</span>
+          <span>{{ $t('football.statistics.players') }}</span>
         </button>
       </div>
     </div>

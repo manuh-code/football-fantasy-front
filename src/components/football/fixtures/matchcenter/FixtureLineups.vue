@@ -125,7 +125,7 @@ const fallbackSides = computed(() => {
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="hi-solid-users" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">Lineups not available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.noLineups') }}</p>
     </div>
 
     <template v-else>
@@ -268,7 +268,7 @@ const fallbackSides = computed(() => {
             <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">
               {{ b.team?.name }}
             </span>
-            <span class="text-2xs text-gray-400 dark:text-gray-500">Substitutes</span>
+            <span class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.substitutes') }}</span>
           </div>
           <div class="divide-y divide-gray-100 dark:divide-gray-700/30">
             <div

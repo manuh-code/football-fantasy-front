@@ -28,7 +28,7 @@
         v-if="hasLeague"
         @click="openDrawer"
         class="flex items-center gap-1.5 min-w-0 max-w-[55%] sm:max-w-[260px] h-9 pl-1.5 pr-2 rounded-full bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 transition-colors focus:outline-none"
-        aria-label="Change stage"
+        :aria-label="$t('home.header.changeStage')"
         aria-haspopup="dialog"
       >
         <img
@@ -51,17 +51,17 @@
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
           class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-          aria-label="Login"
+          :aria-label="$t('home.header.login')"
         >
-          Login
+          {{ $t('home.header.login') }}
         </button>
 
         <button
           v-else
           @click="handleViewProfile"
           class="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-100 dark:ring-gray-700 hover:ring-emerald-500/50 dark:hover:ring-emerald-400/50 transition-all duration-150 focus:outline-none active:scale-95"
-          :title="`Go to ${userName} profile`"
-          aria-label="Go to profile"
+          :title="$t('home.header.profileTitle', { name: userName })"
+          :aria-label="$t('home.header.profileAria')"
         >
           <img
             v-if="avatarUrl"
@@ -104,7 +104,7 @@
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[80dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
-          aria-label="Select stage"
+          :aria-label="$t('home.stage.ariaLabel')"
         >
           <!-- Draggable header -->
           <div
@@ -118,12 +118,12 @@
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
             <div class="flex items-center justify-between px-4 pb-3 pt-1">
-              <h3 class="text-callout font-bold text-gray-900 dark:text-white">Stages</h3>
+              <h3 class="text-callout font-bold text-gray-900 dark:text-white">{{ $t('home.stage.title') }}</h3>
               <button
                 @click.stop="closeDrawer"
                 @pointerdown.stop
                 class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Close"
+                :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-x" class="w-4 h-4" />
               </button>
@@ -156,6 +156,7 @@ import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useUserStore } from "@/store/user/useUserStore";
 import { footballLeagueService } from "@/services/football/league/FootballLeagueService";
 import { useToast } from "@/composables/useToast";
+import { useI18n } from "vue-i18n";
 import { getActivePinia, type Pinia, type Store } from "pinia";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import StageSelector from "@/components/football/leagues/StageSelector.vue";
@@ -169,13 +170,14 @@ const store = useFootballLeagueStore();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const { error: showError } = useToast();
+const { t } = useI18n();
 
 // ── League / stage state ──
 const stages = ref<FootballStageResponse[]>([]);
 const loadingStages = ref(false);
 
 const hasLeague = computed(() => store.existLeague());
-const leagueName = computed(() => store.getLeague?.name ?? "League");
+const leagueName = computed(() => store.getLeague?.name ?? t("home.league.fallbackName"));
 const leagueImage = computed(() => store.getLeague?.image_path ?? "");
 
 const currentStageLabel = computed(() => {
@@ -217,7 +219,7 @@ const resetStoresAndShowLeagueModal = () => {
   }
   keys.forEach((key) => localStorage.removeItem(key));
 
-  showError("League not found", "Please select a new league to continue.");
+  showError(t("home.league.notFound.title"), t("home.league.notFound.message"));
   globalThis.location.reload();
 };
 
@@ -345,7 +347,7 @@ const userName = computed(() => {
   if (userData?.firstname && userData?.lastname) {
     return `${userData.firstname} ${userData.lastname}`;
   }
-  return "User";
+  return t("user.settings.accountFallbackName");
 });
 
 const handleLogin = () => router.push({ name: "login" });

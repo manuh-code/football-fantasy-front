@@ -10,10 +10,10 @@
                 <v-icon name="bi-trophy-fill" class="w-7 h-7 text-white" />
             </div>
             <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-                Create Fantasy League
+                {{ $t('fantasy.leagueCreate.title') }}
             </h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Set up your private league in seconds
+                {{ $t('fantasy.leagueCreate.subtitle') }}
             </p>
         </div>
 
@@ -22,9 +22,9 @@
             <!-- League Name -->
             <FormInput
                 v-model="formData.name"
-                label="League Name *"
+                :label="`${$t('fantasy.leagueCreate.name.label')} *`"
                 icon="bi-trophy-fill"
-                placeholder="Enter your league name"
+                :placeholder="$t('fantasy.leagueCreate.name.placeholder')"
                 :error="getFieldError('name')"
                 :disabled="isLoading"
             />
@@ -34,14 +34,14 @@
                 <FormInput
                     v-model="formData.password"
                     type="password"
-                    label="League Password *"
+                    :label="`${$t('fantasy.leagueCreate.password.label')} *`"
                     icon="bi-lock-fill"
-                    placeholder="Enter a password"
+                    :placeholder="$t('fantasy.leagueCreate.password.placeholder')"
                     :error="getFieldError('password')"
                     :disabled="isLoading"
                 />
                 <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
-                    Required for others to join your league
+                    {{ $t('fantasy.leagueCreate.password.hint') }}
                 </p>
             </div>
 
@@ -50,18 +50,18 @@
                 <!-- Fixed value: only one option available -->
                 <div v-if="isFixedParticipants">
                     <p class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Number of Participants *
+                        {{ $t('fantasy.leagueCreate.participants.label') }} *
                     </p>
                     <div class="flex items-center gap-2 px-3.5 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl">
                         <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-500 shrink-0" />
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ formData.participants_count }}</span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">participants</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ $t('fantasy.leagueCreate.participants.unit') }}</span>
                         <span class="ml-auto text-2xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
-                            Fixed
+                            {{ $t('fantasy.leagueCreate.participants.fixed') }}
                         </span>
                     </div>
                     <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
-                        This league requires exactly {{ formData.participants_count }} participants
+                        {{ $t('fantasy.leagueCreate.participants.fixedHint', { count: formData.participants_count }) }}
                     </p>
                 </div>
 
@@ -72,8 +72,8 @@
                     :options="participantOptions"
                     value-key="value"
                     label-key="label"
-                    label="Number of Participants *"
-                    placeholder="Select number of participants"
+                    :label="`${$t('fantasy.leagueCreate.participants.label')} *`"
+                    :placeholder="$t('fantasy.leagueCreate.participants.placeholder')"
                     :error="getFieldError('participants_count')"
                     :disabled="isLoading || isLoadingOptions"
                     :loading="isLoadingOptions"
@@ -81,7 +81,7 @@
                     :clearable="false"
                     :searchable="false"
                     accent-color="emerald"
-                    no-options-text="No options available"
+                    :no-options-text="$t('fantasy.leagueCreate.participants.noOptions')"
                 />
             </div>
 
@@ -95,7 +95,7 @@
                     class="sm:flex-1"
                 >
                     <v-icon name="hi-solid-plus" class="w-4 h-4 mr-1.5" />
-                    Create League
+                    {{ $t('fantasy.leagueCreate.submit') }}
                 </ButtonComponent>
                 <ButtonComponent
                     @click="handleCancel"
@@ -104,7 +104,7 @@
                     :always-full-width="true"
                     class="sm:flex-1"
                 >
-                    Cancel
+                    {{ $t('common.actions.cancel') }}
                 </ButtonComponent>
             </div>
         </form>
@@ -114,6 +114,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
@@ -123,6 +124,7 @@ import type { FantasyLeagueCreatePayload } from '@/interfaces/fantasy/leagues/Fa
 
 // Composables
 const router = useRouter()
+const { t } = useI18n()
 const toast = useToast()
 const validationStore = useValidationStore()
 const footballLeagueStore = useFootballLeagueStore()
@@ -174,7 +176,7 @@ const handleSubmit = async () => {
 
         const response = await fantasyLeagueService.storeFantasyLeague(payload)
 
-        toast.success('Success!', `League "${response.name}" has been created successfully!`)
+        toast.success(t('fantasy.leagueCreate.success.title'), t('fantasy.leagueCreate.success.message', { name: response.name }))
 
         // Redirect to the league details or user leagues page
         router.push({ name: 'userFantasyLeague' })
@@ -200,9 +202,9 @@ const fetchParticipantOptions = async (leagueUuid: string) => {
         const data = response.data
 
         const labelMap: Record<string, string> = {
-            min: 'Minimum',
-            mid: 'Recommended',
-            max: 'Maximum'
+            min: t('fantasy.leagueCreate.participants.min'),
+            mid: t('fantasy.leagueCreate.participants.mid'),
+            max: t('fantasy.leagueCreate.participants.max')
         }
 
         // Deduplicate values while preserving descriptive labels
@@ -225,7 +227,7 @@ const fetchParticipantOptions = async (leagueUuid: string) => {
             isFixedParticipants.value = false
             participantOptions.value = Array.from(seen.entries()).map(([value, tag]) => ({
                 value,
-                label: `${tag} (${value} participants)`
+                label: t('fantasy.leagueCreate.participants.optionLabel', { tag, count: value })
             }))
         }
     } catch (error) {

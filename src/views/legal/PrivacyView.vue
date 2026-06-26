@@ -16,7 +16,7 @@
         class="inline-flex items-center gap-1.5 text-footnote font-medium text-gray-500 dark:text-gray-400 active:text-emerald-500 transition-colors"
       >
         <v-icon name="hi-solid-chevron-left" class="w-4 h-4" />
-        Back
+        {{ $t('common.actions.back') }}
       </button>
 
       <!-- Header -->
@@ -27,13 +27,13 @@
           </div>
           <div class="min-w-0">
             <h1 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">
-              Aviso de Privacidad
+              {{ $t('legal.privacy.title') }}
             </h1>
             <p class="text-footnote text-gray-500 dark:text-gray-400 mt-1">
               {{ company.appName }}
             </p>
             <p class="text-2xs text-gray-400 dark:text-gray-500 mt-1">
-              Última actualización: {{ company.lastUpdated }}
+              {{ $t('legal.privacy.lastUpdated', { date: company.lastUpdated }) }}
             </p>
           </div>
         </div>
@@ -247,8 +247,10 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
-document.title = "Aviso de Privacidad - Football Fantasy";
+const { t } = useI18n();
+document.title = t("legal.privacy.docTitle");
 
 const router = useRouter();
 

@@ -5,7 +5,7 @@
         <div class="flex items-center gap-2 min-w-0">
           <v-icon name="hi-solid-chart-bar" class="w-[16px] h-[16px] text-emerald-500 dark:text-emerald-400 shrink-0" />
           <div class="min-w-0">
-            <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Fantasy Points Results</h3>
+            <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('football.player.fantasyPoints.resultsTitle') }}</h3>
             <p v-if="rangeDescription" class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums truncate">{{ rangeDescription }}</p>
           </div>
         </div>
@@ -38,15 +38,15 @@
     <!-- Initial State -->
     <div v-else-if="!hasSearched" class="py-12 text-center">
       <v-icon name="hi-solid-lightning-bolt" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-      <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">Search fantasy points</h3>
-      <p class="text-xs text-gray-400 dark:text-gray-500">Adjust filters and press search.</p>
+      <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">{{ $t('football.player.fantasyPoints.searchTitle') }}</h3>
+      <p class="text-xs text-gray-400 dark:text-gray-500">{{ $t('football.player.fantasyPoints.searchHint') }}</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="!fantasyPoints.length" class="py-12 text-center">
       <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-      <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">No results</h3>
-      <p class="text-xs text-gray-400 dark:text-gray-500">Try a different filter combination.</p>
+      <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">{{ $t('football.player.fantasyPoints.noResults') }}</h3>
+      <p class="text-xs text-gray-400 dark:text-gray-500">{{ $t('football.player.fantasyPoints.noResultsHint') }}</p>
     </div>
 
     <!-- Results -->
@@ -165,19 +165,19 @@
 
           <div class="grid grid-cols-3 gap-2 pt-2.5 border-t border-gray-100 dark:border-gray-600/50">
             <div class="text-center">
-              <p class="text-2xs text-gray-400 dark:text-gray-500">Points</p>
+              <p class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('football.player.fantasyPoints.points') }}</p>
               <p class="text-callout font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {{ formatPoints(point.total_points) }}
               </p>
             </div>
             <div class="text-center">
-              <p class="text-2xs text-gray-400 dark:text-gray-500">Average</p>
+              <p class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('football.player.fantasyPoints.average') }}</p>
               <p class="text-callout font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {{ formatPoints(point.average_points) }}
               </p>
             </div>
             <div class="text-center">
-              <p class="text-2xs text-gray-400 dark:text-gray-500">GP</p>
+              <p class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('football.player.fantasyPoints.gp') }}</p>
               <p class="text-callout font-bold text-gray-900 dark:text-white tabular-nums">
                 {{ formatFixtures(point.total_fixtures) }}
               </p>

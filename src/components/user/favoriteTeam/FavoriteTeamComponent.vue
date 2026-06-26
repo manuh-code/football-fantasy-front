@@ -10,8 +10,8 @@
                             <v-icon name="gi-soccer-ball" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Favorite Football Team</h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Select your favorite football team to personalize your experience</p>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $t('user.favoriteTeam.title') }}</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('user.favoriteTeam.subtitle') }}</p>
                         </div>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                         <div class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </div>
-                        <h3 class="text-lg font-semibold text-emerald-900 dark:text-emerald-100">Current Favorite Team</h3>
+                        <h3 class="text-lg font-semibold text-emerald-900 dark:text-emerald-100">{{ $t('user.favoriteTeam.currentTitle') }}</h3>
                     </div>
                     <div class="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4">
                         <div class="flex items-center space-x-4">
@@ -47,7 +47,7 @@
                         <div class="text-right">
                             <div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                                 <v-icon name="hi-solid-heart" class="w-4 h-4" />
-                                <span class="text-sm font-medium">Favorite</span>
+                                <span class="text-sm font-medium">{{ $t('user.favoriteTeam.favorite') }}</span>
                             </div>
                         </div>
                     </div>
@@ -64,9 +64,9 @@
                             label-key="name"
                             image-key="image_path"
                             :label="hasExistingFavoriteTeam ? 'Change Favorite Team *' : 'Select Favorite Team *'" 
-                            :placeholder="hasExistingFavoriteTeam ? 'Choose a different team' : 'Select your favorite team'" 
+                            :placeholder="hasExistingFavoriteTeam ? $t('user.favoriteTeam.chooseDifferent') : $t('user.favoriteTeam.selectFavorite')" 
                             :error="hasFieldError('teamUuid') ? getFieldError('teamUuid').join(', ') : ''"
-                            search-placeholder="Search team..."
+                            search-:placeholder="$t('user.favoriteTeam.searchTeam')"
                             accent-color="emerald"
                             default-image="/img/default-team.svg"
                             :clearable="false"
@@ -81,7 +81,7 @@
                             <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                                 <v-icon name="hi-solid-eye" class="w-4 h-4 text-white" />
                             </div>
-                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100">New Team Preview</h3>
+                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100">{{ $t('user.favoriteTeam.newPreview') }}</h3>
                         </div>
                         <div class="flex items-center justify-between bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 backdrop-blur-sm">
                             <div class="flex items-center space-x-4">
@@ -106,7 +106,7 @@
                             <div class="text-right">
                                 <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                                     <v-icon name="hi-solid-arrow-right" class="w-4 h-4" />
-                                    <span class="text-sm font-medium">New Choice</span>
+                                    <span class="text-sm font-medium">{{ $t('user.favoriteTeam.newChoice') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -120,8 +120,8 @@
                                 <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-white" />
                             </div>
                             <div>
-                                <p class="text-amber-800 dark:text-amber-200 font-medium">This is already your favorite team</p>
-                                <p class="text-amber-700 dark:text-amber-300 text-sm">Select a different team to make changes</p>
+                                <p class="text-amber-800 dark:text-amber-200 font-medium">{{ $t('user.favoriteTeam.alreadyFav') }}</p>
+                                <p class="text-amber-700 dark:text-amber-300 text-sm">{{ $t('user.favoriteTeam.alreadyFavSub') }}</p>
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                             type="submit" 
                             variant="primary" 
                             size="md"
-                            :text="isLoading ? (hasExistingFavoriteTeam ? 'Updating Team...' : 'Setting Team...') : (hasExistingFavoriteTeam ? 'Update Favorite Team' : 'Set Favorite Team')"
+                            :text="isLoading ? (hasExistingFavoriteTeam ? $t('user.favoriteTeam.updating') : $t('user.favoriteTeam.setting')) : (hasExistingFavoriteTeam ? $t('user.favoriteTeam.updateBtn') : $t('user.favoriteTeam.setBtn'))"
                             :loading="isLoading"
                             :disabled="isSubmitDisabled"
                             :full-width="true"
@@ -161,7 +161,7 @@
                         <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Why Choose a Team?</h3>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $t('user.favoriteTeam.whyTitle') }}</h3>
                     </div>
                 </div>
 
@@ -172,8 +172,8 @@
                             <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Personalized Experience</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Get news and updates about your favorite team</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.favoriteTeam.why.personalizedTitle') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.favoriteTeam.why.personalizedSub') }}</p>
                         </div>
                     </div>
 
@@ -182,8 +182,8 @@
                             <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Better Recommendations</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Receive tailored fantasy football suggestions</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.favoriteTeam.why.betterTitle') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.favoriteTeam.why.betterSub') }}</p>
                         </div>
                     </div>
 
@@ -192,8 +192,8 @@
                             <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Custom Dashboard</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">See your team's performance and stats</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.favoriteTeam.why.dashboardTitle') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.favoriteTeam.why.dashboardSub') }}</p>
                         </div>
                     </div>
 
@@ -202,8 +202,8 @@
                             <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Easy Changes</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">You can always change your favorite team later</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.favoriteTeam.why.easyTitle') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.favoriteTeam.why.easySub') }}</p>
                         </div>
                     </div>
                 </div>
@@ -215,7 +215,7 @@
     <div v-if="isLoadingTeams" class="animate-page-enter">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-            <p class="text-gray-600 dark:text-gray-400">Loading football teams...</p>
+            <p class="text-gray-600 dark:text-gray-400">{{ $t('user.favoriteTeam.loading') }}</p>
         </div>
     </div>
 
@@ -240,6 +240,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { catalogService } from '@/services'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
@@ -248,6 +249,7 @@ import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTe
 import { useUserStore } from '@/store'
 
 // Stores and composables
+const { t } = useI18n()
 const validationStore = useValidationStore()
 const toast = useToast()
 const userStore = useUserStore()
@@ -308,7 +310,7 @@ const loadFootballTeams = async () => {
         }
     } catch (error) {
         console.error('Error loading football teams:', error)
-        errorMessage.value = 'Failed to load football teams. Please try again later.'
+        errorMessage.value = t('user.favoriteTeam.loadError')
     } finally {
         isLoadingTeams.value = false
     }
@@ -322,7 +324,7 @@ const handleSubmit = async () => {
 
     // Check if the selected team is the same as current favorite
     if (currentFavoriteTeam.value && selectedTeamId.value === currentFavoriteTeam.value.uuid) {
-        toast.info('No changes', 'This team is already your favorite!')
+        toast.info(t('user.favoriteTeam.noChangesTitle'), t('user.favoriteTeam.noChangesMsg'))
         return
     }
 
@@ -333,8 +335,12 @@ const handleSubmit = async () => {
         // Save the favorite team to the user's profile
         await userStore.updateFavoriteTeam({ teamUuid: selectedTeamId.value })
 
-        const actionText = hasExistingFavoriteTeam.value ? 'updated' : 'set'
-        toast.success('Team Saved!', `${selectedTeam.value?.name} has been ${actionText} as your favorite team!`)
+        toast.success(
+            t('user.favoriteTeam.savedTitle'),
+            hasExistingFavoriteTeam.value
+                ? t('user.favoriteTeam.savedUpdated', { name: selectedTeam.value?.name })
+                : t('user.favoriteTeam.savedSet', { name: selectedTeam.value?.name })
+        )
 
     } finally {
         isLoading.value = false

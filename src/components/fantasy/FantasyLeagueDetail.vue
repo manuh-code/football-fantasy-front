@@ -8,7 +8,7 @@
           class="w-6 h-6 text-emerald-500 dark:text-emerald-400"
           animation="spin"
         />
-        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Loading league...</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">{{ $t('fantasy.detail.loading') }}</p>
       </div>
     </div>
 
@@ -23,7 +23,7 @@
           class="w-7 h-7 text-red-400"
         />
       </div>
-      <p class="text-sm font-medium text-gray-900 dark:text-white mb-1">Something went wrong</p>
+      <p class="text-sm font-medium text-gray-900 dark:text-white mb-1">{{ $t('fantasy.detail.error') }}</p>
       <p class="text-xs text-gray-500 dark:text-gray-400 mb-5 max-w-xs mx-auto">
         {{ errorMessage }}
       </p>
@@ -136,7 +136,7 @@
             <div class="w-5 h-5 rounded-md bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-user-group" class="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Members</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.members') }}</span>
           </div>
           <div class="flex items-baseline gap-0.5">
             <span class="text-xl font-extrabold text-gray-900 dark:text-white tabular-nums">{{ league.members_count || 0 }}</span>
@@ -156,14 +156,14 @@
             <div class="w-5 h-5 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-lightning-bolt" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
             </div>
-            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.status') }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span class="text-sm font-bold text-gray-900 dark:text-white">Active</span>
+            <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $t('fantasy.detail.active') }}</span>
           </div>
         </div>
 
@@ -173,7 +173,7 @@
             <div class="w-5 h-5 rounded-md bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-calendar" class="w-3 h-3 text-orange-600 dark:text-orange-400" />
             </div>
-            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Season</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.season') }}</span>
           </div>
           <p class="text-2xs font-semibold text-gray-900 dark:text-white tabular-nums leading-tight">
             {{ formatDate(league.started_at) }}
@@ -195,7 +195,7 @@
           <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
             <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">My Team</span>
+          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.myTeam') }}</span>
         </button>
 
         <button
@@ -205,7 +205,7 @@
           <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
             <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-orange-600 dark:text-orange-400" />
           </div>
-          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">Stats</span>
+          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.stats') }}</span>
         </button>
 
         <button
@@ -215,7 +215,7 @@
           <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <v-icon name="gi-crossed-swords" class="w-4 h-4 text-red-600 dark:text-red-400" />
           </div>
-          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">Matchups</span>
+          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.matchups') }}</span>
         </button>
       </div>
 
@@ -229,7 +229,7 @@
         <div class="flex">
           <div class="w-1 bg-emerald-500 shrink-0" />
           <div class="px-4 py-3">
-            <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5">About</h3>
+            <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5">{{ $t('fantasy.detail.about') }}</h3>
             <p class="text-footnote text-gray-600 dark:text-gray-400 leading-relaxed">
               {{ league.description }}
             </p>
@@ -246,7 +246,7 @@
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
               <v-icon name="hi-solid-users" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Participants</h3>
+              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.participants') }}</h3>
             </div>
             <span class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
               {{ league.members_count || 0 }}/{{ league.participants_count }}
@@ -305,7 +305,7 @@
               <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700/40 flex items-center justify-center">
                 <v-icon name="hi-solid-user-add" class="w-5 h-5 text-gray-300 dark:text-gray-600" />
               </div>
-              <p class="text-2xs font-medium text-gray-300 dark:text-gray-600">Open</p>
+              <p class="text-2xs font-medium text-gray-300 dark:text-gray-600">{{ $t('fantasy.detail.open') }}</p>
             </div>
           </div>
 
@@ -336,7 +336,7 @@
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <v-icon name="gi-soccer-ball" class="w-4 h-4 text-orange-500 dark:text-orange-400" />
-              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Draft</h3>
+              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.draft') }}</h3>
             </div>
             <span
               :class="[
@@ -355,13 +355,13 @@
           <!-- Draft details -->
           <div class="space-y-2.5">
             <div class="flex justify-between items-center">
-              <span class="text-xs text-gray-400 dark:text-gray-500">Date</span>
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.date') }}</span>
               <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
                 {{ formatDate(league.draft.draft_day) }}
               </span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-xs text-gray-400 dark:text-gray-500">Pick Timer</span>
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.pickTimer') }}</span>
               <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
                 {{ league.draft.pick_timer }}s
               </span>
@@ -372,7 +372,7 @@
               v-if="(league.isMember || league.isAdmin) && draftStatusValue !== 'COMPLETED'"
               class="flex justify-between items-center"
             >
-              <span class="text-xs text-gray-400 dark:text-gray-500">Auto Pick</span>
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.autoPick') }}</span>
               <button
                 type="button"
                 role="switch"
@@ -438,6 +438,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useToast } from "@/composables/useToast";
 import { useValidationStore } from "@/store/validation/useValidationStore";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
@@ -458,6 +459,7 @@ const props = defineProps<Props>();
 
 // Composables
 const router = useRouter();
+const { t } = useI18n();
 const toast = useToast();
 const validationStore = useValidationStore();
 const leagueDetailStore = useFantasyLeagueDetailStore();
@@ -497,7 +499,7 @@ const draftStatusValue = computed(() => {
 // Methods
 const fetchLeague = async () => {
   if (!props.uuid) {
-    errorMessage.value = "League UUID is required";
+    errorMessage.value = t("fantasy.detail.errorUuidRequired");
     isLoading.value = false;
     return;
   }
@@ -568,7 +570,7 @@ const handleImageError = (event: Event) => {
 };
 
 const manageLeague = () => {
-  toast.info("Coming Soon", "League management page is under development!");
+  toast.info(t("fantasy.detail.comingSoonTitle"), t("fantasy.detail.comingSoonMessage"));
 };
 
 const fetchAutoPickStatus = async () => {
@@ -586,7 +588,7 @@ const handleToggleAutoPick = async () => {
     const newValue = !isAutoPick.value;
     await fantasyLeagueService.toggleAutoPick(league.value.uuid, newValue);
     isAutoPick.value = newValue;
-    toast.success('Auto Pick', newValue ? 'Auto Pick activated' : 'Auto Pick deactivated');
+    toast.success(t('fantasy.detail.autoPick'), newValue ? t('fantasy.draft.room.autoPickOn') : t('fantasy.draft.room.autoPickOff'));
   } catch (error) {
     console.error('Error toggling auto-pick:', error);
   } finally {

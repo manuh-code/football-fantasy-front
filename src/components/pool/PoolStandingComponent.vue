@@ -19,7 +19,7 @@
               : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300',
           ]"
         >
-          Overall
+          {{ $t('pool.standing.overall') }}
         </button>
         <div class="flex-1 min-w-0">
           <PoolRoundsCarousel :rounds="rounds" v-model="carouselIndex" />
@@ -54,7 +54,7 @@
           @click="loadStandings"
           class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
         >
-          Try Again
+          {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -65,9 +65,9 @@
         class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center"
       >
         <v-icon name="bi-trophy-fill" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">No Standings</h3>
+        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('pool.standing.noStandings') }}</h3>
         <p class="text-footnote text-gray-400 dark:text-gray-500">
-          {{ mode === 'round' ? 'No points have been scored in this round yet.' : 'Standings will appear once predictions are scored.' }}
+          {{ mode === 'round' ? $t('pool.standing.noRoundPoints') : $t('pool.standing.noStandingsBody') }}
         </p>
       </div>
 
@@ -77,10 +77,10 @@
         <div class="flex items-center justify-between gap-2 px-4 py-3 border-b border-gray-50 dark:border-gray-700/40">
           <span class="flex items-center gap-2 text-callout font-semibold text-gray-900 dark:text-white">
             <v-icon name="bi-trophy-fill" class="w-4 h-4 text-amber-500 shrink-0" />
-            {{ mode === 'round' ? `Round ${selectedRound?.name}` : 'Overall' }}
+            {{ mode === 'round' ? $t('pool.standing.roundLabel', { name: selectedRound?.name }) : $t('pool.standing.overall') }}
           </span>
           <span class="text-2xs text-gray-400 dark:text-gray-500">
-            {{ rankedStandings.length }} {{ rankedStandings.length === 1 ? 'player' : 'players' }}
+            {{ $t('pool.standing.playerCount', { count: rankedStandings.length }, rankedStandings.length) }}
           </span>
         </div>
 
@@ -127,7 +127,7 @@
             <!-- Points -->
             <div class="text-right shrink-0">
               <span class="text-callout font-bold text-gray-900 dark:text-white tabular-nums">{{ row.points }}</span>
-              <span class="block text-2xs text-gray-400 dark:text-gray-500 leading-none">pts</span>
+              <span class="block text-2xs text-gray-400 dark:text-gray-500 leading-none">{{ $t('pool.standing.pts') }}</span>
             </div>
           </div>
         </div>
@@ -144,6 +144,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
 import PoolRoundsCarousel from "@/components/pool/PoolRoundsCarousel.vue";
@@ -154,6 +155,8 @@ import type { PoolStandingResponse } from "@/interfaces/pool/PoolStandingRespons
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
 const props = defineProps<{ poolGroupUuid: string; stageUuid?: string }>();
+
+const { t } = useI18n();
 
 // Rounds (only loaded when a stage is available, to power the round filter).
 const rounds = ref<FootballRoundResponse[]>([]);
@@ -211,7 +214,7 @@ const rankClasses = (rank: number): string => {
 
 const memberName = (member: UserDataInterface): string => {
   const full = [member.firstname, member.lastname].filter(Boolean).join(" ").trim();
-  return full || member.email || "Unknown player";
+  return full || member.email || t("pool.standing.unknownPlayer");
 };
 
 const memberInitials = (member: UserDataInterface): string => {
@@ -259,7 +262,7 @@ const loadStandings = async () => {
     }
   } catch (e) {
     console.error("Error loading pool standings:", e);
-    standingsError.value = "Failed to load standings. Please try again later.";
+    standingsError.value = t("pool.standing.loadError");
   } finally {
     loadingStandings.value = false;
   }

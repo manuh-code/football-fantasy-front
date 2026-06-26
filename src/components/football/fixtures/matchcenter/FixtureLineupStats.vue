@@ -38,7 +38,7 @@ const rankLabel = ["🥇", "🥈", "🥉"];
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="hi-solid-star" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">No player stats available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.noPlayerStats') }}</p>
     </div>
 
     <template v-else>

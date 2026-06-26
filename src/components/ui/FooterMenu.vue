@@ -4,7 +4,7 @@
     :visible="shouldShowMenu"
     :items="items"
     :active-key="activeTab"
-    aria-label="Main navigation"
+    :aria-label="$t('home.header.mainNav')"
     @select="onSelect"
   />
 </template>

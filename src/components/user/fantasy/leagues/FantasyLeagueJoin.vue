@@ -6,8 +6,8 @@
                 <v-icon name="bi-trophy-fill" class="w-6 h-6 text-white" />
             </div>
             <div>
-                <h1 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight">Discover Leagues</h1>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Find and join fantasy football competitions</p>
+                <h1 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight">{{ $t('fantasy.join.discoverTitle') }}</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('fantasy.join.discoverSub') }}</p>
             </div>
         </div>
 
@@ -20,7 +20,7 @@
                     <input
                         v-model="searchQuery"
                         type="search"
-                        placeholder="Search by name..."
+                        :placeholder="$t('fantasy.join.searchPlaceholder')"
                         class="w-full pl-10 pr-10 py-2.5 bg-gray-200/60 dark:bg-gray-800 rounded-xl text-base md:text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-0 focus:ring-2 focus:ring-emerald-500/40 focus:bg-white dark:focus:bg-gray-700 transition-all"
                     />
                     <button
@@ -117,7 +117,7 @@
                 <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                     <v-icon name="hi-solid-search" class="w-6 h-6 text-gray-300 dark:text-gray-600" />
                 </div>
-                <p class="text-sm font-bold text-gray-900 dark:text-white mb-1">No leagues found</p>
+                <p class="text-sm font-bold text-gray-900 dark:text-white mb-1">{{ $t('fantasy.join.noLeaguesFound') }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
                     Try a different search or browse all available leagues
                 </p>
@@ -135,7 +135,7 @@
             <div class="w-20 h-20 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl mx-auto mb-5 flex items-center justify-center shadow-sm">
                 <v-icon name="bi-trophy-fill" class="w-9 h-9 text-emerald-500 dark:text-emerald-400" />
             </div>
-            <h2 class="text-lg font-extrabold text-gray-900 dark:text-white mb-1.5 tracking-tight">Discover Leagues</h2>
+            <h2 class="text-lg font-extrabold text-gray-900 dark:text-white mb-1.5 tracking-tight">{{ $t('fantasy.join.discoverTitle') }}</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto leading-relaxed">
                 Search by name or browse all available leagues to join the competition
             </p>
@@ -174,6 +174,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useToast } from '@/composables/useToast'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { catalogService } from '@/services'
@@ -186,6 +187,7 @@ import { FantasyLeagueJoined } from '@/interfaces/fantasy/leagues/FantasyLeagueJ
 
 // Composables
 const router = useRouter()
+const { t } = useI18n()
 const toast = useToast()
 const validationStore = useValidationStore()
 
@@ -236,17 +238,15 @@ const searchLeagues = async () => {
         searchResults.value = response || []
 
         if (leagues.value.length === 0) {
-            if (leagueType.value === 'all') {
-                toast.info('No Results', 'No leagues available at the moment')
-            } else if (searchQuery.value.trim()) {
-                toast.info('No Results', `No ${leagueType.value} leagues found for "${searchQuery.value}"`)
+            if (searchQuery.value.trim()) {
+                toast.info(t('fantasy.join.noResultsTitle'), t('fantasy.join.noResultsSearch', { query: searchQuery.value }))
             } else {
-                toast.info('No Results', `No ${leagueType.value} leagues available at the moment`)
+                toast.info(t('fantasy.join.noResultsTitle'), t('fantasy.join.noResultsNone'))
             }
         }
     } catch (error) {
         console.error('Error searching leagues:', error)
-        errorMessage.value = 'Failed to search for leagues. Please try again.'
+        errorMessage.value = t('fantasy.join.searchError')
         leagues.value = []
         searchResults.value = []
     } finally {
@@ -300,7 +300,7 @@ const handleJoinLeague = async (joinData: { league: FantasyLeaguesResponse; pass
 
         await fantasyLeagueService.joinFantasyLeague(payload, league.uuid)
 
-        toast.success('Success', `Successfully ${league.is_private ? 'requested to join' : 'joined'} "${league.name}"`)
+        toast.success(t('fantasy.join.joinSuccessTitle'), league.is_private ? t('fantasy.join.joinRequested', { name: league.name }) : t('fantasy.join.joinJoined', { name: league.name }))
         closeJoinModal()
 
         router.push({ name: 'fantasyLeagueDetail', params: { uuid: league.uuid } })

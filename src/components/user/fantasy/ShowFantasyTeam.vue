@@ -75,12 +75,12 @@ const goToTeam = () => {
         <v-icon name="hi-solid-exclamation" class="w-5 h-5 text-red-400" />
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Could not load team</p>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('fantasy.showTeam.couldNotLoad') }}</p>
         <button
           @click="fetchTeam"
           class="text-xs text-emerald-600 dark:text-emerald-400 hover:underline mt-0.5"
         >
-          Try again
+          {{ $t('common.actions.retry') }}
         </button>
       </div>
     </div>
@@ -93,7 +93,7 @@ const goToTeam = () => {
   >
     <div class="flex items-center gap-3.5 p-4">
       <!-- Team Logo -->
-      <button class="relative shrink-0 group" @click="goToTeam" title="View team">
+      <button class="relative shrink-0 group" @click="goToTeam" :title="$t('fantasy.showTeam.viewTeam')">
         <div class="absolute -inset-1 rounded-2xl bg-gradient-to-br from-emerald-400/30 to-teal-500/30 dark:from-emerald-500/20 dark:to-teal-500/20 blur-sm group-hover:from-emerald-400/50 group-hover:to-teal-500/50 transition-all duration-300" />
         <img
           v-if="team.image_path"
@@ -115,13 +115,13 @@ const goToTeam = () => {
         <h3 class="text-sm md:text-base font-bold text-gray-900 dark:text-white truncate">
           {{ team.team_name }}
         </h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Your Fantasy Team</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('fantasy.showTeam.yourTeam') }}</p>
       </div>
 
       <!-- Status Badge -->
       <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-        <span class="text-2xs font-medium text-emerald-700 dark:text-emerald-400">Active</span>
+        <span class="text-2xs font-medium text-emerald-700 dark:text-emerald-400">{{ $t('fantasy.showTeam.active') }}</span>
       </div>
     </div>
   </div>

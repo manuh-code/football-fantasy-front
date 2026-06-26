@@ -110,7 +110,7 @@ const retry = () => load();
         @click="retry"
         class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
       >
-        Retry
+        {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -120,7 +120,7 @@ const retry = () => load();
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">No player statistics available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.statistics.noPlayerStats') }}</p>
     </div>
 
     <!-- Stat groups -->

@@ -34,7 +34,7 @@ watch(
     <div
       class="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-gray-800 shadow-inner"
       role="tablist"
-      aria-label="Fixtures view"
+      :aria-label="$t('football.fixtures.viewAria')"
     >
       <button
         type="button"
@@ -47,7 +47,7 @@ watch(
           : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
       >
         <v-icon name="md-sportssoccer" class="w-3.5 h-3.5 shrink-0" />
-        <span>Regular Season</span>
+        <span>{{ $t('football.fixtures.regularSeason') }}</span>
       </button>
 
       <button
@@ -61,7 +61,7 @@ watch(
           : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
       >
         <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5 shrink-0" />
-        <span>Playoffs</span>
+        <span>{{ $t('football.fixtures.playoffs') }}</span>
       </button>
     </div>
 

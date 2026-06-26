@@ -326,7 +326,7 @@ const selectedRoundName = computed(() => {
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[92dvh] md:max-h-[88dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
-          aria-label="Rounds"
+          :aria-label="$t('football.fixtures.rounds')"
         >
           <!-- Draggable header -->
           <div
@@ -355,14 +355,14 @@ const selectedRoundName = computed(() => {
                   v-if="selectedRoundName"
                   class="text-2xs text-gray-400 dark:text-gray-500 truncate"
                 >
-                  Round {{ selectedRoundName }}
+                  {{ $t('football.rounds.rounds') }} {{ selectedRoundName }}
                 </span>
               </div>
               <button
                 @click.stop="emit('close')"
                 @pointerdown.stop
                 class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Close"
+                :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-x" class="w-4 h-4" />
               </button>
@@ -393,7 +393,7 @@ const selectedRoundName = computed(() => {
                 @click="retryRounds"
                 class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
               >
-                Retry
+             {{ $t('common.actions.retry') }}
               </button>
             </div>
 
@@ -404,15 +404,15 @@ const selectedRoundName = computed(() => {
               :options="rounds"
               value-key="uuid"
               label-key="name"
-              placeholder="Select a round"
-              search-placeholder="Search round..."
+              :placeholder="$t('football.fixtures.selectRound')"
+              search-:placeholder="$t('football.fixtures.searchRound')"
               :clearable="false"
               accent-color="emerald"
               no-options-text="No rounds available"
             >
               <template #selected="{ option }">
                 <span class="text-footnote font-medium text-gray-900 dark:text-white truncate flex-1">
-                  Round {{ option.name }}
+                  {{ $t('football.rounds.rounds') }} {{ option.name }}
                 </span>
                 <span
                   v-if="option.is_current"
@@ -480,7 +480,7 @@ const selectedRoundName = computed(() => {
                 @click="retryFixtures"
                 class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
-                Retry
+             {{ $t('common.actions.retry') }}
               </button>
             </div>
 
@@ -493,7 +493,7 @@ const selectedRoundName = computed(() => {
                 name="md-sportssoccer"
                 class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
               />
-              <p class="text-footnote">No matches in this round</p>
+              <p class="text-footnote">{{ $t('football.fixtures.noRoundMatches') }}</p>
             </div>
 
             <!-- Fixtures list -->
@@ -519,7 +519,7 @@ const selectedRoundName = computed(() => {
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                   </span>
-                  <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+                  <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
                 </div>
 
                 <!-- Date/time (not live) -->

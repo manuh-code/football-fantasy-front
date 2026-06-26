@@ -41,7 +41,7 @@
             :name="league.is_private ? 'hi-solid-lock-closed' : 'hi-solid-globe-alt'"
             class="w-2.5 h-2.5"
           />
-          {{ league.is_private ? 'Private' : 'Public' }}
+          {{ league.is_private ? $t('fantasy.leagueCard.private') : $t('fantasy.leagueCard.public') }}
         </span>
 
         <!-- Role -->
@@ -58,7 +58,7 @@
             :name="league.isAdmin ? 'hi-solid-star' : 'hi-solid-check-circle'"
             class="w-2.5 h-2.5"
           />
-          {{ league.isAdmin ? 'Admin' : 'Member' }}
+          {{ league.isAdmin ? $t('fantasy.leagueCard.admin') : $t('fantasy.leagueCard.member') }}
         </span>
       </div>
 
@@ -98,7 +98,7 @@
           <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
             {{ league.participants_count }}
           </span>
-          <span class="text-2xs text-gray-400 dark:text-gray-500">part.</span>
+          <span class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.leagueCard.participantsShort') }}</span>
         </div>
 
         <div class="h-3 w-px bg-gray-200 dark:bg-gray-700" />
@@ -109,7 +109,7 @@
           <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
             {{ league.members_count }}
           </span>
-          <span class="text-2xs text-gray-400 dark:text-gray-500">memb.</span>
+          <span class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.leagueCard.membersShort') }}</span>
         </div>
       </div>
 
@@ -123,15 +123,18 @@
         class="!rounded-xl !text-footnote !font-semibold"
       >
         <v-icon name="hi-solid-user-add" class="w-3.5 h-3.5 mr-1.5" />
-        {{ league.is_private ? 'Request to Join' : 'Join League' }}
+        {{ league.is_private ? $t('fantasy.leagueCard.requestToJoin') : $t('fantasy.leagueCard.joinLeague') }}
       </ButtonComponent>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { ButtonComponent } from '@/components/ui'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
+
+const { locale } = useI18n()
 
 interface Props {
   league: FantasyLeaguesResponse
@@ -155,7 +158,7 @@ const emit = defineEmits<{
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

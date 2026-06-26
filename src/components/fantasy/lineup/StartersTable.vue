@@ -7,7 +7,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Starters</h3>
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.lineup.starters') }}</h3>
         </div>
         <slot name="header-action" />
       </div>

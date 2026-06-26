@@ -4,7 +4,7 @@
     :visible="isVisible"
     :items="items"
     :active-key="activeKey"
-    aria-label="Home navigation"
+    :aria-label="$t('home.nav.ariaLabel')"
     @select="onSelect"
   />
 </template>
@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import BottomNavBar, {
   type BottomNavItem,
@@ -19,25 +20,26 @@ import BottomNavBar, {
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 const footballLeagueStore = useFootballLeagueStore();
 
 const isVisible = computed(() => footballLeagueStore.existLeague());
 
-const items: BottomNavItem[] = [
+const items = computed<BottomNavItem[]>(() => [
   {
     key: "home",
-    label: "Home",
+    label: t("home.nav.home"),
     icon: "hi-solid-home",
     accent: "emerald",
   },
   {
     key: "leagues",
-    label: "Leagues",
+    label: t("home.nav.leagues"),
     icon: "hi-solid-collection",
     accent: "emerald",
   },
-  { key: "gaming", label: "Gaming", icon: "bi-trophy-fill", accent: "emerald" },
-];
+  { key: "gaming", label: t("home.nav.gaming"), icon: "bi-trophy-fill", accent: "emerald" },
+]);
 
 const activeKey = computed(() => {
   if (route.name === "gaming") return "gaming";

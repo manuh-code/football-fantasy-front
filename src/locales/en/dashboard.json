@@ -1,0 +1,19 @@
+{
+  "overview": "Dashboard Overview",
+  "summary": "Your FantasyMX performance summary",
+  "totalTeams": "Total Teams",
+  "points": "Points",
+  "rank": "Rank",
+  "streak": "Streak",
+  "recentActivity": "Recent Activity",
+  "recentActivitySub": "Your latest fantasy football updates",
+  "welcome": "Welcome to your FantasyMX Dashboard",
+  "justNow": "Just now",
+  "leaguesLoaded": "Football leagues loaded successfully",
+  "themesSupported": "Dashboard supports both light and dark themes",
+  "footballLeagues": "Football Leagues",
+  "loadingLeagues": "Loading leagues...",
+  "noLeagues": "No leagues available",
+  "noLeaguesSub": "Check back later for available competitions",
+  "loadError": "Failed to load football leagues"
+}

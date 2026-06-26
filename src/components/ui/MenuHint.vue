@@ -8,10 +8,10 @@
     >
       <button
         class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-full shadow-lg text-sm font-medium transition-all duration-200 animate-bounce-subtle"
-        aria-label="Show menu"
+        :aria-label="$t('ui.menuHint.show')"
       >
         <v-icon name="hi-solid-chevron-up" class="w-4 h-4" />
-        <span>Menu</span>
+        <span>{{ $t('ui.menuHint.label') }}</span>
       </button>
     </div>
   </transition>

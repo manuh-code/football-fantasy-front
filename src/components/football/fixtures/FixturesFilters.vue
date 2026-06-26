@@ -40,7 +40,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
       <div
         class="flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800"
         role="tablist"
-        aria-label="Fixtures mode"
+        :aria-label="$t('football.fixtures.modeAria')"
       >
         <button
           type="button"
@@ -53,7 +53,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
         >
           <v-icon name="md-sportssoccer" class="w-3.5 h-3.5 shrink-0" />
-          <span>Regular Season</span>
+          <span>{{ $t('football.fixtures.regularSeason') }}</span>
         </button>
         <button
           type="button"
@@ -66,7 +66,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
         >
           <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5 shrink-0" />
-          <span>Playoffs</span>
+          <span>{{ $t('football.fixtures.playoffs') }}</span>
         </button>
       </div>
 
@@ -85,7 +85,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
             @click="emit('retry-rounds')"
             class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
           >
-            Retry
+            {{ $t('common.actions.retry') }}
           </button>
         </div>
 
@@ -96,37 +96,37 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           :options="rounds"
           value-key="uuid"
           label-key="name"
-          placeholder="Select a round"
-          search-placeholder="Search round..."
+          :placeholder="$t('football.fixtures.selectRound')"
+          search-:placeholder="$t('football.fixtures.searchRound')"
           :clearable="false"
           accent-color="emerald"
           no-options-text="No rounds available"
         >
           <template #selected="{ option }">
             <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
-              Round {{ option.name }}
+              {{ $t('football.rounds.rounds') }} {{ option.name }}
             </span>
             <span
               v-if="option.is_current"
               class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
             >
-              Current
+              {{ $t('football.rounds.current') }}
             </span>
           </template>
           <template #option="{ option }">
             <div class="flex-1 min-w-0 flex items-center gap-2">
-              <span class="text-footnote font-medium truncate">Round {{ option.name }}</span>
+              <span class="text-footnote font-medium truncate">{{ $t('football.rounds.rounds') }} {{ option.name }}</span>
               <span
                 v-if="option.is_current"
                 class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
               >
-                Current
+                {{ $t('football.rounds.current') }}
               </span>
               <span
                 v-else-if="option.finished"
                 class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
               >
-                Done
+                {{ $t('football.rounds.done') }}') }}
               </span>
             </div>
           </template>
@@ -148,7 +148,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
             @click="emit('retry-stages')"
             class="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline"
           >
-            Retry
+           {{ $t('common.actions.retry') }}
           </button>
         </div>
 
@@ -159,8 +159,8 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           :options="knockoutStages"
           value-key="uuid"
           label-key="name"
-          placeholder="Select playoff stage"
-          search-placeholder="Search stage..."
+          :placeholder="$t('football.fixtures.selectPlayoffStage')"
+          search-:placeholder="$t('football.fixtures.searchStage')"
           :disabled="isLoadingStages || knockoutStages.length === 0"
           :loading="isLoadingStages"
           accent-color="amber"
@@ -212,7 +212,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           @click="emit('retry-teams')"
           class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Retry
+         {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -224,13 +224,13 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
         value-key="uuid"
         label-key="name"
         image-key="image_path"
-        placeholder="Filter by team"
-        search-placeholder="Search team..."
+        :placeholder="$t('football.fixtures.filterByTeam')"
+        search-:placeholder="$t('football.fixtures.searchTeam')"
         :loading="isLoadingTeams"
         :searchable="teams.length > 6"
         :clearable="true"
         all-option
-        all-option-label="All teams"
+        all-option-:label="$t('football.fixtures.allTeams')"
         accent-color="emerald"
         no-options-text="No teams available"
       >

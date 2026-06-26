@@ -68,7 +68,7 @@
         @click="fetchFixtures"
         class="px-3 py-1.5 text-sm text-red-500 border border-red-300 dark:border-red-700 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
       >
-        Retry
+   {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -81,7 +81,7 @@
         name="hi-calendar"
         class="w-6 h-6 mx-auto mb-1.5 text-gray-300 dark:text-gray-600"
       />
-      <p class="text-xs">No fixtures this week</p>
+      <p class="text-xs">{{ $t('football.fixtures.noWeekFixtures') }}</p>
     </div>
 
     <!-- Fixtures Carousel -->
@@ -253,6 +253,9 @@ import { useToast } from "@/composables/useToast";
 import { useMediaQuery } from "@/composables/useMediaQuery";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 // State
 const fixtures = ref<FootballFixtureResponse[]>([]);
@@ -295,7 +298,7 @@ const fetchFixtures = async () => {
     error.value = null;
     fixtures.value = await footballFixtureService.getFixturesForTheWeek();
   } catch (err) {
-    error.value = "Error loading weekly fixtures";
+    error.value = t("football.fixtures.errors.weeklyLoad");
     showErrorToast("Error loading fixtures");
     console.error("Error fetching weekly fixtures:", err);
   } finally {

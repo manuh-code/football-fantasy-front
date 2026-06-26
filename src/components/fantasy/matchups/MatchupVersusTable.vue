@@ -133,7 +133,7 @@ function positionColor(developerName: string): string {
       <!-- Starters subheader -->
       <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-100 dark:border-gray-700/60 flex items-center gap-2">
         <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Starters</h3>
+        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.matchups.starters') }}</h3>
       </div>
 
       <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
@@ -210,7 +210,7 @@ function positionColor(developerName: string): string {
         class="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-y border-gray-100 dark:border-gray-700/60 flex items-center gap-2"
       >
         <v-icon name="hi-solid-users" class="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0" />
-        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Bench</h3>
+        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.matchups.bench') }}</h3>
       </div>
 
       <div v-if="benchRows.length" class="divide-y divide-gray-100 dark:divide-gray-700/60">
@@ -282,15 +282,15 @@ function positionColor(developerName: string): string {
           :class="homeTotal > awayTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300'"
         >
           {{ homeTotal }}
-          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">{{ $t('fantasy.matchups.pts') }}</span>
         </span>
-        <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total</span>
+        <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ $t('fantasy.matchups.total') }}</span>
         <span
           class="text-footnote font-bold tabular-nums flex-1 text-right"
           :class="awayTotal > homeTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300'"
         >
           {{ awayTotal }}
-          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">{{ $t('fantasy.matchups.pts') }}</span>
         </span>
       </div>
 
