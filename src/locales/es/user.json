@@ -44,6 +44,26 @@
       "current": "Idioma actual",
       "es": "Español",
       "en": "Inglés"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "subtitle": "Recibe avisos de tus drafts, ligas y partidos",
+      "label": "Notificaciones push",
+      "statusGranted": "Activadas en este dispositivo",
+      "statusDenied": "Bloqueadas. Actívalas desde los ajustes del navegador",
+      "statusDefault": "Aún no las has activado",
+      "statusUnsupported": "Tu navegador no soporta notificaciones",
+      "enable": "Activar notificaciones",
+      "enabling": "Activando...",
+      "enabled": "Notificaciones activadas",
+      "iosHint": "En iPhone primero agrega la app a la pantalla de inicio (Compartir → Agregar a inicio) y ábrela desde ahí.",
+      "deniedHint": "Bloqueaste las notificaciones. Habilítalas desde los ajustes del navegador o del sistema para este sitio.",
+      "successTitle": "¡Listo!",
+      "successBody": "Ahora recibirás notificaciones en este dispositivo.",
+      "errorTitle": "No se pudieron activar",
+      "errorBody": "Revisa los permisos e inténtalo de nuevo.",
+      "showDiagnostics": "Ver diagnóstico",
+      "hideDiagnostics": "Ocultar diagnóstico"
     }
   },
   "profile": {

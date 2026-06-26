@@ -66,7 +66,7 @@
                             :label="hasExistingFavoriteTeam ? 'Change Favorite Team *' : 'Select Favorite Team *'" 
                             :placeholder="hasExistingFavoriteTeam ? $t('user.favoriteTeam.chooseDifferent') : $t('user.favoriteTeam.selectFavorite')" 
                             :error="hasFieldError('teamUuid') ? getFieldError('teamUuid').join(', ') : ''"
-                            search-:placeholder="$t('user.favoriteTeam.searchTeam')"
+                            :search-placeholder="$t('user.favoriteTeam.searchTeam')"
                             accent-color="emerald"
                             default-image="/img/default-team.svg"
                             :clearable="false"

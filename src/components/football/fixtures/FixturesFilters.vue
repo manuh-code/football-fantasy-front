@@ -97,7 +97,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           value-key="uuid"
           label-key="name"
           :placeholder="$t('football.fixtures.selectRound')"
-          search-:placeholder="$t('football.fixtures.searchRound')"
+          :search-placeholder="$t('football.fixtures.searchRound')"
           :clearable="false"
           accent-color="emerald"
           no-options-text="No rounds available"
@@ -126,7 +126,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
                 v-else-if="option.finished"
                 class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
               >
-                {{ $t('football.rounds.done') }}') }}
+                {{ $t('football.rounds.done') }}
               </span>
             </div>
           </template>
@@ -160,7 +160,7 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           value-key="uuid"
           label-key="name"
           :placeholder="$t('football.fixtures.selectPlayoffStage')"
-          search-:placeholder="$t('football.fixtures.searchStage')"
+          :search-placeholder="$t('football.fixtures.searchStage')"
           :disabled="isLoadingStages || knockoutStages.length === 0"
           :loading="isLoadingStages"
           accent-color="amber"
@@ -225,12 +225,12 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
         label-key="name"
         image-key="image_path"
         :placeholder="$t('football.fixtures.filterByTeam')"
-        search-:placeholder="$t('football.fixtures.searchTeam')"
+        :search-placeholder="$t('football.fixtures.searchTeam')"
         :loading="isLoadingTeams"
         :searchable="teams.length > 6"
         :clearable="true"
         all-option
-        all-option-:label="$t('football.fixtures.allTeams')"
+        :all-option-label="$t('football.fixtures.allTeams')"
         accent-color="emerald"
         no-options-text="No teams available"
       >

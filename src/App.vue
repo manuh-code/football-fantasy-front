@@ -102,9 +102,13 @@ onMounted(async () => {
   // Initialize theme on app mount
   themeStore.initTheme();
 
-  // Registrar push notifications
-
-  await requestPermissionAndRegister();
+  // Push: en el arranque SOLO revalidamos el token si el usuario ya concedió
+  // el permiso antes. Pedir el permiso (Notification.requestPermission) debe
+  // dispararse desde un gesto del usuario — es OBLIGATORIO en iOS PWA y además
+  // es mejor UX en Android. Ese gesto vive en Ajustes → Notificaciones.
+  if ("Notification" in window && Notification.permission === "granted") {
+    await requestPermissionAndRegister();
+  }
 
   // Escuchar mensajes en foreground
   onForegroundMessage((payload) => {

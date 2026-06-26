@@ -51,7 +51,7 @@
           value-key="uuid"
           label-key="name"
           :placeholder="$t('football.fixtures.selectPlayoffStage')"
-          search-:placeholder="$t('football.fixtures.searchStage')"
+          :search-placeholder="$t('football.fixtures.searchStage')"
           :disabled="loadingStages || knockoutStages.length === 0"
           :loading="loadingStages"
           accent-color="amber"

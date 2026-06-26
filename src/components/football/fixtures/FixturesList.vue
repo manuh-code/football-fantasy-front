@@ -67,22 +67,6 @@ const isMatchFinished = (fixture: FootballFixtureResponse): boolean => {
   return home?.meta?.winner !== null && home?.meta?.winner !== undefined;
 };
 
-const formatMatchDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("es-ES", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-};
-
-const formatMatchTime = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
 
 const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
   if (fixture.state) {
@@ -96,7 +80,7 @@ const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
   }
   if (isMatchFinished(fixture)) return "FT";
   if (isMatchLive(fixture)) return "LIVE";
-  return formatMatchTime(fixture.starting_at);
+  return fixture.starting_at;
 };
 
 // Monochrome result emphasis (FotMob/Apple style): bold the winner, mute the loser.
@@ -173,7 +157,7 @@ const getTeamResultClass = (
       <!-- Date/time (not live) -->
       <div v-else class="text-center mb-2">
         <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
-          {{ formatMatchDate(fixture.starting_at) }} · {{ formatMatchTime(fixture.starting_at) }}
+          {{ fixture.starting_at }}
         </span>
       </div>
 

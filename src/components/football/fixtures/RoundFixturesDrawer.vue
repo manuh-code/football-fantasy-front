@@ -405,7 +405,7 @@ const selectedRoundName = computed(() => {
               value-key="uuid"
               label-key="name"
               :placeholder="$t('football.fixtures.selectRound')"
-              search-:placeholder="$t('football.fixtures.searchRound')"
+              :search-placeholder="$t('football.fixtures.searchRound')"
               :clearable="false"
               accent-color="emerald"
               no-options-text="No rounds available"
