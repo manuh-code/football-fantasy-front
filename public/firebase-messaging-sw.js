@@ -25,7 +25,9 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     body: payload.notification?.body || 'Tienes una nueva notificación',
     icon: payload.notification?.icon || '/img/icons/android-chrome-192x192.png',
-    badge: '/img/icons/badge-72x72.png',
+    // badge debe apuntar a un ícono existente; antes referenciaba badge-72x72.png
+    // (inexistente en public/) y daba 404. Android lo muestra como silueta.
+    badge: '/img/icons/android-chrome-192x192.png',
     tag: payload.data?.type || 'general',
     data: payload.data || {},
     actions: [],

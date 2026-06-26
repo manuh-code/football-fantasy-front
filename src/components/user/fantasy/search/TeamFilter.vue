@@ -31,7 +31,7 @@ function onTeamChange(value: string | number | null) {
     image-key="image_path"
     subtitle-key="short_code"
     :placeholder="$t('fantasy.search.allTeams')"
-    search-:placeholder="$t('fantasy.search.searchTeam')"
+    :search-placeholder="$t('fantasy.search.searchTeam')"
     :all-option="true"
     all-option-label="All teams"
     all-option-value="ALL"

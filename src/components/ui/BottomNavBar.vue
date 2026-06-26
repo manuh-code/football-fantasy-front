@@ -78,7 +78,7 @@ const onSelect = (item: BottomNavItem): void => {
       style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem))"
     >
       <div
-        class="pointer-events-auto flex items-center gap-0.5 p-1 rounded-full max-w-[calc(100%-1rem)] bg-white/75 dark:bg-gray-900/65 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/30"
+        class="pointer-events-auto flex items-center gap-1 p-1.5 rounded-full max-w-[calc(100%-1rem)] bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-xl shadow-black/10 dark:shadow-black/40"
       >
         <button
           v-for="item in items"
@@ -88,11 +88,11 @@ const onSelect = (item: BottomNavItem): void => {
           :aria-current="isActive(item) ? 'page' : undefined"
           :disabled="item.disabled"
           @click="onSelect(item)"
-          class="flex flex-col items-center justify-center gap-0.5 px-3.5 py-1.5 rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
+          class="flex flex-col items-center justify-center gap-1 px-5 py-2.5 min-w-[68px] rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
           :class="itemClasses(item)"
         >
-          <v-icon :name="item.icon" class="w-5 h-5" />
-          <span class="text-2xs font-semibold tracking-tight leading-none">{{ item.label }}</span>
+          <v-icon :name="item.icon" class="w-6 h-6" />
+          <span class="text-xs font-semibold tracking-tight leading-none">{{ item.label }}</span>
         </button>
       </div>
     </nav>
