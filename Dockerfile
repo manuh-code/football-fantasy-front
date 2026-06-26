@@ -1,5 +1,5 @@
 # ETAPA 1: Base y Dependencias (usada para Dev)
-FROM node:20-alpine AS development
+FROM node:22-alpine AS development
 
 WORKDIR /var/www
 COPY package*.json ./
@@ -48,6 +48,7 @@ ENV VITE_FIREBASE_MESSAGING_SENDER_ID=$VITE_FIREBASE_MESSAGING_SENDER_ID
 ENV VITE_FIREBASE_APP_ID=$VITE_FIREBASE_APP_ID
 ENV VITE_FIREBASE_VAPID_KEY=$VITE_FIREBASE_VAPID_KEY
 
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
 RUN npm run build
 
