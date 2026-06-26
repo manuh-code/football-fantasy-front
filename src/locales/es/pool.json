@@ -17,12 +17,16 @@
     "stage": "Etapa",
     "stageInfo": "Tu quiniela se creará para esta etapa",
     "current": "Actual",
-    "stageResolveError": "No se pudo determinar la etapa. Inténtalo de nuevo."
+    "stageResolveError": "No se pudo determinar la etapa. Inténtalo de nuevo.",
+    "created": "¡Quiniela creada!",
+    "createdBody": "\"{name}\" ya está lista."
   },
   "join": {
     "title": "Unirse a quiniela",
     "subtitle": "Ingresa el código de acceso que te compartieron",
-    "codePlaceholder": "Ingresa el código de acceso..."
+    "codePlaceholder": "Ingresa el código de acceso...",
+    "joined": "¡Te uniste!",
+    "joinedBody": "Ahora formas parte de \"{name}\"."
   },
   "group": {
     "nav": "Navegación del grupo de quiniela",
