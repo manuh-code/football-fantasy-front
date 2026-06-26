@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, onBeforeUnmount, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { footballTeamService } from "@/services/football/team/FootballTeamService";
 import type {
   FootballTeamProfileResponse,
@@ -22,17 +23,19 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { elevated: false });
 const emit = defineEmits<{ close: [] }>();
 
+const { t } = useI18n();
+
 // ── Tabs (each one maps to a property of FootballTeamProfileResponse) ──
 type ProfileTab = "team" | "players" | "best_players" | "latest" | "sidelined" | "venue";
 
-const tabs: { key: ProfileTab; label: string; icon: string }[] = [
-  { key: "team", label: "Team", icon: "hi-solid-information-circle" },
-  { key: "players", label: "Players", icon: "hi-solid-users" },
-  { key: "best_players", label: "Best Players", icon: "hi-solid-star" },
-  { key: "latest", label: "Latest", icon: "md-history" },
-  { key: "sidelined", label: "Sidelined", icon: "hi-solid-user" },
-  { key: "venue", label: "Venue", icon: "hi-solid-location-marker" },
-];
+const tabs = computed<{ key: ProfileTab; label: string; icon: string }[]>(() => [
+  { key: "team", label: t("football.team.tabs.team"), icon: "hi-solid-information-circle" },
+  { key: "players", label: t("football.team.tabs.players"), icon: "hi-solid-users" },
+  { key: "best_players", label: t("football.team.tabs.bestPlayers"), icon: "hi-solid-star" },
+  { key: "latest", label: t("football.team.tabs.latest"), icon: "md-history" },
+  { key: "sidelined", label: t("football.team.tabs.sidelined"), icon: "hi-solid-user" },
+  { key: "venue", label: t("football.team.tabs.venue"), icon: "hi-solid-location-marker" },
+]);
 
 const activeTab = ref<ProfileTab>("team");
 
@@ -50,7 +53,7 @@ const loadProfile = async (teamUuid: string, stageUuid: string) => {
     profile.value = await footballTeamService.getTeamProfileByStage(teamUuid, stageUuid);
   } catch (err) {
     console.error("Error loading team profile:", err);
-    loadError.value = "Couldn't load team profile. Please try again.";
+    loadError.value = t("football.team.loadError");
   } finally {
     isLoading.value = false;
   }
@@ -83,7 +86,7 @@ const playerGroups = computed<{ label: string; players: TeamPlayerProfile[] }[]>
   const list = profile.value?.players ?? [];
   const buckets = new Map<string, { label: string; players: TeamPlayerProfile[] }>();
   for (const p of list) {
-    const label = p.position?.name ?? "Other";
+    const label = p.position?.name ?? t("football.team.otherPosition");
     const key = p.position?.code ?? "other";
     if (!buckets.has(key)) buckets.set(key, { label, players: [] });
     buckets.get(key)!.players.push(p);
@@ -98,7 +101,7 @@ const playerGroups = computed<{ label: string; players: TeamPlayerProfile[] }[]>
 
 // ── Best players: title + colored accent per leaderboard ──
 const bestPlayerTitle = (group: BestPlayersGroup): string =>
-  group.statistics[0]?.type?.name ?? group.type ?? "Top";
+  group.statistics[0]?.type?.name ?? group.type ?? t("football.team.topFallback");
 
 // ── Latest fixtures helpers ──
 const getParticipant = (
@@ -107,7 +110,8 @@ const getParticipant = (
 ): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === location);
 
-const teamName = (team: FootballTeamResponse | undefined): string => team?.name ?? "TBD";
+const teamName = (team: FootballTeamResponse | undefined): string =>
+  team?.name ?? t("football.team.tbd");
 
 const score = (team: FootballTeamResponse | undefined): number | null =>
   team?.current_score?.score ?? null;
@@ -245,7 +249,7 @@ const onDragEnd = (e: PointerEvent) => {
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[92dvh] md:max-h-[88dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
-          aria-label="Team profile"
+          :aria-label="$t('football.team.profileAria')"
         >
           <!-- Draggable header -->
           <div
@@ -275,7 +279,7 @@ const onDragEnd = (e: PointerEvent) => {
                 />
                 <div class="min-w-0">
                   <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
-                    {{ profile?.team?.name ?? "Team profile" }}
+                    {{ profile?.team?.name ?? $t('football.team.profileFallback') }}
                   </h2>
                   <div
                     v-if="profile?.team?.country"
@@ -289,7 +293,7 @@ const onDragEnd = (e: PointerEvent) => {
                     />
                     <span class="text-2xs text-gray-400 dark:text-gray-500 truncate">
                       {{ profile.team.country.name }}
-                      <template v-if="profile.team.founded"> · Est. {{ profile.team.founded }}</template>
+                      <template v-if="profile.team.founded"> · {{ $t('football.team.establishedShort', { year: profile.team.founded }) }}</template>
                     </span>
                   </div>
                 </div>
@@ -298,7 +302,7 @@ const onDragEnd = (e: PointerEvent) => {
                 @click.stop="emit('close')"
                 @pointerdown.stop
                 class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors shrink-0"
-                aria-label="Close"
+                :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-x" class="w-4 h-4" />
               </button>
@@ -313,7 +317,7 @@ const onDragEnd = (e: PointerEvent) => {
             <div
               class="tab-track flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-x-auto"
               role="tablist"
-              aria-label="Team profile sections"
+              :aria-label="$t('football.team.sectionsAria')"
             >
               <button
                 v-for="tab in tabs"
@@ -357,7 +361,7 @@ const onDragEnd = (e: PointerEvent) => {
                 @click="retry"
                 class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
-                Retry
+                {{ $t('common.actions.retry') }}
               </button>
             </div>
 
@@ -373,7 +377,7 @@ const onDragEnd = (e: PointerEvent) => {
                   class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2"
                 />
                 <p class="text-footnote text-gray-400 dark:text-gray-500">
-                  Nothing to show here yet.
+                  {{ $t('football.team.emptyTab') }}
                 </p>
               </div>
 
@@ -395,7 +399,7 @@ const onDragEnd = (e: PointerEvent) => {
 
                   <div class="grid grid-cols-2 gap-2.5">
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Country</p>
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.country') }}</p>
                       <div class="flex items-center gap-1.5 mt-1">
                         <img
                           v-if="profile.team?.country?.image_path"
@@ -409,19 +413,19 @@ const onDragEnd = (e: PointerEvent) => {
                       </div>
                     </div>
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Founded</p>
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.founded') }}</p>
                       <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1">
                         {{ profile.team?.founded ?? "—" }}
                       </p>
                     </div>
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Squad</p>
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.squad') }}</p>
                       <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1">
-                        {{ profile.players.length }} players
+                        {{ $t('football.team.squadCount', { count: profile.players.length }) }}
                       </p>
                     </div>
                     <div class="rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3">
-                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Stadium</p>
+                      <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.stadium') }}</p>
                       <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 truncate">
                         {{ profile.venue?.name ?? "—" }}
                       </p>
@@ -468,7 +472,7 @@ const onDragEnd = (e: PointerEvent) => {
                             <span
                               v-if="tp.captain"
                               class="shrink-0 inline-flex items-center justify-center w-4 h-4 rounded-full bg-amber-100 dark:bg-amber-900/40 text-2xs font-bold text-amber-600 dark:text-amber-400"
-                              title="Captain"
+                              :title="$t('football.team.captain')"
                             >
                               C
                             </span>
@@ -607,15 +611,15 @@ const onDragEnd = (e: PointerEvent) => {
                           {{ s.player.display_name }}
                         </p>
                         <p class="text-2xs text-red-500 dark:text-red-400 truncate">
-                          {{ s.type?.name ?? s.category ?? "Sidelined" }}
+                          {{ s.type?.name ?? s.category ?? $t('football.team.sidelinedFallback') }}
                         </p>
                       </div>
                       <span
                         v-if="s.games_missed"
                         class="shrink-0 text-2xs text-gray-400 dark:text-gray-500 tabular-nums text-right"
-                        :title="`${s.games_missed} games missed`"
+                        :title="$t('football.team.gamesMissedTitle', { count: s.games_missed })"
                       >
-                        {{ s.games_missed }} <span class="text-2xs uppercase">missed</span>
+                        {{ s.games_missed }} <span class="text-2xs uppercase">{{ $t('football.team.missed') }}</span>
                       </span>
                     </div>
                   </div>
@@ -643,13 +647,13 @@ const onDragEnd = (e: PointerEvent) => {
 
                       <div class="grid grid-cols-2 gap-2.5 mt-4">
                         <div class="rounded-xl bg-white dark:bg-gray-800 p-3">
-                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Capacity</p>
+                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.capacity') }}</p>
                           <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 tabular-nums">
                             {{ profile.venue?.capacity ? profile.venue.capacity.toLocaleString() : "—" }}
                           </p>
                         </div>
                         <div class="rounded-xl bg-white dark:bg-gray-800 p-3">
-                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Surface</p>
+                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.surface') }}</p>
                           <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 capitalize">
                             {{ profile.venue?.surface ?? "—" }}
                           </p>
@@ -658,7 +662,7 @@ const onDragEnd = (e: PointerEvent) => {
                           v-if="profile.venue?.address"
                           class="col-span-2 rounded-xl bg-white dark:bg-gray-800 p-3"
                         >
-                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Address</p>
+                          <p class="text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $t('football.team.address') }}</p>
                           <p class="text-xs text-gray-700 dark:text-gray-300 mt-1">
                             {{ profile.venue.address }}
                           </p>

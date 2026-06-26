@@ -132,7 +132,7 @@ const resultTextClass = (result: Result | null): string => {
 
     <!-- Empty state -->
     <div v-else class="py-6 text-center">
-      <p class="text-xs text-gray-400 dark:text-gray-500">No recent matches available.</p>
+      <p class="text-xs text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.noRecentMatches') }}</p>
     </div>
   </div>
 </template>

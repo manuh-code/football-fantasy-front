@@ -5,7 +5,7 @@
       <div class="px-4 py-3">
         <div class="flex items-center gap-2">
           <v-icon name="bi-trophy-fill" class="w-[16px] h-[16px] text-amber-500 dark:text-amber-400 shrink-0" />
-          <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">Top Scorers</h2>
+          <h2 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('football.player.topScore.title') }}</h2>
         </div>
       </div>
 
@@ -21,7 +21,7 @@
               :options="seasons"
               value-key="uuid"
               label-key="name"
-              placeholder="Select a season"
+              :placeholder="$t('football.player.topScore.selectSeason')"
               :disabled="isLoadingSeasons"
               :loading="isLoadingSeasons"
               :error="seasonError"
@@ -43,7 +43,7 @@
             <SearchableSelectComponent
               v-model="selectedTypeUuid"
               :options="typeOptions"
-              placeholder="Select score type..."
+              :placeholder="$t('football.player.topScore.selectScoreType')"
               :disabled="!selectedSeasonUuid || loadingTypes"
               :loading="loadingTypes"
               :clearable="false"
@@ -86,7 +86,7 @@
           <div class="flex items-center gap-2">
             <v-icon name="bi-trophy-fill" class="w-[16px] h-[16px] text-amber-500 dark:text-amber-400 shrink-0" />
             <div class="min-w-0">
-              <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Top Scorers Results</h3>
+              <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('football.player.topScore.resultsTitle') }}</h3>
               <p v-if="topScorers.length" class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums">
                 {{ paginationData?.from }}-{{ paginationData?.to }} of {{ paginationData?.total || 0 }} players
               </p>
@@ -116,7 +116,7 @@
       <!-- Loading State -->
       <div v-if="loadingTopScorers" class="py-12 text-center">
         <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto mb-2" animation="spin" />
-        <p class="text-xs text-gray-400 dark:text-gray-500">Loading top scorers...</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500">{{ $t('football.player.topScore.loading') }}</p>
       </div>
 
       <!-- Error State -->
@@ -124,7 +124,7 @@
         <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/50">
           <v-icon name="hi-solid-exclamation-circle" class="w-4 h-4 text-red-500 shrink-0" />
           <div>
-            <p class="text-xs font-medium text-red-800 dark:text-red-200">Error loading data</p>
+            <p class="text-xs font-medium text-red-800 dark:text-red-200">{{ $t('football.player.topScore.errorLoading') }}</p>
             <p class="text-2xs text-red-600 dark:text-red-300">{{ error }}</p>
           </div>
         </div>
@@ -133,15 +133,15 @@
       <!-- Empty State -->
       <div v-else-if="!loadingTopScorers && topScorers.length === 0 && hasSearched" class="py-12 text-center">
         <v-icon name="hi-solid-search" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-        <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">No results found</h3>
-        <p class="text-xs text-gray-400 dark:text-gray-500">Try adjusting your filters.</p>
+        <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">{{ $t('football.player.topScore.noResults') }}</h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500">{{ $t('football.player.topScore.noResultsHint') }}</p>
       </div>
 
       <!-- Initial State -->
       <div v-else-if="!hasSearched" class="py-12 text-center">
         <v-icon name="bi-trophy-fill" class="w-8 h-8 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
-        <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">Search Top Scorers</h3>
-        <p class="text-xs text-gray-400 dark:text-gray-500">Select a season and score type to view rankings.</p>
+        <h3 class="text-footnote font-medium text-gray-900 dark:text-white mb-1">{{ $t('football.player.topScore.searchTitle') }}</h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500">{{ $t('football.player.topScore.searchHint') }}</p>
       </div>
 
       <!-- Results Table -->

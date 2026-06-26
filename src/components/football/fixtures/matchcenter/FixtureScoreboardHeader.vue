@@ -144,7 +144,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
       <div class="flex flex-col items-center min-w-0 transition-all duration-300 ease-out" :class="collapsed ? 'gap-0' : 'gap-2'">
         <button
           type="button"
-          :aria-label="`View ${teamName(homeTeam)} profile`"
+          :aria-label="$t('football.matchCenter.viewProfile', { team: teamName(homeTeam) })"
           @click="onTeamSelect(homeTeam)"
           class="flex items-center justify-center shrink-0 transition-all duration-300 ease-out rounded-full hover:opacity-75 active:scale-95"
           :class="collapsed ? 'w-7 h-7' : 'w-12 h-12'"
@@ -232,7 +232,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
       <div class="flex flex-col items-center min-w-0 transition-all duration-300 ease-out" :class="collapsed ? 'gap-0' : 'gap-2'">
         <button
           type="button"
-          :aria-label="`View ${teamName(awayTeam)} profile`"
+          :aria-label="$t('football.matchCenter.viewProfile', { team: teamName(awayTeam) })"
           @click="onTeamSelect(awayTeam)"
           class="flex items-center justify-center shrink-0 transition-all duration-300 ease-out rounded-full hover:opacity-75 active:scale-95"
           :class="collapsed ? 'w-7 h-7' : 'w-12 h-12'"

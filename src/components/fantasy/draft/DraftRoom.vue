@@ -24,7 +24,7 @@
         >
           <div class="flex items-center gap-2">
             <v-icon name="ri-robot-line" class="w-4 h-4 text-amber-500 dark:text-amber-400" />
-            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Auto Pick</span>
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.draft.room.autoPick') }}</span>
           </div>
           <button
             type="button"
@@ -92,8 +92,8 @@
         >
           <span class="text-2xl sm:text-3xl" aria-hidden="true">⚡</span>
           <div>
-            <p class="text-base sm:text-xl font-bold leading-tight">It's your turn!</p>
-            <p class="text-2xs sm:text-sm text-white/70">Pick a player for your team</p>
+            <p class="text-base sm:text-xl font-bold leading-tight">{{ $t('fantasy.draft.room.yourTurn') }}</p>
+            <p class="text-2xs sm:text-sm text-white/70">{{ $t('fantasy.draft.room.yourTurnSub') }}</p>
           </div>
         </div>
       </div>
@@ -126,6 +126,7 @@ import MenuDraft from "@/components/fantasy/draft/MenuDraft.vue";
 import SearchPlayerFantasy from "@/components/user/fantasy/SearchPlayerFantasy.vue";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import { useToast } from "@/composables/useToast";
+import { useI18n } from "vue-i18n";
 import { FantasyDraftTurnSkipped } from "@/interfaces/fantasy/draft/FantasyDraftTurnSkipped";
 import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
@@ -152,6 +153,7 @@ const membersDraftRoom = ref<UserDataInterface[]>([]);
 const turnStarted = ref<FantasyDraftTurnStarted | null>(null);
 const searchPlayerRef = ref<InstanceType<typeof SearchPlayerFantasy> | null>(null);
 const toast = useToast();
+const { t } = useI18n();
 const showDrawer = ref(false);
 const drawerRefreshKey = ref(0);
 const drawerWidth = ref(0);
@@ -268,7 +270,7 @@ async function handleToggleAutoPick() {
     const newValue = !isAutoPick.value;
     await fantasyLeagueService.toggleAutoPick(props.fantasyLeague.uuid, newValue);
     isAutoPick.value = newValue;
-    toast.success('Auto Pick', newValue ? 'Auto Pick activated' : 'Auto Pick deactivated');
+    toast.success(t('fantasy.draft.room.autoPick'), newValue ? t('fantasy.draft.room.autoPickOn') : t('fantasy.draft.room.autoPickOff'));
   } catch (error) {
     console.error('Error toggling auto-pick:', error);
   } finally {

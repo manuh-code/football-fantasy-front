@@ -14,7 +14,7 @@
           @click="toggleFabMenu"
           class="group relative w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 hover:scale-110 active:scale-95"
           :class="{ 'rotate-45': isFabMenuOpen, 'rotate-0': !isFabMenuOpen }"
-          :title="isFabMenuOpen ? 'Close menu' : 'Quick actions'"
+          :title="isFabMenuOpen ? $t('fantasy.userLeagues.fabClose') : $t('fantasy.userLeagues.fabQuickActions')"
         >
           <v-icon name="hi-solid-plus" class="w-8 h-8" />
         </button>
@@ -26,7 +26,7 @@
               @click="goToCreateLeague"
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
             >
-              <span class="text-sm font-semibold">Create League</span>
+              <span class="text-sm font-semibold">{{ $t('fantasy.userLeagues.createLeague') }}</span>
               <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <v-icon name="hi-solid-plus-circle" class="w-5 h-5 text-white" />
               </div>
@@ -36,7 +36,7 @@
               @click="goToJoinLeague"
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
             >
-              <span class="text-sm font-semibold">Join League</span>
+              <span class="text-sm font-semibold">{{ $t('fantasy.userLeagues.joinLeague') }}</span>
               <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <v-icon name="hi-solid-user-add" class="w-5 h-5 text-white" />
               </div>
@@ -51,10 +51,13 @@
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import UserFantasyLeagueComponent from '@/components/user/fantasy/UserFantasyLeagueComponent.vue'
 
+const { t } = useI18n()
+
 // Set page title
-document.title = 'My Fantasy Leagues - Football Fantasy'
+document.title = t('fantasy.userLeagues.pageTitle')
 
 // Router
 const router = useRouter()

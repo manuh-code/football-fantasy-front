@@ -29,7 +29,7 @@ const minuteLabel = (c: FootballFixtureCommentResponse): string => {
       class="py-12 flex flex-col items-center text-center"
     >
       <v-icon name="bi-chat-left-dots-fill" class="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">No commentary available yet</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.noCommentary') }}</p>
     </div>
 
     <ol v-else class="space-y-2.5">

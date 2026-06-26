@@ -1,0 +1,234 @@
+{
+  "gaming": {
+    "fantasy": {
+      "title": "Fantasy",
+      "subtitle": "Arma tu equipo ideal y compite"
+    },
+    "pools": {
+      "title": "Quinielas",
+      "subtitle": "Predice los resultados y compite"
+    },
+    "live": "En vivo",
+    "loginRequired": "Inicia sesión para acceder a los juegos Fantasy"
+  },
+  "leagueCreate": {
+    "title": "Crear liga Fantasy",
+    "subtitle": "Crea tu liga privada en segundos",
+    "name": {
+      "label": "Nombre de la liga",
+      "placeholder": "Ingresa el nombre de tu liga"
+    },
+    "password": {
+      "label": "Contraseña de la liga",
+      "placeholder": "Ingresa una contraseña",
+      "hint": "Necesaria para que otros se unan a tu liga"
+    },
+    "participants": {
+      "label": "Número de participantes",
+      "placeholder": "Selecciona el número de participantes",
+      "unit": "participantes",
+      "fixed": "Fijo",
+      "fixedHint": "Esta liga requiere exactamente {count} participantes",
+      "noOptions": "No hay opciones disponibles",
+      "min": "Mínimo",
+      "mid": "Recomendado",
+      "max": "Máximo",
+      "optionLabel": "{tag} ({count} participantes)"
+    },
+    "submit": "Crear liga",
+    "success": {
+      "title": "¡Éxito!",
+      "message": "¡La liga \"{name}\" se creó correctamente!"
+    }
+  },
+  "leagueCard": {
+    "private": "Privada",
+    "public": "Pública",
+    "admin": "Admin",
+    "member": "Miembro",
+    "participantsShort": "part.",
+    "membersShort": "miemb.",
+    "requestToJoin": "Solicitar unirse",
+    "joinLeague": "Unirse a la liga"
+  },
+  "joinModal": {
+    "title": "Unirse a liga privada",
+    "subtitle": "Ingresa la contraseña para unirte a esta liga",
+    "noDescription": "Sin descripción.",
+    "password": {
+      "label": "Contraseña",
+      "placeholder": "Ingresa la contraseña de la liga..."
+    },
+    "joinLeague": "Unirse a la liga"
+  },
+  "createTeamModal": {
+    "title": "¡Bienvenido a la liga!",
+    "subtitle": "Un paso más para empezar a competir",
+    "heading": "Crea tu equipo Fantasy",
+    "body": "Aún no tienes un equipo en esta liga. Ponle nombre a tu equipo y empieza a armar tu plantilla ideal.",
+    "quickSetup": "Configuración rápida",
+    "lessThanMin": "Menos de 1 min",
+    "createMyTeam": "Crear mi equipo",
+    "maybeLater": "Quizás después"
+  },
+  "userLeagues": {
+    "title": "Mis ligas",
+    "countOne": "{count} liga",
+    "countOther": "{count} ligas",
+    "loadError": "No se pudieron cargar tus ligas Fantasy. Inténtalo de nuevo más tarde.",
+    "emptyTitle": "Aún no tienes ligas",
+    "emptyBody": "Crea tu propia liga o únete a una existente para empezar a jugar.",
+    "pageTitle": "Mis Ligas Fantasy - Football Fantasy",
+    "fabQuickActions": "Acciones rápidas",
+    "fabClose": "Cerrar menú",
+    "createLeague": "Crear liga",
+    "joinLeague": "Unirse a liga"
+  },
+  "showTeam": {
+    "couldNotLoad": "No se pudo cargar el equipo",
+    "viewTeam": "Ver equipo",
+    "yourTeam": "Tu equipo Fantasy",
+    "active": "Activo"
+  },
+  "draft": {
+    "activation": {
+      "readyTitle": "El draft está listo para iniciar",
+      "readyBody": "Ya se unieron los {count} miembros. Puedes activar el draft ahora.",
+      "activate": "Activar draft",
+      "activating": "Activando...",
+      "waitingTitle": "Esperando a los miembros",
+      "waitingBody": "{joined} de {total} miembros se han unido. El draft se podrá activar cuando estén todos.",
+      "notAvailableTitle": "El draft aún no está disponible",
+      "notAvailableBody": "El administrador de la liga todavía no activó el draft. Te avisaremos cuando comience.",
+      "activatedTitle": "Draft activado",
+      "activatedMessage": "El draft se activó correctamente."
+    },
+    "room": {
+      "autoPick": "Selección automática",
+      "autoPickOn": "Selección automática activada",
+      "autoPickOff": "Selección automática desactivada",
+      "yourTurn": "¡Es tu turno!",
+      "yourTurnSub": "Elige un jugador para tu equipo"
+    },
+    "board": {
+      "failedLoad": "No se pudo cargar el tablero del draft",
+      "noPicks": "Aún no hay selecciones",
+      "noPicksSub": "El tablero se actualizará a medida que se elijan jugadores."
+    },
+    "menu": {
+      "nav": "Navegación del draft",
+      "room": "Sala del draft",
+      "draft": "Draft",
+      "board": "Tablero del draft",
+      "boards": "Tableros",
+      "leagueDetail": "Detalle de la liga",
+      "league": "Liga"
+    }
+  },
+  "detail": {
+    "loading": "Cargando liga...",
+    "error": "Algo salió mal",
+    "errorUuidRequired": "Se requiere el UUID de la liga",
+    "members": "Miembros",
+    "status": "Estado",
+    "active": "Activa",
+    "season": "Temporada",
+    "myTeam": "Mi equipo",
+    "stats": "Estadísticas",
+    "matchups": "Enfrentamientos",
+    "about": "Acerca de",
+    "participants": "Participantes",
+    "open": "Abierta",
+    "draft": "Draft",
+    "date": "Fecha",
+    "pickTimer": "Tiempo por selección",
+    "autoPick": "Selección automática",
+    "comingSoonTitle": "Próximamente",
+    "comingSoonMessage": "¡La página de administración de la liga está en desarrollo!"
+  },
+  "teamCreate": {
+    "preview": "Vista previa",
+    "tip": "Consejo",
+    "identity": "Identidad del equipo",
+    "identitySub": "Elige un nombre e iniciales para tu equipo",
+    "alreadyHaveTeam": "Ya tienes un equipo en esta liga.",
+    "viewTeam": "Ver equipo",
+    "teamName": "Nombre del equipo",
+    "teamNamePlaceholder": "ej. Thunder FC",
+    "initialsLabel": "Iniciales del equipo",
+    "initialsHint": "(1-4 caracteres)",
+    "initialsPlaceholder": "ej. TFC",
+    "autoGenerate": "Generar automáticamente desde el nombre del equipo",
+    "tipBody": "Sube el logo de tu equipo para un toque personalizado. Puedes cambiarlo cuando quieras desde la configuración de tu equipo.",
+    "creating": "Creando...",
+    "createTeam": "Crear equipo",
+    "teamLogo": "Logo del equipo",
+    "clickToUpload": "Haz clic para subir",
+    "changeImage": "Cambiar imagen",
+    "removeImage": "Quitar imagen",
+    "logoOptional": "Opcional. Si no se proporciona, se asignará una imagen por defecto.",
+    "invalidFormatTitle": "Formato no válido",
+    "invalidFormatMessage": "Solo se permiten imágenes JPG, PNG y WebP.",
+    "fileTooLargeTitle": "Archivo demasiado grande",
+    "fileTooLargeMessage": "El tamaño máximo de imagen es 2 MB.",
+    "createdTitle": "¡Equipo creado!",
+    "createdMessage": "\"{name}\" está listo para competir."
+  },
+  "matchups": {
+    "selectLeague": "Selecciona una liga Fantasy para ver los enfrentamientos.",
+    "noRounds": "No hay rondas disponibles",
+    "noRoundsSub": "Las rondas aparecerán cuando comience la temporada.",
+    "noMatchups": "Aún no hay enfrentamientos",
+    "noMatchupsSub": "Los enfrentamientos de esta ronda aún no se han programado.",
+    "starters": "Titulares",
+    "bench": "Banca",
+    "pts": "pts",
+    "total": "Total"
+  },
+  "lineup": {
+    "starters": "Titulares",
+    "bench": "Banca",
+    "selectSwap": "Selecciona un jugador para cambiar"
+  },
+  "management": {
+    "loadingRules": "Cargando reglas de puntuación...",
+    "loadingError": "Error de carga",
+    "ruleTypes": "Tipos de regla:",
+    "totalConfigs": "Configuraciones totales:",
+    "ruleType": "Tipo de regla",
+    "editCondition": "Editar condición",
+    "editCondShort": "Editar cond.",
+    "notApplicable": "No aplica",
+    "saving": "Guardando...",
+    "saveRules": "Guardar reglas",
+    "enterValue": "Ingresa un valor",
+    "enterText": "Ingresa un texto",
+    "errorLoadConditions": "Error al cargar las reglas de condición",
+    "errorSave": "Error al guardar las reglas de puntuación",
+    "errorInit": "Error al inicializar el componente",
+    "updated": "Reglas de puntuación actualizadas correctamente"
+  },
+  "join": {
+    "discoverTitle": "Descubre ligas",
+    "discoverSub": "Encuentra y únete a competencias de fantasy",
+    "searchPlaceholder": "Buscar por nombre...",
+    "noLeaguesFound": "No se encontraron ligas",
+    "noResultsTitle": "Sin resultados",
+    "noResultsNone": "No hay ligas disponibles por el momento",
+    "noResultsSearch": "No se encontraron ligas para \"{query}\"",
+    "searchError": "No se pudo buscar ligas. Inténtalo de nuevo.",
+    "joinSuccessTitle": "Éxito",
+    "joinRequested": "Solicitaste unirte a \"{name}\" correctamente",
+    "joinJoined": "Te uniste a \"{name}\" correctamente"
+  },
+  "myTeam": {
+    "addPlayers": "Agregar jugadores",
+    "trades": "Cambios"
+  },
+  "search": {
+    "playerPlaceholder": "Buscar jugador...",
+    "allTeams": "Todos los equipos",
+    "searchTeam": "Buscar equipo...",
+    "errorAddingPlayer": "Error al agregar jugador"
+  }
+}

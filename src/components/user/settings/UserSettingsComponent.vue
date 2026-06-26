@@ -40,8 +40,8 @@
           <v-icon name="hi-solid-user" class="w-5 h-5 text-blue-600 dark:text-blue-400" />
         </div>
         <div class="flex-1 text-left min-w-0">
-          <p class="text-sm font-medium text-gray-900 dark:text-white">Profile</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">View and edit your personal information</p>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.settings.menu.profile.title') }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.profile.subtitle') }}</p>
         </div>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
@@ -55,8 +55,8 @@
           <v-icon name="hi-solid-shield-check" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
         </div>
         <div class="flex-1 text-left min-w-0">
-          <p class="text-sm font-medium text-gray-900 dark:text-white">Change Password</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Update your account password</p>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.settings.menu.changePassword.title') }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.changePassword.subtitle') }}</p>
         </div>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
@@ -70,8 +70,8 @@
           <v-icon name="hi-solid-cog" class="w-5 h-5 text-purple-600 dark:text-purple-400" />
         </div>
         <div class="flex-1 text-left min-w-0">
-          <p class="text-sm font-medium text-gray-900 dark:text-white">System Settings</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Theme, language, and preferences</p>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.settings.menu.systemSettings.title') }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.systemSettings.subtitle') }}</p>
         </div>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
@@ -85,8 +85,8 @@
           <v-icon name="hi-solid-document-text" class="w-5 h-5 text-gray-600 dark:text-gray-300" />
         </div>
         <div class="flex-1 text-left min-w-0">
-          <p class="text-sm font-medium text-gray-900 dark:text-white">Aviso de Privacidad</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">How we handle your personal data</p>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.settings.menu.privacy.title') }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.privacy.subtitle') }}</p>
         </div>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
@@ -105,9 +105,9 @@
         </div>
         <div class="flex-1 text-left min-w-0">
           <p class="text-sm font-medium text-red-600 dark:text-red-400">
-            {{ isLoggingOut ? 'Signing out...' : 'Sign Out' }}
+            {{ isLoggingOut ? $t('user.settings.menu.logout.loading') : $t('user.settings.menu.logout.title') }}
           </p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Close your session</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.logout.subtitle') }}</p>
         </div>
       </button>
     </div>
@@ -117,11 +117,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
+const { t } = useI18n()
 const userStore = useUserStore()
 const authStore = useAuthStore()
 const toast = useToast()
@@ -135,7 +137,7 @@ const userName = computed(() => {
   if (userData?.firstname && userData?.lastname) {
     return `${userData.firstname} ${userData.lastname}`
   }
-  return 'User'
+  return t('user.settings.accountFallbackName')
 })
 
 const userEmail = computed(() => {
@@ -161,7 +163,7 @@ async function handleLogout() {
   isLoggingOut.value = true
   try {
     await authStore.logout()
-    toast.success('Signed Out', 'You have been signed out successfully')
+    toast.success(t('user.settings.logoutSuccess.title'), t('user.settings.logoutSuccess.message'))
     router.push({ name: 'home' })
   } catch (error) {
     console.error('Logout error:', error)

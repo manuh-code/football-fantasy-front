@@ -1,8 +1,8 @@
 <template>
   <BottomSheet
     :is-visible="isVisible"
-    title="Select your league"
-    subtitle="Choose a league to see relevant news and matches"
+    :title="$t('football.leagueSelect.title')"
+    sub:title="$t('football.leagueSelect.subtitle')"
     icon="hi-solid-collection"
     icon-variant="emerald"
     size="lg"
@@ -13,7 +13,7 @@
     <div v-if="loading" class="py-10">
       <div class="flex flex-col items-center gap-3">
         <div class="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-        <p class="text-footnote text-gray-500 dark:text-gray-400">Loading leagues...</p>
+        <p class="text-footnote text-gray-500 dark:text-gray-400">{{ $t('football.leagueSelect.loading') }}</p>
       </div>
     </div>
 

@@ -1,8 +1,8 @@
 <template>
   <BottomSheet
     :is-visible="needRefresh"
-    title="New version available"
-    subtitle="An update is ready to install"
+    :title="$t('pwa.update.title')"
+    :subtitle="$t('pwa.update.subtitle')"
     icon="hi-solid-refresh"
     icon-variant="emerald"
     size="auto"
@@ -16,8 +16,7 @@
         <v-icon name="hi-solid-refresh" class="w-8 h-8 text-white" />
       </div>
       <p class="text-footnote text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs">
-        We've improved the app with new features and fixes. Update to get the
-        latest version.
+        {{ $t('pwa.update.body') }}
       </p>
     </div>
 
@@ -26,7 +25,7 @@
         <ButtonComponent
           variant="outline"
           size="sm"
-          text="Later"
+          :text="$t('pwa.update.later')"
           always-full-width
           :disabled="isUpdating"
           @click="dismiss"
@@ -34,7 +33,7 @@
         <ButtonComponent
           variant="primary"
           size="sm"
-          text="Update"
+          :text="$t('pwa.update.update')"
           always-full-width
           :loading="isUpdating"
           @click="onApply"
@@ -50,10 +49,12 @@ import BottomSheet from '@/components/ui/BottomSheet.vue'
 import { ButtonComponent } from '@/components/ui'
 import { usePwaUpdate } from '@/composables/usePwaUpdate'
 import { useToast } from '@/composables/useToast'
+import { useI18n } from 'vue-i18n'
 
 const { needRefresh, offlineReady, applyUpdate, dismiss, clearOfflineReady } =
   usePwaUpdate()
 const toast = useToast()
+const { t } = useI18n()
 
 const isUpdating = ref(false)
 
@@ -68,7 +69,7 @@ async function onApply() {
 // Show a one-time toast when the app is first cached for offline use.
 watch(offlineReady, (ready) => {
   if (ready) {
-    toast.success('Ready to use offline', 'The app now works without a connection.')
+    toast.success(t('pwa.update.offlineTitle'), t('pwa.update.offlineMessage'))
     clearOfflineReady()
   }
 })

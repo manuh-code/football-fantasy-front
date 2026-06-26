@@ -1,0 +1,108 @@
+{
+  "myPools": "Mis quinielas",
+  "emptyTitle": "Aún no tienes quinielas",
+  "emptyBody": "Todavía no participas en ninguna quiniela. Cuando te unas a una, aparecerá aquí.",
+  "loadError": "No se pudieron cargar tus quinielas. Inténtalo de nuevo más tarde.",
+  "list": {
+    "upTo": "Hasta {count}",
+    "count": "{count} quiniela | {count} quinielas"
+  },
+  "create": {
+    "title": "Crear quiniela",
+    "subtitle": "Crea una nueva quiniela para tu grupo",
+    "nameLabel": "Nombre",
+    "descLabel": "Descripción",
+    "namePlaceholder": "ej. amigos de la liga, quiniela de la oficina, familia",
+    "descPlaceholder": "¿De qué trata esta quiniela?",
+    "stage": "Etapa",
+    "stageInfo": "Tu quiniela se creará para esta etapa",
+    "current": "Actual",
+    "stageResolveError": "No se pudo determinar la etapa. Inténtalo de nuevo."
+  },
+  "join": {
+    "title": "Unirse a quiniela",
+    "subtitle": "Ingresa el código de acceso que te compartieron",
+    "codePlaceholder": "Ingresa el código de acceso..."
+  },
+  "group": {
+    "nav": "Navegación del grupo de quiniela",
+    "docTitle": "Grupo de quiniela - Football Fantasy",
+    "tabs": {
+      "myPools": "Mis quinielas",
+      "info": "Info",
+      "predictions": "Predicciones",
+      "standings": "Posiciones"
+    },
+    "scoringRules": "Reglas de puntuación",
+    "members": "Miembros",
+    "noMembers": "Aún no hay miembros.",
+    "unknownMember": "Miembro desconocido",
+    "stage": "Etapa",
+    "dates": "Fechas",
+    "participants": "Participantes",
+    "accessCode": "Código de acceso",
+    "copyAccessCode": "Copiar código de acceso",
+    "copiedTitle": "¡Copiado!",
+    "shareInvite": "Compartir enlace de invitación",
+    "linkCopiedTitle": "¡Enlace copiado!",
+    "predictionsUnavailable": "Predicciones no disponibles",
+    "noStageAssigned": "Esta quiniela aún no tiene una etapa asignada.",
+    "loadError": "No se pudo cargar esta quiniela. Inténtalo de nuevo más tarde.",
+    "badge": {
+      "live": "En vivo",
+      "finished": "Finalizada"
+    },
+    "scoring": {
+      "exactScoreLabel": "Resultado exacto",
+      "exactScoreHint": "Acierta el marcador final",
+      "correctWinnerLabel": "Ganador correcto",
+      "correctWinnerHint": "El equipo correcto que gana",
+      "correctDrawLabel": "Empate correcto",
+      "correctDrawHint": "Acertaste el empate"
+    },
+    "toast": {
+      "codeCopiedTitle": "Código de acceso copiado",
+      "shareBody": "Compártelo para que otros se unan a tu quiniela.",
+      "copyFailedTitle": "No se pudo copiar",
+      "copyCodeFailedBody": "Copia el código de acceso manualmente.",
+      "linkCopiedTitle": "Enlace de invitación copiado",
+      "copyLinkFailedBody": "Copia el enlace de invitación manualmente."
+    },
+    "share": {
+      "title": "Únete a \"{name}\"",
+      "text": "Únete a mi quiniela \"{name}\" en Football Fantasy. Código de acceso: {code}"
+    }
+  },
+  "prediction": {
+    "noRounds": "Sin rondas",
+    "noRoundsBody": "Aún no hay rondas disponibles para esta etapa.",
+    "noFixtures": "Sin partidos",
+    "noFixturesBody": "No hay partidos en esta ronda.",
+    "roundsError": "No se pudieron cargar las rondas. Inténtalo de nuevo más tarde.",
+    "fixturesError": "No se pudieron cargar los partidos. Inténtalo de nuevo más tarde.",
+    "open": "Abierto",
+    "played": "Jugado",
+    "home": "Local",
+    "away": "Visitante",
+    "increaseScore": "Aumentar marcador de {team}",
+    "decreaseScore": "Disminuir marcador de {team}",
+    "saved": "Guardado",
+    "saveErrorRetry": "No se pudo guardar · Reintentar",
+    "tapToSet": "Toca para hacer tu predicción"
+  },
+  "standing": {
+    "noStandings": "Sin posiciones",
+    "noRoundPoints": "Aún no se han registrado puntos en esta ronda.",
+    "noStandingsBody": "Las posiciones aparecerán cuando se califiquen las predicciones.",
+    "pts": "pts",
+    "loadError": "No se pudieron cargar las posiciones. Inténtalo de nuevo más tarde.",
+    "overall": "General",
+    "roundLabel": "Jornada {name}",
+    "playerCount": "{count} jugador | {count} jugadores",
+    "unknownPlayer": "Jugador desconocido"
+  },
+  "rounds": {
+    "previous": "Ronda anterior",
+    "next": "Ronda siguiente"
+  }
+}

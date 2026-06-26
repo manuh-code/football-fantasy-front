@@ -16,7 +16,7 @@
         @click="loadRounds"
         class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
       >
-        Try Again
+        {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -26,8 +26,8 @@
       class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center"
     >
       <v-icon name="hi-solid-calendar" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-      <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">No Rounds</h3>
-      <p class="text-footnote text-gray-400 dark:text-gray-500">There are no rounds available for this stage yet.</p>
+      <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('pool.prediction.noRounds') }}</h3>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('pool.prediction.noRoundsBody') }}</p>
     </div>
 
     <template v-else>
@@ -81,8 +81,8 @@
         class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center"
       >
         <v-icon name="gi-soccer-ball" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">No Fixtures</h3>
-        <p class="text-footnote text-gray-400 dark:text-gray-500">There are no matches in this round.</p>
+        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('pool.prediction.noFixtures') }}</h3>
+        <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('pool.prediction.noFixturesBody') }}</p>
       </div>
 
       <!-- Fixtures + predictions -->
@@ -99,13 +99,13 @@
                 v-if="isPredictable(fixture)"
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
               >
-                Open
+                {{ $t('pool.prediction.open') }}
               </span>
               <span
                 v-else
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
               >
-                {{ fixture.state?.name || 'Played' }}
+                {{ fixture.state?.name || $t('pool.prediction.played') }}
               </span>
             </div>
 
@@ -114,12 +114,12 @@
               <div class="flex flex-col items-center gap-1.5 text-center min-w-0">
                 <img
                   :src="homeTeam(fixture)?.image_path || '/img/default-avatar.svg'"
-                  :alt="homeTeam(fixture)?.name || 'Home'"
+                  :alt="homeTeam(fixture)?.name || $t('pool.prediction.home')"
                   class="w-11 h-11 object-contain"
                   @error="onLogoError"
                 />
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200 leading-tight line-clamp-2">
-                  {{ homeTeam(fixture)?.name || 'Home' }}
+                  {{ homeTeam(fixture)?.name || $t('pool.prediction.home') }}
                 </span>
               </div>
 
@@ -132,7 +132,7 @@
                       <button
                         type="button"
                         @click="adjustScore(fixture.uuid, 'home', 1)"
-                        :aria-label="`Increase ${homeTeam(fixture)?.name || 'home'} score`"
+                        :aria-label="$t('pool.prediction.increaseScore', { team: homeTeam(fixture)?.name || $t('pool.prediction.home') })"
                         class="stepper-btn"
                       >
                         <v-icon name="hi-solid-plus" class="w-4 h-4" />
@@ -147,7 +147,7 @@
                         type="button"
                         @click="adjustScore(fixture.uuid, 'home', -1)"
                         :disabled="(predictions[fixture.uuid].home ?? 0) <= 0"
-                        :aria-label="`Decrease ${homeTeam(fixture)?.name || 'home'} score`"
+                        :aria-label="$t('pool.prediction.decreaseScore', { team: homeTeam(fixture)?.name || $t('pool.prediction.home') })"
                         class="stepper-btn"
                       >
                         <v-icon name="hi-solid-minus" class="w-4 h-4" />
@@ -161,7 +161,7 @@
                       <button
                         type="button"
                         @click="adjustScore(fixture.uuid, 'away', 1)"
-                        :aria-label="`Increase ${awayTeam(fixture)?.name || 'away'} score`"
+                        :aria-label="$t('pool.prediction.increaseScore', { team: awayTeam(fixture)?.name || $t('pool.prediction.away') })"
                         class="stepper-btn"
                       >
                         <v-icon name="hi-solid-plus" class="w-4 h-4" />
@@ -176,7 +176,7 @@
                         type="button"
                         @click="adjustScore(fixture.uuid, 'away', -1)"
                         :disabled="(predictions[fixture.uuid].away ?? 0) <= 0"
-                        :aria-label="`Decrease ${awayTeam(fixture)?.name || 'away'} score`"
+                        :aria-label="$t('pool.prediction.decreaseScore', { team: awayTeam(fixture)?.name || $t('pool.prediction.away') })"
                         class="stepper-btn"
                       >
                         <v-icon name="hi-solid-minus" class="w-4 h-4" />
@@ -189,14 +189,14 @@
                     class="flex items-center gap-1 text-2xs text-gray-400 dark:text-gray-500 mt-2"
                   >
                     <v-icon name="pr-spinner" class="w-3 h-3" animation="spin" />
-                    Saving…
+                    {{ $t('common.actions.saving') }}
                   </span>
                   <span
                     v-else-if="saveStatus[fixture.uuid] === 'saved'"
                     class="flex items-center gap-1 text-2xs text-emerald-500 mt-2"
                   >
                     <v-icon name="hi-solid-check" class="w-3 h-3" />
-                    Saved
+                    {{ $t('pool.prediction.saved') }}
                   </span>
                   <button
                     v-else-if="saveStatus[fixture.uuid] === 'error'"
@@ -205,10 +205,10 @@
                     class="flex items-center gap-1 text-2xs text-red-500 mt-2"
                   >
                     <v-icon name="hi-solid-exclamation" class="w-3 h-3" />
-                    Couldn't save · Retry
+                    {{ $t('pool.prediction.saveErrorRetry') }}
                   </button>
                   <span v-else class="text-2xs text-gray-400 dark:text-gray-500 mt-2">
-                    Tap to set your prediction
+                    {{ $t('pool.prediction.tapToSet') }}
                   </span>
                 </template>
                 <template v-else>
@@ -222,12 +222,12 @@
               <div class="flex flex-col items-center gap-1.5 text-center min-w-0">
                 <img
                   :src="awayTeam(fixture)?.image_path || '/img/default-avatar.svg'"
-                  :alt="awayTeam(fixture)?.name || 'Away'"
+                  :alt="awayTeam(fixture)?.name || $t('pool.prediction.away')"
                   class="w-11 h-11 object-contain"
                   @error="onLogoError"
                 />
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200 leading-tight line-clamp-2">
-                  {{ awayTeam(fixture)?.name || 'Away' }}
+                  {{ awayTeam(fixture)?.name || $t('pool.prediction.away') }}
                 </span>
               </div>
             </div>
@@ -240,6 +240,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
 import PoolRoundsCarousel from "@/components/pool/PoolRoundsCarousel.vue";
@@ -248,6 +249,8 @@ import type { FootballFixtureResponse } from "@/interfaces/football/fixture/Foot
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 
 const props = defineProps<{ stageUuid: string; poolGroupUuid: string }>();
+
+const { t, locale } = useI18n();
 
 // Rounds
 const rounds = ref<FootballRoundResponse[]>([]);
@@ -344,7 +347,7 @@ const formatKickoff = (value?: string): string => {
   if (!value) return "";
   const date = new Date(value.includes("T") ? value : value.replace(" ", "T"));
   if (isNaN(date.getTime())) return value;
-  return date.toLocaleString("en-US", {
+  return date.toLocaleString(locale.value, {
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -368,7 +371,7 @@ const loadRounds = async () => {
     selectedIndex.value = currentIdx !== -1 ? currentIdx : 0;
   } catch (e) {
     console.error("Error loading rounds:", e);
-    roundsError.value = "Failed to load rounds. Please try again later.";
+    roundsError.value = t("pool.prediction.roundsError");
   } finally {
     loadingRounds.value = false;
   }
@@ -396,7 +399,7 @@ const loadFixtures = async () => {
     });
   } catch (e) {
     console.error("Error loading pool fixtures:", e);
-    fixturesError.value = "Failed to load fixtures. Please try again later.";
+    fixturesError.value = t("pool.prediction.fixturesError");
   } finally {
     loadingFixtures.value = false;
   }

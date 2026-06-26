@@ -11,7 +11,7 @@
         <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate">
           {{ leagueName }}
         </p>
-        <p class="text-2xs text-gray-400 dark:text-gray-500">Choose a stage</p>
+        <p class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('football.stage.choose') }}</p>
       </div>
     </div>
 
@@ -25,7 +25,7 @@
         <input
           v-model="query"
           type="text"
-          placeholder="Search stage..."
+          :placeholder="$t('football.stage.searchPlaceholder')"
           class="w-full h-10 pl-9 pr-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-footnote text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
         />
       </div>

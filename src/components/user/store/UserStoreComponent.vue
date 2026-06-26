@@ -17,10 +17,10 @@
           <v-icon name="md-sportssoccer" class="w-7 h-7 text-white" />
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Create account
+          {{ $t('auth.register.title') }}
         </h1>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Join Football Fantasy and start playing
+          {{ $t('auth.register.subtitle') }}
         </p>
       </div>
 
@@ -33,7 +33,7 @@
           :loading="isGoogleLoading"
           :disabled="isLoading"
           :always-full-width="true"
-          :text="isGoogleLoading ? 'Connecting...' : 'Continue with Google'"
+          :text="isGoogleLoading ? $t('auth.login.googleConnecting') : $t('auth.login.continueGoogle')"
           @click="handleGoogleSignup"
         />
         <!-- Add Facebook, Apple, etc. here once the backend supports them. -->
@@ -43,7 +43,7 @@
       <div class="flex items-center gap-3 my-5">
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
         <span class="text-2xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 whitespace-nowrap">
-          or
+          {{ $t('auth.login.or') }}
         </span>
         <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
       </div>
@@ -56,7 +56,7 @@
         class="w-full flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 dark:border-gray-700 text-footnote font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 active:scale-[0.99] transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
       >
         <v-icon name="hi-solid-mail" class="w-4 h-4" />
-        Sign up with email
+        {{ $t('auth.register.signupEmail') }}
       </button>
 
       <!-- Form -->
@@ -65,20 +65,20 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormInput
             v-model="payload.firstName"
-            label="First Name"
+            :label="$t('auth.register.firstName')"
             type="text"
             icon="bi-person-fill"
-            placeholder="Your first name"
+            :placeholder="$t('auth.register.firstNamePlaceholder')"
             autocomplete="given-name"
             :error="errors.firstName"
             :disabled="isLoading"
           />
           <FormInput
             v-model="payload.lastName"
-            label="Last Name"
+            :label="$t('auth.register.lastName')"
             type="text"
             icon="bi-person-fill"
-            placeholder="Your last name"
+            :placeholder="$t('auth.register.lastNamePlaceholder')"
             autocomplete="family-name"
             :error="errors.lastName"
             :disabled="isLoading"
@@ -88,10 +88,10 @@
         <!-- Email -->
         <FormInput
           v-model="payload.email"
-          label="Email"
+          :label="$t('auth.register.email')"
           type="email"
           icon="bi-envelope-fill"
-          placeholder="your@email.com"
+          :placeholder="$t('auth.register.emailPlaceholder')"
           autocomplete="email"
           :error="errors.email"
           :disabled="isLoading"
@@ -101,10 +101,10 @@
         <div>
           <FormInput
             v-model="payload.password"
-            label="Password"
+            :label="$t('auth.register.password')"
             type="password"
             icon="bi-lock-fill"
-            placeholder="••••••••"
+            :placeholder="$t('auth.register.passwordPlaceholder')"
             autocomplete="new-password"
             :error="errors.password"
             :disabled="isLoading"
@@ -132,10 +132,10 @@
         <!-- Confirm password -->
         <FormInput
           v-model="payload.password_confirmation"
-          label="Confirm Password"
+          :label="$t('auth.register.confirmPassword')"
           type="password"
           icon="bi-lock-fill"
-          placeholder="••••••••"
+          :placeholder="$t('auth.register.passwordPlaceholder')"
           autocomplete="new-password"
           :error="errors.password_confirmation"
           :disabled="isLoading"
@@ -150,10 +150,10 @@
               class="w-4 h-4 mt-0.5 rounded accent-emerald-600 shrink-0"
             />
             <span class="text-footnote leading-snug text-gray-600 dark:text-gray-300">
-              I accept the
-              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">terms and conditions</a>
-              and the
-              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">privacy policy</a>
+              {{ $t('auth.register.agreePrefix') }}
+              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.termsLink') }}</a>
+              {{ $t('auth.register.agreeAnd') }}
+              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.privacyPolicyLink') }}</a>
             </span>
           </label>
           <p v-if="errors.terms" class="mt-1.5 text-xs text-red-500 dark:text-red-400">
@@ -169,29 +169,29 @@
           :disabled="!isFormValid"
           :loading="isLoading"
           :always-full-width="true"
-          :text="isLoading ? 'Creating account...' : 'Create Account'"
+          :text="isLoading ? $t('auth.register.creating') : $t('auth.register.createAccount')"
         />
       </form>
 
       <!-- Footer -->
       <p class="mt-7 text-center text-sm text-gray-500 dark:text-gray-400">
-        Already have an account?
+        {{ $t('auth.register.haveAccount') }}
         <router-link
           to="/login"
           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Sign in
+          {{ $t('auth.register.signIn') }}
         </router-link>
       </p>
 
       <!-- Privacy notice -->
       <p class="mt-3 text-center text-2xs text-gray-400 dark:text-gray-500">
-        Al crear una cuenta aceptas nuestro
+        {{ $t('auth.register.privacyPrefix') }}
         <router-link
           to="/privacy"
           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Aviso de Privacidad
+          {{ $t('auth.login.privacyLink') }}
         </router-link>
       </p>
     </div>
@@ -201,6 +201,7 @@
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { FormInput, ButtonComponent } from '@/components/ui';
 import { UserStorePayload } from '@/interfaces/user/store/userStorePayload';
 import { getUserService } from '@/services/user/UserService';
@@ -224,6 +225,7 @@ interface ValidationErrors {
 // Router
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 
 // Toast
 const toast = useToast();
@@ -271,7 +273,7 @@ const validateEmail = (email: string): boolean => {
 // friendly for all users. The strength meter below is just an optional hint.
 const validatePassword = (password: string): { valid: boolean; message: string } => {
     if (password.length < 6) {
-        return { valid: false, message: 'Password must be at least 6 characters' };
+        return { valid: false, message: t('auth.register.validation.passwordMin') };
     }
     return { valid: true, message: '' };
 };
@@ -309,9 +311,9 @@ const strengthTextClass = computed(() => {
 });
 
 const passwordStrengthText = computed(() => {
-    if (passwordStrength.value <= 2) return 'Weak';
-    if (passwordStrength.value <= 4) return 'Medium';
-    return 'Strong';
+    if (passwordStrength.value <= 2) return t('auth.register.strengthWeak');
+    if (passwordStrength.value <= 4) return t('auth.register.strengthMedium');
+    return t('auth.register.strengthStrong');
 });
 
 // Validate form
@@ -328,28 +330,28 @@ const validateForm = (): boolean => {
 
     // Validate first name
     if (!payload.value.firstName.trim()) {
-        errors.value.firstName = 'First name is required';
+        errors.value.firstName = t('auth.register.validation.firstNameRequired');
         isValid = false;
     } else if (payload.value.firstName.trim().length < 2) {
-        errors.value.firstName = 'First name must be at least 2 characters';
+        errors.value.firstName = t('auth.register.validation.firstNameMin');
         isValid = false;
     }
 
     // Validate last name
     if (!payload.value.lastName.trim()) {
-        errors.value.lastName = 'Last name is required';
+        errors.value.lastName = t('auth.register.validation.lastNameRequired');
         isValid = false;
     } else if (payload.value.lastName.trim().length < 2) {
-        errors.value.lastName = 'Last name must be at least 2 characters';
+        errors.value.lastName = t('auth.register.validation.lastNameMin');
         isValid = false;
     }
 
     // Validate email
     if (!payload.value.email.trim()) {
-        errors.value.email = 'Email is required';
+        errors.value.email = t('auth.register.validation.emailRequired');
         isValid = false;
     } else if (!validateEmail(payload.value.email)) {
-        errors.value.email = 'Please enter a valid email';
+        errors.value.email = t('auth.register.validation.emailInvalid');
         isValid = false;
     }
 
@@ -361,16 +363,16 @@ const validateForm = (): boolean => {
             isValid = false;
         }
     } else {
-        errors.value.password = 'Password is required';
+        errors.value.password = t('auth.register.validation.passwordRequired');
         isValid = false;
     }
 
     // Validate password confirmation
     if (!payload.value.password_confirmation) {
-        errors.value.password_confirmation = 'Please confirm your password';
+        errors.value.password_confirmation = t('auth.register.validation.confirmRequired');
         isValid = false;
     } else if (payload.value.password !== payload.value.password_confirmation) {
-        errors.value.password_confirmation = 'Passwords do not match';
+        errors.value.password_confirmation = t('auth.register.validation.passwordsMismatch');
         isValid = false;
     }
 

@@ -1,0 +1,34 @@
+{
+  "generic": {
+    "title": "Error",
+    "message": "Ocurrió un error inesperado"
+  },
+  "connection": {
+    "title": "Error de conexión",
+    "message": "Verifica tu conexión a internet e inténtalo de nuevo."
+  },
+  "400": {
+    "title": "Solicitud incorrecta",
+    "message": "Solicitud incorrecta: los datos enviados no son válidos"
+  },
+  "401": {
+    "title": "Error de autenticación",
+    "message": "Error de autenticación. Verifica tus credenciales."
+  },
+  "403": {
+    "title": "Acceso denegado",
+    "message": "Acceso denegado: no tienes permisos"
+  },
+  "404": {
+    "title": "No encontrado",
+    "message": "No encontrado: el recurso no existe"
+  },
+  "422": {
+    "title": "Error de validación",
+    "message": "Error de validación. Revisa los datos ingresados."
+  },
+  "500": {
+    "title": "Error del servidor",
+    "message": "Error del servidor. Inténtalo de nuevo más tarde."
+  }
+}

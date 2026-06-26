@@ -3,7 +3,7 @@
     <div
       class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <!-- Desktop Navigation (hidden on mobile) -->
-      <nav class="hidden md:flex" aria-label="Tab Navigation">
+      <nav class="hidden md:flex" :aria-label="$t('ui.tabs.aria')">
         <button
           v-for="tab in tabs"
           :key="tab.key"
@@ -31,7 +31,7 @@
       </nav>
 
       <!-- Mobile Navigation (visible only on mobile) -->
-      <nav class="md:hidden" aria-label="Tab Navigation">
+      <nav class="md:hidden" :aria-label="$t('ui.tabs.aria')">
         <!-- Active tabs section -->
         <div :class="getMobileGridClass()">
           <button

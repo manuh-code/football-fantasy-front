@@ -62,7 +62,7 @@ const rankColor = (index: number): string => {
             <button
               @click="emit('close')"
               class="p-1.5 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Close"
+              :aria-label="$t('common.actions.close')"
             >
               <v-icon name="hi-solid-x" class="w-4 h-4" />
             </button>

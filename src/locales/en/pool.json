@@ -1,0 +1,108 @@
+{
+  "myPools": "My Pools",
+  "emptyTitle": "No Pools Yet",
+  "emptyBody": "You are not participating in any pool yet. Once you join one, it will show up here.",
+  "loadError": "Failed to load your pools. Please try again later.",
+  "list": {
+    "upTo": "Up to {count}",
+    "count": "{count} pool | {count} pools"
+  },
+  "create": {
+    "title": "Create Pool",
+    "subtitle": "Set up a new pool for your group",
+    "nameLabel": "Name",
+    "descLabel": "Description",
+    "namePlaceholder": "e.g. league friends, office pool, family",
+    "descPlaceholder": "What's this pool about?",
+    "stage": "Stage",
+    "stageInfo": "Your pool will be created for this stage",
+    "current": "Current",
+    "stageResolveError": "Couldn't determine the stage. Please try again."
+  },
+  "join": {
+    "title": "Join Pool",
+    "subtitle": "Enter the access code shared with you",
+    "codePlaceholder": "Enter access code..."
+  },
+  "group": {
+    "nav": "Pool group navigation",
+    "docTitle": "Pool Group - Football Fantasy",
+    "tabs": {
+      "myPools": "My Pools",
+      "info": "Info",
+      "predictions": "Predictions",
+      "standings": "Standings"
+    },
+    "scoringRules": "Scoring rules",
+    "members": "Members",
+    "noMembers": "No members yet.",
+    "unknownMember": "Unknown member",
+    "stage": "Stage",
+    "dates": "Dates",
+    "participants": "Participants",
+    "accessCode": "Access code",
+    "copyAccessCode": "Copy access code",
+    "copiedTitle": "Copied!",
+    "shareInvite": "Share invite link",
+    "linkCopiedTitle": "Link copied!",
+    "predictionsUnavailable": "Predictions unavailable",
+    "noStageAssigned": "This pool doesn't have a stage assigned yet.",
+    "loadError": "Failed to load this pool. Please try again later.",
+    "badge": {
+      "live": "Live",
+      "finished": "Finished"
+    },
+    "scoring": {
+      "exactScoreLabel": "Exact score",
+      "exactScoreHint": "Nail the final result",
+      "correctWinnerLabel": "Correct winner",
+      "correctWinnerHint": "Right team to win",
+      "correctDrawLabel": "Correct draw",
+      "correctDrawHint": "Called the tie"
+    },
+    "toast": {
+      "codeCopiedTitle": "Access code copied",
+      "shareBody": "Share it so others can join your pool.",
+      "copyFailedTitle": "Couldn't copy",
+      "copyCodeFailedBody": "Please copy the access code manually.",
+      "linkCopiedTitle": "Invite link copied",
+      "copyLinkFailedBody": "Please copy the invite link manually."
+    },
+    "share": {
+      "title": "Join \"{name}\"",
+      "text": "Join my pool \"{name}\" on Football Fantasy. Access code: {code}"
+    }
+  },
+  "prediction": {
+    "noRounds": "No Rounds",
+    "noRoundsBody": "There are no rounds available for this stage yet.",
+    "noFixtures": "No Fixtures",
+    "noFixturesBody": "There are no matches in this round.",
+    "roundsError": "Failed to load rounds. Please try again later.",
+    "fixturesError": "Failed to load fixtures. Please try again later.",
+    "open": "Open",
+    "played": "Played",
+    "home": "Home",
+    "away": "Away",
+    "increaseScore": "Increase {team} score",
+    "decreaseScore": "Decrease {team} score",
+    "saved": "Saved",
+    "saveErrorRetry": "Couldn't save · Retry",
+    "tapToSet": "Tap to set your prediction"
+  },
+  "standing": {
+    "noStandings": "No Standings",
+    "noRoundPoints": "No points have been scored in this round yet.",
+    "noStandingsBody": "Standings will appear once predictions are scored.",
+    "pts": "pts",
+    "loadError": "Failed to load standings. Please try again later.",
+    "overall": "Overall",
+    "roundLabel": "Round {name}",
+    "playerCount": "{count} player | {count} players",
+    "unknownPlayer": "Unknown player"
+  },
+  "rounds": {
+    "previous": "Previous round",
+    "next": "Next round"
+  }
+}

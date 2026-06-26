@@ -10,8 +10,8 @@
               <v-icon name="hi-solid-key" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Change Password</h2>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Update your account password</p>
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $t('user.password.title') }}</h2>
+              <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('user.password.subtitle') }}</p>
             </div>
           </div>
         </div>
@@ -23,10 +23,10 @@
             <FormInput
               id="old_password"
               v-model="formData.old_password"
-              label="Current Password *"
+              :label="`${$t('user.password.fields.current.label')} *`"
               type="password"
               icon="bi-lock-fill"
-              placeholder="Enter your current password"
+              :placeholder="$t('user.password.fields.current.placeholder')"
               autocomplete="current-password"
               :error="hasFieldError('old_password') ? getFieldErrors('old_password').join(', ') : ''"
               required
@@ -38,10 +38,10 @@
             <FormInput
               id="new_password"
               v-model="formData.new_password"
-              label="New Password *"
+              :label="`${$t('user.password.fields.new.label')} *`"
               type="password"
               icon="bi-key-fill"
-              placeholder="Enter your new password"
+              :placeholder="$t('user.password.fields.new.placeholder')"
               autocomplete="new-password"
               :error="hasFieldError('new_password') ? getFieldErrors('new_password').join(', ') : ''"
               required
@@ -53,10 +53,10 @@
             <FormInput
               id="new_password_confirmation"
               v-model="formData.new_password_confirmation"
-              label="Confirm New Password *"
+              :label="`${$t('user.password.fields.confirm.label')} *`"
               type="password"
               icon="bi-shield-check"
-              placeholder="Confirm your new password"
+              :placeholder="$t('user.password.fields.confirm.placeholder')"
               autocomplete="new-password"
               :error="hasFieldError('new_password_confirmation') ? getFieldErrors('new_password_confirmation').join(', ') : ''"
               required
@@ -69,7 +69,7 @@
               type="button"
               variant="cancel"
               size="md"
-              text="Clear"
+              :text="$t('user.password.clear')"
               :full-width="true"
               @click="handleClear"
             />
@@ -77,7 +77,7 @@
               type="submit"
               variant="primary"
               size="md"
-              :text="isLoading ? 'Updating Password...' : 'Update Password'"
+              :text="isLoading ? $t('user.password.saving') : $t('user.password.save')"
               :loading="isLoading"
               :disabled="isLoading"
               :full-width="true"
@@ -97,7 +97,7 @@
             <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
               <v-icon name="hi-solid-shield-check" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Security Tips</h3>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $t('user.password.tips.title') }}</h3>
           </div>
         </div>
 
@@ -108,8 +108,8 @@
               <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">Use Strong Passwords</p>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Include uppercase, lowercase, numbers, and symbols</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.password.tips.strong.title') }}</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.password.tips.strong.subtitle') }}</p>
             </div>
           </div>
 
@@ -118,8 +118,8 @@
               <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">Minimum 8 Characters</p>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Longer passwords are more secure</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.password.tips.length.title') }}</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.password.tips.length.subtitle') }}</p>
             </div>
           </div>
 
@@ -128,8 +128,8 @@
               <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">Avoid Common Words</p>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Don't use dictionary words or personal info</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.password.tips.common.title') }}</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.password.tips.common.subtitle') }}</p>
             </div>
           </div>
 
@@ -138,8 +138,8 @@
               <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">Unique Password</p>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Don't reuse passwords from other accounts</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.password.tips.unique.title') }}</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.password.tips.unique.subtitle') }}</p>
             </div>
           </div>
         </div>
@@ -150,6 +150,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
@@ -159,6 +160,7 @@ import { ChangePasswordPayload } from '@/interfaces/user/password/ChangePassword
 
 
 // Stores and composables
+const { t } = useI18n()
 const userStore = useUserStore()
 const validationStore = useValidationStore()
 const toast = useToast()
@@ -200,7 +202,7 @@ const handleSubmit = async () => {
     await userStore.changePassword(formData.value)
     
     // Success
-    toast.success('Password Changed', 'Your password has been updated successfully!')
+    toast.success(t('user.password.updated.title'), t('user.password.updated.message'))
     
     // Reset form
     formData.value = {

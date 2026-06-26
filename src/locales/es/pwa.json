@@ -1,0 +1,30 @@
+{
+  "install": {
+    "title": "Instala Football Fantasy",
+    "iosSubtitle": "Agrégala a tu pantalla de inicio",
+    "subtitle": "Acceso rápido, como una app nativa",
+    "ctaHow": "Cómo",
+    "ctaInstall": "Instalar",
+    "dismiss": "Descartar",
+    "iosTitle": "Instalar en iPhone / iPad",
+    "iosSubtitle2": "Solo toma unos segundos",
+    "step1Prefix": "Toca el botón",
+    "step1Bold": "Compartir",
+    "step1Suffix": "en la barra de Safari.",
+    "step2Prefix": "Desplázate hacia abajo y selecciona",
+    "step2Bold": "Agregar a inicio",
+    "step3Prefix": "Confirma tocando",
+    "step3Bold": "Agregar",
+    "step3Suffix": ". ¡Listo!",
+    "gotIt": "Entendido"
+  },
+  "update": {
+    "title": "Nueva versión disponible",
+    "subtitle": "Hay una actualización lista para instalar",
+    "body": "Mejoramos la app con nuevas funciones y correcciones. Actualiza para obtener la última versión.",
+    "later": "Después",
+    "update": "Actualizar",
+    "offlineTitle": "Lista para usar sin conexión",
+    "offlineMessage": "La app ahora funciona sin conexión."
+  }
+}

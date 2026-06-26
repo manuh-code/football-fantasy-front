@@ -10,8 +10,8 @@
   has been configured (a value still wrapped in "[...]" keeps it dormant).
 -->
 <template>
-  <div v-if="enabled" class="ad-unit" role="complementary" aria-label="Advertisement">
-    <span class="ad-label">Advertisement</span>
+  <div v-if="enabled" class="ad-unit" role="complementary" :aria-label="$t('ui.ads.label')">
+    <span class="ad-label">{{ $t('ui.ads.label') }}</span>
     <ins
       ref="insEl"
       class="adsbygoogle"

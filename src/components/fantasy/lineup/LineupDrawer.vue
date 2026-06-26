@@ -62,7 +62,7 @@
               @click="loadData"
               class="mt-3 px-4 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl active:scale-95 transition-transform"
             >
-              Retry
+             {{ $t('common.actions.retry') }}
             </button>
           </div>
 
@@ -197,7 +197,7 @@
             @click="loadData"
             class="mt-3 px-4 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl active:scale-95 transition-transform"
           >
-            Retry
+           {{ $t('common.actions.retry') }}
           </button>
         </div>
 

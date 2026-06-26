@@ -7,7 +7,7 @@
 
     <!-- No stage selected -->
     <div v-else-if="!stageUuid" class="flex items-center justify-center py-12">
-      <p class="text-footnote text-gray-400 dark:text-gray-500">No stage selected.</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.standings.noStage') }}</p>
     </div>
 
     <!-- Error -->
@@ -28,7 +28,7 @@
       class="text-center py-10 text-gray-400 dark:text-gray-500"
     >
       <NoResults
-        title="No standings available"
+        :title="$t('football.standings.noStandings')"
         description="No standings available for this stage."
         icon="bi-trophy-fill"
       />

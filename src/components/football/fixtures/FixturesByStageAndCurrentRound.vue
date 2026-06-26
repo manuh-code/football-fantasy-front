@@ -76,7 +76,7 @@
           @click="loadStageFixtures(props.stageUuid)"
           class="text-footnote font-medium text-red-500 dark:text-red-400 hover:underline"
         >
-          Retry
+        {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -89,7 +89,7 @@
           name="md-sportssoccer"
           class="w-8 h-8 mx-auto mb-2 text-gray-200 dark:text-gray-700"
         />
-        <p class="text-footnote">No matches available</p>
+        <p class="text-footnote">{{ $t('football.fixtures.noMatches') }}</p>
       </div>
 
       <!-- Carousel -->
@@ -127,7 +127,7 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                     </span>
-                    <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+                    <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
                   </div>
 
                   <!-- Time label (when NOT live) -->
@@ -212,7 +212,7 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
                     </span>
-                    <span class="text-2xs font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">Live</span>
+                    <span class="text-2xs font-bold text-red-500 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
                   </div>
 
                   <div class="flex items-center gap-2 px-3 py-2.5" :class="isMatchLive(fixture) ? 'pt-1' : ''">
@@ -321,6 +321,9 @@ import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import FixtureMatchCenter from "./FixtureMatchCenter.vue";
 import RoundFixturesDrawer from "./RoundFixturesDrawer.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 // Props
 const props = defineProps<{
@@ -396,14 +399,14 @@ const loadStageFixtures = async (stageUuid: string) => {
     currentRound.value = null;
 
     if (!stageUuid) {
-      error.value = "No stage selected";
+      error.value = t("football.fixtures.errors.noStage");
       return;
     }
 
     // Fetch fixtures directly for the current round
     fixtures.value = await footballFixtureService.getFixturesByStageAndCurrentRound(stageUuid);
   } catch (err) {
-    error.value = "Error loading current round fixtures";
+    error.value = t("football.fixtures.errors.currentRoundLoad");
     showErrorToast("Error loading fixtures");
     console.error("Error fetching fixtures by stage and current round:", err);
   } finally {

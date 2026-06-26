@@ -38,7 +38,7 @@
           v-if="clearable && !disabled"
           @click.stop="handleClear"
           class="flex-shrink-0 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          title="Clear selection"
+          :title="$t('ui.select.clearSelection')"
         >
           <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
         </button>
@@ -52,7 +52,7 @@
           class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0"
         />
         <span class="text-sm text-gray-400 dark:text-gray-500 flex-1">
-          {{ placeholder }}
+          {{ placeholderText }}
         </span>
       </template>
 
@@ -108,7 +108,7 @@
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[80dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
-          :aria-label="label || placeholder"
+          :aria-label="label || placeholderText"
         >
           <!-- Draggable header -->
           <div
@@ -123,13 +123,13 @@
             </div>
             <div class="flex items-center justify-between px-4 pb-2.5 pt-1">
               <h3 class="text-callout font-bold text-gray-900 dark:text-white truncate">
-                {{ label || placeholder }}
+                {{ label || placeholderText }}
               </h3>
               <button
                 @click.stop="closeDropdown"
                 @pointerdown.stop
                 class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Close"
+                :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-x" class="w-4 h-4" />
               </button>
@@ -150,7 +150,7 @@
                 ref="searchInputRef"
                 v-model="searchQuery"
                 type="text"
-                :placeholder="searchPlaceholder"
+                :placeholder="searchPlaceholderText"
                 class="w-full h-10 pl-9 pr-3 text-sm bg-gray-100 dark:bg-gray-800 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 @click.stop
               />
@@ -176,7 +176,7 @@
               <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
                 <v-icon name="hi-solid-view-grid" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
               </div>
-              <span class="text-sm font-medium">{{ allOptionLabel }}</span>
+              <span class="text-sm font-medium">{{ allLabel }}</span>
               <v-icon
                 v-if="modelValue === allOptionValue || modelValue === null || modelValue === ''"
                 name="hi-solid-check"
@@ -230,7 +230,7 @@
                 class="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2"
               />
               <p class="text-sm text-gray-400 dark:text-gray-500">
-                {{ noResultsText }} "{{ searchQuery }}"
+                {{ noResultsLabel }} "{{ searchQuery }}"
               </p>
             </div>
 
@@ -240,7 +240,7 @@
               class="px-4 py-8 text-center"
             >
               <p class="text-sm text-gray-400 dark:text-gray-500">
-                {{ noOptionsText }}
+                {{ noOptionsLabel }}
               </p>
             </div>
           </div>
@@ -252,6 +252,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 
 interface Option {
   [key: string]: unknown;
@@ -291,18 +292,13 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   valueKey: "id",
   labelKey: "name",
-  placeholder: "Select an option",
-  searchPlaceholder: "Search...",
   id: () => `searchable-select-${Math.random().toString(36).substr(2, 9)}`,
   required: false,
   disabled: false,
   loading: false,
   searchable: true,
   clearable: true,
-  noResultsText: "No results for",
-  noOptionsText: "No options available",
   allOption: false,
-  allOptionLabel: "All",
   allOptionValue: "",
   accentColor: "indigo",
   variant: "default",
@@ -312,6 +308,18 @@ const emit = defineEmits<{
   "update:modelValue": [value: SelectValue];
   change: [value: SelectValue];
 }>();
+
+const { t } = useI18n();
+
+// Translatable text falls back to i18n defaults when no explicit prop is passed,
+// so each label reacts to locale changes unless the caller overrides it.
+const placeholderText = computed(() => props.placeholder ?? t("ui.select.placeholder"));
+const searchPlaceholderText = computed(
+  () => props.searchPlaceholder ?? t("ui.select.searchPlaceholder")
+);
+const noResultsLabel = computed(() => props.noResultsText ?? t("ui.select.noResults"));
+const noOptionsLabel = computed(() => props.noOptionsText ?? t("ui.select.noOptions"));
+const allLabel = computed(() => props.allOptionLabel ?? t("ui.select.all"));
 
 // Refs
 const searchInputRef = ref<HTMLInputElement | null>(null);

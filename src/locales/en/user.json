@@ -1,0 +1,180 @@
+{
+  "settings": {
+    "accountFallbackName": "User",
+    "menu": {
+      "profile": {
+        "title": "Profile",
+        "subtitle": "View and edit your personal information"
+      },
+      "changePassword": {
+        "title": "Change Password",
+        "subtitle": "Update your account password"
+      },
+      "systemSettings": {
+        "title": "System Settings",
+        "subtitle": "Theme, language, and preferences"
+      },
+      "privacy": {
+        "title": "Privacy Notice",
+        "subtitle": "How we handle your personal data"
+      },
+      "logout": {
+        "title": "Sign Out",
+        "loading": "Signing out...",
+        "subtitle": "Close your session"
+      }
+    },
+    "logoutSuccess": {
+      "title": "Signed Out",
+      "message": "You have been signed out successfully"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "subtitle": "Customize how the app looks on your device",
+      "darkMode": "Dark Mode",
+      "darkActive": "Dark mode is active",
+      "lightActive": "Light mode is active",
+      "switchToDark": "Switch to dark mode",
+      "switchToLight": "Switch to light mode"
+    },
+    "language": {
+      "title": "Language",
+      "subtitle": "Choose the app language",
+      "label": "Language",
+      "current": "Current language",
+      "es": "Spanish",
+      "en": "English"
+    }
+  },
+  "profile": {
+    "title": "Profile Information",
+    "subtitle": "Update your personal information and avatar",
+    "playerRole": "Football Fantasy Player",
+    "fields": {
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "Enter your first name"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Enter your last name"
+      },
+      "email": {
+        "label": "Email Address",
+        "placeholder": "Enter your email"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number",
+        "notProvided": "Not provided"
+      }
+    },
+    "edit": "Edit Profile",
+    "cancel": "Cancel",
+    "save": "Update Profile",
+    "saving": "Updating Profile...",
+    "stats": {
+      "title": "Quick Stats",
+      "leagues": {
+        "title": "Fantasy Leagues",
+        "subtitle": "Manage your league participation"
+      },
+      "team": {
+        "title": "Team Preferences",
+        "subtitle": "Set your favorite football team"
+      },
+      "account": {
+        "title": "Account Settings",
+        "subtitle": "Update password and preferences"
+      }
+    },
+    "noData": {
+      "title": "No Profile Data Available",
+      "subtitle": "Please log in to view your profile information or try refreshing the page.",
+      "goToLogin": "Go to Login"
+    },
+    "updated": {
+      "title": "Profile Updated",
+      "message": "Your profile has been updated successfully!"
+    }
+  },
+  "password": {
+    "title": "Change Password",
+    "subtitle": "Update your account password",
+    "fields": {
+      "current": {
+        "label": "Current Password",
+        "placeholder": "Enter your current password"
+      },
+      "new": {
+        "label": "New Password",
+        "placeholder": "Enter your new password"
+      },
+      "confirm": {
+        "label": "Confirm New Password",
+        "placeholder": "Confirm your new password"
+      }
+    },
+    "clear": "Clear",
+    "save": "Update Password",
+    "saving": "Updating Password...",
+    "tips": {
+      "title": "Security Tips",
+      "strong": {
+        "title": "Use Strong Passwords",
+        "subtitle": "Include uppercase, lowercase, numbers, and symbols"
+      },
+      "length": {
+        "title": "Minimum 8 Characters",
+        "subtitle": "Longer passwords are more secure"
+      },
+      "common": {
+        "title": "Avoid Common Words",
+        "subtitle": "Don't use dictionary words or personal info"
+      },
+      "unique": {
+        "title": "Unique Password",
+        "subtitle": "Don't reuse passwords from other accounts"
+      }
+    },
+    "updated": {
+      "title": "Password Changed",
+      "message": "Your password has been updated successfully!"
+    }
+  },
+  "favoriteTeam": {
+    "title": "Favorite Football Team",
+    "subtitle": "Select your favorite football team to personalize your experience",
+    "currentTitle": "Current Favorite Team",
+    "favorite": "Favorite",
+    "chooseDifferent": "Choose a different team",
+    "selectFavorite": "Select your favorite team",
+    "searchTeam": "Search team...",
+    "newPreview": "New Team Preview",
+    "newChoice": "New Choice",
+    "alreadyFav": "This is already your favorite team",
+    "alreadyFavSub": "Select a different team to make changes",
+    "whyTitle": "Why Choose a Team?",
+    "why": {
+      "personalizedTitle": "Personalized Experience",
+      "personalizedSub": "Get news and updates about your favorite team",
+      "betterTitle": "Better Recommendations",
+      "betterSub": "Receive tailored fantasy football suggestions",
+      "dashboardTitle": "Custom Dashboard",
+      "dashboardSub": "See your team's performance and stats",
+      "easyTitle": "Easy Changes",
+      "easySub": "You can always change your favorite team later"
+    },
+    "loading": "Loading football teams...",
+    "loadError": "Failed to load football teams. Please try again later.",
+    "noChangesTitle": "No changes",
+    "noChangesMsg": "This team is already your favorite!",
+    "savedTitle": "Team Saved!",
+    "savedSet": "{name} has been set as your favorite team!",
+    "savedUpdated": "{name} has been updated as your favorite team!",
+    "updating": "Updating Team...",
+    "setting": "Setting Team...",
+    "updateBtn": "Update Favorite Team",
+    "setBtn": "Set Favorite Team"
+  }
+}

@@ -120,7 +120,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
     <!-- No season context -->
     <div v-if="!seasonUuid" class="px-4 py-12 flex flex-col items-center text-center">
       <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">Select a league to compare players</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.selectLeague') }}</p>
     </div>
 
     <template v-else>
@@ -138,7 +138,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             <span
               @click.stop="clearSlot('a')"
               class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Remove player"
+              :aria-label="$t('football.versus.removePlayer')"
             >
               <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
             </span>
@@ -152,7 +152,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
               <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
             </div>
-            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Add player</span>
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
           </template>
         </button>
 
@@ -173,7 +173,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             <span
               @click.stop="clearSlot('b')"
               class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Remove player"
+              :aria-label="$t('football.versus.removePlayer')"
             >
               <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
             </span>
@@ -187,7 +187,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
               <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
             </div>
-            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Add player</span>
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
           </template>
         </button>
       </div>
@@ -197,7 +197,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
         <!-- Prompt: need both players -->
         <div v-if="!bothSelected" class="px-4 py-12 flex flex-col items-center text-center">
           <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-          <p class="text-footnote text-gray-400 dark:text-gray-500">Pick two players to see the comparison</p>
+          <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.pickTwo') }}</p>
         </div>
 
         <!-- Loading skeleton -->
@@ -237,14 +237,14 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
             @click="loadVersus"
             class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
           >
-            Retry
+            {{ $t('common.actions.retry') }}
           </button>
         </div>
 
         <!-- Empty: no comparable stats -->
         <div v-else-if="!hasStats" class="px-4 py-12 flex flex-col items-center text-center">
           <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-          <p class="text-footnote text-gray-400 dark:text-gray-500">No comparable stats for these players</p>
+          <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.noComparableStats') }}</p>
         </div>
 
         <!-- Comparison -->

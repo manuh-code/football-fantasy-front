@@ -8,8 +8,8 @@
                     <v-icon name="bi-trophy-fill" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">League Standings</h2>
-                    <p class="text-footnote text-gray-600 dark:text-gray-400">Current standings for the selected league</p>
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $t('football.standings.title') }}</h2>
+                    <p class="text-footnote text-gray-600 dark:text-gray-400">{{ $t('football.standings.subtitle') }}</p>
                 </div>
             </div>
         </div>
@@ -17,21 +17,21 @@
         <!-- Card Body -->
         <div class="p-6">
 
-            <div v-if="!leagueUuid" class="text-center py-8 text-gray-500 dark:text-gray-400">No league selected.</div>
+            <div v-if="!leagueUuid" class="text-center py-8 text-gray-500 dark:text-gray-400">{{ $t('football.standings.noLeague') }}</div>
 
             <div v-else>
                 <div v-if="loading" class="text-center py-8 text-gray-400 dark:text-gray-500">
                     <div class="flex items-center justify-center">
                         <v-icon name="pr-spinner" class="w-6 h-6 text-gray-400 dark:text-gray-500" animation="spin"
                             aria-hidden="true" />
-                        <span class="sr-only">Loading standings...</span>
+                        <span class="sr-only">{{ $t('football.standings.loading') }}</span>
                     </div>
                 </div>
 
                 <div v-else-if="error" class="text-center py-8 text-red-500">{{ error }}</div>
 
                 <div v-else-if="standings.length === 0" class="text-center py-8 text-gray-400 dark:text-gray-500">
-                    <NoResults title="No standings available"
+                    <NoResults :title="$t('football.standings.noStandings')"
                         description="Standings are not available for this league yet." icon="bi-trophy-fill" />
                 </div>
 

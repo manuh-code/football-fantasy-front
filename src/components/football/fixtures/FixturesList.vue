@@ -134,7 +134,7 @@ const getTeamResultClass = (
       @click="emit('retry')"
       class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
     >
-      Retry
+     {{ $t('common.actions.retry') }}
     </button>
   </div>
 
@@ -167,7 +167,7 @@ const getTeamResultClass = (
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
         </span>
-        <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Live</span>
+        <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
       </div>
 
       <!-- Date/time (not live) -->

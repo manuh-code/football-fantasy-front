@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, onBeforeUnmount, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import type * as Ably from "ably";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
@@ -34,6 +35,8 @@ interface Props {
 
 const props = defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
+
+const { t } = useI18n();
 
 const fixture = ref<FootballFixtureResponse | null>(null);
 const isLoading = ref(false);
@@ -137,7 +140,7 @@ const loadFixture = async (uuid: string) => {
     subscribeRealtime(uuid);
   } catch (err) {
     console.error("Error loading match center fixture:", err);
-    loadError.value = "Couldn't load match details. Please try again.";
+    loadError.value = t("football.matchCenter.loadError");
   } finally {
     isLoading.value = false;
   }
@@ -356,7 +359,7 @@ const onDragEnd = (e: PointerEvent) => {
           class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[92dvh] md:max-h-[88dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
-          aria-label="Match Center"
+          :aria-label="$t('football.matchCenter.aria')"
         >
           <!-- Draggable handle (thin grab area; close button is independent) -->
           <div
@@ -399,7 +402,7 @@ const onDragEnd = (e: PointerEvent) => {
                 @click="retry"
                 class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
               >
-                Retry
+                {{ $t('common.actions.retry') }}
               </button>
             </div>
 
@@ -434,7 +437,7 @@ const onDragEnd = (e: PointerEvent) => {
 
                   <!-- Events -->
                   <FixtureAccordion
-                    title="Events"
+                    :title="$t('football.matchCenter.events')"
                     icon="md-sportssoccer"
                     :default-open="false"
                   >
@@ -449,7 +452,7 @@ const onDragEnd = (e: PointerEvent) => {
                   <!-- Statistics -->
                   <FixtureAccordion
                     v-if="fixture.statistics && fixture.statistics.length > 0"
-                    title="Statistics"
+                    :title="$t('football.matchCenter.statistics')"
                     icon="hi-solid-chart-bar"
                     :default-open="false"
                   >
@@ -463,7 +466,7 @@ const onDragEnd = (e: PointerEvent) => {
                   <!-- Latest Matches — recent form for both teams (collapsed) -->
                   <FixtureAccordion
                     v-if="(homeTeam?.latest && homeTeam.latest.length > 0) || (awayTeam?.latest && awayTeam.latest.length > 0)"
-                    title="Latest Matches"
+                    :title="$t('football.matchCenter.latestMatches')"
                     icon="md-history"
                     :default-open="false"
                   >
@@ -476,7 +479,7 @@ const onDragEnd = (e: PointerEvent) => {
                   <!-- Match Info — Venue + Weather (collapsed) -->
                   <FixtureAccordion
                     v-if="fixture.venue || fixture.weatherReport"
-                    title="Match Info"
+                    :title="$t('football.matchCenter.matchInfo')"
                     icon="hi-solid-information-circle"
                     :default-open="false"
                   >
@@ -489,7 +492,7 @@ const onDragEnd = (e: PointerEvent) => {
                   <!-- Sidelined (collapsed) -->
                   <FixtureAccordion
                     v-if="fixture.sidelined && fixture.sidelined.length > 0"
-                    title="Sidelined"
+                    :title="$t('football.matchCenter.sidelined')"
                     icon="hi-solid-user"
                     icon-class="text-red-500 dark:text-red-400"
                     :default-open="false"
@@ -530,7 +533,7 @@ const onDragEnd = (e: PointerEvent) => {
                   />
                   <div v-else class="px-4 py-12 flex flex-col items-center text-center">
                     <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-                    <p class="text-footnote text-gray-400 dark:text-gray-500">No statistics available yet</p>
+                    <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.matchCenter.noStatistics') }}</p>
                   </div>
                 </div>
 

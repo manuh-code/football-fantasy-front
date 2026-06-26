@@ -34,13 +34,13 @@
 
                 <!-- Page Navigation -->
                 <div>
-                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" :aria-label="$t('ui.pagination.aria')">
                         <!-- Previous Button -->
                         <button
                             @click="changePage(currentPage - 1)"
                             :disabled="currentPage <= 1"
                             class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                            <span class="sr-only">Previous</span>
+                            <span class="sr-only">{{ $t('ui.pagination.previous') }}</span>
                             <v-icon name="hi-solid-chevron-left" class="h-5 w-5" />
                         </button>
 
@@ -69,7 +69,7 @@
                             @click="changePage(currentPage + 1)"
                             :disabled="currentPage >= lastPage"
                             class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                            <span class="sr-only">Next</span>
+                            <span class="sr-only">{{ $t('ui.pagination.next') }}</span>
                             <v-icon name="hi-solid-chevron-right" class="h-5 w-5" />
                         </button>
                     </nav>

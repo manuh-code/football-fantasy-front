@@ -6,7 +6,7 @@
     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
       <div class="flex items-center gap-2">
         <v-icon name="hi-solid-users" class="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0" />
-        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Bench</h3>
+        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.lineup.bench') }}</h3>
       </div>
     </div>
 

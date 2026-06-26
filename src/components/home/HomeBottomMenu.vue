@@ -2,7 +2,7 @@
   <!-- Floating glassmorphism pill nav — Instagram / iOS inspired.
        The <nav> spans the row but is click-through; only the capsule is interactive. -->
   <nav
-    aria-label="Home navigation"
+    :aria-label="$t('home.nav.ariaLabel')"
     class="fixed inset-x-0 bottom-0 z-[100] pointer-events-none"
     style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem))"
   >
@@ -44,11 +44,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useToast } from "@/composables/useToast";
 
 const router = useRouter();
+const { t } = useI18n();
 const toast = useToast();
 
 type TabKey = "home" | "games" | "following";
@@ -64,30 +66,30 @@ interface TabItem {
   badge?: string;
 }
 
-const tabs: TabItem[] = [
+const tabs = computed<TabItem[]>(() => [
   {
     key: "home",
-    label: "Home",
+    label: t("home.nav.home"),
     icon: "hi-solid-home",
     activeText: "text-emerald-600 dark:text-emerald-400",
     activeBg: "bg-emerald-500/15 dark:bg-emerald-400/15",
   },
   {
     key: "games",
-    label: "Games",
+    label: t("home.nav.games"),
     icon: "hi-solid-lightning-bolt",
     activeText: "text-emerald-600 dark:text-emerald-400",
     activeBg: "bg-emerald-500/15 dark:bg-emerald-400/15",
   },
   {
     key: "following",
-    label: "Following",
+    label: t("home.nav.following"),
     icon: "hi-solid-star",
     activeText: "text-amber-600 dark:text-amber-400",
     activeBg: "bg-amber-500/15 dark:bg-amber-400/15",
-    badge: "Soon",
+    badge: t("home.nav.soon"),
   },
-];
+]);
 
 const activeTab = ref<TabKey>("home");
 
@@ -102,7 +104,7 @@ function handleTab(tab: TabKey) {
       router.push({ name: "gaming" });
       break;
     case "following":
-      toast.info("Coming Soon", "Following feature will be available soon!");
+      toast.info(t("home.following.soonTitle"), t("home.following.soonMessage"));
       break;
   }
 }

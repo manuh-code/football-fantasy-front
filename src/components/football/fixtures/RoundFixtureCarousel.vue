@@ -15,7 +15,7 @@
             animation="spin"
             aria-hidden="true"
           />
-          <span class="sr-only">Loading rounds...</span>
+          <span class="sr-only">{{ $t('football.fixtures.loadingRounds') }}</span>
         </div>
       </div>
 
@@ -164,7 +164,7 @@
             <button
               @click="scrollLeft"
               class="group p-1.5 rounded-full focus:outline-none"
-              aria-label="Previous"
+              :aria-label="$t('football.fixtures.previous')"
             >
               <v-icon
                 name="hi-solid-arrow-left"
@@ -187,7 +187,7 @@
             <button
               @click="scrollRight"
               class="group p-1.5 rounded-full focus:outline-none"
-              aria-label="Next"
+              :aria-label="$t('football.fixtures.next')"
             >
               <v-icon
                 name="hi-solid-arrow-right"
@@ -215,7 +215,9 @@ import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagu
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const { inPlayChannel } = useAblyBroadcast();
 
 const rounds = ref<FootballRoundResponse[]>([]);
@@ -262,7 +264,7 @@ const fetchRounds = async () => {
   rounds.value = [];
   const seasonUuid = store.getCurrentFootballSeason()?.uuid;
   if (!seasonUuid) {
-    error.value = "No season selected.";
+    error.value = t("football.fixtures.errors.noSeason");
     loading.value = false;
     return;
   }
@@ -283,7 +285,7 @@ const fetchRounds = async () => {
       rounds.value = [];
     }
   } catch (e) {
-    error.value = "Failed to load rounds.";
+    error.value = t("football.fixtures.errors.roundsLoad");
   } finally {
     loading.value = false;
   }

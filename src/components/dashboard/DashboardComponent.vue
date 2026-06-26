@@ -11,8 +11,8 @@
                             <v-icon name="hi-solid-chart-bar" class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Dashboard Overview</h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Your FantasyMX performance summary</p>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $t('dashboard.overview') }}</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('dashboard.summary') }}</p>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                                     <v-icon name="hi-solid-users" class="w-6 h-6 text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Teams</p>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $t('dashboard.totalTeams') }}</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">12</p>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                     <v-icon name="bi-trophy-fill" class="w-6 h-6 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Points</p>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $t('dashboard.points') }}</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">1,234</p>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                     <v-icon name="hi-solid-star" class="w-6 h-6 text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Rank</p>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $t('dashboard.rank') }}</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">#5</p>
                                 </div>
                             </div>
@@ -66,7 +66,7 @@
                                     <v-icon name="hi-solid-fire" class="w-6 h-6 text-orange-600 dark:text-orange-400" />
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Streak</p>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $t('dashboard.streak') }}</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">3 wins</p>
                                 </div>
                             </div>
@@ -84,8 +84,8 @@
                             <v-icon name="hi-solid-clock" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Your latest fantasy football updates</p>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $t('dashboard.recentActivity') }}</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('dashboard.recentActivitySub') }}</p>
                         </div>
                     </div>
                 </div>
@@ -97,8 +97,8 @@
                             <v-icon name="hi-solid-check" class="w-3 h-3 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Welcome to your FantasyMX Dashboard</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Just now</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('dashboard.welcome') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('dashboard.justNow') }}</p>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@
                             <v-icon name="hi-solid-globe-alt" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Football leagues loaded successfully</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('dashboard.leaguesLoaded') }}</p>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">2 minutes ago</p>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
                             <v-icon name="hi-solid-cog" class="w-3 h-3 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard supports both light and dark themes</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('dashboard.themesSupported') }}</p>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">5 minutes ago</p>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                         <div class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-globe-alt" class="w-4 h-4 text-green-600 dark:text-green-400" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Football Leagues</h3>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $t('dashboard.footballLeagues') }}</h3>
                     </div>
                 </div>
 
@@ -143,7 +143,7 @@
                     <!-- Loading State -->
                     <div v-if="isLoadingLeagues" class="text-center py-8">
                         <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600 mx-auto mb-3"></div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Loading leagues...</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('dashboard.loadingLeagues') }}</p>
                     </div>
                     
                     <!-- Error State -->
@@ -199,8 +199,8 @@
                         <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full mx-auto mb-3 flex items-center justify-center">
                             <v-icon name="hi-solid-globe-alt" class="w-5 h-5 text-gray-400" />
                         </div>
-                        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-1">No leagues available</h3>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">Check back later for available competitions</p>
+                        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-1">{{ $t('dashboard.noLeagues') }}</h3>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">{{ $t('dashboard.noLeaguesSub') }}</p>
                     </div>
                 </div>
             </div>
@@ -212,8 +212,10 @@
 import { useUserStore } from '@/store/user/useUserStore';
 import { catalogService } from '@/services/catalog/CatalogService';
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { FootballLeagueResponse } from '@/interfaces/football/league/FootballLeagueResponse';
 
+const { t } = useI18n();
 const userStore = useUserStore();
 
 // Reactive data for leagues
@@ -230,7 +232,7 @@ const loadFootballLeagues = async () => {
     footballLeagues.value = await catalogService.getFootballLeagues();
   } catch (error) {
     console.error('Error loading football leagues:', error);
-    leaguesError.value = 'Failed to load football leagues';
+    leaguesError.value = t('dashboard.loadError');
     footballLeagues.value = [];
   } finally {
     isLoadingLeagues.value = false;

@@ -14,7 +14,7 @@
           class="w-5 h-5 text-red-500 dark:text-red-400 shrink-0"
         />
         <div>
-          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">Failed to load draft board</h3>
+          <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.draft.board.failedLoad') }}</h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ error }}</p>
         </div>
       </div>
@@ -28,8 +28,8 @@
       <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-3">
         <v-icon name="hi-solid-clipboard-list" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
       </div>
-      <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">No picks yet</h3>
-      <p class="text-xs text-gray-500 dark:text-gray-400">The draft board will update as players are picked.</p>
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">{{ $t('fantasy.draft.board.noPicks') }}</h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('fantasy.draft.board.noPicksSub') }}</p>
     </div>
 
     <!-- Draft Board Grid -->

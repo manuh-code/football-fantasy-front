@@ -26,7 +26,7 @@
                         <v-icon name="hi-solid-cog" class="w-6 h-6 text-purple-600 dark:text-purple-400 animate-pulse" />
                     </div>
                 </div>
-                <p class="mt-6 text-gray-600 dark:text-gray-400 font-medium">Loading scoring rules...</p>
+                <p class="mt-6 text-gray-600 dark:text-gray-400 font-medium">{{ $t('fantasy.management.loadingRules') }}</p>
             </div>
 
             <!-- Error State -->
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-lg font-semibold text-red-900 dark:text-red-200 mb-1">Loading error</h3>
+                        <h3 class="text-lg font-semibold text-red-900 dark:text-red-200 mb-1">{{ $t('fantasy.management.loadingError') }}</h3>
                         <p class="text-red-800 dark:text-red-300">{{ error }}</p>
                     </div>
                 </div>
@@ -54,9 +54,9 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-sm text-blue-900 dark:text-blue-200 font-medium">
-                                <strong>Rule types:</strong> {{ totalRuleTypes }} 
+                                <strong>{{ $t('fantasy.management.ruleTypes') }}</strong> {{ totalRuleTypes }} 
                                 <span class="mx-2">•</span>
-                                <strong>Total configurations:</strong> {{ totalRules }}
+                                <strong>{{ $t('fantasy.management.totalConfigs') }}</strong> {{ totalRules }}
                             </p>
                             <p class="text-sm text-blue-800 dark:text-blue-300 mt-1">
                                 Configure points for each rule type by position. Click "⚙️" to edit optional conditions.
@@ -75,7 +75,7 @@
                                 <div class="p-4 border-r border-purple-500 dark:border-purple-600">
                                     <div class="flex items-center gap-2">
                                         <v-icon name="hi-solid-lightning-bolt" class="w-5 h-5 text-white" />
-                                        <span class="text-sm font-bold text-white">Rule Type</span>
+                                        <span class="text-sm font-bold text-white">{{ $t('fantasy.management.ruleType') }}</span>
                                     </div>
                                 </div>
                                 <div 
@@ -152,7 +152,7 @@
                                                 class="w-full px-2 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm"
                                             >
                                                 <v-icon name="hi-solid-adjustments" class="w-3.5 h-3.5" />
-                                                <span>Edit condition</span>
+                                                <span>{{ $t('fantasy.management.editCondition') }}</span>
                                             </button>
                                             <div 
                                                 v-else 
@@ -265,7 +265,7 @@
                                             class="w-full px-2 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm"
                                         >
                                             <v-icon name="hi-solid-adjustments" class="w-3.5 h-3.5" />
-                                            <span>Edit cond.</span>
+                                            <span>{{ $t('fantasy.management.editCondShort') }}</span>
                                         </button>
                                         <div 
                                             v-else 
@@ -276,7 +276,7 @@
                                     </div>
                                     <div v-else class="flex flex-col items-center justify-center py-4 text-gray-400 dark:text-gray-600">
                                         <v-icon name="hi-solid-ban" class="w-5 h-5 mb-1" />
-                                        <span class="text-xs">Not applicable</span>
+                                        <span class="text-xs">{{ $t('fantasy.management.notApplicable') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -378,7 +378,7 @@
                                                 :id="`modal-field-${field.key}`"
                                                 v-model.number="ruleConditions[selectedRuleIndex].conditionValues[field.key]"
                                                 type="number"
-                                                :placeholder="field.placeholder || 'Enter a value'"
+                                                :placeholder="field.placeholder || $t('fantasy.management.enterValue')"
                                                 :min="field.validation?.min"
                                                 :max="field.validation?.max"
                                                 :step="field.validation?.step || 1"
@@ -396,7 +396,7 @@
                                                 :id="`modal-field-${field.key}`"
                                                 v-model="ruleConditions[selectedRuleIndex].conditionValues[field.key]"
                                                 type="text"
-                                                :placeholder="field.placeholder || 'Enter text'"
+                                                :placeholder="field.placeholder || $t('fantasy.management.enterText')"
                                                 class="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                                             />
                                             <p v-if="field.helpText" class="mt-1.5 sm:mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
@@ -444,11 +444,11 @@
                     >
                         <span v-if="saving" class="flex items-center gap-3">
                             <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                            <span>Saving...</span>
+                            <span>{{ $t('fantasy.management.saving') }}</span>
                         </span>
                         <span v-else class="flex items-center gap-2">
                             <v-icon name="hi-solid-save" class="w-5 h-5" />
-                            <span>Save Rules</span>
+                            <span>{{ $t('fantasy.management.saveRules') }}</span>
                         </span>
                     </button>
                 </div>
@@ -466,6 +466,7 @@ import { ScoreRulePayload, ScoreRuleItem } from '@/interfaces/fantasy/score/Scor
 import { catalogService } from '@/services/catalog/CatalogService';
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService';
 import { useToast } from '@/composables/useToast';
+import { useI18n } from 'vue-i18n';
 
 // Props
 const props = defineProps({
@@ -487,6 +488,7 @@ const emit = defineEmits<{
 
 // Composables
 const toast = useToast();
+const { t } = useI18n();
 
 // State
 const loading = ref(false);
@@ -856,7 +858,7 @@ const loadConditionsRules = async () => {
         conditionsRules.value = await catalogService.getConditionsRules();
     } catch (err) {
         console.error('Error loading conditions rules:', err);
-        error.value = 'Error loading condition rules';
+        error.value = t('fantasy.management.errorLoadConditions');
     }
 };
 
@@ -884,11 +886,11 @@ const saveScoreRules = async () => {
 
         await fantasyLeagueService.updateScoreRules(payload, props.leagueUuid);
         
-        toast.success('Scoring rules updated successfully');
+        toast.success(t('fantasy.management.updated'));
         emit('saved');
     } catch (err) {
         console.error('Error saving score rules:', err);
-        error.value = 'Error saving scoring rules';
+        error.value = t('fantasy.management.errorSave');
     } finally {
         saving.value = false;
     }
@@ -935,7 +937,7 @@ onMounted(async () => {
         document.addEventListener('keydown', handleEscapeKey);
     } catch (err) {
         console.error('Error initializing component:', err);
-        error.value = 'Error initializing component';
+        error.value = t('fantasy.management.errorInit');
     } finally {
         loading.value = false;
     }

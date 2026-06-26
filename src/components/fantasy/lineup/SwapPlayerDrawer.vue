@@ -24,7 +24,7 @@
                 <h2 class="text-footnote font-semibold text-gray-900 dark:text-white truncate">
                   Swap — {{ positionLabel }}
                 </h2>
-                <p class="text-2xs text-gray-500 dark:text-gray-400 truncate">Select a player to swap</p>
+                <p class="text-2xs text-gray-500 dark:text-gray-400 truncate">{{ $t('fantasy.lineup.selectSwap') }}</p>
               </div>
             </div>
             <button

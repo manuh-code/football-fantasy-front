@@ -13,7 +13,7 @@
         @click="loadFantasyLeagues"
         class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
       >
-        Try Again
+        {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -21,8 +21,8 @@
     <template v-else-if="fantasyLeagues && fantasyLeagues.length > 0">
       <!-- Section Header -->
       <div class="px-1">
-        <h2 class="text-callout font-semibold text-gray-900 dark:text-white">My Leagues</h2>
-        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ fantasyLeagues.length }} league{{ fantasyLeagues.length !== 1 ? 's' : '' }}</p>
+        <h2 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.userLeagues.title') }}</h2>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ fantasyLeagues.length === 1 ? $t('fantasy.userLeagues.countOne', { count: fantasyLeagues.length }) : $t('fantasy.userLeagues.countOther', { count: fantasyLeagues.length }) }}</p>
       </div>
 
       <!-- Leagues Grid -->
@@ -40,9 +40,9 @@
     <!-- Empty State -->
     <div v-else class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center">
       <v-icon name="bi-trophy-fill" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-      <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">No Leagues Yet</h3>
+      <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('fantasy.userLeagues.emptyTitle') }}</h3>
       <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
-        Create your own league or join an existing one to start playing.
+        {{ $t('fantasy.userLeagues.emptyBody') }}
       </p>
     </div>
   </div>
@@ -51,12 +51,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useUserStore } from "@/store/user/useUserStore";
 import FantasyLeagueCard from "@/components/fantasy/FantasyLeagueCard.vue";
 
 // Stores and composables
 const userStore = useUserStore();
 const router = useRouter();
+const { t } = useI18n();
 
 // State
 const isLoading = ref(false);
@@ -74,8 +76,7 @@ const loadFantasyLeagues = async () => {
     await userStore.getUserFantasyLeaguesFromApi();
   } catch (error) {
     console.error("Error loading fantasy leagues:", error);
-    errorMessage.value =
-      "Failed to load your fantasy leagues. Please try again later.";
+    errorMessage.value = t("fantasy.userLeagues.loadError");
   } finally {
     isLoading.value = false;
   }

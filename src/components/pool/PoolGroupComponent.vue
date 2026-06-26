@@ -14,7 +14,7 @@
         @click="loadPool"
         class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
       >
-        Try Again
+        {{ $t('common.actions.retry') }}
       </button>
     </div>
 
@@ -55,7 +55,7 @@
           <div v-if="pool.stage" class="flex items-center justify-between gap-3 px-4 py-3.5">
             <span class="flex items-center gap-2 text-footnote text-gray-500 dark:text-gray-400">
               <v-icon name="hi-solid-calendar" class="w-4 h-4 shrink-0" />
-              Stage
+              {{ $t('pool.group.stage') }}
             </span>
             <span class="text-footnote font-medium text-gray-900 dark:text-white text-right truncate">
               {{ pool.stage.name_complete || pool.stage.name }}
@@ -64,7 +64,7 @@
           <div v-if="pool.stage" class="flex items-center justify-between gap-3 px-4 py-3.5">
             <span class="flex items-center gap-2 text-footnote text-gray-500 dark:text-gray-400">
               <v-icon name="hi-solid-clock" class="w-4 h-4 shrink-0" />
-              Dates
+              {{ $t('pool.group.dates') }}
             </span>
             <span class="text-footnote font-medium text-gray-900 dark:text-white text-right">
               {{ formatDate(pool.stage.starting_at) }} – {{ formatDate(pool.stage.ending_at) }}
@@ -73,7 +73,7 @@
           <div class="flex items-center justify-between gap-3 px-4 py-3.5">
             <span class="flex items-center gap-2 text-footnote text-gray-500 dark:text-gray-400">
               <v-icon name="hi-solid-users" class="w-4 h-4 shrink-0" />
-              Participants
+              {{ $t('pool.group.participants') }}
             </span>
             <span class="text-footnote font-medium text-gray-900 dark:text-white text-right">
               {{ memberCount }} / {{ pool.max_participants }}
@@ -85,7 +85,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4">
           <div class="flex items-center gap-2 mb-3">
             <v-icon name="hi-solid-clipboard-list" class="w-4 h-4 text-emerald-500 shrink-0" />
-            <h2 class="text-callout font-semibold text-gray-900 dark:text-white">Scoring rules</h2>
+            <h2 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('pool.group.scoringRules') }}</h2>
           </div>
 
           <div class="space-y-2">
@@ -111,14 +111,14 @@
         <!-- Access code (admin can copy and share it) -->
         <div v-if="pool.access_code" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4">
           <p class="text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
-            Access code
+            {{ $t('pool.group.accessCode') }}
           </p>
           <div class="flex items-center gap-2">
             <!-- Code chip (tap to copy just the code) -->
             <button
               type="button"
               @click="copyAccessCode"
-              :title="copied ? 'Copied!' : 'Copy access code'"
+              :title="copied ? $t('pool.group.copiedTitle') : $t('pool.group.copyAccessCode')"
               class="group flex-1 min-w-0 flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
             >
               <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
@@ -137,18 +137,18 @@
             <button
               type="button"
               @click="sharePool"
-              :title="shared ? 'Link copied!' : 'Share invite link'"
+              :title="shared ? $t('pool.group.linkCopiedTitle') : $t('pool.group.shareInvite')"
               class="shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 py-2 transition-all active:scale-[0.98] shadow-sm shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
             >
               <v-icon :name="shared ? 'hi-solid-check' : 'hi-solid-share'" class="w-4 h-4" />
-              <span class="text-2xs font-semibold">{{ shared ? 'Copied' : 'Share' }}</span>
+              <span class="text-2xs font-semibold">{{ shared ? $t('common.actions.copied') : $t('common.actions.share') }}</span>
             </button>
           </div>
         </div>
 
         <!-- Members -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4">
-          <h2 class="text-callout font-semibold text-gray-900 dark:text-white mb-3">Members</h2>
+          <h2 class="text-callout font-semibold text-gray-900 dark:text-white mb-3">{{ $t('pool.group.members') }}</h2>
 
           <div v-if="members.length > 0" class="space-y-1">
             <div
@@ -180,7 +180,7 @@
           </div>
 
           <p v-else class="text-footnote text-gray-400 dark:text-gray-500 py-2">
-            No members yet.
+            {{ $t('pool.group.noMembers') }}
           </p>
         </div>
       </template>
@@ -196,9 +196,9 @@
         class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 text-center"
       >
         <v-icon name="hi-solid-clipboard-list" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">Predictions unavailable</h3>
+        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('pool.group.predictionsUnavailable') }}</h3>
         <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
-          This pool doesn't have a stage assigned yet.
+          {{ $t('pool.group.noStageAssigned') }}
         </p>
       </div>
 
@@ -216,6 +216,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { poolService } from "@/services/pool/poolService";
 import { useToast } from "@/composables/useToast";
+import { useI18n } from "vue-i18n";
 import PoolGroupSkeleton from "@/components/pool/PoolGroupSkeleton.vue";
 import PoolPredictionComponent from "@/components/pool/PoolPredictionComponent.vue";
 import PoolStandingComponent from "@/components/pool/PoolStandingComponent.vue";
@@ -228,6 +229,7 @@ const props = withDefaults(
 );
 
 const { success, error } = useToast();
+const { t, locale } = useI18n();
 
 // State
 const isLoading = ref(false);
@@ -269,11 +271,11 @@ const members = computed<UserDataInterface[]>(() => pool.value?.memberships || [
 const memberCount = computed(() => members.value.length);
 
 // Scoring rules shown to participants so they know how points are awarded.
-const scoringRules = [
-  { label: "Exact score", hint: "Nail the final result", points: 3, icon: "hi-solid-hashtag" },
-  { label: "Correct winner", hint: "Right team to win", points: 1, icon: "bi-trophy-fill" },
-  { label: "Correct draw", hint: "Called the tie", points: 1, icon: "hi-solid-switch-horizontal" },
-];
+const scoringRules = computed(() => [
+  { label: t("pool.group.scoring.exactScoreLabel"), hint: t("pool.group.scoring.exactScoreHint"), points: 3, icon: "hi-solid-hashtag" },
+  { label: t("pool.group.scoring.correctWinnerLabel"), hint: t("pool.group.scoring.correctWinnerHint"), points: 1, icon: "bi-trophy-fill" },
+  { label: t("pool.group.scoring.correctDrawLabel"), hint: t("pool.group.scoring.correctDrawHint"), points: 1, icon: "hi-solid-switch-horizontal" },
+]);
 
 // Badge shown for the pool's stage based on its lifecycle. Upcoming stages show
 // no badge (the "Upcoming" label was intentionally removed).
@@ -281,17 +283,17 @@ const stageBadgeInfo = computed(() => {
   const stage = pool.value?.stage;
   if (!stage) return null;
   if (stage.is_current) {
-    return { label: "Live", classes: "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" };
+    return { label: t("pool.group.badge.live"), classes: "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" };
   }
   if (stage.finished) {
-    return { label: "Finished", classes: "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500" };
+    return { label: t("pool.group.badge.finished"), classes: "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500" };
   }
   return null;
 });
 
 const memberName = (member: UserDataInterface) => {
   const full = [member.firstname, member.lastname].filter(Boolean).join(" ").trim();
-  return full || member.email || "Unknown member";
+  return full || member.email || t("pool.group.unknownMember");
 };
 
 const memberInitials = (member: UserDataInterface) => {
@@ -305,7 +307,7 @@ const formatDate = (date?: string | null) => {
   if (!date) return "—";
   const parsed = new Date(date);
   if (isNaN(parsed.getTime())) return date;
-  return parsed.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  return parsed.toLocaleDateString(locale.value, { year: "numeric", month: "short", day: "numeric" });
 };
 
 const copyAccessCode = async () => {
@@ -316,12 +318,12 @@ const copyAccessCode = async () => {
     await copyToClipboard(code);
 
     copied.value = true;
-    success("Access code copied", "Share it so others can join your pool.");
+    success(t("pool.group.toast.codeCopiedTitle"), t("pool.group.toast.shareBody"));
     clearTimeout(copyResetTimer);
     copyResetTimer = setTimeout(() => (copied.value = false), 2000);
   } catch (e) {
     console.error("Failed to copy access code:", e);
-    error("Couldn't copy", "Please copy the access code manually.");
+    error(t("pool.group.toast.copyFailedTitle"), t("pool.group.toast.copyCodeFailedBody"));
   }
 };
 
@@ -333,8 +335,8 @@ const sharePool = async () => {
 
   const url = buildInviteLink(code);
   const shareData: ShareData = {
-    title: `Join "${pool.value?.name}"`,
-    text: `Join my pool "${pool.value?.name}" on Football Fantasy. Access code: ${code}`,
+    title: t("pool.group.share.title", { name: pool.value?.name }),
+    text: t("pool.group.share.text", { name: pool.value?.name, code }),
     url,
   };
 
@@ -355,12 +357,12 @@ const sharePool = async () => {
     await copyToClipboard(url);
 
     shared.value = true;
-    success("Invite link copied", "Share it so others can join your pool.");
+    success(t("pool.group.toast.linkCopiedTitle"), t("pool.group.toast.shareBody"));
     clearTimeout(shareResetTimer);
     shareResetTimer = setTimeout(() => (shared.value = false), 2000);
   } catch (e) {
     console.error("Failed to copy invite link:", e);
-    error("Couldn't copy", "Please copy the invite link manually.");
+    error(t("pool.group.toast.copyFailedTitle"), t("pool.group.toast.copyLinkFailedBody"));
   }
 };
 
@@ -374,7 +376,7 @@ const loadPool = async () => {
     pool.value = await poolService.getPoolByUuid(props.poolUuid);
   } catch (e) {
     console.error("Error loading pool group:", e);
-    errorMessage.value = "Failed to load this pool. Please try again later.";
+    errorMessage.value = t("pool.group.loadError");
   } finally {
     isLoading.value = false;
   }

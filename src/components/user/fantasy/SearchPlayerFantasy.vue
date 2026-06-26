@@ -547,6 +547,7 @@ import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueSe
 import { catalogService } from "@/services/catalog/CatalogService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { useToast } from "@/composables/useToast";
+import { useI18n } from "vue-i18n";
 import PositionFilter from "@/components/user/fantasy/search/PositionFilter.vue";
 import TeamFilter from "@/components/user/fantasy/search/TeamFilter.vue";
 import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.vue";
@@ -580,6 +581,7 @@ const route = useRoute();
 
 // Composables
 const toast = useToast();
+const { t } = useI18n();
 
 // State
 const players = ref<FantasyPlayerDraftResponse[]>([]);
@@ -803,8 +805,8 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       emit("player-added", player);
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error ? err.message : "Error adding player";
-      toast.error("Error", errorMessage);
+        err instanceof Error ? err.message : t("fantasy.search.errorAddingPlayer");
+      toast.error(t("errors.generic.title"), errorMessage);
       console.error("Error adding player:", errorMessage);
     } finally {
       addingPlayers.value.delete(player.player.uuid);
@@ -861,8 +863,8 @@ async function addPlayerToLineup(
     emit("player-added", player);
   } catch (err: unknown) {
     const errorMessage =
-      err instanceof Error ? err.message : "Error adding player";
-    toast.error("Error", errorMessage);
+      err instanceof Error ? err.message : t("fantasy.search.errorAddingPlayer");
+    toast.error(t("errors.generic.title"), errorMessage);
     console.error("Error adding player:", errorMessage);
   } finally {
     addingPlayers.value.delete(player.player.uuid);

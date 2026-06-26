@@ -24,17 +24,15 @@
             class="w-10 h-10 text-orange-500 mx-auto"
           />
           <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-            Draft ready to start
+            {{ $t('fantasy.draft.activation.readyTitle') }}
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            All
-            {{ leagueDetailStore.currentLeague?.participants_count }} members
-            have joined. You can activate the draft now.
+            {{ $t('fantasy.draft.activation.readyBody', { count: leagueDetailStore.currentLeague?.participants_count }) }}
           </p>
           <ButtonComponent
             variant="primary"
             size="sm"
-            :text="isActivatingDraft ? 'Activating...' : 'Activate Draft'"
+            :text="isActivatingDraft ? $t('fantasy.draft.activation.activating') : $t('fantasy.draft.activation.activate')"
             :disabled="isActivatingDraft"
             @click="handleActivateDraft"
           />
@@ -50,13 +48,13 @@
             class="w-10 h-10 text-blue-500 mx-auto"
           />
           <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-            Waiting for members
+            {{ $t('fantasy.draft.activation.waitingTitle') }}
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ leagueDetailStore.currentLeague?.members_count || 0 }} of
-            {{ leagueDetailStore.currentLeague?.participants_count }} members
-            have joined. The draft can be activated once all members are
-            present.
+            {{ $t('fantasy.draft.activation.waitingBody', {
+              joined: leagueDetailStore.currentLeague?.members_count || 0,
+              total: leagueDetailStore.currentLeague?.participants_count
+            }) }}
           </p>
           <div
             class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 max-w-xs mx-auto"
@@ -78,11 +76,10 @@
             class="w-10 h-10 text-gray-400 dark:text-gray-500 mx-auto"
           />
           <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-            Draft not available yet
+            {{ $t('fantasy.draft.activation.notAvailableTitle') }}
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            The league admin hasn't activated the draft yet. You'll be notified
-            when it starts.
+            {{ $t('fantasy.draft.activation.notAvailableBody') }}
           </p>
         </div>
       </template>
@@ -107,6 +104,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { useToast } from "@/composables/useToast";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
@@ -117,6 +115,7 @@ import DraftRoom from "@/components/fantasy/draft/DraftRoom.vue";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
 const route = useRoute();
+const { t } = useI18n();
 const toast = useToast();
 const leagueDetailStore = useFantasyLeagueDetailStore();
 const { fantasyLeagueChannel, draftRoomChannel } = useAblyBroadcast();
@@ -164,8 +163,8 @@ onMounted(async () => {
     channelDraft = draftRoomChannel(draftUuid);
     channelDraft.subscribe("draft.activated", async () => {
       toast.success(
-        "Draft Activated",
-        "The draft has been activated successfully.",
+        t("fantasy.draft.activation.activatedTitle"),
+        t("fantasy.draft.activation.activatedMessage"),
       );
       // Reload league from API so draft status updates and DraftRoom becomes visible
       try {
@@ -191,8 +190,8 @@ const handleActivateDraft = async () => {
     isActivatingDraft.value = true;
     await fantasyLeagueService.activateDraft(fantasyLeagueUuid.value);
     toast.success(
-      "Draft Activated",
-      "The draft has been activated successfully.",
+      t("fantasy.draft.activation.activatedTitle"),
+      t("fantasy.draft.activation.activatedMessage"),
     );
     const updatedLeague = await fantasyLeagueService.showFantasyLeague(
       fantasyLeagueUuid.value,

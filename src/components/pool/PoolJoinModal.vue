@@ -1,8 +1,8 @@
 <template>
   <BottomSheet
     :is-visible="isVisible"
-    title="Join Pool"
-    subtitle="Enter the access code shared with you"
+    :title="$t('pool.join.title')"
+    :subtitle="$t('pool.join.subtitle')"
     icon="hi-solid-key"
     icon-variant="emerald"
     size="auto"
@@ -13,9 +13,9 @@
       id="pool-access-code"
       v-model="accessCode"
       type="text"
-      label="Access code"
+      :label="$t('pool.group.accessCode')"
       icon="hi-solid-key"
-      placeholder="Enter access code..."
+      :placeholder="$t('pool.join.codePlaceholder')"
       :error="accessCodeError"
       :disabled="isLoading"
       @keyup.enter="handleJoin"
@@ -28,7 +28,7 @@
           :disabled="isLoading"
           class="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-50"
         >
-          Cancel
+          {{ $t('common.actions.cancel') }}
         </button>
         <button
           @click="handleJoin"
@@ -37,7 +37,7 @@
         >
           <div v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           <v-icon v-else name="hi-solid-user-add" class="w-4 h-4" />
-          Join Pool
+          {{ $t('pool.join.title') }}
         </button>
       </div>
     </template>

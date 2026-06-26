@@ -42,7 +42,7 @@
           'transition-all active:scale-90',
           closeButtonClass
         ]"
-        aria-label="Cerrar notificación"
+        :aria-label="$t('common.actions.close')"
       >
         <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
       </button>

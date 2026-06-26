@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
 import { footballTeamService } from "@/services/football/team/FootballTeamService";
@@ -18,6 +19,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const { t } = useI18n();
 
 type Mode = "regular" | "playoffs";
 const mode = ref<Mode>("regular");
@@ -71,7 +74,7 @@ const loadTeams = async (seasonUuid: string) => {
     teamsCache.set(seasonUuid, result);
   } catch (err) {
     console.error("Error loading teams:", err);
-    teamsError.value = "Couldn't load teams.";
+    teamsError.value = t("football.fixtures.errors.teamsLoad");
   } finally {
     isLoadingTeams.value = false;
   }
@@ -95,7 +98,7 @@ const loadTeamSchedule = async (teamUuid: string, stageUuid: string) => {
     );
   } catch (err) {
     console.error("Error loading team schedule:", err);
-    scheduleError.value = "Couldn't load this team's schedule.";
+    scheduleError.value = t("football.fixtures.errors.scheduleLoad");
   } finally {
     isLoadingSchedule.value = false;
   }
@@ -124,7 +127,7 @@ const loadRounds = async (stageUuid: string) => {
     pickDefaultRound();
   } catch (err) {
     console.error("Error loading rounds:", err);
-    roundsError.value = "Couldn't load rounds.";
+    roundsError.value = t("football.fixtures.errors.roundsLoad");
   } finally {
     isLoadingRounds.value = false;
   }
@@ -152,7 +155,7 @@ const loadRoundFixtures = async (stageUuid: string, roundUuid: string) => {
     );
   } catch (err) {
     console.error("Error loading fixtures for round:", err);
-    fixturesError.value = "Couldn't load fixtures for this round.";
+    fixturesError.value = t("football.fixtures.errors.roundFixturesLoad");
   } finally {
     isLoadingFixtures.value = false;
   }
@@ -181,7 +184,7 @@ const loadKnockoutStages = async (parentStageUuid: string) => {
     }
   } catch (err) {
     console.error("Error loading knockout stages:", err);
-    stagesError.value = "Couldn't load playoff stages.";
+    stagesError.value = t("football.fixtures.errors.playoffStagesLoad");
   } finally {
     isLoadingStages.value = false;
   }
@@ -195,7 +198,7 @@ const loadKnockoutFixtures = async (knockoutUuid: string) => {
     fixtures.value = await footballFixtureService.getAllFixturesByStage(knockoutUuid);
   } catch (err) {
     console.error("Error loading knockout fixtures:", err);
-    fixturesError.value = "Couldn't load fixtures for this stage.";
+    fixturesError.value = t("football.fixtures.errors.stageFixturesLoad");
   } finally {
     isLoadingFixtures.value = false;
   }
@@ -298,10 +301,10 @@ const emptyIcon = computed(() =>
 const emptyMessage = computed(() => {
   if (mode.value === "playoffs") {
     return knockoutStages.value.length === 0
-      ? "No playoffs available yet"
-      : "No matches in this stage";
+      ? t("football.fixtures.noPlayoffs")
+      : t("football.fixtures.noStageMatches");
   }
-  return "No matches in this round";
+  return t("football.fixtures.noMatchesInRound");
 });
 
 // ── Match Center (self-contained) ──

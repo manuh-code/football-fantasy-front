@@ -2,12 +2,12 @@
     <div class="md:hidden space-y-4 p-4">
         <!-- Sort Controls for Mobile -->
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-callout font-semibold text-gray-900 dark:text-white">Players</h3>
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('football.player.table.players') }}</h3>
             <div class="flex items-center gap-2">
                 <button @click="showMobileSortMenu = !showMobileSortMenu"
                     class="flex items-center gap-2 px-3 py-2 text-footnote bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                     <v-icon name="ri-arrow-up-down-fill" class="w-4 h-4" />
-                    <span>Sort</span>
+                    <span>{{ $t('football.player.table.sort') }}</span>
                 </button>
             </div>
         </div>
@@ -32,7 +32,7 @@
             
             <!-- Statistics Sort Options -->
             <div v-if="dynamicStatColumns.length > 0" class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
-                <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Statistics</h4>
+                <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{{ $t('football.player.table.statistics') }}</h4>
                 <div class="grid grid-cols-2 gap-2">
                     <button v-for="statKey in dynamicStatColumns.slice(0, 6)" :key="statKey"
                         @click="$emit('sort', statKey); showMobileSortMenu = false"
@@ -78,20 +78,20 @@
                         :alt="player.team.name" class="w-5 h-5 rounded"
                         @error="handleTeamImageError" />
                     <div class="min-w-0">
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Team</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('football.player.table.team') }}</p>
                         <p class="text-footnote text-gray-900 dark:text-white truncate">{{ player.team.name }}</p>
                     </div>
                 </div>
 
                 <!-- Position -->
                 <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Position</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('football.player.table.position') }}</p>
                     <p class="text-footnote text-gray-900 dark:text-white">{{ player.position?.name || '-' }}</p>
                 </div>
 
                 <!-- Age -->
                 <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Age</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('football.player.table.age') }}</p>
                     <p class="text-footnote text-gray-900 dark:text-white">{{ player.age }}</p>
                 </div>
 
@@ -100,7 +100,7 @@
                     <img v-if="player.country.image_path" :src="player.country.image_path"
                         :alt="player.country.name ?? ''" class="w-4 h-4 rounded" />
                     <div class="min-w-0">
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Country</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('football.player.table.country') }}</p>
                         <p class="text-footnote text-gray-900 dark:text-white truncate">{{ player.country.name }}</p>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
 
             <!-- Statistics (if available) -->
             <div v-if="dynamicStatColumns.length > 0" class="border-t border-gray-200 dark:border-gray-600 pt-3">
-                <h5 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Statistics</h5>
+                <h5 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{{ $t('football.player.table.statistics') }}</h5>
                 <div class="grid grid-cols-2 gap-2">
                     <div v-for="statKey in dynamicStatColumns.slice(0, 4)" :key="statKey" class="text-center">
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ formatStatColumnName(statKey) }}</p>

@@ -1,0 +1,234 @@
+{
+  "gaming": {
+    "fantasy": {
+      "title": "Fantasy",
+      "subtitle": "Build your dream team and compete"
+    },
+    "pools": {
+      "title": "Pools",
+      "subtitle": "Predict match results and compete"
+    },
+    "live": "Live",
+    "loginRequired": "Please login to access Fantasy games"
+  },
+  "leagueCreate": {
+    "title": "Create Fantasy League",
+    "subtitle": "Set up your private league in seconds",
+    "name": {
+      "label": "League Name",
+      "placeholder": "Enter your league name"
+    },
+    "password": {
+      "label": "League Password",
+      "placeholder": "Enter a password",
+      "hint": "Required for others to join your league"
+    },
+    "participants": {
+      "label": "Number of Participants",
+      "placeholder": "Select number of participants",
+      "unit": "participants",
+      "fixed": "Fixed",
+      "fixedHint": "This league requires exactly {count} participants",
+      "noOptions": "No options available",
+      "min": "Minimum",
+      "mid": "Recommended",
+      "max": "Maximum",
+      "optionLabel": "{tag} ({count} participants)"
+    },
+    "submit": "Create League",
+    "success": {
+      "title": "Success!",
+      "message": "League \"{name}\" has been created successfully!"
+    }
+  },
+  "leagueCard": {
+    "private": "Private",
+    "public": "Public",
+    "admin": "Admin",
+    "member": "Member",
+    "participantsShort": "part.",
+    "membersShort": "memb.",
+    "requestToJoin": "Request to Join",
+    "joinLeague": "Join League"
+  },
+  "joinModal": {
+    "title": "Join Private League",
+    "subtitle": "Enter the password to join this league",
+    "noDescription": "No description provided.",
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter league password..."
+    },
+    "joinLeague": "Join League"
+  },
+  "createTeamModal": {
+    "title": "Welcome to the League!",
+    "subtitle": "One more step to start competing",
+    "heading": "Create Your Fantasy Team",
+    "body": "You don't have a team in this league yet. Set up your team name and start building your dream squad!",
+    "quickSetup": "Quick setup",
+    "lessThanMin": "Less than 1 min",
+    "createMyTeam": "Create My Team",
+    "maybeLater": "Maybe Later"
+  },
+  "userLeagues": {
+    "title": "My Leagues",
+    "countOne": "{count} league",
+    "countOther": "{count} leagues",
+    "loadError": "Failed to load your fantasy leagues. Please try again later.",
+    "emptyTitle": "No Leagues Yet",
+    "emptyBody": "Create your own league or join an existing one to start playing.",
+    "pageTitle": "My Fantasy Leagues - Football Fantasy",
+    "fabQuickActions": "Quick actions",
+    "fabClose": "Close menu",
+    "createLeague": "Create League",
+    "joinLeague": "Join League"
+  },
+  "showTeam": {
+    "couldNotLoad": "Could not load team",
+    "viewTeam": "View team",
+    "yourTeam": "Your Fantasy Team",
+    "active": "Active"
+  },
+  "draft": {
+    "activation": {
+      "readyTitle": "Draft ready to start",
+      "readyBody": "All {count} members have joined. You can activate the draft now.",
+      "activate": "Activate Draft",
+      "activating": "Activating...",
+      "waitingTitle": "Waiting for members",
+      "waitingBody": "{joined} of {total} members have joined. The draft can be activated once all members are present.",
+      "notAvailableTitle": "Draft not available yet",
+      "notAvailableBody": "The league admin hasn't activated the draft yet. You'll be notified when it starts.",
+      "activatedTitle": "Draft Activated",
+      "activatedMessage": "The draft has been activated successfully."
+    },
+    "room": {
+      "autoPick": "Auto Pick",
+      "autoPickOn": "Auto Pick activated",
+      "autoPickOff": "Auto Pick deactivated",
+      "yourTurn": "It's your turn!",
+      "yourTurnSub": "Pick a player for your team"
+    },
+    "board": {
+      "failedLoad": "Failed to load draft board",
+      "noPicks": "No picks yet",
+      "noPicksSub": "The draft board will update as players are picked."
+    },
+    "menu": {
+      "nav": "Draft navigation",
+      "room": "Draft Room",
+      "draft": "Draft",
+      "board": "Draft Board",
+      "boards": "Boards",
+      "leagueDetail": "League Detail",
+      "league": "League"
+    }
+  },
+  "detail": {
+    "loading": "Loading league...",
+    "error": "Something went wrong",
+    "errorUuidRequired": "League UUID is required",
+    "members": "Members",
+    "status": "Status",
+    "active": "Active",
+    "season": "Season",
+    "myTeam": "My Team",
+    "stats": "Stats",
+    "matchups": "Matchups",
+    "about": "About",
+    "participants": "Participants",
+    "open": "Open",
+    "draft": "Draft",
+    "date": "Date",
+    "pickTimer": "Pick Timer",
+    "autoPick": "Auto Pick",
+    "comingSoonTitle": "Coming Soon",
+    "comingSoonMessage": "League management page is under development!"
+  },
+  "teamCreate": {
+    "preview": "Preview",
+    "tip": "Tip",
+    "identity": "Team Identity",
+    "identitySub": "Choose a name and initials for your team",
+    "alreadyHaveTeam": "You already have a team in this league.",
+    "viewTeam": "View Team",
+    "teamName": "Team Name",
+    "teamNamePlaceholder": "e.g. Thunder FC",
+    "initialsLabel": "Team Initials",
+    "initialsHint": "(1-4 chars)",
+    "initialsPlaceholder": "e.g. TFC",
+    "autoGenerate": "Auto-generate from team name",
+    "tipBody": "Upload your team's logo for a personalized look. You can change it anytime from your team settings.",
+    "creating": "Creating...",
+    "createTeam": "Create Team",
+    "teamLogo": "Team Logo",
+    "clickToUpload": "Click to upload",
+    "changeImage": "Change image",
+    "removeImage": "Remove image",
+    "logoOptional": "Optional. If not provided, a default image will be assigned.",
+    "invalidFormatTitle": "Invalid format",
+    "invalidFormatMessage": "Only JPG, PNG and WebP images are allowed.",
+    "fileTooLargeTitle": "File too large",
+    "fileTooLargeMessage": "Maximum image size is 2MB.",
+    "createdTitle": "Team Created!",
+    "createdMessage": "\"{name}\" is ready to compete."
+  },
+  "matchups": {
+    "selectLeague": "Select a fantasy league to view matches.",
+    "noRounds": "No rounds available",
+    "noRoundsSub": "Rounds will appear once the season starts.",
+    "noMatchups": "No matchups yet",
+    "noMatchupsSub": "Matchups for this round haven't been scheduled.",
+    "starters": "Starters",
+    "bench": "Bench",
+    "pts": "pts",
+    "total": "Total"
+  },
+  "lineup": {
+    "starters": "Starters",
+    "bench": "Bench",
+    "selectSwap": "Select a player to swap"
+  },
+  "management": {
+    "loadingRules": "Loading scoring rules...",
+    "loadingError": "Loading error",
+    "ruleTypes": "Rule types:",
+    "totalConfigs": "Total configurations:",
+    "ruleType": "Rule Type",
+    "editCondition": "Edit condition",
+    "editCondShort": "Edit cond.",
+    "notApplicable": "Not applicable",
+    "saving": "Saving...",
+    "saveRules": "Save Rules",
+    "enterValue": "Enter a value",
+    "enterText": "Enter text",
+    "errorLoadConditions": "Error loading condition rules",
+    "errorSave": "Error saving scoring rules",
+    "errorInit": "Error initializing component",
+    "updated": "Scoring rules updated successfully"
+  },
+  "join": {
+    "discoverTitle": "Discover Leagues",
+    "discoverSub": "Find and join fantasy football competitions",
+    "searchPlaceholder": "Search by name...",
+    "noLeaguesFound": "No leagues found",
+    "noResultsTitle": "No Results",
+    "noResultsNone": "No leagues available at the moment",
+    "noResultsSearch": "No leagues found for \"{query}\"",
+    "searchError": "Failed to search for leagues. Please try again.",
+    "joinSuccessTitle": "Success",
+    "joinRequested": "Successfully requested to join \"{name}\"",
+    "joinJoined": "Successfully joined \"{name}\""
+  },
+  "myTeam": {
+    "addPlayers": "Add Players",
+    "trades": "Trades"
+  },
+  "search": {
+    "playerPlaceholder": "Search player...",
+    "allTeams": "All teams",
+    "searchTeam": "Search team...",
+    "errorAddingPlayer": "Error adding player"
+  }
+}

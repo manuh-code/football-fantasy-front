@@ -171,7 +171,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
 
           <!-- Section: Starters -->
           <div>
-            <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Starters</p>
+            <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">{{ $t('fantasy.matchups.starters') }}</p>
             <div class="space-y-2">
               <div
                 v-for="(_, idx) in sortedStarters(versusData!.home_lineup.players)"
@@ -251,7 +251,7 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
 
           <!-- Section: Bench -->
           <div v-if="sortedBench(versusData!.home_lineup.players).length || sortedBench(versusData!.away_lineup.players).length">
-            <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Bench</p>
+            <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">{{ $t('fantasy.matchups.bench') }}</p>
             <div class="space-y-2">
               <div
                 v-for="(_, idx) in Array.from({ length: Math.max(sortedBench(versusData!.home_lineup.players).length, sortedBench(versusData!.away_lineup.players).length) })"
@@ -314,12 +314,12 @@ const isCompleted = computed(() => props.matchup?.status === 'completed')
           <div class="rounded-2xl bg-gray-50 dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
             <span class="text-footnote font-bold text-gray-700 dark:text-gray-300">
               {{ versusData!.home_lineup.players.reduce((acc, p) => acc + (p.fantasy_points ?? 0), 0) }}
-              <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+              <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">{{ $t('fantasy.matchups.pts') }}</span>
             </span>
-            <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total</span>
+            <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ $t('fantasy.matchups.total') }}</span>
             <span class="text-footnote font-bold text-gray-700 dark:text-gray-300">
               {{ versusData!.away_lineup.players.reduce((acc, p) => acc + (p.fantasy_points ?? 0), 0) }}
-              <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">pts</span>
+              <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">{{ $t('fantasy.matchups.pts') }}</span>
             </span>
           </div>
 

@@ -73,7 +73,8 @@ const loadTotw = async (roundUuid: string) => {
   totwError.value = null;
   totw.value = [];
   try {
-    const result = await footballPlayerService.getTeamOfTheWeekByRound(roundUuid);
+    const result =
+      await footballPlayerService.getTeamOfTheWeekByRound(roundUuid);
     totw.value = result.data;
   } catch (err) {
     console.error("Error loading team of the week:", err);
@@ -91,7 +92,9 @@ const retryTotw = () => {
 // The TOTW carries a single `formation` (e.g. "4-3-3") plus a `formation_position`
 // (1 = GK, then numbered up the pitch). We slice the players into lines using the
 // formation counts so the pitch mirrors FixtureLineups.
-const formation = computed(() => totw.value.find((p) => p.formation)?.formation ?? "");
+const formation = computed(
+  () => totw.value.find((p) => p.formation)?.formation ?? "",
+);
 
 interface PitchPlayer {
   key: string;
@@ -112,7 +115,13 @@ const lines = computed<PitchPlayer[][]>(() => {
 
   // Counts per line: GK (1) + the formation segments ("4-3-3" → 4,3,3).
   const counts = formation.value
-    ? [1, ...formation.value.split("-").map((n) => Number(n)).filter((n) => n > 0)]
+    ? [
+        1,
+        ...formation.value
+          .split("-")
+          .map((n) => Number(n))
+          .filter((n) => n > 0),
+      ]
     : [];
 
   const totalFromFormation = counts.reduce((a, b) => a + b, 0);
@@ -166,7 +175,11 @@ onMounted(() => {
     <!-- ── Round selector ── -->
     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
       <div v-if="isLoadingRounds" class="flex items-center justify-center py-2">
-        <v-icon name="pr-spinner" class="w-4 h-4 text-gray-300 dark:text-gray-600" animation="spin" />
+        <v-icon
+          name="pr-spinner"
+          class="w-4 h-4 text-gray-300 dark:text-gray-600"
+          animation="spin"
+        />
       </div>
 
       <div
@@ -178,7 +191,7 @@ onMounted(() => {
           @click="retryRounds"
           class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Retry
+         {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -189,15 +202,17 @@ onMounted(() => {
         :options="rounds"
         value-key="uuid"
         label-key="name"
-        placeholder="Select a round"
-        search-placeholder="Search round..."
+        :placeholder="$t('football.totw.selectRound')"
+        search-:placeholder="$t('football.totw.searchRound')"
         :clearable="false"
         accent-color="emerald"
-        no-options-text="No rounds available"
+        :no-options-text="$t('football.totw.noRounds')"
       >
         <template #selected="{ option }">
-          <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
-            Round {{ option.name }}
+          <span
+            class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1"
+          >
+            {{ $t('football.totw.round', { name: option.name }) }}
           </span>
           <span
             v-if="option.is_current"
@@ -208,12 +223,14 @@ onMounted(() => {
         </template>
         <template #option="{ option }">
           <div class="flex-1 min-w-0 flex items-center gap-2">
-            <span class="text-footnote font-medium truncate">Round {{ option.name }}</span>
+            <span class="text-footnote font-medium truncate">
+              {{ $t("football.totw.round", { name: option.name }) }}</span
+            >
             <span
               v-if="option.is_current"
               class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
             >
-              Current
+              {{ $t("football.totw.currentRound") }}
             </span>
             <span
               v-else-if="option.finished"
@@ -225,7 +242,10 @@ onMounted(() => {
         </template>
       </SearchableSelectComponent>
 
-      <div v-else class="text-center py-2 text-xs text-gray-400 dark:text-gray-500">
+      <div
+        v-else
+        class="text-center py-2 text-xs text-gray-400 dark:text-gray-500"
+      >
         No rounds available
       </div>
     </div>
@@ -240,13 +260,18 @@ onMounted(() => {
         v-else-if="totwError"
         class="py-12 flex flex-col items-center text-center"
       >
-        <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-200 dark:text-red-900/60 mb-2" />
-        <p class="text-footnote text-gray-500 dark:text-gray-400 mb-3">{{ totwError }}</p>
+        <v-icon
+          name="hi-solid-exclamation-circle"
+          class="w-9 h-9 text-red-200 dark:text-red-900/60 mb-2"
+        />
+        <p class="text-footnote text-gray-500 dark:text-gray-400 mb-3">
+          {{ totwError }}
+        </p>
         <button
           @click="retryTotw"
           class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
-          Retry
+          {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -255,8 +280,13 @@ onMounted(() => {
         v-else-if="!hasTotw"
         class="py-12 flex flex-col items-center text-center"
       >
-        <v-icon name="bi-star" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-        <p class="text-footnote text-gray-400 dark:text-gray-500">No team of the week for this round yet</p>
+        <v-icon
+          name="bi-star"
+          class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2"
+        />
+        <p class="text-footnote text-gray-400 dark:text-gray-500">
+          {{ $t("football.totw.empty") }}
+        </p>
       </div>
 
       <!-- Pitch -->
@@ -283,16 +313,30 @@ onMounted(() => {
         >
           <!-- Markings -->
           <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-            <div class="absolute inset-2 sm:inset-3 border border-white/20 rounded-lg" />
-            <div class="absolute left-2 right-2 sm:left-3 sm:right-3 top-1/2 h-px bg-white/20" />
-            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-white/20" />
-            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/30" />
-            <div class="absolute left-1/2 -translate-x-1/2 top-2 sm:top-3 w-36 h-14 border border-white/20 border-t-0 rounded-b-lg" />
-            <div class="absolute left-1/2 -translate-x-1/2 bottom-2 sm:bottom-3 w-36 h-14 border border-white/20 border-b-0 rounded-t-lg" />
+            <div
+              class="absolute inset-2 sm:inset-3 border border-white/20 rounded-lg"
+            />
+            <div
+              class="absolute left-2 right-2 sm:left-3 sm:right-3 top-1/2 h-px bg-white/20"
+            />
+            <div
+              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-white/20"
+            />
+            <div
+              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/30"
+            />
+            <div
+              class="absolute left-1/2 -translate-x-1/2 top-2 sm:top-3 w-36 h-14 border border-white/20 border-t-0 rounded-b-lg"
+            />
+            <div
+              class="absolute left-1/2 -translate-x-1/2 bottom-2 sm:bottom-3 w-36 h-14 border border-white/20 border-b-0 rounded-t-lg"
+            />
           </div>
 
           <!-- Players (forwards on top, GK at the bottom) -->
-          <div class="relative flex flex-col h-full min-h-[520px] sm:min-h-[560px] py-3">
+          <div
+            class="relative flex flex-col h-full min-h-[520px] sm:min-h-[560px] py-3"
+          >
             <div
               v-for="(line, li) in linesReversed"
               :key="`line-${li}`"
@@ -314,7 +358,10 @@ onMounted(() => {
                     v-else
                     class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-emerald-300 shadow flex items-center justify-center"
                   >
-                    <v-icon name="hi-solid-user" class="w-4 h-4 text-gray-400" />
+                    <v-icon
+                      name="hi-solid-user"
+                      class="w-4 h-4 text-gray-400"
+                    />
                   </div>
 
                   <!-- Team crest -->
@@ -333,7 +380,9 @@ onMounted(() => {
                     {{ p.entry.rating.toFixed(1) }}
                   </span>
                 </div>
-                <span class="text-2xs font-medium text-white leading-tight truncate max-w-full drop-shadow">
+                <span
+                  class="text-2xs font-medium text-white leading-tight truncate max-w-full drop-shadow"
+                >
                   {{ playerName(p.entry) }}
                 </span>
               </div>

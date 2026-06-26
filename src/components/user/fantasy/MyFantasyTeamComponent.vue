@@ -101,7 +101,7 @@
           class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 active:scale-[0.97] transition-all"
         >
           <v-icon name="hi-solid-user-add" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Add Players</span>
+          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.myTeam.addPlayers') }}</span>
         </button>
 
         <button
@@ -109,7 +109,7 @@
           class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 opacity-40 cursor-not-allowed"
         >
           <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-blue-500 dark:text-blue-400" />
-          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Trades</span>
+          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.myTeam.trades') }}</span>
         </button>
       </div>
 

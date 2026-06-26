@@ -104,9 +104,17 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['vue', 'vue-router', 'pinia'],
-          icons: ['oh-vue-icons']
+        // Function form (object form was removed in Vite 8 / rolldown).
+        manualChunks(id) {
+          if (id.includes('node_modules/oh-vue-icons')) return 'icons'
+          if (
+            id.includes('node_modules/vue-router') ||
+            id.includes('node_modules/pinia') ||
+            id.includes('node_modules/vue/') ||
+            id.includes('node_modules/@vue/')
+          ) {
+            return 'vendor'
+          }
         }
       }
     }

@@ -1,13 +1,13 @@
 <template>
   <!-- Top Navigation — iOS / Apple Sports style -->
-  <nav aria-label="Main navigation" class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800 safe-area-top">
+  <nav :aria-label="$t('home.header.mainNav')" class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800 safe-area-top">
     <div class="max-w-7xl mx-auto flex items-center justify-between px-4 h-12 sm:h-14">
       <!-- Left side - Logo/Brand -->
       <button
         @click="handleGoHome"
         class="flex items-center gap-2 -ml-1 px-1.5 py-1 rounded-xl active:bg-gray-100 dark:active:bg-gray-800 transition-colors duration-150 focus:outline-none group"
-        aria-label="Go to home"
-        title="Go to Home"
+        :aria-label="$t('home.header.goHome')"
+        :title="$t('home.header.goHome')"
       >
         <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[10px] flex items-center justify-center">
           <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
@@ -27,9 +27,9 @@
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
           class="px-3.5 py-1.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-          aria-label="Login"
+          :aria-label="$t('home.header.login')"
         >
-          Login
+          {{ $t('home.header.login') }}
         </button>
 
         <!-- User Avatar (when authenticated) -->
@@ -37,8 +37,8 @@
           v-if="isAuthenticatedRef"
           @click="handleViewProfile"
           class="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-100 dark:ring-gray-700 hover:ring-blue-500/50 dark:hover:ring-blue-400/50 transition-all duration-150 focus:outline-none active:scale-95"
-          :title="`Go to ${userName} profile`"
-          aria-label="Go to profile"
+          :title="$t('home.header.profileTitle', { name: userName })"
+          :aria-label="$t('home.header.profileAria')"
         >
           <img 
             v-if="avatarUrl" 
@@ -63,10 +63,12 @@ import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const router = useRouter()
+const { t } = useI18n()
 
 // Computed properties for authentication
 const isAuthenticatedRef = ref(false)
@@ -97,7 +99,7 @@ const userName = computed(() => {
   if (userData?.firstname && userData?.lastname) {
     return `${userData.firstname} ${userData.lastname}`
   }
-  return 'User'
+  return t('user.settings.accountFallbackName')
 })
 
 function handleLogin() {

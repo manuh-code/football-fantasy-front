@@ -10,8 +10,8 @@
                             <v-icon name="hi-solid-user" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Profile Information</h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Update your personal information and avatar</p>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $t('user.profile.title') }}</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('user.profile.subtitle') }}</p>
                         </div>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                             <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                                 {{ userData.firstname }} {{ userData.lastname }}
                             </h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Football Fantasy Player</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $t('user.profile.playerRole') }}</p>
                         </div>
                     </div>
                 </div>
@@ -40,17 +40,17 @@
                         <div>
                             <FormInput 
                                 v-if="isEditing"
-                                id="firstName" 
-                                v-model="editForm.firstName" 
-                                label="First Name *"
+                                id="firstName"
+                                v-model="editForm.firstName"
+                                :label="`${$t('user.profile.fields.firstName.label')} *`"
                                 type="text"
                                 icon="hi-solid-identification"
-                                placeholder="Enter your first name"
+                                :placeholder="$t('user.profile.fields.firstName.placeholder')"
                                 :error="hasFieldError('firstName') ? getFieldError('firstName').join(', ') : ''"
                                 required
                             />
                             <div v-else>
-                                <label for="firstName-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
+                                <label for="firstName-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('user.profile.fields.firstName.label') }}</label>
                                 <div id="firstName-display" class="px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white">
                                     {{ userData?.firstname || '-' }}
                                 </div>
@@ -61,17 +61,17 @@
                         <div>
                             <FormInput 
                                 v-if="isEditing"
-                                id="lastName" 
-                                v-model="editForm.lastName" 
-                                label="Last Name *"
+                                id="lastName"
+                                v-model="editForm.lastName"
+                                :label="`${$t('user.profile.fields.lastName.label')} *`"
                                 type="text"
                                 icon="hi-solid-identification"
-                                placeholder="Enter your last name"
+                                :placeholder="$t('user.profile.fields.lastName.placeholder')"
                                 :error="hasFieldError('lastName') ? getFieldError('lastName').join(', ') : ''"
                                 required
                             />
                             <div v-else>
-                                <label for="lastName-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
+                                <label for="lastName-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('user.profile.fields.lastName.label') }}</label>
                                 <div id="lastName-display" class="px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white">
                                     {{ userData?.lastname || '-' }}
                                 </div>
@@ -82,18 +82,18 @@
                         <div>
                             <FormInput 
                                 v-if="isEditing"
-                                id="email" 
-                                v-model="editForm.email" 
-                                label="Email Address *"
+                                id="email"
+                                v-model="editForm.email"
+                                :label="`${$t('user.profile.fields.email.label')} *`"
                                 type="email"
                                 icon="hi-solid-mail"
-                                placeholder="Enter your email"
+                                :placeholder="$t('user.profile.fields.email.placeholder')"
                                 autocomplete="email"
                                 :error="hasFieldError('email') ? getFieldError('email').join(', ') : ''"
                                 required
                             />
                             <div v-else>
-                                <label for="email-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                                <label for="email-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('user.profile.fields.email.label') }}</label>
                                 <div id="email-display" class="px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white break-all">
                                     {{ userData?.email || '-' }}
                                 </div>
@@ -104,18 +104,18 @@
                         <div>
                             <FormInput 
                                 v-if="isEditing"
-                                id="phone" 
-                                v-model="editForm.phone" 
-                                label="Phone Number"
+                                id="phone"
+                                v-model="editForm.phone"
+                                :label="$t('user.profile.fields.phone.label')"
                                 type="tel"
                                 icon="hi-solid-phone"
-                                placeholder="Enter your phone number"
+                                :placeholder="$t('user.profile.fields.phone.placeholder')"
                                 :error="hasFieldError('phone') ? getFieldError('phone').join(', ') : ''"
                             />
                             <div v-else>
-                                <label for="phone-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
+                                <label for="phone-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('user.profile.fields.phone.label') }}</label>
                                 <div id="phone-display" class="px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white">
-                                    {{ userData?.phone || 'Not provided' }}
+                                    {{ userData?.phone || $t('user.profile.fields.phone.notProvided') }}
                                 </div>
                             </div>
                         </div>
@@ -127,7 +127,7 @@
                             v-if="isEditing"
                             variant="cancel"
                             size="md"
-                            text="Cancel"
+                            :text="$t('user.profile.cancel')"
                             :full-width="true"
                             @click="resetForm"
                         />
@@ -136,7 +136,7 @@
                             type="submit"
                             variant="primary"
                             size="md"
-                            :text="isLoading ? 'Updating Profile...' : 'Update Profile'"
+                            :text="isLoading ? $t('user.profile.saving') : $t('user.profile.save')"
                             :loading="isLoading"
                             :disabled="isLoading"
                             :full-width="true"
@@ -146,7 +146,7 @@
                             v-else
                             variant="primary"
                             size="md"
-                            text="Edit Profile"
+                            :text="$t('user.profile.edit')"
                             :full-width="true"
                             icon="hi-solid-pencil"
                             @click="toggleEditMode"
@@ -165,7 +165,7 @@
                         <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                             <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Quick Stats</h3>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $t('user.profile.stats.title') }}</h3>
                     </div>
                 </div>
 
@@ -176,8 +176,8 @@
                             <v-icon name="bi-trophy-fill" class="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Fantasy Leagues</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Manage your league participation</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.profile.stats.leagues.title') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.profile.stats.leagues.subtitle') }}</p>
                         </div>
                     </div>
 
@@ -186,8 +186,8 @@
                             <v-icon name="hi-solid-user-group" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Team Preferences</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Set your favorite football team</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.profile.stats.team.title') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.profile.stats.team.subtitle') }}</p>
                         </div>
                     </div>
 
@@ -196,8 +196,8 @@
                             <v-icon name="hi-solid-cog" class="w-3 h-3 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Account Settings</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Update password and preferences</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.profile.stats.account.title') }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $t('user.profile.stats.account.subtitle') }}</p>
                         </div>
                     </div>
                 </div>
@@ -211,12 +211,12 @@
             <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <v-icon name="hi-solid-user" class="w-8 h-8 text-gray-400 dark:text-gray-500" />
             </div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Profile Data Available</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{{ $t('user.profile.noData.title') }}</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-6">
-                Please log in to view your profile information or try refreshing the page.
+                {{ $t('user.profile.noData.subtitle') }}
             </p>
             <router-link to="/login" class="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors duration-200">
-                Go to Login
+                {{ $t('user.profile.noData.goToLogin') }}
             </router-link>
         </div>
     </div>
@@ -224,6 +224,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useToast } from '@/composables/useToast'
@@ -232,6 +233,7 @@ import type { UserDataInterface } from '@/interfaces/user/userInterface'
 import type { UserPayload } from '@/interfaces/user/userPayload'
 
 // Stores
+const { t } = useI18n()
 const userStore = useUserStore()
 const validationStore = useValidationStore()
 const toast = useToast()
@@ -286,7 +288,7 @@ const handleUpdateProfile = async () => {
 
     try {
         await userStore.updateProfile(editForm)
-        toast.success('Profile Updated', 'Your profile has been updated successfully!')
+        toast.success(t('user.profile.updated.title'), t('user.profile.updated.message'))
         isEditing.value = false
     } finally {
         isLoading.value = false

@@ -3,7 +3,7 @@
         <!-- Avatar Button with enhanced design -->
         <button @click="toggleDropdown" @keydown="handleDropdownKeydown"
             class="group flex items-center gap-2 p-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-            aria-label="User menu" :aria-expanded="isDropdownOpen">
+            :aria-label="$t('ui.menu.userMenu')" :aria-expanded="isDropdownOpen">
             
             <!-- Avatar with status ring -->
             <div class="relative">
@@ -55,8 +55,8 @@
                             <v-icon name="hi-solid-user" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">View Profile</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Manage your account</p>
+                            <p class="font-medium">{{ $t('ui.menu.viewProfile') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('ui.menu.viewProfileSub') }}</p>
                         </div>
                     </button>
 
@@ -68,8 +68,8 @@
                             <v-icon name="hi-solid-key" class="w-4 h-4 text-amber-600 dark:text-amber-400" />
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">Change Password</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Update your password</p>
+                            <p class="font-medium">{{ $t('ui.menu.changePassword') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('ui.menu.changePasswordSub') }}</p>
                         </div>
                     </button>
 
@@ -81,8 +81,8 @@
                             <v-icon name="gi-soccer-ball" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">Favorite Football Team</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Select your team</p>
+                            <p class="font-medium">{{ $t('ui.menu.favoriteTeam') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('ui.menu.favoriteTeamSub') }}</p>
                         </div>
                     </button>
 
@@ -94,8 +94,8 @@
                             <v-icon name="bi-trophy-fill" class="w-4 h-4 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">Fantasy Leagues</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Manage your leagues</p>
+                            <p class="font-medium">{{ $t('ui.menu.fantasyLeagues') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('ui.menu.fantasyLeaguesSub') }}</p>
                         </div>
                     </button>
 
@@ -110,8 +110,8 @@
                             <v-icon name="hi-solid-logout" class="w-4 h-4 text-red-600 dark:text-red-400" />
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium">Sign Out</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Log out of your account</p>
+                            <p class="font-medium">{{ $t('ui.menu.signOut') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('ui.menu.signOutSub') }}</p>
                         </div>
                     </button>
                 </div>

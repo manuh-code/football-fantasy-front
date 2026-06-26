@@ -145,7 +145,7 @@ onMounted(async () => {
       class="mx-4 mt-8 flex flex-col items-center gap-3 text-center"
     >
       <v-icon name="gi-crossed-swords" class="w-12 h-12 text-gray-200 dark:text-gray-700" />
-      <p class="text-sm text-gray-400 dark:text-gray-500">Select a fantasy league to view matches.</p>
+      <p class="text-sm text-gray-400 dark:text-gray-500">{{ $t('fantasy.matchups.selectLeague') }}</p>
     </div>
 
     <!-- No rounds -->
@@ -154,8 +154,8 @@ onMounted(async () => {
       class="mx-4 mt-8 flex flex-col items-center gap-3 text-center"
     >
       <v-icon name="hi-solid-calendar" class="w-12 h-12 text-gray-200 dark:text-gray-700" />
-      <p class="text-sm font-medium text-gray-700 dark:text-gray-300">No rounds available</p>
-      <p class="text-footnote text-gray-400 dark:text-gray-500">Rounds will appear once the season starts.</p>
+      <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('fantasy.matchups.noRounds') }}</p>
+      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('fantasy.matchups.noRoundsSub') }}</p>
     </div>
 
     <!-- Main content -->
@@ -253,8 +253,8 @@ onMounted(async () => {
         class="mx-4 flex flex-col items-center gap-3 text-center py-8"
       >
         <v-icon name="gi-crossed-swords" class="w-12 h-12 text-gray-200 dark:text-gray-700" />
-        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">No matchups yet</p>
-        <p class="text-footnote text-gray-400 dark:text-gray-500">Matchups for this round haven't been scheduled.</p>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('fantasy.matchups.noMatchups') }}</p>
+        <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('fantasy.matchups.noMatchupsSub') }}</p>
       </div>
 
       <!-- ── Matchup cards (carousel) ── -->

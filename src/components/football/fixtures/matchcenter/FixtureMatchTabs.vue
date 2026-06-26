@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import TabsMenu from "@/components/ui/TabsMenu.vue";
 
 // Linear menu for the Match Center sections. Delegates the scrollable pill
@@ -7,15 +9,17 @@ export type MatchTab = "info" | "comments" | "events" | "stats" | "lineups" | "h
 
 const activeTab = defineModel<MatchTab>({ required: true });
 
-const tabs: { key: MatchTab; label: string; icon: string }[] = [
-  { key: "info", label: "Info", icon: "hi-solid-information-circle" },
-  { key: "comments", label: "Comments", icon: "bi-chat-left-dots-fill" },
-  { key: "events", label: "Events", icon: "md-sportssoccer" },
-  { key: "stats", label: "Stats", icon: "hi-solid-chart-bar" },
-  { key: "lineups", label: "Lineups", icon: "hi-solid-users" },
-  { key: "playerstats", label: "Players", icon: "hi-solid-star" },
-  { key: "head2head", label: "H2H", icon: "md-comparearrows-round" },
-];
+const { t } = useI18n();
+
+const tabs = computed<{ key: MatchTab; label: string; icon: string }[]>(() => [
+  { key: "info", label: t("football.matchCenter.tabs.info"), icon: "hi-solid-information-circle" },
+  { key: "comments", label: t("football.matchCenter.tabs.comments"), icon: "bi-chat-left-dots-fill" },
+  { key: "events", label: t("football.matchCenter.tabs.events"), icon: "md-sportssoccer" },
+  { key: "stats", label: t("football.matchCenter.tabs.stats"), icon: "hi-solid-chart-bar" },
+  { key: "lineups", label: t("football.matchCenter.tabs.lineups"), icon: "hi-solid-users" },
+  { key: "playerstats", label: t("football.matchCenter.tabs.players"), icon: "hi-solid-star" },
+  { key: "head2head", label: t("football.matchCenter.tabs.head2head"), icon: "md-comparearrows-round" },
+]);
 </script>
 
 <template>
@@ -23,7 +27,7 @@ const tabs: { key: MatchTab; label: string; icon: string }[] = [
     <TabsMenu
       v-model="activeTab"
       :tabs="tabs"
-      aria-label="Match center sections"
+      :aria-label="$t('football.matchCenter.sections')"
     />
   </div>
 </template>

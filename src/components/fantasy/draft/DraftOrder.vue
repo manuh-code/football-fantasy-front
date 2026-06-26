@@ -12,7 +12,7 @@
             Draft Order
           </h3>
           <p class="text-2xs text-gray-500 dark:text-gray-400">
-            Round {{ currentRound }}/{{ totalRounds }}
+            {{ $t('football.rounds.rounds') }} {{ currentRound }}/{{ totalRounds }}
             · <span class="text-green-500">{{ onlineCount }}</span>/{{ totalMembers }} online
           </p>
         </div>
@@ -30,7 +30,7 @@
           </svg>
         </button>
         <span class="text-2xs font-bold text-gray-700 dark:text-gray-300 min-w-[2.5rem] text-center tabular-nums">
-          Rd {{ currentRound }}
+          {{ $t('football.rounds.rounds') }} {{ currentRound }}
         </span>
         <button
           :disabled="currentRound >= totalRounds"

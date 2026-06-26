@@ -170,7 +170,7 @@ const showEmptyMatchingFilters = computed(
       v-if="hasFilters"
       class="filter-row -mx-4 px-4 mb-4 flex items-center gap-2 overflow-x-auto"
       role="tablist"
-      aria-label="Event filters"
+      :aria-label="$t('football.matchCenter.eventFilters')"
     >
       <!-- "All" chip -->
       <button
@@ -257,7 +257,7 @@ const showEmptyMatchingFilters = computed(
       class="text-center py-6 text-gray-400 dark:text-gray-500"
     >
       <v-icon name="hi-solid-filter" class="w-7 h-7 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
-      <p class="text-xs">No events match the selected filters</p>
+      <p class="text-xs">{{ $t('football.matchCenter.noEventsFiltered') }}</p>
       <button
         @click="clearFilters"
         class="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
@@ -272,7 +272,7 @@ const showEmptyMatchingFilters = computed(
       class="text-center py-6 text-gray-400 dark:text-gray-500"
     >
       <v-icon name="md-sportssoccer" class="w-7 h-7 mx-auto mb-2 text-gray-200 dark:text-gray-700" />
-      <p class="text-xs">No events yet</p>
+      <p class="text-xs">{{ $t('football.matchCenter.noEvents') }}</p>
     </div>
   </div>
 </template>

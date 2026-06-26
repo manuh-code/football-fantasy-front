@@ -2,6 +2,8 @@ import axios, { AxiosInstance } from 'axios'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useValidationStore } from '@/store/validation/useValidationStore'
+import { useLocaleStore } from '@/store/locale'
+import { t } from '@/i18n'
 import router from '@/router'
 
 
@@ -44,12 +46,11 @@ export function useApiFantasy() {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'TimeZone': getTimezone(),
-            'Accept-Language': navigator.language || 'en', // Use browser's language setting
         }
     });
 
 
-    // Add a request interceptor to include the token in the headers
+    // Add a request interceptor to include the token and current locale in the headers
     apiFantasyInstance.interceptors.request.use((config) => {
         try {
             const authStore = useAuthStore();
@@ -62,6 +63,14 @@ export function useApiFantasy() {
         } catch (error) {
             // If there's an error parsing the auth data, just continue without token
             delete config.headers.Authorization;
+        }
+
+        // Send the user's selected language so the API can return localized messages
+        try {
+            const localeStore = useLocaleStore();
+            config.headers['Accept-Language'] = localeStore.locale;
+        } catch (error) {
+            config.headers['Accept-Language'] = 'es';
         }
         return config;
     });
@@ -88,13 +97,13 @@ export function useApiFantasy() {
             if (error.response) {
                 apiError.response = error.response.data
 
-                let errorTitle = 'Error'
-                let errorMessage = 'An unexpected error occurred'
+                let errorTitle = t('errors.generic.title')
+                let errorMessage = t('errors.generic.message')
 
                 switch (error.response.status) {
                     case 401: {
-                        errorTitle = 'Authentication Failed'
-                        errorMessage = error.response.data?.message || 'Authentication error. Please verify your credentials.'
+                        errorTitle = t('errors.401.title')
+                        errorMessage = error.response.data?.message || t('errors.401.message')
                         authStore.clearAuth();
                         router.push({ name: 'login' });
                         break
@@ -105,34 +114,34 @@ export function useApiFantasy() {
                         if (error.response.data?.errors) {
                             validationStore.setValidatorError(error.response.data.errors);
                         }
-                        errorTitle = 'Validation Error'
-                        errorMessage = error.response.data?.message || 'Validation error. Please check your data.'
+                        errorTitle = t('errors.422.title')
+                        errorMessage = error.response.data?.message || t('errors.422.message')
                         break
                     }
                     case 400:
-                        errorTitle = 'Bad Request'
-                        errorMessage = error.response.data?.message || 'Bad Request - Invalid data sent'
+                        errorTitle = t('errors.400.title')
+                        errorMessage = error.response.data?.message || t('errors.400.message')
                         break
                     case 403:
-                        errorTitle = 'Forbidden'
-                        errorMessage = error.response.data?.message || 'Forbidden - Access denied'
+                        errorTitle = t('errors.403.title')
+                        errorMessage = error.response.data?.message || t('errors.403.message')
                         break
                     case 404:
-                        errorTitle = 'Not Found'
-                        errorMessage = error.response.data?.message || 'Not Found - Resource not found'
+                        errorTitle = t('errors.404.title')
+                        errorMessage = error.response.data?.message || t('errors.404.message')
                         break
                     case 500:
-                        errorTitle = 'Server Error'
-                        errorMessage = error.response.data?.message || 'Server Error - Please try again later'
+                        errorTitle = t('errors.500.title')
+                        errorMessage = error.response.data?.message || t('errors.500.message')
                         break
                     default:
-                        errorMessage = error.response.data?.message || error.message || 'An unexpected error occurred'
+                        errorMessage = error.response.data?.message || error.message || t('errors.generic.message')
                 }
                 if (!isSilent) {
                     toast.error(errorTitle, errorMessage)
                 }
             } else if (error.request && !isSilent) {
-                toast.error('Connection Error', 'Please check your internet connection and try again.')
+                toast.error(t('errors.connection.title'), t('errors.connection.message'))
             }
             return Promise.reject(apiError)
         }

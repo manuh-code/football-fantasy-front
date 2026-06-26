@@ -1,8 +1,8 @@
 <template>
     <BottomSheet
         :is-visible="isVisible"
-        title="Join Private League"
-        subtitle="Enter the password to join this league"
+        :title="$t('fantasy.joinModal.title')"
+        :subtitle="$t('fantasy.joinModal.subtitle')"
         icon="hi-solid-lock-closed"
         icon-variant="emerald"
         size="auto"
@@ -23,7 +23,7 @@
                 <div class="flex-1 min-w-0">
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ league.name }}</h4>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
-                        {{ league.description || 'No description provided.' }}
+                        {{ league.description || $t('fantasy.joinModal.noDescription') }}
                     </p>
                     <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-400 dark:text-gray-500">
                         <span class="flex items-center gap-1">
@@ -45,9 +45,9 @@
                 id="league-password"
                 v-model="leaguePassword"
                 type="password"
-                label="Password"
+                :label="$t('fantasy.joinModal.password.label')"
                 icon="hi-solid-lock-closed"
-                placeholder="Enter league password..."
+                :placeholder="$t('fantasy.joinModal.password.placeholder')"
                 autocomplete="current-password"
                 :error="passwordError"
                 :disabled="isLoading"
@@ -62,7 +62,7 @@
                     :disabled="isLoading"
                     class="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-50"
                 >
-                    Cancel
+                    {{ $t('common.actions.cancel') }}
                 </button>
                 <button
                     @click="handleJoin"
@@ -71,7 +71,7 @@
                 >
                     <div v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     <v-icon v-else name="hi-solid-user" class="w-4 h-4" />
-                    Join League
+                    {{ $t('fantasy.joinModal.joinLeague') }}
                 </button>
             </div>
         </template>
@@ -80,8 +80,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import { FormInput } from '@/components/ui'
+
+const { locale } = useI18n()
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 
 interface Props {
@@ -135,7 +138,7 @@ const handleJoin = () => {
 }
 
 const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(locale.value, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
