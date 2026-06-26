@@ -17,9 +17,14 @@
     "stage": "Stage",
     "stageInfo": "Your pool will be created for this stage",
     "current": "Current",
-    "stageResolveError": "Couldn't determine the stage. Please try again."
+    "stageResolveError": "Couldn't determine the stage. Please try again.",
+    "created": "Pool created!",
+    "createdBody": "\"{name}\" is ready to go.",
+    "createError": "Failed to create pool. Please try again later."
   },
   "join": {
+    "joined": "You joined!",
+    "joinedBody": "You're now part of \"{name}\".",
     "title": "Join Pool",
     "subtitle": "Enter the access code shared with you",
     "codePlaceholder": "Enter access code..."

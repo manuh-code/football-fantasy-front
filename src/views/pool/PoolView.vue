@@ -58,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "@/composables/useToast";
@@ -69,6 +70,7 @@ import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 // Set page title
 document.title = "Pools - Football Fantasy";
 
+const { t } = useI18n();
 const { success } = useToast();
 const route = useRoute();
 const router = useRouter();
@@ -103,13 +105,13 @@ const openJoin = () => {
 // Modal callbacks
 const onCreated = (pool: PoolResponse) => {
   isCreateOpen.value = false;
-  success("Pool created", `"${pool.name}" is ready to go.`);
+  success(t("pool.create.created"), t("pool.create.createdBody", { name: pool.name }));
   poolComponentRef.value?.reload();
 };
 
 const onJoined = (pool: PoolResponse) => {
   isJoinOpen.value = false;
-  success("Pool joined", `You're now part of "${pool.name}".`);
+  success(t("pool.join.joined"), t("pool.join.joinedBody", { name: pool.name }));
   poolComponentRef.value?.reload();
 };
 
