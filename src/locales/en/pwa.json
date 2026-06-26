@@ -26,5 +26,13 @@
     "update": "Update",
     "offlineTitle": "Ready to use offline",
     "offlineMessage": "The app now works without a connection."
+  },
+  "push": {
+    "title": "Turn on notifications",
+    "subtitle": "Don't miss anything important",
+    "body": "We'll let you know when your draft starts, your leagues change or your matches move.",
+    "enable": "Enable",
+    "enabling": "Enabling...",
+    "later": "Not now"
   }
 }
