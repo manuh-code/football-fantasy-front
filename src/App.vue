@@ -57,9 +57,10 @@
     <!-- Footer Menu - Fixed at bottom, outside transform context -->
     <FooterMenu />
 
-    <!-- PWA: update prompt + install banner (global, Teleported) -->
+    <!-- PWA: update prompt + install banner + push opt-in (global, Teleported) -->
     <PwaUpdateModal />
     <PwaInstallBanner />
+    <PushPermissionModal />
   </div>
 </template>
 
@@ -76,6 +77,7 @@ import { useDevResetStores } from "@/composables/useDevResetStores";
 import { usePushNotifications } from "./composables/usePushNotifications";
 import PwaUpdateModal from "@/components/pwa/PwaUpdateModal.vue";
 import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
+import PushPermissionModal from "@/components/pwa/PushPermissionModal.vue";
 
 const themeStore = useThemeStore();
 const router = useRouter();

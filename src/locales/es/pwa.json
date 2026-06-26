@@ -26,5 +26,13 @@
     "update": "Actualizar",
     "offlineTitle": "Lista para usar sin conexión",
     "offlineMessage": "La app ahora funciona sin conexión."
+  },
+  "push": {
+    "title": "Activa las notificaciones",
+    "subtitle": "No te pierdas nada importante",
+    "body": "Te avisaremos cuando empiece tu draft, haya novedades en tus ligas o se muevan tus partidos.",
+    "enable": "Activar",
+    "enabling": "Activando...",
+    "later": "Ahora no"
   }
 }

@@ -50,20 +50,18 @@
       "subtitle": "Get alerts for your drafts, leagues and matches",
       "label": "Push notifications",
       "statusGranted": "Enabled on this device",
+      "statusOff": "Disabled on this device",
       "statusDenied": "Blocked. Enable them from your browser settings",
-      "statusDefault": "You haven't enabled them yet",
       "statusUnsupported": "Your browser doesn't support notifications",
-      "enable": "Enable notifications",
-      "enabling": "Enabling...",
-      "enabled": "Notifications enabled",
+      "switchAria": "Turn notifications on or off",
       "iosHint": "On iPhone, first add the app to your Home Screen (Share → Add to Home Screen) and open it from there.",
       "deniedHint": "You blocked notifications. Enable them from your browser or system settings for this site.",
       "successTitle": "Done!",
       "successBody": "You'll now receive notifications on this device.",
       "errorTitle": "Couldn't enable",
       "errorBody": "Check your permissions and try again.",
-      "showDiagnostics": "Show diagnostics",
-      "hideDiagnostics": "Hide diagnostics"
+      "disabledTitle": "Notifications disabled",
+      "disabledBody": "You'll no longer receive notifications on this device."
     }
   },
   "profile": {

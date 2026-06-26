@@ -99,12 +99,12 @@
           <div class="flex items-center gap-3 min-w-0">
             <div
               class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-              :class="permission === 'granted' ? 'bg-emerald-50 dark:bg-emerald-900/30' : 'bg-gray-100 dark:bg-gray-700'"
+              :class="isSubscribed ? 'bg-emerald-50 dark:bg-emerald-900/30' : 'bg-gray-100 dark:bg-gray-700'"
             >
               <v-icon
                 name="hi-solid-bell"
                 class="w-5 h-5"
-                :class="permission === 'granted' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'"
+                :class="isSubscribed ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'"
               />
             </div>
             <div class="min-w-0">
@@ -113,24 +113,27 @@
             </div>
           </div>
 
-          <!-- Enable button: el permiso SOLO se pide desde este gesto (requisito iOS) -->
+          <!-- Toggle: activar registra el token; desactivar lo borra del backend.
+               El permiso del navegador no se puede revocar por JS, así que
+               "desactivar" = dejar de recibir push eliminando el token. -->
           <button
-            v-if="canEnable"
-            @click="handleEnable"
-            :disabled="isEnabling"
-            class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            @click="toggleNotifications"
+            :disabled="isToggleDisabled"
+            :class="[
+              'relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 flex-shrink-0',
+              isSubscribed ? 'bg-emerald-600' : 'bg-gray-300 dark:bg-gray-600',
+              isToggleDisabled ? 'opacity-50 cursor-not-allowed' : ''
+            ]"
+            :aria-label="$t('user.settings.notifications.switchAria')"
+            :aria-pressed="isSubscribed"
           >
-            {{ isEnabling ? $t('user.settings.notifications.enabling') : $t('user.settings.notifications.enable') }}
+            <span
+              :class="[
+                'inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200',
+                isSubscribed ? 'translate-x-6' : 'translate-x-1'
+              ]"
+            />
           </button>
-
-          <!-- Granted badge -->
-          <span
-            v-else-if="permission === 'granted'"
-            class="flex-shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-900/30"
-          >
-            <v-icon name="hi-solid-check" class="w-4 h-4" />
-            {{ $t('user.settings.notifications.enabled') }}
-          </span>
         </div>
 
         <!-- Contextual hints -->
@@ -141,24 +144,11 @@
           {{ $t('user.settings.notifications.deniedHint') }}
         </p>
         <p
-          v-else-if="isIos && permission !== 'granted'"
+          v-else-if="showIosHint"
           class="text-xs text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3"
         >
           {{ $t('user.settings.notifications.iosHint') }}
         </p>
-
-        <!-- Diagnostics (self-service troubleshooting on the actual device) -->
-        <div class="pt-1">
-          <button
-            @click="showDiagnostics = !showDiagnostics"
-            class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            {{ showDiagnostics ? $t('user.settings.notifications.hideDiagnostics') : $t('user.settings.notifications.showDiagnostics') }}
-          </button>
-          <div v-if="showDiagnostics" class="mt-3 rounded-xl bg-gray-50 dark:bg-gray-900/40 border border-gray-100 dark:border-gray-700">
-            <PushDiagnosticsPanel />
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -166,66 +156,87 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/store/theme'
 import { useLocaleStore } from '@/store/locale'
 import { usePushNotifications } from '@/composables/usePushNotifications'
+import { useNotificationsStore } from '@/store/notifications'
 import { useToast } from '@/composables'
-import PushDiagnosticsPanel from '@/components/ui/PushDiagnosticsPanel.vue'
 
 const themeStore = useThemeStore()
 const localeStore = useLocaleStore()
 const { t } = useI18n()
 const toast = useToast()
-const { requestPermissionAndRegister } = usePushNotifications()
+const { requestPermissionAndRegister, unregisterToken } = usePushNotifications()
+const notificationsStore = useNotificationsStore()
+const { fcmToken, isTokenRegistered } = storeToRefs(notificationsStore)
 
 const isSupported = 'Notification' in window
 // Notification.permission no es reactivo: lo guardamos y lo refrescamos a mano.
 const permission = ref<NotificationPermission | 'unsupported'>(
   isSupported ? Notification.permission : 'unsupported',
 )
-const isEnabling = ref(false)
-const showDiagnostics = ref(false)
+const isBusy = ref(false)
 
 // iOS necesita la PWA instalada en pantalla de inicio para poder activar push.
 const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent)
 
-// Solo se puede "activar" cuando el navegador soporta y el permiso aún no se
-// concedió ni se bloqueó (estado 'default').
-const canEnable = computed(() => isSupported && permission.value === 'default')
+// "Suscrito" = permiso concedido Y token registrado en el backend. Ese es el
+// estado real de "recibo notificaciones en este dispositivo".
+const isSubscribed = computed(
+  () => permission.value === 'granted' && !!fcmToken.value && isTokenRegistered.value,
+)
+
+// El toggle no puede hacer nada útil si el navegador no soporta push o si el
+// permiso fue bloqueado (no se puede volver a pedir por JS).
+const isToggleDisabled = computed(
+  () => permission.value === 'unsupported' || permission.value === 'denied' || isBusy.value,
+)
+
+// Pista de iOS solo cuando aún no se puede activar (no instalada / sin pedir),
+// no cuando ya está concedido pero apagado.
+const showIosHint = computed(
+  () => isIos && (permission.value === 'unsupported' || permission.value === 'default'),
+)
 
 const statusText = computed(() => {
-  switch (permission.value) {
-    case 'granted':
-      return t('user.settings.notifications.statusGranted')
-    case 'denied':
-      return t('user.settings.notifications.statusDenied')
-    case 'unsupported':
-      return t('user.settings.notifications.statusUnsupported')
-    default:
-      return t('user.settings.notifications.statusDefault')
-  }
+  if (permission.value === 'unsupported') return t('user.settings.notifications.statusUnsupported')
+  if (permission.value === 'denied') return t('user.settings.notifications.statusDenied')
+  if (isSubscribed.value) return t('user.settings.notifications.statusGranted')
+  return t('user.settings.notifications.statusOff')
 })
 
-async function handleEnable() {
-  if (isEnabling.value) return
-  isEnabling.value = true
+async function toggleNotifications() {
+  if (isToggleDisabled.value) return
+  isBusy.value = true
   try {
-    const token = await requestPermissionAndRegister()
-    permission.value = isSupported ? Notification.permission : 'unsupported'
-    if (token) {
-      toast.success(
-        t('user.settings.notifications.successTitle'),
-        t('user.settings.notifications.successBody'),
+    if (isSubscribed.value) {
+      // Desactivar: borra el token del backend (el permiso del navegador queda).
+      await unregisterToken()
+      toast.info(
+        t('user.settings.notifications.disabledTitle'),
+        t('user.settings.notifications.disabledBody'),
       )
     } else {
-      toast.error(
-        t('user.settings.notifications.errorTitle'),
-        t('user.settings.notifications.errorBody'),
-      )
+      // Activar: pide permiso (si hace falta) y registra el token. Es el gesto
+      // del usuario obligatorio en iOS.
+      const token = await requestPermissionAndRegister()
+      permission.value = isSupported ? Notification.permission : 'unsupported'
+      if (token) {
+        toast.success(
+          t('user.settings.notifications.successTitle'),
+          t('user.settings.notifications.successBody'),
+        )
+      } else {
+        toast.error(
+          t('user.settings.notifications.errorTitle'),
+          t('user.settings.notifications.errorBody'),
+        )
+      }
     }
   } finally {
-    isEnabling.value = false
+    isBusy.value = false
   }
 }
 </script>
