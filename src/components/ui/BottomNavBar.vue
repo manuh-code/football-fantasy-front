@@ -1,6 +1,8 @@
 <script lang="ts">
 // Shared floating bottom navigation (FotMob / Apple Sports style).
 // Minimal glass pill that hugs its content. Reused across the app.
+import { computed, onUnmounted, ref, watch } from "vue";
+
 export type BottomNavAccent =
   | "blue"
   | "emerald"
@@ -19,6 +21,21 @@ export interface BottomNavItem {
   accent?: BottomNavAccent;
   disabled?: boolean;
 }
+
+// --- Single-pill guard (module-level, shared by every instance) --------------
+// Several screens mount their own <BottomNavBar> (HomeMenu, FooterMenu,
+// PoolGroupView, ...) and every instance teleports its floating pill into the
+// same `#app`, all pinned to `fixed bottom-0 z-[100]`. During a route change the
+// outgoing and incoming views overlap for a tick, so two pills can land on top
+// of each other ("encimado", looking like the bar lost its style).
+//
+// This registry tracks every currently-visible instance and only lets the most
+// recently shown one render, so there is never more than one floating pill
+// regardless of how many instances are briefly alive. It MUST live in this
+// module-level <script> block (not <script setup>, which runs per instance) so
+// all instances share the same state.
+let nextUid = 0;
+const visibleStack = ref<number[]>([]);
 </script>
 
 <script setup lang="ts">
@@ -39,6 +56,29 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{ select: [key: string] }>();
+
+// This instance's slot in the shared single-pill registry (see <script> above).
+const uid = nextUid++;
+
+const claim = () => {
+  visibleStack.value = [...visibleStack.value.filter((id) => id !== uid), uid];
+};
+const release = () => {
+  visibleStack.value = visibleStack.value.filter((id) => id !== uid);
+};
+
+watch(
+  () => props.visible,
+  (isVisible) => (isVisible ? claim() : release()),
+  { immediate: true },
+);
+onUnmounted(release);
+
+// True only for the top-most (latest shown) visible instance.
+const isTopMost = computed(
+  () => visibleStack.value[visibleStack.value.length - 1] === uid,
+);
+const showBar = computed(() => props.visible && isTopMost.value);
 
 // Static map so Tailwind keeps these classes during purge.
 const ACCENT_ACTIVE: Record<BottomNavAccent, string> = {
@@ -72,7 +112,7 @@ const onSelect = (item: BottomNavItem): void => {
     <!-- Floating pill nav: the <nav> spans the row but is click-through; only the
          capsule is interactive. The pill hugs its content and stays centered. -->
     <nav
-      v-if="visible"
+      v-if="showBar"
       :aria-label="ariaLabel"
       class="fixed inset-x-0 bottom-0 z-[100] pointer-events-none flex justify-center"
       style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem))"
