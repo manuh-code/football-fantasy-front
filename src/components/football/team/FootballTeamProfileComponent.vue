@@ -23,7 +23,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { elevated: false });
 const emit = defineEmits<{ close: [] }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 // ── Tabs (each one maps to a property of FootballTeamProfileResponse) ──
 type ProfileTab = "team" | "players" | "best_players" | "latest" | "sidelined" | "venue";
@@ -51,6 +51,8 @@ const loadProfile = async (teamUuid: string, stageUuid: string) => {
   activeTab.value = "team";
   try {
     profile.value = await footballTeamService.getTeamProfileByStage(teamUuid, stageUuid);
+    // TEMP DEBUG: inspect next_fixture participants shape
+    console.log("[next_fixture]", JSON.parse(JSON.stringify(profile.value?.next_fixture?.participants)));
   } catch (err) {
     console.error("Error loading team profile:", err);
     loadError.value = t("football.team.loadError");
@@ -108,7 +110,10 @@ const getParticipant = (
   fixture: FootballFixtureResponse,
   location: "home" | "away",
 ): FootballTeamResponse | undefined =>
-  fixture.participants?.find((p) => p.meta?.location === location);
+  // Played fixtures carry meta.location; upcoming ones (e.g. next_fixture) often
+  // don't, so fall back to array order (home = 0, away = 1).
+  fixture.participants?.find((p) => p.meta?.location === location) ??
+  fixture.participants?.[location === "home" ? 0 : 1];
 
 const teamName = (team: FootballTeamResponse | undefined): string =>
   team?.name ?? t("football.team.tbd");
@@ -138,6 +143,39 @@ const resultClass = (fixture: FootballFixtureResponse, location: "home" | "away"
   return team.meta?.winner
     ? "text-emerald-600 dark:text-emerald-400 font-semibold"
     : "text-red-500 dark:text-red-400";
+};
+
+// ── Date formatting (locale-aware) for fixtures ──
+const dateLocale = computed(() => (locale.value === "es" ? "es-ES" : "en-US"));
+
+const formatFixtureDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  return date.toLocaleDateString(dateLocale.value, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+};
+
+const formatFixtureTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString(dateLocale.value, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+// ── Recent form: latest 5 fixtures surfaced on the Team tab ──
+const recentFixtures = computed<FootballFixtureResponse[]>(() =>
+  (profile.value?.latest ?? []).slice(0, 5),
+);
+
+const hasMoreLatest = computed<boolean>(() => (profile.value?.latest.length ?? 0) > 5);
+
+const goToTab = (tab: ProfileTab) => {
+  activeTab.value = tab;
 };
 
 // ── Section emptiness (drive empty states per tab) ──
@@ -246,7 +284,7 @@ const onDragEnd = (e: PointerEvent) => {
             transform: `translateY(${dragOffsetY}px)`,
             transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
           }"
-          class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[92dvh] md:max-h-[88dvh] overflow-hidden pointer-events-auto"
+          class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl h-[92dvh] md:h-[88dvh] overflow-hidden pointer-events-auto"
           role="dialog"
           aria-modal="true"
           :aria-label="$t('football.team.profileAria')"
@@ -350,7 +388,7 @@ const onDragEnd = (e: PointerEvent) => {
             <!-- Error -->
             <div
               v-else-if="loadError"
-              class="px-4 py-16 flex flex-col items-center text-center"
+              class="px-4 min-h-full flex flex-col items-center justify-center text-center"
             >
               <v-icon
                 name="hi-solid-exclamation-circle"
@@ -370,7 +408,7 @@ const onDragEnd = (e: PointerEvent) => {
               <!-- Empty state for the active tab -->
               <div
                 v-if="isEmptyTab"
-                class="px-4 py-16 flex flex-col items-center text-center"
+                class="px-4 min-h-full flex flex-col items-center justify-center text-center"
               >
                 <v-icon
                   name="hi-solid-inbox"
@@ -395,6 +433,62 @@ const onDragEnd = (e: PointerEvent) => {
                     >
                       {{ profile.team.short_code }}
                     </span>
+                  </div>
+
+                  <!-- Next fixture -->
+                  <div v-if="profile.next_fixture">
+                    <p class="text-2xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5 px-1">
+                      {{ $t('football.team.nextMatch') }}
+                    </p>
+                    <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-gray-50 dark:from-emerald-900/20 dark:to-gray-800/40 p-3.5">
+                      <!-- League + kickoff -->
+                      <div class="flex items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                          <img
+                            v-if="profile.next_fixture.league?.image_path"
+                            :src="profile.next_fixture.league.image_path"
+                            :alt="profile.next_fixture.league?.name ?? ''"
+                            class="w-4 h-4 object-contain shrink-0"
+                          />
+                          <span class="text-2xs font-medium text-gray-500 dark:text-gray-400 truncate">
+                            {{ profile.next_fixture.league?.name ?? profile.next_fixture.round?.name ?? '—' }}
+                          </span>
+                        </div>
+                        <span class="shrink-0 text-2xs font-semibold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                          {{ formatFixtureDate(profile.next_fixture.starting_at) }} · {{ formatFixtureTime(profile.next_fixture.starting_at) }}
+                        </span>
+                      </div>
+
+                      <!-- Matchup -->
+                      <div class="flex items-center gap-2">
+                        <div class="flex flex-col items-center gap-1.5 flex-1 min-w-0">
+                          <TeamLogo :team="getParticipant(profile.next_fixture, 'home')" size="lg" variant="square" />
+                          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 text-center truncate w-full">
+                            {{ teamName(getParticipant(profile.next_fixture, 'home')) }}
+                          </span>
+                        </div>
+                        <span class="shrink-0 text-2xs font-bold text-gray-300 dark:text-gray-600 uppercase tracking-wider">
+                          {{ $t('football.team.vs') }}
+                        </span>
+                        <div class="flex flex-col items-center gap-1.5 flex-1 min-w-0">
+                          <TeamLogo :team="getParticipant(profile.next_fixture, 'away')" size="lg" variant="square" />
+                          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 text-center truncate w-full">
+                            {{ teamName(getParticipant(profile.next_fixture, 'away')) }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Venue -->
+                      <div
+                        v-if="profile.next_fixture.venue?.name"
+                        class="flex items-center justify-center gap-1 mt-3 pt-2.5 border-t border-gray-200/60 dark:border-gray-700/50"
+                      >
+                        <v-icon name="hi-solid-location-marker" class="w-3 h-3 text-gray-400 dark:text-gray-500 shrink-0" />
+                        <span class="text-2xs text-gray-400 dark:text-gray-500 truncate">
+                          {{ profile.next_fixture.venue.name }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="grid grid-cols-2 gap-2.5">
@@ -429,6 +523,58 @@ const onDragEnd = (e: PointerEvent) => {
                       <p class="text-footnote font-semibold text-gray-800 dark:text-gray-200 mt-1 truncate">
                         {{ profile.venue?.name ?? "—" }}
                       </p>
+                    </div>
+                  </div>
+
+                  <!-- Recent form (last 5) -->
+                  <div v-if="recentFixtures.length">
+                    <div class="flex items-center justify-between mb-1.5 px-1">
+                      <p class="text-2xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                        {{ $t('football.team.recentForm') }}
+                      </p>
+                      <button
+                        type="button"
+                        @click="goToTab('latest')"
+                        class="inline-flex items-center gap-0.5 text-2xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+                      >
+                        {{ $t('common.actions.viewAll') }}
+                        <v-icon name="hi-solid-chevron-right" class="w-3 h-3" />
+                      </button>
+                    </div>
+                    <div class="space-y-1.5">
+                      <button
+                        v-for="(fixture, fIdx) in recentFixtures"
+                        :key="fixture.uuid || fIdx"
+                        type="button"
+                        @click="goToTab('latest')"
+                        class="w-full flex items-center gap-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <!-- Home -->
+                        <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                          <TeamLogo :team="getParticipant(fixture, 'home')" size="sm" />
+                          <span :class="resultClass(fixture, 'home')" class="text-2xs font-medium truncate">
+                            {{ teamName(getParticipant(fixture, 'home')) }}
+                          </span>
+                        </div>
+
+                        <!-- Score -->
+                        <div class="shrink-0 tabular-nums text-footnote font-bold text-gray-900 dark:text-white">
+                          <template v-if="hasScores(fixture)">
+                            {{ score(getParticipant(fixture, 'home')) }}<span class="text-gray-300 dark:text-gray-600 mx-0.5">-</span>{{ score(getParticipant(fixture, 'away')) }}
+                          </template>
+                          <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">
+                            {{ $t('football.team.vs') }}
+                          </span>
+                        </div>
+
+                        <!-- Away -->
+                        <div class="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                          <span :class="resultClass(fixture, 'away')" class="text-2xs font-medium truncate text-right">
+                            {{ teamName(getParticipant(fixture, 'away')) }}
+                          </span>
+                          <TeamLogo :team="getParticipant(fixture, 'away')" size="sm" />
+                        </div>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -547,7 +693,7 @@ const onDragEnd = (e: PointerEvent) => {
                   >
                     <div class="text-center mb-2">
                       <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
-                        {{ fixture.starting_at }}
+                        {{ formatFixtureDate(fixture.starting_at) }} · {{ formatFixtureTime(fixture.starting_at) }}
                       </span>
                     </div>
                     <div class="flex items-center gap-2">

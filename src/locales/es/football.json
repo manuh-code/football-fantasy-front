@@ -264,6 +264,9 @@
     "topFallback": "Top",
     "tbd": "Por definir",
     "sidelinedFallback": "Baja",
+    "nextMatch": "Próximo partido",
+    "recentForm": "Últimos partidos",
+    "vs": "vs",
     "tabs": {
       "team": "Equipo",
       "players": "Jugadores",

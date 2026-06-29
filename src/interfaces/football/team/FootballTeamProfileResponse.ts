@@ -27,6 +27,7 @@ export interface BestPlayersGroup {
 
 export interface FootballTeamProfileResponse {
     team: FootballTeamResponse;
+    next_fixture: FootballFixtureResponse | null;
     players: TeamPlayerProfile[];
     best_players: BestPlayersGroup[];
     venue: FootballVenueResponse;
