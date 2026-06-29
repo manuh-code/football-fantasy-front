@@ -11,6 +11,9 @@ import type { FootballFixtureResponse } from "@/interfaces/football/fixture/Foot
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import FootballTeamProfileSkeleton from "./FootballTeamProfileSkeleton.vue";
+import { useUserStore } from "@/store/user/useUserStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useToast } from "@/composables/useToast";
 
 interface Props {
   isOpen: boolean;
@@ -24,6 +27,61 @@ const props = withDefaults(defineProps<Props>(), { elevated: false });
 const emit = defineEmits<{ close: [] }>();
 
 const { t, locale } = useI18n();
+
+const userStore = useUserStore();
+const authStore = useAuthStore();
+const toast = useToast();
+
+// ── Follow / unfollow the team ──
+// The user can follow several teams; `favoriteFootballTeam` holds the list.
+// Tapping the star toggles membership: the backend adds the team when it's not
+// followed and removes it when it is, returning the updated user payload.
+const isFollowLoading = ref(false);
+
+const isFollowing = computed<boolean>(() => {
+  const teamUuid = profile.value?.team?.uuid;
+  if (!teamUuid) return false;
+  return (userStore.getUserData?.favoriteFootballTeam ?? []).some(
+    (team) => team.uuid === teamUuid,
+  );
+});
+
+const toggleFollow = async () => {
+  const team = profile.value?.team;
+  if (!team || isFollowLoading.value) return;
+
+  // Following a team requires an authenticated user.
+  if (!authStore.getToken()) {
+    toast.info(
+      t("football.team.follow.loginRequired"),
+      t("football.team.follow.loginRequiredMsg"),
+    );
+    return;
+  }
+
+  const wasFollowing = isFollowing.value;
+  isFollowLoading.value = true;
+  try {
+    if (wasFollowing) {
+      await userStore.unfollowFavoriteTeam(team.uuid);
+      toast.success(
+        t("football.team.follow.unfollowedTitle"),
+        t("football.team.follow.unfollowedMsg", { name: team.name }),
+      );
+    } else {
+      await userStore.updateFavoriteTeam({ teamUuid: team.uuid });
+      toast.success(
+        t("football.team.follow.followedTitle"),
+        t("football.team.follow.followedMsg", { name: team.name }),
+      );
+    }
+  } catch (err) {
+    console.error("Error updating favorite team:", err);
+    toast.error(t("football.team.follow.error"));
+  } finally {
+    isFollowLoading.value = false;
+  }
+};
 
 // ── Tabs (each one maps to a property of FootballTeamProfileResponse) ──
 type ProfileTab = "team" | "players" | "best_players" | "latest" | "sidelined" | "venue";
@@ -336,14 +394,35 @@ const onDragEnd = (e: PointerEvent) => {
                   </div>
                 </div>
               </div>
-              <button
-                @click.stop="emit('close')"
-                @pointerdown.stop
-                class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors shrink-0"
-                :aria-label="$t('common.actions.close')"
-              >
-                <v-icon name="hi-x" class="w-4 h-4" />
-              </button>
+              <div class="flex items-center gap-0.5 shrink-0">
+                <!-- Follow / unfollow -->
+                <button
+                  v-if="profile?.team"
+                  @click.stop="toggleFollow"
+                  @pointerdown.stop
+                  :disabled="isFollowLoading"
+                  class="w-8 h-8 flex items-center justify-center rounded-full transition-colors disabled:opacity-50"
+                  :class="
+                    isFollowing
+                      ? 'text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                      : 'text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  "
+                  :aria-pressed="isFollowing"
+                  :aria-label="isFollowing ? $t('football.team.follow.unfollowAria') : $t('football.team.follow.followAria')"
+                  :title="isFollowing ? $t('football.team.follow.following') : $t('football.team.follow.follow')"
+                >
+                  <v-icon v-if="isFollowLoading" name="pr-spinner" class="w-4 h-4 animate-spin" />
+                  <v-icon v-else :name="isFollowing ? 'hi-solid-star' : 'bi-star'" class="w-5 h-5" />
+                </button>
+                <button
+                  @click.stop="emit('close')"
+                  @pointerdown.stop
+                  class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  :aria-label="$t('common.actions.close')"
+                >
+                  <v-icon name="hi-x" class="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 

@@ -229,6 +229,7 @@ const applyStages = (res: FootballStageResponse[]) => {
   const currentStage = res.find((s) => s.is_current === true) || res[0];
   selectedStageUuid.value = currentStage.uuid;
   selectedSeasonUuid.value = currentStage.season_uuid;
+  store.setCurrentStageUuid(currentStage.uuid);
 };
 
 /**
@@ -272,6 +273,11 @@ const fetchStages = async () => {
 // Re-fetch stages when the league changes.
 watch(() => store.getLeague, () => {
   fetchStages();
+});
+
+// Persist stage selection so other views (e.g. FavoriteTeam) can open the team drawer.
+watch(selectedStageUuid, (uuid) => {
+  if (uuid) store.setCurrentStageUuid(uuid);
 });
 
 // ── Bottom-sheet drawer ──

@@ -267,6 +267,19 @@
     "nextMatch": "Próximo partido",
     "recentForm": "Últimos partidos",
     "vs": "vs",
+    "follow": {
+      "follow": "Seguir",
+      "following": "Siguiendo",
+      "followAria": "Seguir este equipo",
+      "unfollowAria": "Dejar de seguir este equipo",
+      "loginRequired": "Inicia sesión",
+      "loginRequiredMsg": "Inicia sesión para seguir a tus equipos favoritos.",
+      "followedTitle": "¡Equipo guardado!",
+      "followedMsg": "Ahora sigues a {name}.",
+      "unfollowedTitle": "Dejaste de seguir",
+      "unfollowedMsg": "Dejaste de seguir a {name}.",
+      "error": "No pudimos actualizar este equipo. Inténtalo de nuevo."
+    },
     "tabs": {
       "team": "Equipo",
       "players": "Jugadores",

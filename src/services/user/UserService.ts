@@ -71,11 +71,19 @@ export class UserService {
     }
 
     async updateFavoriteTeam(payload: FavoriteTeamPayload): Promise<UserDataInterface> {
-        const response = await this.api.post<ApiResponse<UserDataInterface>>('user/store/favorite/team', payload);
+        const response = await this.api.post<ApiResponse<UserDataInterface>>('user/store/favorite/teams', payload);
         if (response.data.code === 200) {
             return response.data.data;
         }
         throw new AxiosError('Failed to update favorite team');
+    }
+
+    async unfollowFavoriteTeam(teamUuid: string): Promise<UserDataInterface> {
+        const response = await this.api.delete<ApiResponse<UserDataInterface>>(`user/favorite/teams/${teamUuid}/unfollow`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to unfollow favorite team');
     }
 
     async getUserFantasyLeagues(): Promise<FantasyLeaguesResponse[]> {

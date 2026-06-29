@@ -8,6 +8,6 @@ export interface UserDataInterface {
     email: string | null;
     phone: string | null;
     avatar: string | null;
-    favoriteFootballTeam: FootballTeamResponse | null;
+    favoriteFootballTeam: FootballTeamResponse[] | null;
     football_league: FootballLeagueResponse | null;
 }

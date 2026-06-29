@@ -193,6 +193,22 @@
     "updating": "Actualizando equipo...",
     "setting": "Estableciendo equipo...",
     "updateBtn": "Actualizar equipo favorito",
-    "setBtn": "Establecer equipo favorito"
+    "setBtn": "Establecer equipo favorito",
+    "following": {
+      "title": "Equipos que sigues",
+      "subtitle": "Los equipos de fútbol a los que sigues",
+      "count": "sin equipos | {count} equipo | {count} equipos",
+      "loading": "Cargando tus equipos...",
+      "loadError": "No pudimos cargar tus equipos. Inténtalo de nuevo.",
+      "empty": {
+        "title": "Aún no sigues a ningún equipo",
+        "subtitle": "Abre el perfil de un equipo y toca la estrella para empezar a seguirlo.",
+        "cta": "Explorar juegos"
+      },
+      "unfollowAria": "Dejar de seguir a {name}",
+      "unfollowedTitle": "Dejaste de seguir",
+      "unfollowedMsg": "Dejaste de seguir a {name}.",
+      "error": "No pudimos actualizar este equipo. Inténtalo de nuevo."
+    }
   }
 }

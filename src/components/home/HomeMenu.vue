@@ -39,12 +39,14 @@ const items = computed<BottomNavItem[]>(() => [
     accent: "emerald",
   },
   { key: "gaming", label: t("home.nav.gaming"), icon: "bi-trophy-fill", accent: "emerald" },
+  { key: "following", label: t("home.nav.following"), icon: "hi-solid-star", accent: "emerald" },
 ]);
 
 const activeKey = computed(() => {
   if (route.name === "gaming") return "gaming";
   if (route.name === "footballLeagues") return "leagues";
   if (route.name === "home") return "home";
+  if (route.name === "favorite-football-team") return "following";
   return "";
 });
 
@@ -55,6 +57,8 @@ function onSelect(key: string) {
     router.push({ name: "footballLeagues" });
   } else if (key === "home") {
     router.push({ name: "home" });
+  } else if (key === "following") {
+    router.push({ name: "favorite-football-team" });
   }
 }
 </script>

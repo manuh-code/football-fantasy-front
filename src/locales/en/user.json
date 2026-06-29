@@ -193,6 +193,22 @@
     "updating": "Updating Team...",
     "setting": "Setting Team...",
     "updateBtn": "Update Favorite Team",
-    "setBtn": "Set Favorite Team"
+    "setBtn": "Set Favorite Team",
+    "following": {
+      "title": "Teams you follow",
+      "subtitle": "The football teams you're following",
+      "count": "no teams | {count} team | {count} teams",
+      "loading": "Loading your teams...",
+      "loadError": "We couldn't load your teams. Please try again.",
+      "empty": {
+        "title": "You're not following any team yet",
+        "subtitle": "Open a team's profile and tap the star to start following it.",
+        "cta": "Explore games"
+      },
+      "unfollowAria": "Unfollow {name}",
+      "unfollowedTitle": "Unfollowed",
+      "unfollowedMsg": "You stopped following {name}.",
+      "error": "We couldn't update this team. Please try again."
+    }
   }
 }
