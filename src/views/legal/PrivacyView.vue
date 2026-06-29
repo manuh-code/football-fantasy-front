@@ -206,9 +206,58 @@
 
         <h2>10. Medidas de seguridad</h2>
         <p>
-          Implementamos medidas de seguridad administrativas, técnicas y físicas razonables para
-          proteger tus datos personales contra daño, pérdida, alteración, destrucción o uso, acceso
-          o tratamiento no autorizados.
+          Hemos adoptado y mantenemos medidas de seguridad administrativas, técnicas y físicas para
+          proteger tus datos personales contra daño, pérdida, alteración, destrucción o uso, acceso o
+          tratamiento no autorizados, conforme a los artículos 19 de la Ley y 57 a 60 de su
+          Reglamento. Entre dichas medidas se encuentran:
+        </p>
+        <h3>10.1 Medidas técnicas</h3>
+        <ul>
+          <li>
+            Tus datos se almacenan en una base de datos transaccional alojada en un servidor privado
+            virtual (VPS) gestionado a través de proveedores de hospedaje que aplican estándares de
+            seguridad reconocidos.
+          </li>
+          <li>
+            Cifrado de la información en tránsito mediante protocolos seguros (HTTPS/TLS) entre la
+            aplicación y nuestros servidores.
+          </li>
+          <li>
+            El inicio de sesión se realiza mediante proveedores de autenticación externos (Google),
+            por lo que no almacenamos contraseñas de acceso. En caso de habilitar el registro con
+            contraseña, ésta se almacenaría cifrada (hash) y nunca en texto plano.
+          </li>
+          <li>
+            Acceso restringido al servidor mediante autenticación por claves SSH y cortafuegos
+            (firewall) activo para prevenir accesos no autorizados.
+          </li>
+          <li>
+            Respaldos (copias de seguridad) periódicos para reducir el riesgo de pérdida de
+            información.
+          </li>
+        </ul>
+        <h3>10.2 Medidas administrativas</h3>
+        <ul>
+          <li>
+            El acceso a los datos personales se limita al personal que requiere conocerlos para
+            cumplir las finalidades descritas, bajo deberes de confidencialidad.
+          </li>
+          <li>Políticas internas para el tratamiento, conservación y eliminación segura de los datos.</li>
+        </ul>
+        <h3>10.3 Medidas físicas</h3>
+        <ul>
+          <li>
+            Los servidores donde se alojan los datos se ubican en centros de datos operados por
+            nuestros proveedores de infraestructura, que cuentan con controles de acceso físico,
+            vigilancia y medidas de protección ambiental.
+          </li>
+        </ul>
+        <p>
+          Ningún sistema de almacenamiento o transmisión de información es completamente infalible,
+          por lo que no podemos garantizar una seguridad absoluta; no obstante, trabajamos
+          continuamente para proteger tu información. En caso de que ocurra una vulneración de
+          seguridad que afecte de forma significativa tus datos personales, te lo notificaremos
+          conforme a lo previsto en la Ley.
         </p>
 
         <h2>11. Menores de edad</h2>

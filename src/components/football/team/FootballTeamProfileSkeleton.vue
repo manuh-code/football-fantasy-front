@@ -18,6 +18,26 @@
       <div class="h-2.5 w-12 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse" />
     </div>
 
+    <!-- Next fixture card -->
+    <div class="h-2.5 w-20 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse mb-2.5 ml-1" />
+    <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 p-3.5 mb-5">
+      <div class="flex items-center justify-between mb-3">
+        <div class="h-2.5 w-24 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
+        <div class="h-2.5 w-16 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
+      </div>
+      <div class="flex items-center justify-around gap-2">
+        <div class="flex flex-col items-center gap-1.5 flex-1">
+          <div class="w-12 h-12 rounded-md bg-gray-100 dark:bg-gray-700 animate-pulse" />
+          <div class="h-2.5 w-14 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
+        </div>
+        <div class="h-3 w-5 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
+        <div class="flex flex-col items-center gap-1.5 flex-1">
+          <div class="w-12 h-12 rounded-md bg-gray-100 dark:bg-gray-700 animate-pulse" />
+          <div class="h-2.5 w-14 rounded-full bg-gray-100 dark:bg-gray-700 animate-pulse" />
+        </div>
+      </div>
+    </div>
+
     <!-- Quick-fact cards -->
     <div class="grid grid-cols-2 gap-2.5 mb-5">
       <div
