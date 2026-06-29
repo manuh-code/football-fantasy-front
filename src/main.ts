@@ -40,3 +40,15 @@ app.use(i18n);
 
 // Mount the app
 app.mount('#app')
+
+// Hide the splash screen (defined inline in index.html) once the app is ready.
+function hideSplash() {
+  const splash = document.getElementById('app-splash')
+  if (!splash) return
+  splash.classList.add('is-hidden')
+  splash.addEventListener('transitionend', () => splash.remove(), { once: true })
+  // Fallback in case transitionend doesn't fire (e.g. reduced motion).
+  setTimeout(() => splash.remove(), 600)
+}
+// Wait for the app's first paint before starting the fade-out.
+requestAnimationFrame(() => requestAnimationFrame(hideSplash))
