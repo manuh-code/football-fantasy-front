@@ -5,7 +5,8 @@ import { defineStore } from 'pinia'
 export const useFootballLeagueStore = defineStore("footballLeague", {
 
     state: () => ({
-        league: null as FootballLeagueResponse | null
+        league: null as FootballLeagueResponse | null,
+        currentStageUuid: null as string | null,
     }),
 
     actions: {
@@ -23,13 +24,20 @@ export const useFootballLeagueStore = defineStore("footballLeague", {
         },
         getCurrentFootballSeason(): FootballSeasonResponse | null {
             return this.league?.current_season || null
-        }
+        },
+        setCurrentStageUuid(uuid: string): void {
+            this.currentStageUuid = uuid;
+        },
+        getCurrentStageUuid(): string | null {
+            return this.currentStageUuid;
+        },
     },
     getters: {
         getLeague: (state) => state.league
     },
     persist: {
-        storage: localStorage
+        storage: localStorage,
+        pick: ["league", "currentStageUuid"],
     }
 
 });

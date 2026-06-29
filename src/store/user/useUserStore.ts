@@ -25,7 +25,7 @@ export const useUserStore = defineStore("user", {
     getAvatarUrl(): string | null {
       return this.userData?.avatar || null;
     },
-    getFavoriteTeam(): FootballTeamResponse | null {
+    getFavoriteTeam(): FootballTeamResponse[] | null {
       return this.userData?.favoriteFootballTeam || null;
     },
     getUserFantasyLeagues(): FantasyLeaguesResponse[] | null {
@@ -67,6 +67,10 @@ export const useUserStore = defineStore("user", {
     },
     async updateFavoriteTeam(payload: { teamUuid: string }): Promise<void> {
       const response = await getUserService().updateFavoriteTeam(payload);
+      this.setUserData(response);
+    },
+    async unfollowFavoriteTeam(teamUuid: string): Promise<void> {
+      const response = await getUserService().unfollowFavoriteTeam(teamUuid);
       this.setUserData(response);
     },
     async getUserFantasyLeaguesFromApi(): Promise<void> {

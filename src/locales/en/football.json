@@ -267,6 +267,19 @@
     "nextMatch": "Next match",
     "recentForm": "Recent matches",
     "vs": "vs",
+    "follow": {
+      "follow": "Follow",
+      "following": "Following",
+      "followAria": "Follow this team",
+      "unfollowAria": "Unfollow this team",
+      "loginRequired": "Sign in required",
+      "loginRequiredMsg": "Sign in to follow your favorite teams.",
+      "followedTitle": "Team saved!",
+      "followedMsg": "You are now following {name}.",
+      "unfollowedTitle": "Unfollowed",
+      "unfollowedMsg": "You stopped following {name}.",
+      "error": "We couldn't update this team. Please try again."
+    },
     "tabs": {
       "team": "Team",
       "players": "Players",
