@@ -11,6 +11,7 @@
     <div class="container mx-auto px-4 max-w-3xl space-y-4">
       <!-- Back -->
       <button
+        v-if="!props.isModal"
         type="button"
         @click="goBack"
         class="inline-flex items-center gap-1.5 text-footnote font-medium text-gray-500 dark:text-gray-400 active:text-emerald-500 transition-colors"
@@ -297,6 +298,8 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+
+const props = withDefaults(defineProps<{ isModal?: boolean }>(), { isModal: false });
 
 const { t } = useI18n();
 document.title = t("legal.privacy.docTitle");

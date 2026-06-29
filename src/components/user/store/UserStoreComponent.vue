@@ -153,7 +153,7 @@
               {{ $t('auth.register.agreePrefix') }}
               <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.termsLink') }}</a>
               {{ $t('auth.register.agreeAnd') }}
-              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.privacyPolicyLink') }}</a>
+              <a href="#" @click.prevent="showPrivacyModal = true" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.privacyPolicyLink') }}</a>
             </span>
           </label>
           <p v-if="errors.terms" class="mt-1.5 text-xs text-red-500 dark:text-red-400">
@@ -196,6 +196,35 @@
       </p>
     </div>
   </div>
+
+  <!-- Privacy policy modal -->
+  <Teleport to="body">
+    <Transition name="privacy-modal">
+      <div
+        v-if="showPrivacyModal"
+        class="fixed inset-0 z-50 flex flex-col bg-gray-50 dark:bg-gray-900 overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+      >
+        <!-- Close bar -->
+        <div class="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <span class="text-sm font-semibold text-gray-900 dark:text-white">
+            {{ $t('auth.register.privacyPolicyLink') }}
+          </span>
+          <button
+            type="button"
+            @click="showPrivacyModal = false"
+            class="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            :aria-label="$t('common.actions.close')"
+          >
+            <v-icon name="hi-solid-x" class="w-4 h-4" />
+          </button>
+        </div>
+
+        <PrivacyView :is-modal="true" />
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -203,6 +232,7 @@ import { ref, computed, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { FormInput, ButtonComponent } from '@/components/ui';
+import PrivacyView from '@/views/legal/PrivacyView.vue';
 import { UserStorePayload } from '@/interfaces/user/store/userStorePayload';
 import { getUserService } from '@/services/user/UserService';
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -240,6 +270,8 @@ const isGoogleLoading: Ref<boolean> = ref(false);
 // Social signup is the primary path; the email form stays collapsed until the
 // user explicitly chooses "Sign up with email".
 const showEmailForm = ref(false);
+
+const showPrivacyModal = ref(false);
 
 // Terms acceptance
 const acceptTerms: Ref<boolean> = ref(false);
@@ -441,13 +473,18 @@ const handleRegister = async () => {
 
     isLoading.value = true;
 
+    // Keep the credentials before we clear the form so we can sign the user in
+    // automatically once the account is created.
+    const email = payload.value.email;
+    const password = payload.value.password;
+
     try {
         await getUserService().userStore(payload.value);
 
         // Show success message
         toast.success(
-            'Account created!',
-            'Your account has been created successfully. You can now sign in.'
+            t('auth.register.success.title'),
+            t('auth.register.success.message')
         );
 
         // Clear form
@@ -460,8 +497,19 @@ const handleRegister = async () => {
         };
         acceptTerms.value = false;
 
-        // Redirect to login
-        await router.push('/login');
+        // Sign the user in automatically with the credentials they just used,
+        // then send them to the gaming hub (or the page they were headed to).
+        // If the auto-login fails (e.g. a network hiccup), the account still
+        // exists, so fall back to the login screen instead of leaving the user
+        // stranded on the register form.
+        try {
+            await authStore.login({ email, password, device_name: 'web', remember: true });
+            const redirectTo = (route.query.redirect as string) || '/gaming';
+            await router.push(redirectTo);
+        } catch (loginError) {
+            console.error('Auto-login after registration failed:', loginError);
+            await router.push({ path: '/login', query: route.query });
+        }
 
     } catch (error) {
         if (error instanceof AxiosError && error.response) {
@@ -521,10 +569,27 @@ const handleRegister = async () => {
     }
 }
 
+/* Privacy policy modal slide-up */
+.privacy-modal-enter-active {
+    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.privacy-modal-leave-active {
+    transition: opacity 0.15s ease, transform 0.2s ease;
+}
+.privacy-modal-enter-from,
+.privacy-modal-leave-to {
+    opacity: 0;
+    transform: translateY(16px);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .register-card,
     .reveal-form {
         animation: none;
+    }
+    .privacy-modal-enter-active,
+    .privacy-modal-leave-active {
+        transition: none;
     }
 }
 </style>
