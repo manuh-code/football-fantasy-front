@@ -14,17 +14,40 @@
       :aria-label="$t('pool.group.nav')"
       @select="onSelect"
     />
+
+    <!-- Visita guiada de la quiniela: solo la primera vez (o tras "Ver de nuevo"). -->
+    <OnboardingTour :is-visible="showOnboarding" :steps="POOL_STEPS" @finish="finishOnboarding" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import PoolGroupComponent from "@/components/pool/PoolGroupComponent.vue";
+import OnboardingTour from "@/components/onboarding/OnboardingTour.vue";
+import { POOL_STEPS } from "@/components/onboarding/onboardingSteps";
+import { useOnboardingStore } from "@/store/onboarding";
 
 const { t } = useI18n();
+
+const onboarding = useOnboardingStore();
+const showOnboarding = ref(false);
+
+const finishOnboarding = () => {
+  onboarding.markPoolSeen();
+  showOnboarding.value = false;
+};
+
+// Mostrar la guía la primera vez que se abre el detalle de una quiniela.
+onMounted(() => {
+  if (!onboarding.poolSeen) {
+    setTimeout(() => {
+      if (!onboarding.poolSeen) showOnboarding.value = true;
+    }, 700);
+  }
+});
 
 // Set page title
 document.title = t("pool.group.docTitle");

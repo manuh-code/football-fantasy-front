@@ -31,8 +31,9 @@
     </transition>
 
     <!-- Header Menu - Fixed at top, outside transform context.
-         Hidden on Home, which renders its own HomeHeaderMenu (brand + stage switcher + profile). -->
-    <HeaderMenu v-if="!isHomeRoute" />
+         Hidden on Home (renders its own HomeHeaderMenu) and on the landing page
+         (a standalone marketing page with its own header). -->
+    <HeaderMenu v-if="!isHomeRoute && !isLandingRoute" />
 
     <!-- Main Content with Swipe Transform -->
     <div
@@ -46,7 +47,9 @@
           : 'transform 0.3s ease-out',
       }"
     >
-      <main class="flex-1 pb-24 main-content-safe">
+      <!-- The landing page is full-bleed: drop the bottom padding and the
+           header-reserved top padding so its hero sits flush at the top. -->
+      <main class="flex-1" :class="isLandingRoute ? '' : 'pb-24 main-content-safe'">
         <router-view />
       </main>
 
@@ -84,6 +87,8 @@ const router = useRouter();
 
 // Home renders its own header (HomeHeaderMenu); hide the global one there.
 const isHomeRoute = computed(() => router.currentRoute.value.name === "home");
+// Landing is a standalone marketing page with its own header + footer.
+const isLandingRoute = computed(() => router.currentRoute.value.name === "landingpage");
 const { requestPermissionAndRegister, onForegroundMessage } =
   usePushNotifications();
 const toast = useToast();
