@@ -1,0 +1,53 @@
+{
+  "actions": {
+    "skip": "Saltar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "start": "¡Empezar!"
+  },
+  "progress": "Paso {current} de {total}",
+  "home": {
+    "step1": {
+      "title": "¡Bienvenido!",
+      "body": "Sigue a tu liga, consulta resultados y compite con tus amigos. Te mostramos lo básico en unos segundos."
+    },
+    "step2": {
+      "title": "Elige tu liga y jornada",
+      "body": "Desde el botón de arriba puedes cambiar de liga y de jornada para ver justo lo que te interesa."
+    },
+    "step3": {
+      "title": "Explora las secciones",
+      "body": "Cambia entre Clasificación, Partidos, Estadísticas, Comparativa y el Equipo de la semana con las pestañas."
+    },
+    "step4": {
+      "title": "Tu perfil y tus quinielas",
+      "body": "Usa la barra inferior para moverte por la app y entra a tu perfil. En Quinielas compites prediciendo resultados."
+    }
+  },
+  "pool": {
+    "step1": {
+      "title": "Tu quiniela",
+      "body": "Aquí predices los marcadores de los partidos y compites por el primer puesto con el resto de participantes."
+    },
+    "step2": {
+      "title": "Info, Predicciones y Clasificación",
+      "body": "Con la barra inferior cambias entre la info de la quiniela, tus predicciones y la clasificación del grupo."
+    },
+    "step3": {
+      "title": "Haz tus predicciones",
+      "body": "En Predicciones, ajusta el marcador de cada partido con los botones + y −. Se guarda automáticamente."
+    },
+    "step4": {
+      "title": "Compite e invita",
+      "body": "Mira tu posición en la Clasificación y comparte el código de acceso para invitar a tus amigos."
+    }
+  },
+  "replay": {
+    "title": "Tutorial",
+    "subtitle": "Vuelve a ver la guía de uso",
+    "label": "Visita guiada",
+    "description": "Repasa cómo usar el inicio y las quinielas",
+    "button": "Ver de nuevo",
+    "toast": "Te mostraremos la guía de nuevo"
+  }
+}

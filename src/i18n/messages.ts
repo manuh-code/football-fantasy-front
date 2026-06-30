@@ -14,6 +14,8 @@ import esPool from '@/locales/es/pool.json'
 import esPwa from '@/locales/es/pwa.json'
 import esLegal from '@/locales/es/legal.json'
 import esDashboard from '@/locales/es/dashboard.json'
+import esOnboarding from '@/locales/es/onboarding.json'
+import esLanding from '@/locales/es/landing.json'
 
 import enCommon from '@/locales/en/common.json'
 import enErrors from '@/locales/en/errors.json'
@@ -27,6 +29,8 @@ import enPool from '@/locales/en/pool.json'
 import enPwa from '@/locales/en/pwa.json'
 import enLegal from '@/locales/en/legal.json'
 import enDashboard from '@/locales/en/dashboard.json'
+import enOnboarding from '@/locales/en/onboarding.json'
+import enLanding from '@/locales/en/landing.json'
 
 export const messages = {
   es: {
@@ -42,6 +46,8 @@ export const messages = {
     pwa: esPwa,
     legal: esLegal,
     dashboard: esDashboard,
+    onboarding: esOnboarding,
+    landing: esLanding,
   },
   en: {
     common: enCommon,
@@ -56,5 +62,7 @@ export const messages = {
     pwa: enPwa,
     legal: enLegal,
     dashboard: enDashboard,
+    onboarding: enOnboarding,
+    landing: enLanding,
   },
 } as const

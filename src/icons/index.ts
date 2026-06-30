@@ -68,6 +68,8 @@ import {
   HiSolidClipboardList,
   HiSolidViewGrid,
   HiSolidShieldExclamation,
+  HiSolidUserCircle,
+  HiSolidAcademicCap,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -218,6 +220,8 @@ export const iconList = [
   HiSolidChevronDoubleLeft,
   HiSolidChevronDoubleRight,
   HiSolidViewGrid,
+  HiSolidUserCircle,
+  HiSolidAcademicCap,
 
   // Theme icons
   HiSolidSun,

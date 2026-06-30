@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "Football Fantasy — Live your league and challenge your friends",
+    "description": "Follow your league live, create pools with your friends and build your fantasy team. Free and on your phone."
+  },
+  "brand": "Football Fantasy",
+  "nav": {
+    "features": "Features",
+    "how": "How it works",
+    "login": "Sign in",
+    "signup": "Sign up"
+  },
+  "hero": {
+    "badge": "Your league · Your friends · Your team",
+    "titleLine1": "Live your league.",
+    "titleLine2": "Challenge your friends.",
+    "subtitle": "Follow live scores and stats, create pools with your group and build your fantasy team. All in one place, completely free.",
+    "ctaPrimary": "Create a free account",
+    "ctaSecondary": "Explore the app",
+    "note": "No cost · No card · Install it on your phone"
+  },
+  "stats": {
+    "leagues": { "value": "Multi-league", "label": "Follow your favorite leagues" },
+    "pools": { "value": "Pools", "label": "Compete with your friends" },
+    "free": { "value": "100% free", "label": "No payments, no annoying ads" }
+  },
+  "features": {
+    "title": "Everything you need to live football",
+    "subtitle": "Scores, competition and fun with your people, in a single app.",
+    "items": {
+      "live": {
+        "title": "Follow your league live",
+        "body": "Standings, fixtures, stats and the team of the week, always up to date."
+      },
+      "pools": {
+        "title": "Pools with friends",
+        "body": "Predict the scores, climb the leaderboard and invite your group with a code."
+      },
+      "fantasy": {
+        "title": "Fantasy League",
+        "body": "Build your team, draft your players and design your own crest."
+      },
+      "versus": {
+        "title": "Compare and analyze",
+        "body": "Put two players head to head and find out who performs best."
+      },
+      "notifications": {
+        "title": "Instant notifications",
+        "body": "Get notified the moment your draft starts or there's news in your league."
+      },
+      "pwa": {
+        "title": "Install it as an app",
+        "body": "Works on your phone like a native app, no app store required."
+      }
+    }
+  },
+  "how": {
+    "title": "Get started in 3 steps",
+    "subtitle": "In less than a minute you're already competing.",
+    "steps": {
+      "one": {
+        "title": "Create your account",
+        "body": "Sign up for free with your email or Google in seconds."
+      },
+      "two": {
+        "title": "Pick your league",
+        "body": "Select your favorite league and start following every matchday."
+      },
+      "three": {
+        "title": "Create or join a pool",
+        "body": "Invite your friends with a code and let the best one win."
+      }
+    }
+  },
+  "cta": {
+    "title": "Ready to play?",
+    "subtitle": "Join for free and prove you know more about football than your friends.",
+    "button": "Create my free account",
+    "secondary": "I already have an account"
+  },
+  "footer": {
+    "tagline": "Live your league. Challenge your friends.",
+    "product": "Product",
+    "features": "Features",
+    "how": "How it works",
+    "explore": "Explore the app",
+    "account": "Account",
+    "login": "Sign in",
+    "signup": "Sign up",
+    "legal": "Legal",
+    "privacy": "Privacy notice",
+    "rights": "All rights reserved."
+  }
+}

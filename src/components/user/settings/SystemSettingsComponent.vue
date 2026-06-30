@@ -151,6 +151,35 @@
         </p>
       </div>
     </div>
+
+    <!-- Tutorial / Guided tour -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $t('onboarding.replay.title') }}</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('onboarding.replay.subtitle') }}</p>
+      </div>
+
+      <div class="p-5">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-emerald-50 dark:bg-emerald-900/30 flex-shrink-0">
+              <v-icon name="hi-solid-academic-cap" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('onboarding.replay.label') }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $t('onboarding.replay.description') }}</p>
+            </div>
+          </div>
+
+          <button
+            @click="replayTutorial"
+            class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 active:scale-95 transition-all"
+          >
+            {{ $t('onboarding.replay.button') }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -158,16 +187,27 @@
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/store/theme'
 import { useLocaleStore } from '@/store/locale'
 import { usePushNotifications } from '@/composables/usePushNotifications'
 import { useNotificationsStore } from '@/store/notifications'
+import { useOnboardingStore } from '@/store/onboarding'
 import { useToast } from '@/composables'
 
 const themeStore = useThemeStore()
 const localeStore = useLocaleStore()
+const router = useRouter()
+const onboardingStore = useOnboardingStore()
 const { t } = useI18n()
 const toast = useToast()
+
+// Reinicia las guías y vuelve al Home, donde la visita guiada se mostrará de nuevo.
+async function replayTutorial() {
+  onboardingStore.replay()
+  toast.info(t('onboarding.replay.title'), t('onboarding.replay.toast'))
+  await router.push({ name: 'home' })
+}
 const { requestPermissionAndRegister, unregisterToken } = usePushNotifications()
 const notificationsStore = useNotificationsStore()
 const { fcmToken, isTokenRegistered } = storeToRefs(notificationsStore)

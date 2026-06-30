@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "Football Fantasy — Vive tu liga y reta a tus amigos",
+    "description": "Sigue tu liga en vivo, crea quinielas con tus amigos y arma tu equipo fantasy. Gratis y desde tu móvil."
+  },
+  "brand": "Football Fantasy",
+  "nav": {
+    "features": "Funciones",
+    "how": "Cómo funciona",
+    "login": "Iniciar sesión",
+    "signup": "Crear cuenta"
+  },
+  "hero": {
+    "badge": "Tu liga · Tus amigos · Tu equipo",
+    "titleLine1": "Vive tu liga.",
+    "titleLine2": "Reta a tus amigos.",
+    "subtitle": "Sigue resultados y estadísticas en vivo, crea quinielas con tu grupo y arma tu equipo fantasy. Todo en un solo lugar, totalmente gratis.",
+    "ctaPrimary": "Crear cuenta gratis",
+    "ctaSecondary": "Explorar la app",
+    "note": "Sin costo · Sin tarjeta · Instálala en tu móvil"
+  },
+  "stats": {
+    "leagues": { "value": "Multiliga", "label": "Sigue tus ligas favoritas" },
+    "pools": { "value": "Quinielas", "label": "Compite con tus amigos" },
+    "free": { "value": "100% gratis", "label": "Sin pagos ni anuncios molestos" }
+  },
+  "features": {
+    "title": "Todo lo que necesitas para vivir el fútbol",
+    "subtitle": "Resultados, competencia y diversión con tu gente, en una sola app.",
+    "items": {
+      "live": {
+        "title": "Sigue tu liga en vivo",
+        "body": "Posiciones, partidos, estadísticas y el equipo de la semana siempre actualizados."
+      },
+      "pools": {
+        "title": "Quinielas con amigos",
+        "body": "Predice los marcadores, sube en la clasificación e invita a tu grupo con un código."
+      },
+      "fantasy": {
+        "title": "Liga Fantasy",
+        "body": "Crea tu equipo, haz el draft de jugadores y diseña tu propio escudo."
+      },
+      "versus": {
+        "title": "Compara y analiza",
+        "body": "Enfrenta a dos jugadores cara a cara y descubre quién rinde mejor."
+      },
+      "notifications": {
+        "title": "Notificaciones al instante",
+        "body": "Entérate al momento cuando empieza tu draft o hay novedades en tu liga."
+      },
+      "pwa": {
+        "title": "Instálala como app",
+        "body": "Funciona en tu móvil como una app nativa, sin pasar por ninguna tienda."
+      }
+    }
+  },
+  "how": {
+    "title": "Empieza en 3 pasos",
+    "subtitle": "En menos de un minuto ya estás compitiendo.",
+    "steps": {
+      "one": {
+        "title": "Crea tu cuenta",
+        "body": "Regístrate gratis con tu correo o con Google en segundos."
+      },
+      "two": {
+        "title": "Elige tu liga",
+        "body": "Selecciona tu liga favorita y empieza a seguir cada jornada."
+      },
+      "three": {
+        "title": "Crea o únete a una quiniela",
+        "body": "Invita a tus amigos con un código y que gane el que más sabe."
+      }
+    }
+  },
+  "cta": {
+    "title": "¿Listo para jugar?",
+    "subtitle": "Únete gratis y demuestra que sabes más de fútbol que tus amigos.",
+    "button": "Crear mi cuenta gratis",
+    "secondary": "Ya tengo cuenta"
+  },
+  "footer": {
+    "tagline": "Vive tu liga. Reta a tus amigos.",
+    "product": "Producto",
+    "features": "Funciones",
+    "how": "Cómo funciona",
+    "explore": "Explorar la app",
+    "account": "Cuenta",
+    "login": "Iniciar sesión",
+    "signup": "Crear cuenta",
+    "legal": "Legal",
+    "privacy": "Aviso de privacidad",
+    "rights": "Todos los derechos reservados."
+  }
+}

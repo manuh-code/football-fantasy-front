@@ -43,6 +43,7 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'not-found',
   'footballLeagues',
   'privacy',
+  'landingpage',
 ])
 
 const routes: Array<RouteRecordRaw> = [
@@ -53,6 +54,17 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Home - Football Fantasy',
       description: 'Football Fantasy main page',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/landingpage',
+    name: 'landingpage',
+    // Public marketing page aimed at acquiring new users (anonymous-friendly).
+    component: () => import(/* webpackChunkName: "landingpage" */ '@/views/landing/LandingView.vue'),
+    meta: {
+      title: 'Football Fantasy — Vive tu liga y reta a tus amigos',
+      description: 'Sigue tu liga en vivo, crea quinielas con tus amigos y arma tu equipo fantasy. Gratis y desde tu móvil.',
       requiresAuth: false
     }
   },
@@ -359,6 +371,12 @@ router.beforeEach(async (to, from, next) => {
   // If user is authenticated and trying to access login or register page, redirect to dashboard
   if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
     return next({ name: "dashboard" });
+  }
+
+  // The landing page is a marketing page for new (anonymous) users. If an
+  // authenticated user lands on it, send them straight into the app.
+  if (to.name === 'landingpage' && isAuthenticated) {
+    return next({ name: "home" });
   }
 
   // League gate: a football league must be selected to use the app. Without one,

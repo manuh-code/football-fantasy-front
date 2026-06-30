@@ -1,0 +1,53 @@
+{
+  "actions": {
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "start": "Get started!"
+  },
+  "progress": "Step {current} of {total}",
+  "home": {
+    "step1": {
+      "title": "Welcome!",
+      "body": "Follow your league, check results and compete with your friends. Here's a quick look at the basics."
+    },
+    "step2": {
+      "title": "Pick your league and round",
+      "body": "Use the button at the top to switch league and round so you see exactly what you care about."
+    },
+    "step3": {
+      "title": "Explore the sections",
+      "body": "Switch between Standings, Fixtures, Statistics, Versus and Team of the Week using the tabs."
+    },
+    "step4": {
+      "title": "Your profile and pools",
+      "body": "Use the bottom bar to move around the app and open your profile. In Pools you compete by predicting results."
+    }
+  },
+  "pool": {
+    "step1": {
+      "title": "Your pool",
+      "body": "Here you predict match scores and compete for first place against the rest of the participants."
+    },
+    "step2": {
+      "title": "Info, Predictions and Standings",
+      "body": "Use the bottom bar to switch between the pool's info, your predictions and the group standings."
+    },
+    "step3": {
+      "title": "Make your predictions",
+      "body": "In Predictions, adjust each match score with the + and − buttons. It saves automatically."
+    },
+    "step4": {
+      "title": "Compete and invite",
+      "body": "Check your position in the Standings and share the access code to invite your friends."
+    }
+  },
+  "replay": {
+    "title": "Tutorial",
+    "subtitle": "Watch the usage guide again",
+    "label": "Guided tour",
+    "description": "Review how to use the home and pools",
+    "button": "Watch again",
+    "toast": "We'll show you the guide again"
+  }
+}
