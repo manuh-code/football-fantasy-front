@@ -4,7 +4,7 @@
 
       <!-- Game Mode Cards — compact iOS-style -->
       <!-- Fantasy Card -->
-
+<!-- 
       <button
         @click="handleNavigation('fantasy')"
         class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden active:scale-[0.98] transition-transform duration-150 focus:outline-none text-left"
@@ -24,7 +24,7 @@
             <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
           </div>
         </div>
-      </button> 
+      </button>  -->
 
       <!-- Pools Card -->
       <button
