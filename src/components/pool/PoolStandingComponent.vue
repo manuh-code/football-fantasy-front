@@ -22,7 +22,7 @@
           {{ $t('pool.standing.overall') }}
         </button>
         <div class="flex-1 min-w-0">
-          <PoolRoundsCarousel :rounds="rounds" v-model="carouselIndex" />
+          <RoundCarousel :rounds="rounds" v-model="carouselIndex" />
         </div>
       </div>
     </template>
@@ -147,7 +147,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
-import PoolRoundsCarousel from "@/components/pool/PoolRoundsCarousel.vue";
+import RoundCarousel from "@/components/ui/RoundCarousel.vue";
 import AdUnit from "@/components/ads/AdUnit.vue";
 import { AD_SLOTS } from "@/config/ads";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";

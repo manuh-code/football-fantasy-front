@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import FixturesListSkeleton from "./FixturesListSkeleton.vue";
 
-defineProps<{
+const props = defineProps<{
   fixtures: FootballFixtureResponse[];
   isLoading: boolean;
   error: string | null;
@@ -16,6 +17,26 @@ const emit = defineEmits<{
   "fixture-selected": [fixture: FootballFixtureResponse];
   retry: [];
 }>();
+
+// Group fixtures by their kickoff date so the list reads as day sections. The
+// `starting_date` string is used verbatim as the group key AND header — the API
+// already returns it clean, so it must not be reformatted. Insertion order is
+// preserved (fixtures arrive already sorted).
+const groupedFixtures = computed(() => {
+  const groups: { date: string; items: FootballFixtureResponse[] }[] = [];
+  const indexByDate = new Map<string, number>();
+  for (const fixture of props.fixtures) {
+    const date = fixture.starting_date;
+    let idx = indexByDate.get(date);
+    if (idx === undefined) {
+      idx = groups.length;
+      indexByDate.set(date, idx);
+      groups.push({ date, items: [] });
+    }
+    groups[idx].items.push(fixture);
+  }
+  return groups;
+});
 
 // ── Fixture helpers ──
 const getHomeParticipant = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
@@ -80,7 +101,8 @@ const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
   }
   if (isMatchFinished(fixture)) return "FT";
   if (isMatchLive(fixture)) return "LIVE";
-  return fixture.starting_at;
+  // Scheduled matches show their kickoff hour at the top of the card instead.
+  return "";
 };
 
 // Monochrome result emphasis (FotMob/Apple style): bold the winner, mute the loser.
@@ -131,85 +153,97 @@ const getTeamResultClass = (
     <p class="text-footnote">{{ emptyMessage }}</p>
   </div>
 
-  <!-- List -->
-  <div v-else class="divide-y divide-gray-100 dark:divide-gray-700/50">
-    <div
-      v-for="(fixture, fIdx) in fixtures"
-      :key="fixture.uuid || fixture.name + '-' + fIdx"
-      @click="emit('fixture-selected', fixture)"
-      class="fixture-cell relative transition-colors cursor-pointer"
-      :class="[
-        isMatchLive(fixture)
-          ? 'bg-red-50/40 dark:bg-red-900/5 border-l-[3px] border-l-red-500 dark:border-l-red-400'
-          : 'border-l-[3px] border-l-transparent',
-        'px-4 py-3 active:bg-gray-50 dark:active:bg-gray-700/30',
-      ]"
-    >
-      <!-- LIVE badge top -->
-      <div v-if="isMatchLive(fixture)" class="flex items-center gap-1.5 mb-2">
-        <span class="live-dot relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-        </span>
-        <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
-      </div>
-
-      <!-- Date/time (not live) -->
-      <div v-else class="text-center mb-2">
-        <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide uppercase">
-          {{ fixture.starting_at }}
+  <!-- List grouped by kickoff date -->
+  <div v-else>
+    <section v-for="group in groupedFixtures" :key="group.date">
+      <!-- Date header (raw, unformatted value from the API) -->
+      <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-700/50">
+        <span class="text-2xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          {{ group.date }}
         </span>
       </div>
 
-      <!-- Match row -->
-      <div class="flex items-center gap-2">
-        <!-- Home -->
-        <div class="flex items-center gap-2 flex-1 min-w-0">
-          <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
-          <span
-            :class="getTeamResultClass(fixture, 'home')"
-            class="text-footnote font-medium truncate"
-            :title="getTeamName(getHomeParticipant(fixture))"
-          >
-            {{ getTeamName(getHomeParticipant(fixture)) }}
-          </span>
-        </div>
-
-        <!-- Score center -->
-        <div class="flex flex-col items-center shrink-0 min-w-[56px]">
-          <div
-            class="tabular-nums"
-            :class="[
-              hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-              isMatchLive(fixture) ? 'text-2xl' : 'text-xl',
-            ]"
-          >
-            <template v-if="hasScores(fixture)">
-              {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
-            </template>
-            <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+      <!-- Fixtures for this date -->
+      <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
+        <div
+          v-for="(fixture, fIdx) in group.items"
+          :key="fixture.uuid || fixture.name + '-' + fIdx"
+          @click="emit('fixture-selected', fixture)"
+          class="fixture-cell relative transition-colors cursor-pointer"
+          :class="[
+            isMatchLive(fixture)
+              ? 'bg-red-50/40 dark:bg-red-900/5 border-l-[3px] border-l-red-500 dark:border-l-red-400'
+              : 'border-l-[3px] border-l-transparent',
+            'px-4 py-3 active:bg-gray-50 dark:active:bg-gray-700/30',
+          ]"
+        >
+          <!-- LIVE badge top -->
+          <div v-if="isMatchLive(fixture)" class="flex items-center gap-1.5 mb-2">
+            <span class="live-dot relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+            <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
           </div>
-          <span
-            v-if="!isMatchLive(fixture)"
-            class="text-2xs font-semibold mt-0.5 tracking-wide text-gray-400 dark:text-gray-500"
-          >
-            {{ getFixtureStateText(fixture) }}
-          </span>
-        </div>
 
-        <!-- Away -->
-        <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
-          <span
-            :class="getTeamResultClass(fixture, 'away')"
-            class="text-footnote font-medium truncate text-right"
-            :title="getTeamName(getAwayParticipant(fixture))"
-          >
-            {{ getTeamName(getAwayParticipant(fixture)) }}
-          </span>
-          <TeamLogo :team="getAwayParticipant(fixture)" size="md" />
+          <!-- Kickoff hour (not live) — raw value from the API, no formatting -->
+          <div v-else class="text-center mb-2">
+            <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
+              {{ fixture.hour }}
+            </span>
+          </div>
+
+          <!-- Match row -->
+          <div class="flex items-center gap-2">
+            <!-- Home -->
+            <div class="flex items-center gap-2 flex-1 min-w-0">
+              <TeamLogo :team="getHomeParticipant(fixture)" size="md" />
+              <span
+                :class="getTeamResultClass(fixture, 'home')"
+                class="text-footnote font-medium truncate"
+                :title="getTeamName(getHomeParticipant(fixture))"
+              >
+                {{ getTeamName(getHomeParticipant(fixture)) }}
+              </span>
+            </div>
+
+            <!-- Score center -->
+            <div class="flex flex-col items-center shrink-0 min-w-[56px]">
+              <div
+                class="tabular-nums"
+                :class="[
+                  hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
+                  isMatchLive(fixture) ? 'text-2xl' : 'text-xl',
+                ]"
+              >
+                <template v-if="hasScores(fixture)">
+                  {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
+                </template>
+                <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+              </div>
+              <span
+                v-if="!isMatchLive(fixture) && getFixtureStateText(fixture)"
+                class="text-2xs font-semibold mt-0.5 tracking-wide text-gray-400 dark:text-gray-500"
+              >
+                {{ getFixtureStateText(fixture) }}
+              </span>
+            </div>
+
+            <!-- Away -->
+            <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
+              <span
+                :class="getTeamResultClass(fixture, 'away')"
+                class="text-footnote font-medium truncate text-right"
+                :title="getTeamName(getAwayParticipant(fixture))"
+              >
+                {{ getTeamName(getAwayParticipant(fixture)) }}
+              </span>
+              <TeamLogo :team="getAwayParticipant(fixture)" size="md" />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 

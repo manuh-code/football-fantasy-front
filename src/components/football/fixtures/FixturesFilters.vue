@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import SearchableSelectComponent from "@/components/ui/SearchableSelectComponent.vue";
+import RoundCarousel from "@/components/ui/RoundCarousel.vue";
+import KnockoutRoundCarousel from "@/components/ui/KnockoutRoundCarousel.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 
 type Mode = "regular" | "playoffs";
 
-defineProps<{
+const props = defineProps<{
   rounds: FootballRoundResponse[];
   isLoadingRounds: boolean;
   roundsError: string | null;
@@ -22,6 +25,7 @@ const emit = defineEmits<{
   "retry-rounds": [];
   "retry-stages": [];
   "retry-teams": [];
+  "open-bracket": [];
 }>();
 
 // Two-way bindings with the parent
@@ -30,6 +34,31 @@ const roundUuid = defineModel<string | null>("roundUuid", { default: null });
 const knockoutUuid = defineModel<string | null>("knockoutUuid", { default: null });
 // Empty string / null both mean "no team focused" → browse the league by round.
 const teamUuid = defineModel<string | null>("teamUuid", { default: null });
+
+// Bridge the uuid-based round selection (roundUuid) with the index-based
+// RoundCarousel (v-model is the selected round's position in the list).
+const selectedRoundIndex = computed<number>({
+  get: () => {
+    const idx = props.rounds.findIndex((r) => r.uuid === roundUuid.value);
+    return idx === -1 ? 0 : idx;
+  },
+  set: (index: number) => {
+    const round = props.rounds[index];
+    if (round) roundUuid.value = round.uuid;
+  },
+});
+
+// Same index↔uuid bridge for the knockout stage carousel (playoffs mode).
+const selectedKnockoutIndex = computed<number>({
+  get: () => {
+    const idx = props.knockoutStages.findIndex((s) => s.uuid === knockoutUuid.value);
+    return idx === -1 ? 0 : idx;
+  },
+  set: (index: number) => {
+    const stage = props.knockoutStages[index];
+    if (stage) knockoutUuid.value = stage.uuid;
+  },
+});
 </script>
 
 <template>
@@ -89,58 +118,25 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           </button>
         </div>
 
-        <SearchableSelectComponent
+        <RoundCarousel
           v-else-if="rounds.length > 0"
-          v-model="roundUuid"
-          variant="minimal"
-          :options="rounds"
-          value-key="uuid"
-          label-key="name"
-          :placeholder="$t('football.fixtures.selectRound')"
-          :search-placeholder="$t('football.fixtures.searchRound')"
-          :clearable="false"
-          accent-color="emerald"
-          no-options-text="No rounds available"
-        >
-          <template #selected="{ option }">
-            <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
-              {{ $t('football.rounds.rounds') }} {{ option.name }}
-            </span>
-            <span
-              v-if="option.is_current"
-              class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
-            >
-              {{ $t('football.rounds.current') }}
-            </span>
-          </template>
-          <template #option="{ option }">
-            <div class="flex-1 min-w-0 flex items-center gap-2">
-              <span class="text-footnote font-medium truncate">{{ $t('football.rounds.rounds') }} {{ option.name }}</span>
-              <span
-                v-if="option.is_current"
-                class="text-2xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shrink-0"
-              >
-                {{ $t('football.rounds.current') }}
-              </span>
-              <span
-                v-else-if="option.finished"
-                class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
-              >
-                {{ $t('football.rounds.done') }}
-              </span>
-            </div>
-          </template>
-        </SearchableSelectComponent>
+          :rounds="rounds"
+          v-model="selectedRoundIndex"
+        />
 
         <div v-else class="text-center py-2 text-xs text-gray-400 dark:text-gray-500">
-          No rounds available
+          {{ $t('football.rounds.noRounds') }}
         </div>
       </template>
 
-      <!-- ── Playoffs: knockout stage selector ── -->
+      <!-- ── Playoffs: knockout stage selector (carousel) ── -->
       <template v-else>
+        <div v-if="isLoadingStages" class="flex items-center justify-center py-2">
+          <v-icon name="pr-spinner" class="w-4 h-4 text-gray-300 dark:text-gray-600" animation="spin" />
+        </div>
+
         <div
-          v-if="stagesError"
+          v-else-if="stagesError"
           class="flex items-center justify-between gap-2 py-1"
         >
           <p class="text-xs text-red-500 dark:text-red-400">{{ stagesError }}</p>
@@ -152,52 +148,26 @@ const teamUuid = defineModel<string | null>("teamUuid", { default: null });
           </button>
         </div>
 
-        <SearchableSelectComponent
-          v-else
-          v-model="knockoutUuid"
-          variant="minimal"
-          :options="knockoutStages"
-          value-key="uuid"
-          label-key="name"
-          :placeholder="$t('football.fixtures.selectPlayoffStage')"
-          :search-placeholder="$t('football.fixtures.searchStage')"
-          :disabled="isLoadingStages || knockoutStages.length === 0"
-          :loading="isLoadingStages"
-          accent-color="amber"
-          :searchable="knockoutStages.length > 5"
-          :clearable="false"
-        >
-          <template #selected="{ option }">
-            <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
-              {{ (option.name_complete as string | null) || option.name }}
-            </span>
-            <span
-              v-if="option.is_current"
-              class="text-2xs font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0 ml-2"
-            >
-              Current
-            </span>
-          </template>
-          <template #option="{ option }">
-            <div class="flex-1 min-w-0 flex items-center gap-2">
-              <span class="text-footnote font-medium truncate">
-                {{ (option.name_complete as string | null) || option.name }}
-              </span>
-              <span
-                v-if="option.is_current"
-                class="text-2xs font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shrink-0"
-              >
-                Current
-              </span>
-              <span
-                v-else-if="option.finished"
-                class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0"
-              >
-                Done
-              </span>
-            </div>
-          </template>
-        </SearchableSelectComponent>
+        <template v-else-if="knockoutStages.length > 0">
+          <KnockoutRoundCarousel
+            :stages="knockoutStages"
+            v-model="selectedKnockoutIndex"
+          />
+
+          <!-- Open the full knockout tree (FotMob-style bracket overlay) -->
+          <button
+            type="button"
+            @click="emit('open-bracket')"
+            class="mt-2 w-full flex items-center justify-center gap-1.5 h-8 rounded-full text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
+          >
+            <v-icon name="hi-solid-view-grid" class="w-3.5 h-3.5 shrink-0" />
+            <span>{{ $t('football.fixtures.bracketOpen') }}</span>
+          </button>
+        </template>
+
+        <div v-else class="text-center py-2 text-xs text-gray-400 dark:text-gray-500">
+          {{ $t('football.fixtures.noPlayoffs') }}
+        </div>
       </template>
     </template>
 
