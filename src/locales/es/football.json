@@ -68,6 +68,11 @@
     "allTeams": "Todos los equipos",
     "noPlayoffs": "Aún no hay liguilla disponible",
     "noStageMatches": "No hay partidos en esta etapa",
+    "bracketOpen": "Ver cuadro",
+    "bracketTitle": "Cuadro de eliminatorias",
+    "bracketAria": "Cuadro de eliminatorias",
+    "bracketClose": "Cerrar",
+    "bracketEmpty": "Aún no hay partidos en el cuadro",
     "noMatchesInRound": "No hay partidos en esta ronda",
     "loadingRounds": "Cargando rondas...",
     "previous": "Anterior",
@@ -305,6 +310,11 @@
     "current": "Actual",
     "done": "Finalizada",
     "round": "Jornada {name}",
-    "currentRound": "Jornada actual"
+    "currentRound": "Jornada actual",
+    "previous": "Jornada anterior",
+    "next": "Jornada siguiente"
+  },
+  "matchcenter": {
+    "vs": "vs"
   }
 }

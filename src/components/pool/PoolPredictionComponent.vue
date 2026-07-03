@@ -32,7 +32,7 @@
 
     <template v-else>
       <!-- Round carousel (swipe / drag to change round) -->
-      <PoolRoundsCarousel :rounds="rounds" v-model="selectedIndex" />
+      <RoundCarousel :rounds="rounds" v-model="selectedIndex" />
 
       <!-- Fixtures content — animated transition between states / rounds -->
       <transition name="fade-slide" mode="out-in">
@@ -243,7 +243,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
-import PoolRoundsCarousel from "@/components/pool/PoolRoundsCarousel.vue";
+import RoundCarousel from "@/components/ui/RoundCarousel.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";

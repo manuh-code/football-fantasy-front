@@ -5,7 +5,7 @@
       type="button"
       @click="goTo(modelValue - 1)"
       :disabled="modelValue === 0"
-      :aria-label="$t('pool.rounds.previous')"
+      :aria-label="$t('football.rounds.previous')"
       class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 active:text-emerald-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
     >
       <v-icon name="hi-solid-chevron-left" class="w-5 h-5" />
@@ -53,7 +53,7 @@
       type="button"
       @click="goTo(modelValue + 1)"
       :disabled="modelValue === rounds.length - 1"
-      :aria-label="$t('pool.rounds.next')"
+      :aria-label="$t('football.rounds.next')"
       class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 active:text-emerald-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
     >
       <v-icon name="hi-solid-chevron-right" class="w-5 h-5" />

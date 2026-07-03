@@ -290,6 +290,28 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/survivor',
+    name: 'survivor',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "survivor" */ '@/views/survivor/SurvivorView.vue'),
+    meta: {
+      title: 'Survivor - Football Fantasy',
+      description: 'View the Survivor games you are participating in',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/survivor/:uuid',
+    name: 'survivorDetail',
+    // Route level code-splitting for better performance
+    component: () => import(/* webpackChunkName: "survivor-detail" */ '@/views/survivor/SurvivorDetailView.vue'),
+    meta: {
+      title: 'Survivor - Football Fantasy',
+      description: 'View your Survivor picks round by round',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/football/player/statistics',
     name: 'footballPlayerStatistics',
     // Route level code-splitting for better performance

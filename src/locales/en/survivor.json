@@ -1,0 +1,51 @@
+{
+  "gaming": {
+    "subtitle": "Pick a team every round and survive"
+  },
+  "nav": {
+    "aria": "Survivor navigation",
+    "survivors": "My Survivor",
+    "picks": "Picks",
+    "standings": "Standings"
+  },
+  "docTitle": "Survivor - Football Fantasy",
+  "list": {
+    "title": "My Survivor",
+    "countOne": "{count} survivor",
+    "countOther": "{count} survivor",
+    "lives": "Lives",
+    "livesCount": "{count} lives"
+  },
+  "status": {
+    "active": "Active",
+    "eliminated": "Eliminated",
+    "finished": "Finished",
+    "pending": "Pending"
+  },
+  "emptyTitle": "You have no Survivor yet",
+  "emptyBody": "Once you join a Survivor, it will show up here so you can follow it.",
+  "loadError": "Couldn't load your Survivor. Please try again later.",
+  "detail": {
+    "docTitle": "Survivor Detail - Football Fantasy",
+    "yourPick": "Your pick",
+    "noPick": "No pick",
+    "roundsError": "Couldn't load the rounds.",
+    "noRounds": "No rounds",
+    "noRoundsBody": "There are no rounds available for this Survivor yet.",
+    "fixturesError": "Couldn't load the fixtures.",
+    "noFixtures": "No fixtures",
+    "noFixturesBody": "There are no fixtures scheduled for this round.",
+    "home": "Home",
+    "away": "Away",
+    "tapToPick": "Tap a crest to pick your team",
+    "locked": "Locked for picks",
+    "pickSavedTitle": "Pick saved",
+    "pickSavedBody": "You picked {team}",
+    "result": {
+      "win": "Won",
+      "loss": "Lost",
+      "draw": "Draw",
+      "pending": "Pending"
+    }
+  }
+}

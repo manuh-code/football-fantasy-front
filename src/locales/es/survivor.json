@@ -1,0 +1,51 @@
+{
+  "gaming": {
+    "subtitle": "Elige un equipo cada jornada y sobrevive"
+  },
+  "nav": {
+    "aria": "Navegación de Survivor",
+    "survivors": "Mis Survivor",
+    "picks": "Picks",
+    "standings": "Posiciones"
+  },
+  "docTitle": "Survivor - Football Fantasy",
+  "list": {
+    "title": "Mis Survivor",
+    "countOne": "{count} survivor",
+    "countOther": "{count} survivor",
+    "lives": "Vidas",
+    "livesCount": "{count} vidas"
+  },
+  "status": {
+    "active": "Activo",
+    "eliminated": "Eliminado",
+    "finished": "Finalizado",
+    "pending": "Pendiente"
+  },
+  "emptyTitle": "Aún no tienes Survivor",
+  "emptyBody": "Cuando te unas a un Survivor, aparecerá aquí para que puedas seguirlo.",
+  "loadError": "No se pudieron cargar tus Survivor. Inténtalo de nuevo más tarde.",
+  "detail": {
+    "docTitle": "Detalle Survivor - Football Fantasy",
+    "yourPick": "Tu selección",
+    "noPick": "Sin selección",
+    "roundsError": "No se pudieron cargar las jornadas.",
+    "noRounds": "Sin jornadas",
+    "noRoundsBody": "Todavía no hay jornadas disponibles para este Survivor.",
+    "fixturesError": "No se pudieron cargar los partidos.",
+    "noFixtures": "Sin partidos",
+    "noFixturesBody": "No hay partidos programados para esta jornada.",
+    "home": "Local",
+    "away": "Visitante",
+    "tapToPick": "Toca un escudo para elegir tu equipo",
+    "locked": "Cerrado para picks",
+    "pickSavedTitle": "Pick guardado",
+    "pickSavedBody": "Elegiste a {team}",
+    "result": {
+      "win": "Ganó",
+      "loss": "Perdió",
+      "draw": "Empate",
+      "pending": "Pendiente"
+    }
+  }
+}

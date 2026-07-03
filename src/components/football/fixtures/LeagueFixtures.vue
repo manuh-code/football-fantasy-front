@@ -12,6 +12,7 @@ import FixturesFilters from "@/components/football/fixtures/FixturesFilters.vue"
 import FixturesList from "@/components/football/fixtures/FixturesList.vue";
 import FixtureByTeam from "@/components/football/fixtures/FixtureByTeam.vue";
 import FixtureMatchCenter from "@/components/football/fixtures/FixtureMatchCenter.vue";
+import KnockoutBracket from "@/components/football/fixtures/KnockoutBracket.vue";
 
 interface Props {
   stageUuid: string;
@@ -315,6 +316,9 @@ const onFixtureSelected = (fixture: FootballFixtureResponse) => {
   selectedFixtureUuid.value = fixture.uuid;
   matchCenterOpen.value = true;
 };
+
+// ── Knockout bracket overlay (opened from the playoffs filter) ──
+const bracketOpen = ref(false);
 </script>
 
 <template>
@@ -339,6 +343,7 @@ const onFixtureSelected = (fixture: FootballFixtureResponse) => {
       @retry-rounds="retryRounds"
       @retry-stages="loadKnockoutStages(props.stageUuid)"
       @retry-teams="retryTeams"
+      @open-bracket="bracketOpen = true"
     />
 
     <!-- Team focused → that team's full schedule -->
@@ -369,6 +374,13 @@ const onFixtureSelected = (fixture: FootballFixtureResponse) => {
       :fixture-uuid="selectedFixtureUuid"
       :stage-uuid="props.stageUuid"
       @close="matchCenterOpen = false"
+    />
+
+    <!-- Knockout bracket overlay (opened from the playoffs filter) -->
+    <KnockoutBracket
+      :is-open="bracketOpen"
+      :stage-uuid="props.stageUuid"
+      @close="bracketOpen = false"
     />
   </div>
 </template>

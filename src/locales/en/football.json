@@ -68,6 +68,11 @@
     "allTeams": "All teams",
     "noPlayoffs": "No playoffs available yet",
     "noStageMatches": "No matches in this stage",
+    "bracketOpen": "View bracket",
+    "bracketTitle": "Knockout bracket",
+    "bracketAria": "Knockout bracket",
+    "bracketClose": "Close",
+    "bracketEmpty": "No bracket matches yet",
     "noMatchesInRound": "No matches in this round",
     "loadingRounds": "Loading rounds...",
     "previous": "Previous",
@@ -305,6 +310,11 @@
     "noRounds": "No rounds available",
     "done": "Done",
     "round": "Round {name}",
-    "currentRound": "Current Round"
+    "currentRound": "Current Round",
+    "previous": "Previous round",
+    "next": "Next round"
+  },
+  "matchcenter": {
+    "vs":"vs"
   }
 }
