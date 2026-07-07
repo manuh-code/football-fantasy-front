@@ -82,12 +82,14 @@ const loadFixtures = () => import("@/components/football/fixtures/LeagueFixtures
 const loadStatistics = () => import("@/components/football/leagues/LeagueStatistics.vue");
 const loadVersus = () => import("@/components/football/player/versus/PlayerVersus.vue");
 const loadTotw = () => import("@/components/football/teamOfTheWeek/TeamOfTheWeek.vue");
+const loadTransfer = () => import("@/components/football/transfer/TransferView.vue");
 
 const LeagueStanding = defineAsyncComponent(loadStanding);
 const LeagueFixtures = defineAsyncComponent(loadFixtures);
 const LeagueStatistics = defineAsyncComponent(loadStatistics);
 const PlayerVersus = defineAsyncComponent(loadVersus);
 const TeamOfTheWeek = defineAsyncComponent(loadTotw);
+const TransferView = defineAsyncComponent(loadTransfer);
 
 const { t } = useI18n();
 const store = useFootballLeagueStore();
@@ -98,7 +100,7 @@ const selectedStageUuid = ref("");
 const selectedSeasonUuid = ref("");
 
 // ── Tabs ──
-type TabKey = "standings" | "fixtures" | "playoffs" | "statistics" | "versus" | "totw";
+type TabKey = "standings" | "fixtures" | "playoffs" | "statistics" | "versus" | "totw" | "transfer";
 
 const tabs = computed<{ key: TabKey; label: string; icon: string }[]>(() => [
   { key: "standings", label: t("home.league.tabs.standings"), icon: "bi-trophy-fill" },
@@ -107,6 +109,7 @@ const tabs = computed<{ key: TabKey; label: string; icon: string }[]>(() => [
   { key: "statistics", label: t("home.league.tabs.statistics"), icon: "hi-solid-chart-bar" },
   { key: "versus", label: t("home.league.tabs.versus"), icon: "md-comparearrows-round" },
   { key: "totw", label: t("home.league.tabs.totw"), icon: "bi-star-fill" },
+  { key: "transfer", label: t("home.league.tabs.transfer"), icon: "hi-solid-switch-horizontal" },
 ]);
 
 const activeTab = ref<TabKey>("standings");
@@ -134,6 +137,8 @@ const activeComponent = computed<Component>(() => {
       return PlayerVersus;
     case "totw":
       return TeamOfTheWeek;
+    case "transfer":
+      return TransferView;
     default:
       return LeagueStanding;
   }
@@ -152,6 +157,10 @@ const activeProps = computed<Record<string, unknown>>(() => {
   if (activeTab.value === "versus") {
     return { seasonUuid: selectedSeasonUuid.value };
   }
+  // TransferView resolves the active league from the store itself — no props.
+  if (activeTab.value === "transfer") {
+    return {};
+  }
   return {
     stageUuid: selectedStageUuid.value,
     seasonUuid: selectedSeasonUuid.value,
@@ -164,6 +173,7 @@ onMounted(() => {
   loadStatistics();
   loadVersus();
   loadTotw();
+  loadTransfer();
 });
 </script>
 

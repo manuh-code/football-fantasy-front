@@ -1,4 +1,17 @@
 {
+  "transfers": {
+    "loadError": "Couldn't load transfers.",
+    "emptyTitle": "No recent transfers",
+    "emptyBody": "When there's movement in this league, it will show up here.",
+    "emptyBodyTeam": "When this team has movement, it will show up here.",
+    "noLeague": "Select a league to see its transfers.",
+    "pending": "Pending",
+    "fee": {
+      "loan": "Loan",
+      "free": "Free",
+      "undisclosed": "Undisclosed"
+    }
+  },
   "common": {
     "live": "Live",
     "team": "Team",
@@ -292,6 +305,7 @@
       "bestPlayers": "Best Players",
       "latest": "Latest",
       "sidelined": "Sidelined",
+      "transfers": "Transfers",
       "venue": "Venue"
     }
   },

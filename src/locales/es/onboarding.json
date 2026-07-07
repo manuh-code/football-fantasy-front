@@ -20,6 +20,14 @@
       "body": "Cambia entre Clasificación, Partidos, Estadísticas, Comparativa y el Equipo de la semana con las pestañas."
     },
     "step4": {
+      "title": "Fichajes al día",
+      "body": "En la nueva pestaña Fichajes ves los últimos movimientos de la liga: quién llega, de qué equipo y por cuánto."
+    },
+    "step5": {
+      "title": "Modo Survivor",
+      "body": "Elige un equipo cada jornada y sobrevive. Solo puedes elegir un equipo por jornada; sigues con vida mientras aciertes."
+    },
+    "step6": {
       "title": "Tu perfil y tus quinielas",
       "body": "Usa la barra inferior para moverte por la app y entra a tu perfil. En Quinielas compites prediciendo resultados."
     }

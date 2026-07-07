@@ -20,6 +20,14 @@
       "body": "Switch between Standings, Fixtures, Statistics, Versus and Team of the Week using the tabs."
     },
     "step4": {
+      "title": "Transfers, up to date",
+      "body": "The new Transfers tab shows the league's latest moves: who's arriving, from which club and for how much."
+    },
+    "step5": {
+      "title": "Survivor mode",
+      "body": "Pick a team every round and survive. You can only choose one team per round — stay alive as long as you keep getting it right."
+    },
+    "step6": {
       "title": "Your profile and pools",
       "body": "Use the bottom bar to move around the app and open your profile. In Pools you compete by predicting results."
     }

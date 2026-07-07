@@ -27,6 +27,7 @@ const tabs = computed<{ key: MatchTab; label: string; icon: string }[]>(() => [
     <TabsMenu
       v-model="activeTab"
       :tabs="tabs"
+      variant="pills"
       :aria-label="$t('football.matchCenter.sections')"
     />
   </div>
