@@ -11,7 +11,6 @@ import {
   buildComparison,
   buildRadarMetrics,
 } from "@/utils/playerVersus";
-import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import PlayerAvatar from "@/components/football/ui/PlayerAvatar.vue";
 import PlayerSearchDrawer from "./PlayerSearchDrawer.vue";
 import PlayerVersusRadar from "./PlayerVersusRadar.vue";
@@ -118,9 +117,8 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
 
 <template>
   <div class="w-full">
-    <MatchdayBoard
-      :eyebrow="$t('home.league.tabs.versus')"
-      icon="md-comparearrows-round"
+    <div
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
     >
       <!-- No season context -->
       <div v-if="!seasonUuid" class="px-4 py-12 flex flex-col items-center text-center">
@@ -283,7 +281,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
           </div>
         </div>
       </template>
-    </MatchdayBoard>
+    </div>
 
     <!-- Player search drawer -->
     <PlayerSearchDrawer

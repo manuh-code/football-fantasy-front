@@ -5,7 +5,6 @@ import { footballPlayerService } from "@/services/football/player/FootballPlayer
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { TeamOfTheWeekByRoundResponse } from "@/interfaces/football/teamOfTheWeek/TeamOfTheWeekByRoundResponse";
 import SearchableSelectComponent from "@/components/ui/SearchableSelectComponent.vue";
-import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import TeamOfTheWeekSkeleton from "@/components/football/teamOfTheWeek/TeamOfTheWeekSkeleton.vue";
 
@@ -170,21 +169,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <MatchdayBoard
-    :eyebrow="$t('home.league.tabs.totw')"
-    icon="bi-star-fill"
-  >
-    <template #context>
-      <span
-        v-if="formation"
-        class="inline-flex items-center h-6 px-2.5 rounded-full bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 text-[11px] font-bold tabular-nums tracking-wider"
-      >
-        {{ formation }}
-      </span>
-    </template>
-
-    <!-- ── Round selector ── -->
-    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+  <div class="w-full space-y-3">
+    <!-- ── Round selector (bare) ── -->
+    <div>
       <div v-if="isLoadingRounds" class="flex items-center justify-center py-2">
         <v-icon
           name="pr-spinner"
@@ -262,14 +249,14 @@ onMounted(() => {
     </div>
 
     <!-- ── Content ── -->
-    <div class="px-4 pt-3 pb-6">
+    <div>
       <!-- Loading -->
       <TeamOfTheWeekSkeleton v-if="isLoadingTotw" />
 
       <!-- Error -->
       <div
         v-else-if="totwError"
-        class="py-12 flex flex-col items-center text-center"
+        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 py-12 flex flex-col items-center text-center"
       >
         <v-icon
           name="hi-solid-exclamation-circle"
@@ -289,7 +276,7 @@ onMounted(() => {
       <!-- Empty -->
       <div
         v-else-if="!hasTotw"
-        class="py-12 flex flex-col items-center text-center"
+        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 py-12 flex flex-col items-center text-center"
       >
         <v-icon
           name="bi-star"
@@ -306,6 +293,14 @@ onMounted(() => {
         <div
           class="totw-pitch relative rounded-2xl overflow-hidden min-h-[520px] sm:min-h-[560px]"
         >
+          <!-- Formation badge (was the board's context chip) -->
+          <span
+            v-if="formation"
+            class="absolute top-2.5 right-2.5 z-20 inline-flex items-center h-6 px-2.5 rounded-full bg-black/30 text-white text-[11px] font-bold tabular-nums tracking-wider ring-1 ring-white/20 backdrop-blur-sm"
+          >
+            {{ formation }}
+          </span>
+
           <!-- Markings -->
           <div class="pointer-events-none absolute inset-0" aria-hidden="true">
             <div
@@ -386,7 +381,7 @@ onMounted(() => {
         </div>
       </template>
     </div>
-  </MatchdayBoard>
+  </div>
 </template>
 
 <style scoped>

@@ -44,6 +44,9 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'footballLeagues',
   'privacy',
   'landingpage',
+  'about',
+  'guides',
+  'guideDetail',
 ])
 
 const routes: Array<RouteRecordRaw> = [
@@ -74,8 +77,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "about" */ '@/views/AboutView.vue'),
     meta: {
-      title: 'About - Football Fantasy',
-      description: 'Information about the Football Fantasy application',
+      title: 'Acerca de Fantasy MX — Fantasy, quinielas y Survivor de la Liga MX',
+      description: 'Conoce Fantasy MX: sigue la Liga MX en vivo, arma tu equipo fantasy con draft en tiempo real, crea quinielas con tus amigos y juega Survivor. Gratis y desde tu móvil.',
       requiresAuth: false
     }
   },
@@ -319,6 +322,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Football Player Statistics - Football Fantasy',
       description: 'View detailed statistics for football players',
+      // Fantasy-league-scoped tool (needs a fantasyLeagueUuid); not public content.
       requiresAuth: true
     }
   },
@@ -330,6 +334,28 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Aviso de Privacidad - Football Fantasy',
       description: 'Aviso de privacidad de Football Fantasy conforme a la LFPDPPP',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/guias',
+    name: 'guides',
+    // Public content hub: original guides that explain how to play each mode.
+    component: () => import(/* webpackChunkName: "guides" */ '@/views/guides/GuidesView.vue'),
+    meta: {
+      title: 'Guías y reglas — Fantasy MX',
+      description: 'Aprende a jugar Fantasy MX: guías de fantasy, draft, quinielas, Survivor y el sistema de puntos. Paso a paso y gratis.',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/guias/:slug',
+    name: 'guideDetail',
+    // Individual guide. Title/description are refined per-slug inside the view.
+    component: () => import(/* webpackChunkName: "guide-detail" */ '@/views/guides/GuideDetailView.vue'),
+    meta: {
+      title: 'Guía — Fantasy MX',
+      description: 'Guía de Fantasy MX: aprende a jugar y a competir con tus amigos.',
       requiresAuth: false
     }
   },

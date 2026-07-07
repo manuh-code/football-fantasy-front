@@ -83,7 +83,7 @@ const retry = () => load();
 </script>
 
 <template>
-  <div class="px-4 py-4">
+  <div class="py-4">
     <!-- Loading skeleton -->
     <div v-if="isLoading" class="space-y-5 animate-pulse">
       <section v-for="g in 2" :key="g">
@@ -146,7 +146,7 @@ const retry = () => load();
         <div
           v-for="entry in group.entries"
           :key="entry.type"
-          class="mb-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden"
+          class="mb-3 rounded-2xl border border-gray-100 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm overflow-hidden"
         >
           <!-- Card header -->
           <div class="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-800">

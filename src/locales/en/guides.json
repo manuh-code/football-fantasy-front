@@ -1,0 +1,153 @@
+{
+  "hub": {
+    "badge": "Guides",
+    "title": "Fantasy MX guides & rules",
+    "subtitle": "Learn how to play every mode in the app: fantasy, draft, pools, and Survivor. Everything explained step by step so you can start competing with your friends today.",
+    "read": "Read guide",
+    "minRead": "min read"
+  },
+  "nav": {
+    "back": "Back to guides",
+    "related": "Other guides",
+    "ctaTitle": "Ready to play?",
+    "ctaText": "Create your free account and put what you learned into practice.",
+    "ctaButton": "Create free account"
+  },
+  "items": {
+    "fantasy": {
+      "title": "How to play Fantasy on Fantasy MX",
+      "excerpt": "Everything you need to create your league, run the draft, and score points from players' real performance.",
+      "intro": "Fantasy mode turns every Liga MX matchday into a competition between you and your friends. You build a team of real players and, each week, you score points based on what those players actually do on the pitch. This guide walks you through how to get started.",
+      "sections": [
+        {
+          "h": "What is a fantasy league?",
+          "p": "A fantasy league is a private group where each participant manages their own team. Instead of you playing, your real Liga MX players score for you: if your striker scores, you score too; if your goalkeeper keeps a clean sheet, so do you. Whoever best builds and manages their squad over the tournament wins."
+        },
+        {
+          "h": "Create or join a league",
+          "p": "You can create your own league and choose its name, the number of participants, and the rules, or join an existing league with the code the admin shares with you. When you create a league you are the admin and you decide how points are awarded."
+        },
+        {
+          "h": "The draft: pick your players",
+          "p": "Before it all begins, every league runs a live draft. In turns, each participant picks a player until their squad is complete. Because each player can only belong to one team within the league, pick order and strategy matter. We have a guide dedicated to the draft alone."
+        },
+        {
+          "h": "Set your lineup",
+          "p": "With your squad ready, each matchday you decide who starts and who sits on the bench. Only starters score points, so it's worth checking injuries, suspensions, and the schedule before the matchday kicks off."
+        },
+        {
+          "h": "How points are scored",
+          "p": "Your players score based on their real performance: goals, assists, clean sheets, minutes played, cards, and more. Each league can configure how many points each action is worth and by position, so review your league's rules. The details are in the scoring system guide."
+        },
+        {
+          "h": "Win the tournament",
+          "p": "Matchday after matchday, points add up in your league's standings. Whoever knows the most about football — and manages their team best — ends up on top."
+        }
+      ]
+    },
+    "draft": {
+      "title": "How the live draft works",
+      "excerpt": "The heart of fantasy: pick your players in turns, in real time, and against the clock.",
+      "intro": "The draft is when players are distributed among all the participants of a fantasy league. On Fantasy MX it's a live event: everyone connected at once, picking in turns, with a timer for each selection.",
+      "sections": [
+        {
+          "h": "What the draft is",
+          "p": "The draft is a turn-based selection. Each Liga MX player can only belong to one team within your league, so when someone picks them, they're no longer available to the rest. That's why every turn counts."
+        },
+        {
+          "h": "Turns in real time",
+          "p": "When the admin starts the draft, all participants get a notification and enter the room. The app shows whose turn it is at any moment and updates picks instantly for everyone inside."
+        },
+        {
+          "h": "The timer",
+          "p": "Each turn has a time limit to pick. If it runs out, the turn moves on, so it's smart to arrive with a shortlist of targets ready before it's your moment."
+        },
+        {
+          "h": "Presence: who's online",
+          "p": "The draft room shows who is online in real time. This helps you know if someone disconnected and keeps the event moving."
+        },
+        {
+          "h": "Draft strategy",
+          "p": "Prioritize players who contribute in several areas, keep your positions balanced, and have alternatives ready: it's very likely someone will pick your target before your turn. Don't rely on a single name."
+        }
+      ]
+    },
+    "quiniela": {
+      "title": "How to play the pool",
+      "excerpt": "Predict the matchday results, compete with your group, and climb the table.",
+      "intro": "The pool is the fastest, most social mode on Fantasy MX. Each matchday you predict the results of the games and compete with your friends over who gets the most right. No draft, no team management: just your football knowledge.",
+      "sections": [
+        {
+          "h": "What a pool is",
+          "p": "A pool is a group where everyone predicts the matchday results. For each correct pick you score points and, at the close of each matchday, the group's table is updated."
+        },
+        {
+          "h": "Create or join a group",
+          "p": "You can create your own pool and invite your friends with a code, or join an existing one. Groups are private: you only compete with the people you invite."
+        },
+        {
+          "h": "Make your predictions",
+          "p": "Before the matchday starts you set your forecast for each game. You can adjust it until the deadline; once a match kicks off, your prediction is locked."
+        },
+        {
+          "h": "How it's scored",
+          "p": "You score points for each result you get right. The more matches you nail in the matchday, the higher you climb in your group's standings."
+        },
+        {
+          "h": "The real-time table",
+          "p": "As the matches are played, your pool's standings update live. Follow the matchday with your friends and show off your correct picks."
+        }
+      ]
+    },
+    "survivor": {
+      "title": "How Survivor works",
+      "excerpt": "Pick a winner each matchday, without repeating teams. Miss once and you're out.",
+      "intro": "Survivor is the elimination mode on Fantasy MX. The rule is simple but merciless: each matchday you pick a team you think will win. Get it right and you stay alive; get it wrong and you're eliminated. The last one standing wins.",
+      "sections": [
+        {
+          "h": "The golden rule",
+          "p": "Each matchday you pick a single winning team. If your team wins, you advance to the next matchday. If it draws or loses, you're eliminated from Survivor."
+        },
+        {
+          "h": "You can't repeat teams",
+          "p": "Here's the challenge: once you use a team, you can't pick it again in later matchdays. You have to ration your favorites and decide when to 'spend' the best ones."
+        },
+        {
+          "h": "Strategy: think ahead",
+          "p": "Picking the week's favorite isn't enough. Since you can't repeat, it pays to look at the schedule for upcoming matchdays and save certain teams for tougher games."
+        },
+        {
+          "h": "Elimination and the last one standing",
+          "p": "Matchday after matchday, those who miss drop out. Survivor ends when a single survivor remains — or those who last until the end — and that person takes the glory."
+        }
+      ]
+    },
+    "puntos": {
+      "title": "The fantasy scoring system",
+      "excerpt": "How goals, assists, and real performances turn into points for your team.",
+      "intro": "In Fantasy mode, your players score based on what they actually do on the pitch. This guide explains how those points are calculated and why they can change from one league to another.",
+      "sections": [
+        {
+          "h": "Points based on real performance",
+          "p": "After each Liga MX match, Fantasy MX takes your players' real stats — goals, assists, minutes, clean sheets, cards, etc. — and turns them into points for your team."
+        },
+        {
+          "h": "Every action is worth points",
+          "p": "Positive actions add up, like a goal or an assist, and some negative actions can subtract, like a red card. The idea is to reward players who genuinely influence the match."
+        },
+        {
+          "h": "Points depend on position",
+          "p": "The same action can be worth different amounts depending on the player's position. For example, a goal is usually rewarded more for a defender than for a striker, because it's less common. This balances the value of each position."
+        },
+        {
+          "h": "Each league sets its own rules",
+          "p": "The admin of each fantasy league can configure how many points each action is worth and under what conditions. That's why, before building your team, it's worth reviewing the scoring rules of your specific league: two leagues can reward different things."
+        },
+        {
+          "h": "Check your points every matchday",
+          "p": "At the close of each matchday you'll see a breakdown of how much each of your players scored. It's the best way to understand what worked and to adjust your lineup for the next one."
+        }
+      ]
+    }
+  }
+}
