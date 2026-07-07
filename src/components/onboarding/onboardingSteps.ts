@@ -12,7 +12,8 @@ export interface OnboardingStep {
   bodyKey: string // clave i18n del cuerpo
 }
 
-// Guía del Home: bienvenida, selector de liga/jornada, secciones y navegación.
+// Guía del Home: bienvenida, selector de liga/jornada, secciones, fichajes,
+// modo Survivor y navegación/perfil.
 export const HOME_STEPS: OnboardingStep[] = [
   {
     icon: 'md-sportssoccer',
@@ -32,11 +33,25 @@ export const HOME_STEPS: OnboardingStep[] = [
     titleKey: 'onboarding.home.step3.title',
     bodyKey: 'onboarding.home.step3.body',
   },
+  // Nueva sección de Fichajes (pestaña del Home).
   {
-    icon: 'hi-solid-user-circle',
+    icon: 'hi-solid-switch-horizontal',
     variant: 'emerald',
     titleKey: 'onboarding.home.step4.title',
     bodyKey: 'onboarding.home.step4.body',
+  },
+  // Nuevo modo de juego Survivor.
+  {
+    icon: 'hi-solid-shield-check',
+    variant: 'red',
+    titleKey: 'onboarding.home.step5.title',
+    bodyKey: 'onboarding.home.step5.body',
+  },
+  {
+    icon: 'hi-solid-user-circle',
+    variant: 'emerald',
+    titleKey: 'onboarding.home.step6.title',
+    bodyKey: 'onboarding.home.step6.body',
   },
 ]
 

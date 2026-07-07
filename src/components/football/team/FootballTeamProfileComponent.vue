@@ -10,6 +10,7 @@ import type {
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
+import TransferComponent from "@/components/football/transfer/TransferComponent.vue";
 import FootballTeamProfileSkeleton from "./FootballTeamProfileSkeleton.vue";
 import { useUserStore } from "@/store/user/useUserStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
@@ -84,7 +85,14 @@ const toggleFollow = async () => {
 };
 
 // ── Tabs (each one maps to a property of FootballTeamProfileResponse) ──
-type ProfileTab = "team" | "players" | "best_players" | "latest" | "sidelined" | "venue";
+type ProfileTab =
+  | "team"
+  | "players"
+  | "best_players"
+  | "latest"
+  | "sidelined"
+  | "transfers"
+  | "venue";
 
 const tabs = computed<{ key: ProfileTab; label: string; icon: string }[]>(() => [
   { key: "team", label: t("football.team.tabs.team"), icon: "hi-solid-information-circle" },
@@ -92,6 +100,7 @@ const tabs = computed<{ key: ProfileTab; label: string; icon: string }[]>(() => 
   { key: "best_players", label: t("football.team.tabs.bestPlayers"), icon: "hi-solid-star" },
   { key: "latest", label: t("football.team.tabs.latest"), icon: "md-history" },
   { key: "sidelined", label: t("football.team.tabs.sidelined"), icon: "hi-solid-user" },
+  { key: "transfers", label: t("football.team.tabs.transfers"), icon: "hi-solid-switch-horizontal" },
   { key: "venue", label: t("football.team.tabs.venue"), icon: "hi-solid-location-marker" },
 ]);
 
@@ -848,6 +857,13 @@ const onDragEnd = (e: PointerEvent) => {
                       </span>
                     </div>
                   </div>
+                </div>
+
+                <!-- ── Transfers ── -->
+                <!-- Reuses the shared transfers list, scoped to this team instead
+                     of a league. It manages its own loading/empty/error states. -->
+                <div key="transfers" v-else-if="activeTab === 'transfers'" class="px-4 py-4">
+                  <TransferComponent :team-uuid="profile.team?.uuid" />
                 </div>
 
                 <!-- ── Venue ── -->

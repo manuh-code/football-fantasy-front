@@ -1,4 +1,17 @@
 {
+  "transfers": {
+    "loadError": "No se pudieron cargar los fichajes.",
+    "emptyTitle": "Sin fichajes recientes",
+    "emptyBody": "Cuando haya movimientos en esta liga, aparecerán aquí.",
+    "emptyBodyTeam": "Cuando este equipo tenga movimientos, aparecerán aquí.",
+    "noLeague": "Selecciona una liga para ver sus fichajes.",
+    "pending": "Pendiente",
+    "fee": {
+      "loan": "Cesión",
+      "free": "Libre",
+      "undisclosed": "No revelado"
+    }
+  },
   "common": {
     "live": "En vivo",
     "team": "Equipo",
@@ -292,6 +305,7 @@
       "bestPlayers": "Mejores jugadores",
       "latest": "Recientes",
       "sidelined": "Bajas",
+      "transfers": "Fichajes",
       "venue": "Estadio"
     }
   },
