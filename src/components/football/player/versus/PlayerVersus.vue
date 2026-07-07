@@ -11,6 +11,7 @@ import {
   buildComparison,
   buildRadarMetrics,
 } from "@/utils/playerVersus";
+import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import PlayerAvatar from "@/components/football/ui/PlayerAvatar.vue";
 import PlayerSearchDrawer from "./PlayerSearchDrawer.vue";
 import PlayerVersusRadar from "./PlayerVersusRadar.vue";
@@ -116,166 +117,173 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
 </script>
 
 <template>
-  <div class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden">
-    <!-- No season context -->
-    <div v-if="!seasonUuid" class="px-4 py-12 flex flex-col items-center text-center">
-      <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.selectLeague') }}</p>
-    </div>
-
-    <template v-else>
-      <!-- Player slots -->
-      <div class="px-4 py-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
-        <!-- Slot A -->
-        <button
-          @click="openSearch('a')"
-          class="relative min-w-0 flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors"
-          :class="playerA
-            ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/40 dark:bg-emerald-900/10'
-            : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
-        >
-          <template v-if="playerA">
-            <span
-              @click.stop="clearSlot('a')"
-              class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              :aria-label="$t('football.versus.removePlayer')"
-            >
-              <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
-            </span>
-            <PlayerAvatar :player="playerA" size="xl" variant="circle" />
-            <div class="text-center w-full min-w-0">
-              <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
-              <p v-if="positionName(playerA)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
-            </div>
-          </template>
-          <template v-else>
-            <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
-              <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
-            </div>
-            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
-          </template>
-        </button>
-
-        <!-- VS -->
-        <div class="flex items-center justify-center">
-          <span class="text-xs font-extrabold tracking-widest text-gray-300 dark:text-gray-600">VS</span>
-        </div>
-
-        <!-- Slot B -->
-        <button
-          @click="openSearch('b')"
-          class="relative min-w-0 flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors"
-          :class="playerB
-            ? 'border-sky-200 dark:border-sky-800/50 bg-sky-50/40 dark:bg-sky-900/10'
-            : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
-        >
-          <template v-if="playerB">
-            <span
-              @click.stop="clearSlot('b')"
-              class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              :aria-label="$t('football.versus.removePlayer')"
-            >
-              <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
-            </span>
-            <PlayerAvatar :player="playerB" size="xl" variant="circle" />
-            <div class="text-center w-full min-w-0">
-              <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
-              <p v-if="positionName(playerB)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
-            </div>
-          </template>
-          <template v-else>
-            <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
-              <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
-            </div>
-            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
-          </template>
-        </button>
+  <div class="w-full">
+    <MatchdayBoard
+      :eyebrow="$t('home.league.tabs.versus')"
+      icon="md-comparearrows-round"
+    >
+      <!-- No season context -->
+      <div v-if="!seasonUuid" class="px-4 py-12 flex flex-col items-center text-center">
+        <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
+        <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.selectLeague') }}</p>
       </div>
 
-      <!-- Results -->
-      <div class="border-t border-gray-100 dark:border-gray-800">
-        <!-- Prompt: need both players -->
-        <div v-if="!bothSelected" class="px-4 py-12 flex flex-col items-center text-center">
-          <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-          <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.pickTwo') }}</p>
-        </div>
-
-        <!-- Loading skeleton -->
-        <div v-else-if="isLoading" class="px-4 py-4 animate-pulse">
-          <!-- Legend -->
-          <div class="flex items-center justify-center gap-4 mb-4">
-            <div class="h-3 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
-            <div class="h-3 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
-          </div>
-          <!-- Radar placeholder -->
-          <div class="flex justify-center mb-6">
-            <div class="w-[220px] h-[220px] rounded-full bg-gray-100 dark:bg-gray-800" />
-          </div>
-          <!-- Comparison bar rows -->
-          <div class="space-y-4">
-            <div v-for="i in 6" :key="i">
-              <div class="flex justify-center mb-1.5">
-                <div class="h-2.5 w-20 rounded-full bg-gray-100 dark:bg-gray-800" />
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-9 h-3 rounded bg-gray-200 dark:bg-gray-700 shrink-0" />
-                <div class="flex-1 flex items-center gap-1">
-                  <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800" />
-                  <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800" />
-                </div>
-                <div class="w-9 h-3 rounded bg-gray-200 dark:bg-gray-700 shrink-0" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Error -->
-        <div v-else-if="error" class="px-4 py-12 flex flex-col items-center text-center">
-          <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-400 dark:text-red-500 mb-3" />
-          <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+      <template v-else>
+        <!-- Player slots -->
+        <div class="px-4 py-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
+          <!-- Slot A -->
           <button
-            @click="loadVersus"
-            class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+            @click="openSearch('a')"
+            class="relative min-w-0 flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors"
+            :class="playerA
+              ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/40 dark:bg-emerald-900/10'
+              : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
           >
-            {{ $t('common.actions.retry') }}
+            <template v-if="playerA">
+              <span
+                @click.stop="clearSlot('a')"
+                class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                :aria-label="$t('football.versus.removePlayer')"
+              >
+                <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
+              </span>
+              <PlayerAvatar :player="playerA" size="xl" variant="circle" />
+              <div class="text-center w-full min-w-0">
+                <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
+                <p v-if="positionName(playerA)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
+              </div>
+            </template>
+            <template v-else>
+              <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
+                <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
+              </div>
+              <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
+            </template>
+          </button>
+
+          <!-- VS medallion -->
+          <div class="flex items-center justify-center">
+            <span class="vs-medallion relative grid place-items-center w-11 h-11 rounded-full bg-emerald-600 ring-1 ring-emerald-500/30">
+              <span class="text-[11px] font-extrabold tracking-[0.15em] text-white">VS</span>
+            </span>
+          </div>
+
+          <!-- Slot B -->
+          <button
+            @click="openSearch('b')"
+            class="relative min-w-0 flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors"
+            :class="playerB
+              ? 'border-sky-200 dark:border-sky-800/50 bg-sky-50/40 dark:bg-sky-900/10'
+              : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
+          >
+            <template v-if="playerB">
+              <span
+                @click.stop="clearSlot('b')"
+                class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                :aria-label="$t('football.versus.removePlayer')"
+              >
+                <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
+              </span>
+              <PlayerAvatar :player="playerB" size="xl" variant="circle" />
+              <div class="text-center w-full min-w-0">
+                <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
+                <p v-if="positionName(playerB)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
+              </div>
+            </template>
+            <template v-else>
+              <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
+                <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
+              </div>
+              <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
+            </template>
           </button>
         </div>
 
-        <!-- Empty: no comparable stats -->
-        <div v-else-if="!hasStats" class="px-4 py-12 flex flex-col items-center text-center">
-          <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-          <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.noComparableStats') }}</p>
-        </div>
-
-        <!-- Comparison -->
-        <div v-else class="px-4 py-4">
-          <!-- Legend -->
-          <div class="flex items-center justify-center gap-4 mb-3">
-            <span class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: COLOR_A }" />
-              <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerA?.display_name }}</span>
-            </span>
-            <span class="flex items-center gap-1.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: COLOR_B }" />
-              <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerB?.display_name }}</span>
-            </span>
+        <!-- Results -->
+        <div class="border-t border-gray-100 dark:border-gray-800">
+          <!-- Prompt: need both players -->
+          <div v-if="!bothSelected" class="px-4 py-12 flex flex-col items-center text-center">
+            <v-icon name="md-comparearrows-round" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
+            <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.pickTwo') }}</p>
           </div>
 
-          <!-- Radar -->
-          <PlayerVersusRadar
-            v-if="radar.labels.length > 0"
-            :labels="radar.labels"
-            :dataset-a="{ name: playerA?.display_name ?? 'A', values: radar.valuesA, color: COLOR_A }"
-            :dataset-b="{ name: playerB?.display_name ?? 'B', values: radar.valuesB, color: COLOR_B }"
-          />
+          <!-- Loading skeleton -->
+          <div v-else-if="isLoading" class="px-4 py-4 animate-pulse">
+            <!-- Legend -->
+            <div class="flex items-center justify-center gap-4 mb-4">
+              <div class="h-3 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+              <div class="h-3 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+            </div>
+            <!-- Radar placeholder -->
+            <div class="flex justify-center mb-6">
+              <div class="w-[220px] h-[220px] rounded-full bg-gray-100 dark:bg-gray-800" />
+            </div>
+            <!-- Comparison bar rows -->
+            <div class="space-y-4">
+              <div v-for="i in 6" :key="i">
+                <div class="flex justify-center mb-1.5">
+                  <div class="h-2.5 w-20 rounded-full bg-gray-100 dark:bg-gray-800" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-9 h-3 rounded bg-gray-200 dark:bg-gray-700 shrink-0" />
+                  <div class="flex-1 flex items-center gap-1">
+                    <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800" />
+                    <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800" />
+                  </div>
+                  <div class="w-9 h-3 rounded bg-gray-200 dark:bg-gray-700 shrink-0" />
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <!-- Comparison bars -->
-          <div class="mt-5">
-            <PlayerVersusStatBars :comparison="comparison" :color-a="COLOR_A" :color-b="COLOR_B" />
+          <!-- Error -->
+          <div v-else-if="error" class="px-4 py-12 flex flex-col items-center text-center">
+            <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-400 dark:text-red-500 mb-3" />
+            <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ error }}</p>
+            <button
+              @click="loadVersus"
+              class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+            >
+              {{ $t('common.actions.retry') }}
+            </button>
+          </div>
+
+          <!-- Empty: no comparable stats -->
+          <div v-else-if="!hasStats" class="px-4 py-12 flex flex-col items-center text-center">
+            <v-icon name="hi-solid-chart-bar" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
+            <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.versus.noComparableStats') }}</p>
+          </div>
+
+          <!-- Comparison -->
+          <div v-else class="px-4 py-4">
+            <!-- Legend -->
+            <div class="flex items-center justify-center gap-4 mb-3">
+              <span class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: COLOR_A }" />
+                <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerA?.display_name }}</span>
+              </span>
+              <span class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: COLOR_B }" />
+                <span class="text-2xs font-semibold text-gray-700 dark:text-gray-200 truncate">{{ playerB?.display_name }}</span>
+              </span>
+            </div>
+
+            <!-- Radar -->
+            <PlayerVersusRadar
+              v-if="radar.labels.length > 0"
+              :labels="radar.labels"
+              :dataset-a="{ name: playerA?.display_name ?? 'A', values: radar.valuesA, color: COLOR_A }"
+              :dataset-b="{ name: playerB?.display_name ?? 'B', values: radar.valuesB, color: COLOR_B }"
+            />
+
+            <!-- Comparison bars -->
+            <div class="mt-5">
+              <PlayerVersusStatBars :comparison="comparison" :color-a="COLOR_A" :color-b="COLOR_B" />
+            </div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
+    </MatchdayBoard>
 
     <!-- Player search drawer -->
     <PlayerSearchDrawer
@@ -286,3 +294,9 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
     />
   </div>
 </template>
+
+<style scoped>
+.vs-medallion {
+  box-shadow: 0 4px 12px -4px rgba(5, 150, 105, 0.45);
+}
+</style>

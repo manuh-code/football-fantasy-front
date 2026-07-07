@@ -10,7 +10,14 @@ const props = defineProps<{ stageUuid: string }>();
 
 const TOP_N = 3;
 const FALLBACK = "/img/default-avatar.svg";
-const rankLabel = ["🥇", "🥈", "🥉"];
+
+// Podium rank badge — gold / silver / bronze, rendered as a numeric chip.
+const rankBadgeClass = (index: number): string =>
+  index === 0
+    ? "bg-amber-400 text-gray-900"
+    : index === 1
+      ? "bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100"
+      : "bg-amber-700/80 text-amber-50";
 
 const data = ref<FootballPlayerStatisticByStageResponse[]>([]);
 const isLoading = ref(false);
@@ -144,7 +151,7 @@ const retry = () => load();
           <!-- Card header -->
           <div class="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/60 border-b border-gray-100 dark:border-gray-800">
             <div class="flex items-center gap-2 min-w-0">
-              <v-icon name="hi-solid-chart-bar" class="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span class="w-1 h-3.5 rounded-full bg-emerald-500/80 shrink-0" aria-hidden="true" />
               <span class="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 truncate">
                 {{ statLabel(entry) }}
               </span>
@@ -166,9 +173,12 @@ const retry = () => load();
               class="flex items-center gap-3 px-4 py-3"
               :class="index === 0 ? 'bg-amber-50/60 dark:bg-amber-900/10' : ''"
             >
-              <!-- Medal -->
-              <span class="w-6 shrink-0 text-center text-callout leading-none select-none">
-                {{ rankLabel[index] }}
+              <!-- Rank badge -->
+              <span
+                class="w-6 h-6 shrink-0 grid place-items-center rounded-lg text-2xs font-extrabold tabular-nums select-none"
+                :class="rankBadgeClass(index)"
+              >
+                {{ index + 1 }}
               </span>
 
               <!-- Avatar -->

@@ -17,7 +17,16 @@
     "subtitle": "Follow live scores and stats, create pools with your group and build your fantasy team. All in one place, completely free.",
     "ctaPrimary": "Create a free account",
     "ctaSecondary": "Explore the app",
-    "note": "No cost · No card · Install it on your phone"
+    "note": "No cost · No card · Install it on your phone",
+    "social": "Join the football fans community"
+  },
+  "preview": {
+    "title": "Your league",
+    "live": "LIVE",
+    "min": "67'",
+    "standings": "Standings",
+    "matchday": "Matchday 12",
+    "points": "PTS"
   },
   "stats": {
     "leagues": { "value": "Multi-league", "label": "Follow your favorite leagues" },

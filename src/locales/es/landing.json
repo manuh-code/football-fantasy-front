@@ -17,7 +17,16 @@
     "subtitle": "Sigue resultados y estadísticas en vivo, crea quinielas con tu grupo y arma tu equipo fantasy. Todo en un solo lugar, totalmente gratis.",
     "ctaPrimary": "Crear cuenta gratis",
     "ctaSecondary": "Explorar la app",
-    "note": "Sin costo · Sin tarjeta · Instálala en tu móvil"
+    "note": "Sin costo · Sin tarjeta · Instálala en tu móvil",
+    "social": "Únete a la comunidad de fans del fútbol"
+  },
+  "preview": {
+    "title": "Tu liga",
+    "live": "EN VIVO",
+    "min": "67'",
+    "standings": "Tabla general",
+    "matchday": "Jornada 12",
+    "points": "PTS"
   },
   "stats": {
     "leagues": { "value": "Multiliga", "label": "Sigue tus ligas favoritas" },

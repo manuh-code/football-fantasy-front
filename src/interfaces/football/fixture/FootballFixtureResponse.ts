@@ -18,6 +18,7 @@ import { FootballFixtureLineupStatsResponse } from "./FootballFixtureLineupStats
 import { FootballFixtureManOfTheMatchResponse } from "./FootballFixtureManOfTheMatchResponse";
 import { PoolPredictionResponse } from "@/interfaces/pool/PoolPredictionResponse";
 import { SurvivorPickResponse } from "@/interfaces/survivor/SurvivorPickResponse";
+import { FootballFixtureAggregateResponse } from "./FootballFixtureAggregateResponse";
 
 export interface FootballFixtureResponse {
     uuid: string;
@@ -41,6 +42,7 @@ export interface FootballFixtureResponse {
     manOfTheMatch: FootballFixtureManOfTheMatchResponse | null;
     prediction?: PoolPredictionResponse | null;
     pick?: SurvivorPickResponse | null;
+    aggregate?: FootballFixtureAggregateResponse | null;
 
     name: string;
     starting_at: string;
@@ -49,6 +51,7 @@ export interface FootballFixtureResponse {
     starting_at_timestamp: number;
     length: number;
     leg: string;
+    result_info: string;
     placeholder: boolean;
     is_finished?: boolean | null;
     is_inplay?: boolean | null;
