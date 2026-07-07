@@ -392,8 +392,15 @@ const selectTeam = async (fixture: FootballFixtureResponse, location: "home" | "
   // No-op if this team is already the current pick.
   if (fixture.pick?.team?.uuid === team.uuid) return;
 
-  // Optimistic update: move the pick to the chosen team right away.
-  const previousPick = fixture.pick ?? null;
+  // A survivor round allows a SINGLE pick, so choosing a team clears the
+  // selection on every other fixture. Snapshot the whole round's picks first so
+  // a failed save can roll all of them back.
+  const previousPicks = new Map(fixtures.value.map((f) => [f.uuid, f.pick ?? null]));
+
+  // Optimistic update: drop the pick everywhere else, then move it to the chosen team.
+  fixtures.value.forEach((f) => {
+    if (f.uuid !== fixture.uuid && f.pick) f.pick = null;
+  });
   fixture.pick = {
     result: "",
     is_pending: true,
@@ -410,15 +417,21 @@ const selectTeam = async (fixture: FootballFixtureResponse, location: "home" | "
       fixture_uuid: fixture.uuid,
       team_uuid: team.uuid,
     });
-    // Reconcile only this fixture's pick from the response (leaves the rest as-is).
-    const fresh = Array.isArray(updated)
-      ? updated.find((f) => f.uuid === fixture.uuid)
-      : undefined;
-    if (fresh?.pick) fixture.pick = fresh.pick;
+    // Reconcile the whole round from the response: the backend keeps a single
+    // pick per round, so this also clears the picks the user moved away from.
+    if (Array.isArray(updated)) {
+      const byUuid = new Map(updated.map((f) => [f.uuid, f]));
+      fixtures.value.forEach((f) => {
+        const fresh = byUuid.get(f.uuid);
+        if (fresh) f.pick = fresh.pick ?? null;
+      });
+    }
     success(t("survivor.detail.pickSavedTitle"), t("survivor.detail.pickSavedBody", { team: team.name }));
   } catch (e) {
-    // Roll back the optimistic pick; the API interceptor surfaces the error toast.
-    fixture.pick = previousPick;
+    // Roll back every fixture's pick; the API interceptor surfaces the error toast.
+    fixtures.value.forEach((f) => {
+      if (previousPicks.has(f.uuid)) f.pick = previousPicks.get(f.uuid) ?? null;
+    });
     console.error("Error saving survivor pick:", e);
   } finally {
     savingFixtureUuid.value = null;

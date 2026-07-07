@@ -6,6 +6,7 @@
     "aria": "Survivor navigation",
     "survivors": "My Survivor",
     "picks": "Picks",
+    "mypicks": "My Picks",
     "standings": "Standings"
   },
   "docTitle": "Survivor - Football Fantasy",
@@ -46,6 +47,20 @@
       "loss": "Lost",
       "draw": "Draw",
       "pending": "Pending"
+    }
+  },
+  "mypicks": {
+    "title": "My Picks",
+    "subtitle": "Your chosen team each round",
+    "current": "Current",
+    "noPick": "No pick",
+    "loadError": "Couldn't load your picks.",
+    "emptyTitle": "No picks yet",
+    "emptyBody": "Once you pick a team in a round, your history will show up here.",
+    "record": {
+      "wins": "Won",
+      "draws": "Drawn",
+      "losses": "Lost"
     }
   }
 }

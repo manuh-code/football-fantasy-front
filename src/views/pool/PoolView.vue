@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
       <!-- Pool Component -->
       <div class="animate-page-enter">
@@ -54,17 +54,26 @@
       @close="isJoinOpen = false"
       @joined="onJoined"
     />
+
+    <!-- Bottom navigation: Home / Gaming / Pools -->
+    <BottomNavBar
+      :items="navItems"
+      active-key="pools"
+      :aria-label="$t('pool.nav.aria')"
+      @select="onNavSelect"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "@/composables/useToast";
 import PoolComponent from "@/components/pool/PoolComponent.vue";
 import PoolCreateModal from "@/components/pool/PoolCreateModal.vue";
 import PoolJoinModal from "@/components/pool/PoolJoinModal.vue";
+import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 
 // Set page title
@@ -82,6 +91,27 @@ const poolComponentRef = ref<InstanceType<typeof PoolComponent> | null>(null);
 const isFabMenuOpen = ref(false);
 const isCreateOpen = ref(false);
 const isJoinOpen = ref(false);
+
+// Bottom navigation: jump back to Home / Gaming; "Pools" is the current screen.
+const navItems = computed<BottomNavItem[]>(() => [
+  { key: "home", label: t("home.nav.home"), icon: "hi-solid-home", accent: "emerald" },
+  { key: "gaming", label: t("home.nav.gaming"), icon: "bi-trophy-fill", accent: "emerald" },
+  { key: "pools", label: t("pool.nav.pools"), icon: "hi-solid-clipboard-list", accent: "blue" },
+]);
+
+const onNavSelect = (key: string) => {
+  switch (key) {
+    case "home":
+      router.push({ name: "home" });
+      break;
+    case "gaming":
+      router.push({ name: "gaming" });
+      break;
+    case "pools":
+      // Already on the pools list.
+      break;
+  }
+};
 
 // Access code pre-filled into the Join sheet when arriving from an invite link.
 const joinInitialCode = ref("");

@@ -12,6 +12,7 @@
         <TabsMenu
           :model-value="activeTab"
           :tabs="tabs"
+          variant="pills"
           :aria-label="$t('home.league.sectionsAriaLabel')"
           @update:model-value="selectTab"
         />

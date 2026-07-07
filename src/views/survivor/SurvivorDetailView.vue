@@ -2,7 +2,8 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-3xl">
       <div class="animate-page-enter">
-        <SurvivorDetailComponent :survivor-uuid="survivorUuid" />
+        <SurvivorMyPicksComponent v-if="activeTab === 'mypicks'" :survivor-uuid="survivorUuid" />
+        <SurvivorDetailComponent v-else :survivor-uuid="survivorUuid" />
       </div>
     </div>
 
@@ -21,6 +22,7 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import SurvivorDetailComponent from "@/components/survivor/SurvivorDetailComponent.vue";
+import SurvivorMyPicksComponent from "@/components/survivor/SurvivorMyPicksComponent.vue";
 import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 
 const { t } = useI18n();
@@ -41,6 +43,7 @@ const activeTab = ref("picks");
 const items = computed<BottomNavItem[]>(() => [
   { key: "survivors", label: t("survivor.nav.survivors"), icon: "hi-solid-collection" },
   { key: "picks", label: t("survivor.nav.picks"), icon: "hi-solid-clipboard-list", accent: "red" },
+  { key: "mypicks", label: t("survivor.nav.mypicks"), icon: "hi-solid-check-circle", accent: "red" },
   { key: "standings", label: t("survivor.nav.standings"), icon: "bi-trophy-fill", disabled: true },
 ]);
 

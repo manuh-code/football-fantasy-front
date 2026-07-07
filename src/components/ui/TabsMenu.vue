@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string = string">
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import type { ComponentPublicInstance } from "vue";
 
 // Standard linear tab menu used across the app.
@@ -15,9 +15,46 @@ const props = withDefaults(
   defineProps<{
     tabs: Tab[];
     ariaLabel?: string;
+    /**
+     * Visual style:
+     *  - "underline" (default): active tab underlined with an emerald bar over a
+     *    hairline baseline (match center).
+     *  - "pills": segmented pill track — a rounded gray rail with a white active
+     *    pill (mirrors the team-profile tab menu, used on Home).
+     */
+    variant?: "underline" | "pills";
   }>(),
-  { ariaLabel: "Sections" },
+  { ariaLabel: "Sections", variant: "underline" },
 );
+
+const isPills = computed(() => props.variant === "pills");
+
+// Track (the horizontal rail) — a rounded gray container for pills, a hairline
+// baseline for the underline variant.
+const trackClass = computed(() =>
+  isPills.value
+    ? "tab-track flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-x-auto"
+    : "tab-track flex items-stretch gap-1 overflow-x-auto border-b border-gray-200 dark:border-gray-700/60",
+);
+
+// Per-button layout (independent of active state).
+const btnBaseClass = computed(() =>
+  isPills.value
+    ? "shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
+    : "tab-btn relative shrink-0 flex items-center justify-center gap-1.5 px-3 pt-2 pb-2.5 text-[12px] font-semibold whitespace-nowrap transition-colors duration-200",
+);
+
+// Active / inactive styling per variant.
+const btnStateClass = (activeTab: boolean): string => {
+  if (isPills.value) {
+    return activeTab
+      ? "bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm"
+      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300";
+  }
+  return activeTab
+    ? "text-gray-900 dark:text-white shadow-[inset_0_-2px_0_0_#059669] dark:shadow-[inset_0_-2px_0_0_#34d399]"
+    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300";
+};
 
 const active = defineModel<T>({ required: true });
 
@@ -70,7 +107,7 @@ onBeforeUnmount(() => {
   <div class="relative">
     <div
       ref="track"
-      class="tab-track flex items-stretch gap-1 overflow-x-auto border-b border-gray-200 dark:border-gray-700/60"
+      :class="trackClass"
       role="tablist"
       :aria-label="props.ariaLabel"
       @scroll="updateHints"
@@ -83,33 +120,32 @@ onBeforeUnmount(() => {
         role="tab"
         :aria-selected="active === tab.key"
         @click="select(tab.key)"
-        class="tab-btn relative shrink-0 flex items-center justify-center gap-1.5 px-3 pt-2 pb-2.5 text-[12px] font-semibold whitespace-nowrap transition-colors duration-200"
-        :class="
-          active === tab.key
-            ? 'text-gray-900 dark:text-white shadow-[inset_0_-2px_0_0_#059669] dark:shadow-[inset_0_-2px_0_0_#34d399]'
-            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-        "
+        :class="[btnBaseClass, btnStateClass(active === tab.key)]"
       >
         <v-icon :name="tab.icon" class="w-3.5 h-3.5 shrink-0" />
         <span>{{ tab.label }}</span>
       </button>
     </div>
 
-    <!-- Left overflow hint -->
-    <div
-      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-0.5 pr-5 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent transition-opacity duration-200"
-      :class="canScrollLeft ? 'opacity-100' : 'opacity-0'"
-    >
-      <v-icon name="hi-solid-chevron-left" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-    </div>
+    <!-- Overflow hints: only for the underline variant. The pill track's rounded
+         rail (with a partly-visible pill at the edge) already signals scroll. -->
+    <template v-if="!isPills">
+      <!-- Left overflow hint -->
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-0.5 pr-5 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent transition-opacity duration-200"
+        :class="canScrollLeft ? 'opacity-100' : 'opacity-0'"
+      >
+        <v-icon name="hi-solid-chevron-left" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+      </div>
 
-    <!-- Right overflow hint -->
-    <div
-      class="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-0.5 pl-5 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent transition-opacity duration-200"
-      :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
-    >
-      <v-icon name="hi-solid-chevron-right" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-    </div>
+      <!-- Right overflow hint -->
+      <div
+        class="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-0.5 pl-5 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent transition-opacity duration-200"
+        :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
+      >
+        <v-icon name="hi-solid-chevron-right" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+      </div>
+    </template>
   </div>
 </template>
 
