@@ -8,23 +8,31 @@ import type { FootballFixtureResponse } from "@/interfaces/football/fixture/Foot
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import FixturesFilters from "@/components/football/fixtures/FixturesFilters.vue";
 import FixturesList from "@/components/football/fixtures/FixturesList.vue";
 import FixtureByTeam from "@/components/football/fixtures/FixtureByTeam.vue";
 import FixtureMatchCenter from "@/components/football/fixtures/FixtureMatchCenter.vue";
 import KnockoutBracket from "@/components/football/fixtures/KnockoutBracket.vue";
 
+type Mode = "regular" | "playoffs";
+
 interface Props {
   stageUuid: string;
   seasonUuid?: string;
+  /** Which competition the panel opens in — driven by the parent Home tab
+   *  (Fixtures → "regular", Playoffs → "playoffs"). */
+  mode?: Mode;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { mode: "regular" });
 
 const { t } = useI18n();
 
-type Mode = "regular" | "playoffs";
-const mode = ref<Mode>("regular");
+// Mode is owned by the parent tab now; a computed alias keeps the mode-aware
+// logic below reading unchanged. Each Home tab mounts its own LeagueFixtures
+// instance, so a given instance's mode is fixed for its lifetime.
+const mode = computed(() => props.mode);
 
 // ── Regular season state ──
 const rounds = ref<FootballRoundResponse[]>([]);
@@ -59,6 +67,19 @@ const scheduleError = ref<string | null>(null);
 
 // Empty string (from the "All teams" option) and null both mean "no team".
 const teamMode = computed(() => !!selectedTeamUuid.value);
+
+// Any match currently in play → surfaces a "LIVE" pill in the board header.
+const hasLiveFixture = computed(() =>
+  fixtures.value.some((f) => {
+    const s = f.state?.name?.toLowerCase() ?? "";
+    return (
+      s.includes("live") ||
+      s.includes("in play") ||
+      s.includes("ht") ||
+      s.includes("half")
+    );
+  }),
+);
 
 const loadTeams = async (seasonUuid: string) => {
   if (!seasonUuid) return;
@@ -216,21 +237,6 @@ const retryFixtures = () => {
 };
 
 // ── Reactions ──
-// Mode change → load the right fixtures (lazy-load playoff stages on first open)
-watch(mode, (m) => {
-  fixtures.value = [];
-  fixturesError.value = null;
-  if (m === "regular") {
-    if (props.stageUuid && selectedRoundUuid.value) {
-      loadRoundFixtures(props.stageUuid, selectedRoundUuid.value);
-    }
-  } else if (knockoutStages.value.length === 0) {
-    loadKnockoutStages(props.stageUuid);
-  } else if (selectedKnockoutUuid.value) {
-    loadKnockoutFixtures(selectedKnockoutUuid.value);
-  }
-});
-
 // Selected round → fetch fixtures (regular mode only)
 watch(selectedRoundUuid, (uuid) => {
   if (mode.value === "regular" && uuid && props.stageUuid) {
@@ -255,11 +261,10 @@ watch(selectedTeamUuid, (uuid) => {
   }
 });
 
-// Parent stage changes → reset everything back to Regular Season
+// Parent stage changes → reset state and reload for the current mode
 watch(
   () => props.stageUuid,
   (stageUuid) => {
-    mode.value = "regular";
     selectedRoundUuid.value = null;
     knockoutStages.value = [];
     selectedKnockoutUuid.value = null;
@@ -270,7 +275,9 @@ watch(
     selectedTeamUuid.value = null;
     teamSchedule.value = [];
     scheduleError.value = null;
-    if (stageUuid) loadRounds(stageUuid);
+    if (!stageUuid) return;
+    if (mode.value === "playoffs") loadKnockoutStages(stageUuid);
+    else loadRounds(stageUuid);
   },
 );
 
@@ -284,8 +291,11 @@ watch(
 );
 
 onMounted(() => {
-  if (props.stageUuid) loadRounds(props.stageUuid);
   if (props.seasonUuid) loadTeams(props.seasonUuid);
+  if (props.stageUuid) {
+    if (mode.value === "playoffs") loadKnockoutStages(props.stageUuid);
+    else loadRounds(props.stageUuid);
+  }
 });
 
 // ── Derived list state ──
@@ -322,51 +332,67 @@ const bracketOpen = ref(false);
 </script>
 
 <template>
-  <div
-    class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
-  >
-    <!-- Filters: team focus + mode toggle + round/knockout selector -->
-    <FixturesFilters
-      v-model:mode="mode"
-      v-model:round-uuid="selectedRoundUuid"
-      v-model:knockout-uuid="selectedKnockoutUuid"
-      v-model:team-uuid="selectedTeamUuid"
-      :rounds="rounds"
-      :is-loading-rounds="isLoadingRounds"
-      :rounds-error="roundsError"
-      :knockout-stages="knockoutStages"
-      :is-loading-stages="isLoadingStages"
-      :stages-error="stagesError"
-      :teams="teams"
-      :is-loading-teams="isLoadingTeams"
-      :teams-error="teamsError"
-      @retry-rounds="retryRounds"
-      @retry-stages="loadKnockoutStages(props.stageUuid)"
-      @retry-teams="retryTeams"
-      @open-bracket="bracketOpen = true"
-    />
+  <div class="w-full">
+    <MatchdayBoard
+      :eyebrow="mode === 'playoffs' ? $t('football.fixtures.playoffs') : $t('home.league.tabs.fixtures')"
+      :icon="mode === 'playoffs' ? 'bi-trophy-fill' : 'md-sportssoccer'"
+    >
+      <template #context>
+        <span
+          v-if="hasLiveFixture"
+          class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-red-50 dark:bg-red-500/15 ring-1 ring-red-200 dark:ring-red-400/30 text-red-600 dark:text-red-300 text-[10px] font-bold uppercase tracking-[0.15em]"
+        >
+          <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+          </span>
+          {{ $t('football.fixtures.live') }}
+        </span>
+      </template>
 
-    <!-- Team focused → that team's full schedule -->
-    <FixtureByTeam
-      v-if="teamMode"
-      :schedule="teamSchedule"
-      :is-loading="isLoadingSchedule"
-      :error="scheduleError"
-      @fixture-selected="onFixtureSelected"
-      @retry="retryTeamSchedule"
-    />
+      <!-- Filters: round/knockout selector for the active mode + team focus -->
+      <FixturesFilters
+        :mode="mode"
+        v-model:round-uuid="selectedRoundUuid"
+        v-model:knockout-uuid="selectedKnockoutUuid"
+        v-model:team-uuid="selectedTeamUuid"
+        :rounds="rounds"
+        :is-loading-rounds="isLoadingRounds"
+        :rounds-error="roundsError"
+        :knockout-stages="knockoutStages"
+        :is-loading-stages="isLoadingStages"
+        :stages-error="stagesError"
+        :teams="teams"
+        :is-loading-teams="isLoadingTeams"
+        :teams-error="teamsError"
+        @retry-rounds="retryRounds"
+        @retry-stages="loadKnockoutStages(props.stageUuid)"
+        @retry-teams="retryTeams"
+        @open-bracket="bracketOpen = true"
+      />
 
-    <!-- Otherwise → league fixtures for the selected round/stage -->
-    <FixturesList
-      v-else
-      :fixtures="fixtures"
-      :is-loading="listLoading"
-      :error="fixturesError"
-      :empty-icon="emptyIcon"
-      :empty-message="emptyMessage"
-      @fixture-selected="onFixtureSelected"
-      @retry="retryFixtures"
-    />
+      <!-- Team focused → that team's full schedule -->
+      <FixtureByTeam
+        v-if="teamMode"
+        :schedule="teamSchedule"
+        :is-loading="isLoadingSchedule"
+        :error="scheduleError"
+        @fixture-selected="onFixtureSelected"
+        @retry="retryTeamSchedule"
+      />
+
+      <!-- Otherwise → league fixtures for the selected round/stage -->
+      <FixturesList
+        v-else
+        :fixtures="fixtures"
+        :is-loading="listLoading"
+        :error="fixturesError"
+        :empty-icon="emptyIcon"
+        :empty-message="emptyMessage"
+        @fixture-selected="onFixtureSelected"
+        @retry="retryFixtures"
+      />
+    </MatchdayBoard>
 
     <!-- Match Center opens on fixture tap (teleports to body) -->
     <FixtureMatchCenter

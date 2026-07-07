@@ -55,8 +55,8 @@ const formColor = (f: string | undefined) => {
  */
 const positionZoneColor = (pos: number | undefined) => {
   if (!pos) return "bg-transparent";
-  if (pos <= 4) return "bg-blue-500"; // Champions League
-  if (pos >= 5 && pos <= 6) return "bg-orange-400"; // Europa League / Conference
+  if (pos <= 4) return "bg-emerald-500"; // Direct qualification (pitch green = advancing)
+  if (pos >= 5 && pos <= 6) return "bg-amber-400"; // Play-in / repechaje
   // Relegation zone — show for bottom 3 if league has 18+ teams
   if (props.standings.length >= 18 && pos > props.standings.length - 3) return "bg-red-500";
   return "bg-transparent";
@@ -117,7 +117,12 @@ const formatGD = (val: string | number | undefined) => {
               class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
               :class="positionZoneColor(row.position)"
             />
-            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 tabular-nums">
+            <span
+              class="text-xs tabular-nums"
+              :class="row.position === 1
+                ? 'font-extrabold text-emerald-600 dark:text-emerald-400'
+                : 'font-semibold text-gray-500 dark:text-gray-400'"
+            >
               {{ row.position }}
             </span>
           </td>
@@ -190,7 +195,12 @@ const formatGD = (val: string | number | undefined) => {
 
           <!-- Points -->
           <td class="py-2.5 px-1 text-center standings-sticky-right right-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
-            <span class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-footnote font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+            <span
+              class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md text-footnote font-bold tabular-nums ring-1"
+              :class="row.position === 1
+                ? 'bg-emerald-500 text-white ring-transparent'
+                : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 ring-transparent'"
+            >
               {{ getStat(row.statistics, "overall-points") }}
             </span>
           </td>

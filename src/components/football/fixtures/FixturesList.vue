@@ -47,22 +47,33 @@ const getAwayParticipant = (fixture: FootballFixtureResponse): FootballTeamRespo
 
 const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || "TBD";
 
-const hasScores = (fixture: FootballFixtureResponse): boolean => {
-  const home = getHomeParticipant(fixture);
-  const away = getAwayParticipant(fixture);
-  return (
-    home?.current_score !== undefined &&
-    home?.current_score !== null &&
-    away?.current_score !== undefined &&
-    away?.current_score !== null
-  );
+// Read a participant's goals, preferring the participant-level current_score and
+// falling back to the fixture-level scores[] array. The API populates one or the
+// other depending on the endpoint (the round/knockout list endpoints stopped
+// filling current_score), so both must be handled — otherwise the readout shows
+// "vs" with no marker. Returns null when no score is available. Mirrors the
+// canonical getScore() in RoundFixtureCarousel.vue.
+const getScoreFor = (
+  fixture: FootballFixtureResponse,
+  location: "home" | "away",
+): number | null => {
+  const participant =
+    location === "home" ? getHomeParticipant(fixture) : getAwayParticipant(fixture);
+  const cs = participant?.current_score;
+  if (cs && typeof cs.score === "number") return cs.score;
+  const s = fixture.scores?.find((sc) => sc.score?.participant === location);
+  if (s && typeof s.score?.goals === "number") return s.score.goals;
+  return null;
 };
 
+const hasScores = (fixture: FootballFixtureResponse): boolean =>
+  getScoreFor(fixture, "home") !== null && getScoreFor(fixture, "away") !== null;
+
 const getHomeScore = (fixture: FootballFixtureResponse): number =>
-  getHomeParticipant(fixture)?.current_score?.score ?? 0;
+  getScoreFor(fixture, "home") ?? 0;
 
 const getAwayScore = (fixture: FootballFixtureResponse): number =>
-  getAwayParticipant(fixture)?.current_score?.score ?? 0;
+  getScoreFor(fixture, "away") ?? 0;
 
 const isMatchLive = (fixture: FootballFixtureResponse): boolean => {
   if (fixture.state) {
@@ -157,8 +168,9 @@ const getTeamResultClass = (
   <div v-else>
     <section v-for="group in groupedFixtures" :key="group.date">
       <!-- Date header (raw, unformatted value from the API) -->
-      <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-700/50">
-        <span class="text-2xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-700/50">
+        <span class="w-1 h-3 rounded-full bg-emerald-500/70" aria-hidden="true" />
+        <span class="text-2xs font-bold uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">
           {{ group.date }}
         </span>
       </div>
@@ -207,23 +219,33 @@ const getTeamResultClass = (
               </span>
             </div>
 
-            <!-- Score center -->
-            <div class="flex flex-col items-center shrink-0 min-w-[56px]">
+            <!-- Score center — a scoreboard-style readout for played/live matches -->
+            <div class="flex flex-col items-center shrink-0 min-w-[64px]">
+              <!-- Live matches get the red scoreboard chip; played matches show
+                   plain ink numerics. NOTE: do not use bg-gray-800/900 here —
+                   main.scss remaps those utilities to var(--color-bg) (white in
+                   light mode), which made the chip invisible. -->
               <div
-                class="tabular-nums"
-                :class="[
-                  hasScores(fixture) ? 'font-bold text-gray-900 dark:text-white' : '',
-                  isMatchLive(fixture) ? 'text-2xl' : 'text-xl',
-                ]"
+                v-if="hasScores(fixture)"
+                class="inline-flex items-center gap-1.5 tabular-nums font-extrabold"
+                :class="isMatchLive(fixture)
+                  ? 'px-2.5 py-1 rounded-lg text-white bg-red-600 text-lg shadow-[0_0_16px_-4px_rgba(239,68,68,0.7)] scoreboard-readout'
+                  : 'text-xl text-gray-900 dark:text-white'"
               >
-                <template v-if="hasScores(fixture)">
-                  {{ getHomeScore(fixture) }}<span :class="isMatchLive(fixture) ? 'text-red-300 dark:text-red-700 mx-0.5' : 'text-gray-300 dark:text-gray-600 mx-0.5'">-</span>{{ getAwayScore(fixture) }}
-                </template>
-                <span v-else class="text-2xs font-semibold text-gray-300 dark:text-gray-600 uppercase tracking-wider">vs</span>
+                <span>{{ getHomeScore(fixture) }}</span>
+                <span
+                  class="font-semibold"
+                  :class="isMatchLive(fixture) ? 'opacity-40' : 'text-gray-300 dark:text-gray-600'"
+                >:</span>
+                <span>{{ getAwayScore(fixture) }}</span>
               </div>
               <span
+                v-else
+                class="text-2xs font-bold text-gray-300 dark:text-gray-600 uppercase tracking-[0.2em]"
+              >vs</span>
+              <span
                 v-if="!isMatchLive(fixture) && getFixtureStateText(fixture)"
-                class="text-2xs font-semibold mt-0.5 tracking-wide text-gray-400 dark:text-gray-500"
+                class="text-2xs font-semibold mt-1 tracking-wide text-gray-400 dark:text-gray-500"
               >
                 {{ getFixtureStateText(fixture) }}
               </span>
@@ -254,6 +276,14 @@ const getTeamResultClass = (
 
 .fixture-cell {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Scoreboard readout — subtle beveled LED panel feel */
+.scoreboard-readout {
+  letter-spacing: 0.02em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .live-dot {

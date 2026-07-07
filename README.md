@@ -148,9 +148,10 @@ await withLoading('api-call', () => apiCall())
 
 ### Desarrollo
 ```bash
-npm run serve         # Servidor de desarrollo
-npm run build         # Build de producción
-npm run lint          # Linter
+npm run dev           # Servidor de desarrollo (http://localhost:5174)
+npm run build         # Build de producción (dist/)
+npm run preview       # Previsualizar el build (http://localhost:8080)
+npm run lint          # Linter (ESLint --fix)
 ```
 
 ### Instalación
@@ -160,10 +161,10 @@ git clone <repository-url>
 cd football-fantasy-front
 
 # Instalar dependencias
-npm install
+npm install --legacy-peer-deps
 
 # Ejecutar en desarrollo
-npm run serve
+npm run dev
 ```
 
 ## 📱 PWA Features
@@ -240,10 +241,7 @@ docker-compose up -d
 
 ## 🧪 Testing
 
-El proyecto está preparado para testing con:
-- Jest para unit testing
-- Vue Test Utils para testing de componentes
-- Cypress para E2E testing (configuración futura)
+Actualmente **no hay pruebas automatizadas configuradas** en el proyecto (no existe runner de tests ni script `npm test`). Testing unitario (Vue Test Utils) y E2E queda como trabajo futuro.
 
 ## 📄 Licencia
 

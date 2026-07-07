@@ -29,7 +29,7 @@ Para que el despliegue funcione correctamente, necesitas agregar los siguientes 
 - URL de tu API en producción
 - **IMPORTANTE:** Debe terminar con `/api/`
 
-#### `VITE_ABLY_PUBLIC_KEY`
+#### `VITE_ABLY_KEY`
 **Valor:** Tu clave pública de Ably para producción
 
 - Obtén una clave de producción en: https://ably.com/accounts
@@ -48,7 +48,7 @@ VPS_USERNAME             ✓
 VPS_SSH_KEY              ✓
 VPS_SSH_PASSPHRASE       ✓
 VITE_API_BASE_URL        ✓ (NUEVO)
-VITE_ABLY_PUBLIC_KEY     ✓ (NUEVO)
+VITE_ABLY_KEY            ✓ (NUEVO)
 ```
 
 ## 🚀 Probar el despliegue

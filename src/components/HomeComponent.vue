@@ -43,12 +43,20 @@
     </template>
 
     <template v-else>
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-12 px-6 text-center">
-        <v-icon name="md-sportssoccer" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
-        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">
+      <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/70 dark:border-gray-700/60 py-14 px-6 text-center">
+        <span
+          class="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-emerald-400/10 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          class="relative mx-auto mb-4 grid place-items-center w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 ring-1 ring-emerald-500/15"
+        >
+          <v-icon name="md-sportssoccer" class="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+        </div>
+        <h3 class="relative text-callout font-bold text-gray-900 dark:text-white mb-1">
           {{ $t('home.league.empty.title') }}
         </h3>
-        <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
+        <p class="relative text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
           {{ $t('home.league.empty.subtitle') }}
         </p>
       </div>
@@ -57,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineAsyncComponent, onMounted } from "vue";
+import { ref, computed, defineAsyncComponent, onMounted, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import HomeHeaderMenu from "@/components/home/HomeHeaderMenu.vue";
@@ -89,11 +97,12 @@ const selectedStageUuid = ref("");
 const selectedSeasonUuid = ref("");
 
 // ── Tabs ──
-type TabKey = "standings" | "fixtures" | "statistics" | "versus" | "totw";
+type TabKey = "standings" | "fixtures" | "playoffs" | "statistics" | "versus" | "totw";
 
 const tabs = computed<{ key: TabKey; label: string; icon: string }[]>(() => [
   { key: "standings", label: t("home.league.tabs.standings"), icon: "bi-trophy-fill" },
   { key: "fixtures", label: t("home.league.tabs.fixtures"), icon: "md-sportssoccer" },
+  { key: "playoffs", label: t("home.league.tabs.playoffs"), icon: "hi-solid-view-grid" },
   { key: "statistics", label: t("home.league.tabs.statistics"), icon: "hi-solid-chart-bar" },
   { key: "versus", label: t("home.league.tabs.versus"), icon: "md-comparearrows-round" },
   { key: "totw", label: t("home.league.tabs.totw"), icon: "bi-star-fill" },
@@ -113,9 +122,10 @@ const selectTab = (key: string) => {
   activeTab.value = key as TabKey;
 };
 
-const activeComponent = computed(() => {
+const activeComponent = computed<Component>(() => {
   switch (activeTab.value) {
     case "fixtures":
+    case "playoffs":
       return LeagueFixtures;
     case "statistics":
       return LeagueStatistics;
@@ -129,10 +139,13 @@ const activeComponent = computed(() => {
 });
 
 const activeProps = computed<Record<string, unknown>>(() => {
-  if (activeTab.value === "fixtures") {
+  // Fixtures and Playoffs render the same LeagueFixtures panel; the tab only
+  // decides which competition mode it opens in (regular season vs. knockout).
+  if (activeTab.value === "fixtures" || activeTab.value === "playoffs") {
     return {
       stageUuid: selectedStageUuid.value,
       seasonUuid: selectedSeasonUuid.value,
+      mode: activeTab.value === "playoffs" ? "playoffs" : "regular",
     };
   }
   if (activeTab.value === "versus") {

@@ -1,41 +1,54 @@
 <template>
-  <div
-    class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
-  >
-    <!-- Loading skeleton -->
-    <StandingsTableSkeleton v-if="loading" />
-
-    <!-- No stage selected -->
-    <div v-else-if="!stageUuid" class="flex items-center justify-center py-12">
-      <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.standings.noStage') }}</p>
-    </div>
-
-    <!-- Error -->
-    <div v-else-if="error" class="py-12 px-6 text-center">
-      <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
-      <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ error }}</p>
-      <button
-        @click="fetchStandings"
-        class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
-      >
-        Try Again
-      </button>
-    </div>
-
-    <!-- Empty -->
-    <div
-      v-else-if="standings.length === 0"
-      class="text-center py-10 text-gray-400 dark:text-gray-500"
+  <div class="w-full">
+    <MatchdayBoard
+      :eyebrow="$t('home.league.tabs.standings')"
+      icon="bi-trophy-fill"
     >
-      <NoResults
-        :title="$t('football.standings.noStandings')"
-        description="No standings available for this stage."
-        icon="bi-trophy-fill"
-      />
-    </div>
+      <template #context>
+        <span
+          v-if="!loading && !error && standings.length > 0"
+          class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 text-[11px] font-semibold tabular-nums"
+        >
+          <v-icon name="ri-team-line" class="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
+          {{ standings.length }}
+        </span>
+      </template>
 
-    <!-- Table -->
-    <StandingsTable v-else :standings="standings" @team-selected="openTeamProfile" />
+      <!-- Loading skeleton -->
+      <StandingsTableSkeleton v-if="loading" />
+
+      <!-- No stage selected -->
+      <div v-else-if="!stageUuid" class="flex items-center justify-center py-12">
+        <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('football.standings.noStage') }}</p>
+      </div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="py-12 px-6 text-center">
+        <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+        <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ error }}</p>
+        <button
+          @click="fetchStandings"
+          class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
+        >
+          {{ $t('common.actions.retry') }}
+        </button>
+      </div>
+
+      <!-- Empty -->
+      <div
+        v-else-if="standings.length === 0"
+        class="text-center py-10 text-gray-400 dark:text-gray-500"
+      >
+        <NoResults
+          :title="$t('football.standings.noStandings')"
+          description="No standings available for this stage."
+          icon="bi-trophy-fill"
+        />
+      </div>
+
+      <!-- Table -->
+      <StandingsTable v-else :standings="standings" @team-selected="openTeamProfile" />
+    </MatchdayBoard>
 
     <!-- Team profile drawer -->
     <FootballTeamProfileComponent
@@ -51,6 +64,7 @@
 import { ref, onMounted, watch } from "vue";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
 import NoResults from "@/components/ui/NoResults.vue";
+import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import StandingsTable from "./StandingsTable.vue";
 import StandingsTableSkeleton from "./StandingsTableSkeleton.vue";
 import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";

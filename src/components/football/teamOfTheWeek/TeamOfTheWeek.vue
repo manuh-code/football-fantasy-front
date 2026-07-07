@@ -5,6 +5,7 @@ import { footballPlayerService } from "@/services/football/player/FootballPlayer
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { TeamOfTheWeekByRoundResponse } from "@/interfaces/football/teamOfTheWeek/TeamOfTheWeekByRoundResponse";
 import SearchableSelectComponent from "@/components/ui/SearchableSelectComponent.vue";
+import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import TeamOfTheWeekSkeleton from "@/components/football/teamOfTheWeek/TeamOfTheWeekSkeleton.vue";
 
@@ -169,9 +170,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
+  <MatchdayBoard
+    :eyebrow="$t('home.league.tabs.totw')"
+    icon="bi-star-fill"
   >
+    <template #context>
+      <span
+        v-if="formation"
+        class="inline-flex items-center h-6 px-2.5 rounded-full bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 text-[11px] font-bold tabular-nums tracking-wider"
+      >
+        {{ formation }}
+      </span>
+    </template>
+
     <!-- ── Round selector ── -->
     <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
       <div v-if="isLoadingRounds" class="flex items-center justify-center py-2">
@@ -291,25 +302,9 @@ onMounted(() => {
 
       <!-- Pitch -->
       <template v-else>
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-2 px-1">
-          <div class="flex items-center gap-1.5">
-            <v-icon name="bi-star-fill" class="w-3.5 h-3.5 text-amber-400" />
-            <span class="text-xs font-semibold text-gray-900 dark:text-white">
-              Team of the Week
-            </span>
-          </div>
-          <span
-            v-if="formation"
-            class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums"
-          >
-            {{ formation }}
-          </span>
-        </div>
-
         <!-- Field -->
         <div
-          class="relative rounded-2xl overflow-hidden bg-gradient-to-b from-emerald-500 to-emerald-700 dark:from-emerald-800 dark:to-emerald-950 min-h-[520px] sm:min-h-[560px]"
+          class="totw-pitch relative rounded-2xl overflow-hidden min-h-[520px] sm:min-h-[560px]"
         >
           <!-- Markings -->
           <div class="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -352,11 +347,11 @@ onMounted(() => {
                     v-if="p.entry.player?.image_path"
                     :src="p.entry.player.image_path"
                     :alt="playerName(p.entry)"
-                    class="w-9 h-9 rounded-full object-cover bg-white/90 ring-2 ring-emerald-300 shadow"
+                    class="w-9 h-9 rounded-full object-cover bg-white/90 ring-2 ring-emerald-400/90 shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
                   />
                   <div
                     v-else
-                    class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-emerald-300 shadow flex items-center justify-center"
+                    class="w-9 h-9 rounded-full bg-white/90 ring-2 ring-emerald-400/90 shadow-[0_2px_8px_rgba(0,0,0,0.35)] flex items-center justify-center"
                   >
                     <v-icon
                       name="hi-solid-user"
@@ -372,10 +367,10 @@ onMounted(() => {
                     class="absolute -top-1 -left-1 ring-1 ring-white rounded-full bg-white/90"
                   />
 
-                  <!-- Rating -->
+                  <!-- Rating (scoreboard chip) -->
                   <span
                     v-if="p.entry.rating != null"
-                    class="absolute -bottom-1 -right-1 min-w-[18px] h-[15px] px-0.5 rounded-full bg-amber-400 text-gray-900 text-2xs font-bold flex items-center justify-center tabular-nums ring-1 ring-white"
+                    class="absolute -bottom-1.5 -right-1.5 min-w-[22px] h-[16px] px-1 rounded-md bg-emerald-600 text-white text-2xs font-extrabold flex items-center justify-center tabular-nums ring-1 ring-white/60 shadow"
                   >
                     {{ p.entry.rating.toFixed(1) }}
                   </span>
@@ -391,11 +386,37 @@ onMounted(() => {
         </div>
       </template>
     </div>
-  </div>
+  </MatchdayBoard>
 </template>
 
 <style scoped>
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Stadium-night pitch: floodlight bloom (top) + mowing stripes + turf gradient. */
+.totw-pitch {
+  background-image:
+    radial-gradient(130% 65% at 50% -12%, rgba(255, 255, 255, 0.18), transparent 60%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 8%,
+      rgba(0, 0, 0, 0.035) 8%,
+      rgba(0, 0, 0, 0.035) 16%
+    ),
+    linear-gradient(to bottom, #10a066 0%, #0a7a4d 45%, #05402c 100%);
+}
+.dark .totw-pitch {
+  background-image:
+    radial-gradient(130% 65% at 50% -12%, rgba(255, 255, 255, 0.12), transparent 60%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.035) 0,
+      rgba(255, 255, 255, 0.035) 8%,
+      rgba(0, 0, 0, 0.06) 8%,
+      rgba(0, 0, 0, 0.06) 16%
+    ),
+    linear-gradient(to bottom, #0b6a45 0%, #074a30 50%, #02150e 100%);
 }
 </style>

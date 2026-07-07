@@ -70,7 +70,7 @@ onBeforeUnmount(() => {
   <div class="relative">
     <div
       ref="track"
-      class="tab-track flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-x-auto"
+      class="tab-track flex items-stretch gap-1 overflow-x-auto border-b border-gray-200 dark:border-gray-700/60"
       role="tablist"
       :aria-label="props.ariaLabel"
       @scroll="updateHints"
@@ -83,10 +83,10 @@ onBeforeUnmount(() => {
         role="tab"
         :aria-selected="active === tab.key"
         @click="select(tab.key)"
-        class="shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
+        class="tab-btn relative shrink-0 flex items-center justify-center gap-1.5 px-3 pt-2 pb-2.5 text-[12px] font-semibold whitespace-nowrap transition-colors duration-200"
         :class="
           active === tab.key
-            ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
+            ? 'text-gray-900 dark:text-white shadow-[inset_0_-2px_0_0_#059669] dark:shadow-[inset_0_-2px_0_0_#34d399]'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
         "
       >
@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
 
     <!-- Left overflow hint -->
     <div
-      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-1 pr-4 rounded-l-full bg-gradient-to-r from-gray-100 dark:from-gray-800 to-transparent transition-opacity duration-200"
+      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-0.5 pr-5 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent transition-opacity duration-200"
       :class="canScrollLeft ? 'opacity-100' : 'opacity-0'"
     >
       <v-icon name="hi-solid-chevron-left" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
 
     <!-- Right overflow hint -->
     <div
-      class="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-1 pl-4 rounded-r-full bg-gradient-to-l from-gray-100 dark:from-gray-800 to-transparent transition-opacity duration-200"
+      class="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-0.5 pl-5 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent transition-opacity duration-200"
       :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
     >
       <v-icon name="hi-solid-chevron-right" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
