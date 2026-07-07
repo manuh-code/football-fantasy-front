@@ -6,6 +6,7 @@
     "aria": "Navegación de Survivor",
     "survivors": "Mis Survivor",
     "picks": "Picks",
+    "mypicks": "Mis Picks",
     "standings": "Posiciones"
   },
   "docTitle": "Survivor - Football Fantasy",
@@ -46,6 +47,20 @@
       "loss": "Perdió",
       "draw": "Empate",
       "pending": "Pendiente"
+    }
+  },
+  "mypicks": {
+    "title": "Mis Picks",
+    "subtitle": "Tu equipo elegido en cada jornada",
+    "current": "Actual",
+    "noPick": "Sin selección",
+    "loadError": "No se pudieron cargar tus picks.",
+    "emptyTitle": "Sin picks todavía",
+    "emptyBody": "Cuando elijas un equipo en una jornada, aparecerá aquí tu historial.",
+    "record": {
+      "wins": "Ganados",
+      "draws": "Empatados",
+      "losses": "Perdidos"
     }
   }
 }

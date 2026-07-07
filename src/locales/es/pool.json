@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "aria": "Navegación de quinielas",
+    "pools": "Quinielas"
+  },
   "myPools": "Mis quinielas",
   "emptyTitle": "Aún no tienes quinielas",
   "emptyBody": "Todavía no participas en ninguna quiniela. Cuando te unas a una, aparecerá aquí.",

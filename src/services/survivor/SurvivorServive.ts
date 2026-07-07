@@ -3,6 +3,7 @@ import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import { SurvivorPayload } from "@/interfaces/survivor/SurvivorPayload";
 import { SurvivorResponse } from "@/interfaces/survivor/SurvivorResponse";
+import { SurvivorUserPickResponse } from "@/interfaces/survivor/SurvivorUserPickResponse";
 
 export class SurvivorService {
     private api;
@@ -36,6 +37,14 @@ export class SurvivorService {
             return response.data.data;
         }
         throw new Error('Failed to fetch picks by survivor UUID');
+    }
+
+    async getMyPicksBySurvivorUuid(survivorUuid: string): Promise<SurvivorUserPickResponse[]> {
+        const response = await this.api.get<ApiResponse<SurvivorUserPickResponse[]>>(`survivor/${survivorUuid}/my/picks`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch my picks by survivor UUID');
     }
 }
 

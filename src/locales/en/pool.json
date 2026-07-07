@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "aria": "Pools navigation",
+    "pools": "Pools"
+  },
   "myPools": "My Pools",
   "emptyTitle": "No Pools Yet",
   "emptyBody": "You are not participating in any pool yet. Once you join one, it will show up here.",
