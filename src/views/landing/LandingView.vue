@@ -330,7 +330,7 @@
     <!-- ───────────────────────── Footer ───────────────────────── -->
     <footer class="border-t border-gray-100 dark:border-gray-800">
       <div class="container mx-auto max-w-6xl px-4 py-12">
-        <div class="grid gap-10 md:grid-cols-4">
+        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div class="md:col-span-1">
             <div class="flex items-center gap-2 font-bold text-lg">
               <span class="grid place-items-center w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft">
@@ -351,6 +351,24 @@
               <li>
                 <router-link :to="{ name: 'home' }" class="hover:text-primary-500 transition-colors">
                   {{ $t('landing.footer.explore') }}
+                </router-link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+              {{ $t('landing.footer.resources') }}
+            </h4>
+            <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+              <li>
+                <router-link :to="{ name: 'guides' }" class="hover:text-primary-500 transition-colors">
+                  {{ $t('landing.footer.guides') }}
+                </router-link>
+              </li>
+              <li>
+                <router-link :to="{ name: 'about' }" class="hover:text-primary-500 transition-colors">
+                  {{ $t('landing.footer.about') }}
                 </router-link>
               </li>
             </ul>

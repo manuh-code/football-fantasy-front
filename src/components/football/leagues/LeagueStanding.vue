@@ -1,19 +1,8 @@
 <template>
   <div class="w-full">
-    <MatchdayBoard
-      :eyebrow="$t('home.league.tabs.standings')"
-      icon="bi-trophy-fill"
+    <div
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
     >
-      <template #context>
-        <span
-          v-if="!loading && !error && standings.length > 0"
-          class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 text-[11px] font-semibold tabular-nums"
-        >
-          <v-icon name="ri-team-line" class="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
-          {{ standings.length }}
-        </span>
-      </template>
-
       <!-- Loading skeleton -->
       <StandingsTableSkeleton v-if="loading" />
 
@@ -48,7 +37,7 @@
 
       <!-- Table -->
       <StandingsTable v-else :standings="standings" @team-selected="openTeamProfile" />
-    </MatchdayBoard>
+    </div>
 
     <!-- Team profile drawer -->
     <FootballTeamProfileComponent
@@ -64,7 +53,6 @@
 import { ref, onMounted, watch } from "vue";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
 import NoResults from "@/components/ui/NoResults.vue";
-import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import StandingsTable from "./StandingsTable.vue";
 import StandingsTableSkeleton from "./StandingsTableSkeleton.vue";
 import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";

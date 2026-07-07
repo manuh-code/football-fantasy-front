@@ -8,7 +8,6 @@ import type { FootballFixtureResponse } from "@/interfaces/football/fixture/Foot
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
-import MatchdayBoard from "@/components/football/ui/MatchdayBoard.vue";
 import FixturesFilters from "@/components/football/fixtures/FixturesFilters.vue";
 import FixturesList from "@/components/football/fixtures/FixturesList.vue";
 import FixtureByTeam from "@/components/football/fixtures/FixtureByTeam.vue";
@@ -67,19 +66,6 @@ const scheduleError = ref<string | null>(null);
 
 // Empty string (from the "All teams" option) and null both mean "no team".
 const teamMode = computed(() => !!selectedTeamUuid.value);
-
-// Any match currently in play → surfaces a "LIVE" pill in the board header.
-const hasLiveFixture = computed(() =>
-  fixtures.value.some((f) => {
-    const s = f.state?.name?.toLowerCase() ?? "";
-    return (
-      s.includes("live") ||
-      s.includes("in play") ||
-      s.includes("ht") ||
-      s.includes("half")
-    );
-  }),
-);
 
 const loadTeams = async (seasonUuid: string) => {
   if (!seasonUuid) return;
@@ -333,23 +319,9 @@ const bracketOpen = ref(false);
 
 <template>
   <div class="w-full">
-    <MatchdayBoard
-      :eyebrow="mode === 'playoffs' ? $t('football.fixtures.playoffs') : $t('home.league.tabs.fixtures')"
-      :icon="mode === 'playoffs' ? 'bi-trophy-fill' : 'md-sportssoccer'"
+    <div
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
     >
-      <template #context>
-        <span
-          v-if="hasLiveFixture"
-          class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-red-50 dark:bg-red-500/15 ring-1 ring-red-200 dark:ring-red-400/30 text-red-600 dark:text-red-300 text-[10px] font-bold uppercase tracking-[0.15em]"
-        >
-          <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
-          </span>
-          {{ $t('football.fixtures.live') }}
-        </span>
-      </template>
-
       <!-- Filters: round/knockout selector for the active mode + team focus -->
       <FixturesFilters
         :mode="mode"
@@ -392,7 +364,7 @@ const bracketOpen = ref(false);
         @fixture-selected="onFixtureSelected"
         @retry="retryFixtures"
       />
-    </MatchdayBoard>
+    </div>
 
     <!-- Match Center opens on fixture tap (teleports to body) -->
     <FixtureMatchCenter

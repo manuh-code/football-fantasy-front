@@ -17,6 +17,7 @@ import esDashboard from '@/locales/es/dashboard.json'
 import esOnboarding from '@/locales/es/onboarding.json'
 import esLanding from '@/locales/es/landing.json'
 import esSurvivor from '@/locales/es/survivor.json'
+import esGuides from '@/locales/es/guides.json'
 
 import enCommon from '@/locales/en/common.json'
 import enErrors from '@/locales/en/errors.json'
@@ -33,6 +34,7 @@ import enDashboard from '@/locales/en/dashboard.json'
 import enOnboarding from '@/locales/en/onboarding.json'
 import enLanding from '@/locales/en/landing.json'
 import enSurvivor from '@/locales/en/survivor.json'
+import enGuides from '@/locales/en/guides.json'
 
 export const messages = {
   es: {
@@ -51,6 +53,7 @@ export const messages = {
     onboarding: esOnboarding,
     landing: esLanding,
     survivor: esSurvivor,
+    guides: esGuides,
   },
   en: {
     common: enCommon,
@@ -68,5 +71,6 @@ export const messages = {
     onboarding: enOnboarding,
     landing: enLanding,
     survivor: enSurvivor,
+    guides: enGuides,
   },
 } as const

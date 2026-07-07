@@ -41,6 +41,80 @@
     "label": "Advertisement"
   },
   "about": {
-    "title": "About"
+    "title": "About",
+    "badge": "Meet Fantasy MX",
+    "heading": "Experience Liga MX like never before",
+    "subtitle": "Fantasy MX is the free platform where you follow Mexican football live, build your fantasy team with a real-time draft, and compete against your friends in pools and Survivor.",
+    "intro": {
+      "heading": "What is Fantasy MX?",
+      "p1": "Fantasy MX was born out of a passion for Mexican football. We bring together everything a fan wants in one place: the live standings table, the matchday schedule, live results, and detailed statistics for Liga MX teams and players — all with a fast, clean design built for mobile.",
+      "p2": "But we go beyond just following the matches: we turn every matchday into a game. You can build your own fantasy team, test your predictions in private pools with friends, and survive week by week in Survivor mode. Every correct pick counts, and each week brings a new chance to reach the top."
+    },
+    "modes": {
+      "heading": "Game modes",
+      "subtitle": "Four ways to experience every Liga MX matchday.",
+      "follow": {
+        "title": "Follow your league",
+        "desc": "Standings, schedule, live results, and player and team statistics, updated matchday after matchday."
+      },
+      "fantasy": {
+        "title": "Fantasy with live draft",
+        "desc": "Create a fantasy league with your friends and pick your players in a real-time draft, with turns and a timer. Your team scores based on real on-field performance."
+      },
+      "pool": {
+        "title": "Pools",
+        "desc": "Build your matchday pool, invite your friends, and compete over who predicts the most results. Private, real-time standings."
+      },
+      "survivor": {
+        "title": "Survivor",
+        "desc": "Pick a winning team every matchday without repeating. Get it right and you advance; get it wrong and you're out. The last one standing takes the glory."
+      }
+    },
+    "how": {
+      "heading": "How it works",
+      "step1": {
+        "title": "Create your free account",
+        "desc": "Sign up in seconds with your email or with Google. No cost, no subscriptions."
+      },
+      "step2": {
+        "title": "Choose your game mode",
+        "desc": "Follow the league, create or join a fantasy league, build a pool, or enter a Survivor with your friends."
+      },
+      "step3": {
+        "title": "Compete every matchday",
+        "desc": "Score points from real Liga MX results and climb your group's standings week after week."
+      }
+    },
+    "features": {
+      "heading": "Why Fantasy MX",
+      "free": {
+        "title": "100% free",
+        "desc": "Every game mode is free. No hidden costs, no subscriptions."
+      },
+      "mobile": {
+        "title": "Built for mobile",
+        "desc": "Install it as an app on your phone (PWA) and take it everywhere."
+      },
+      "realtime": {
+        "title": "In real time",
+        "desc": "Draft, scores, and standings that update live while you play."
+      },
+      "friends": {
+        "title": "With your friends",
+        "desc": "Create private groups and compete against the people you really want to beat."
+      }
+    },
+    "responsible": {
+      "heading": "A game for fans",
+      "text": "Fantasy MX is a platform for entertainment and friendly competition. The pools, fantasy leagues, and Survivor are games of skill and football knowledge, made to have fun. We protect your data in accordance with Mexican law; you can review how we handle it in our privacy notice."
+    },
+    "cta": {
+      "heading": "Ready to play?",
+      "text": "Create your free account and build your first team, pool, or Survivor today.",
+      "primary": "Create free account",
+      "secondary": "Explore the league"
+    },
+    "privacyLink": "Privacy notice",
+    "guidesLink": "Read our guides and learn how to play"
   }
 }
