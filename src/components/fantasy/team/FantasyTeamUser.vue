@@ -178,7 +178,7 @@ onMounted(async () => {
         imagePreview.value = `data:image/svg+xml;utf8,${encodeURIComponent(team.svg)}`
       }
     }
-  } catch (e) {
+  } catch {
     // silent: no team or fetch error (404 expected when no team)
   } finally {
     isLoadingTeam.value = false

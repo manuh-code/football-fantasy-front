@@ -36,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import FootballPlayerFantasyPointsFilters from '@/components/football/player/FootballPlayerFantasyPointsFilters.vue'
 import FootballPlayerFantasyPointsResults from '@/components/football/player/FootballPlayerFantasyPointsResults.vue'

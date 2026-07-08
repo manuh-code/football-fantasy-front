@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { getToken, onMessage } from 'firebase/messaging'
+import { getToken, onMessage, type MessagePayload } from 'firebase/messaging'
 import { getFirebaseMessaging } from '@/firebase/config'
 import { useApiFantasy } from '@/composables/useApiFantasy'
 import { getDeviceUuid } from '@/utils/deviceUuid'
@@ -170,7 +170,7 @@ export function usePushNotifications() {
   /**
    * Escucha mensajes push cuando la app está en primer plano (foreground).
    */
-  async function onForegroundMessage(callback: (payload: any) => void) {
+  async function onForegroundMessage(callback: (payload: MessagePayload) => void) {
     const messaging = await getFirebaseMessaging()
     if (!messaging) return
 

@@ -39,7 +39,7 @@
         </div>
 
         <!-- Ad: only on this content surface (a league + stage are selected). -->
-        <AdUnit :slot="AD_SLOTS.homeContent" />
+        <AdUnit :ad-slot="AD_SLOTS.homeContent" />
       </template>
     </template>
 

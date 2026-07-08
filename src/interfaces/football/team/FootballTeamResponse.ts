@@ -14,5 +14,6 @@ export interface FootballTeamResponse {
     meta: FootballTeamMetaResponse | null;
     current_score: FootballTeamCurrentScoreResponse | null;
     latest: FootballFixtureResponse[] | null;
+    is_team_picked?: boolean | null;
 
 }

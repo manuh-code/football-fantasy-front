@@ -97,7 +97,7 @@
               <!-- Home team (pickable → button) -->
               <button
                 type="button"
-                :disabled="!isPickable(fixture) || savingFixtureUuid === fixture.uuid"
+                :disabled="!canPickTeam(fixture, 'home') || savingFixtureUuid === fixture.uuid"
                 @click="selectTeam(fixture, 'home')"
                 :class="teamButtonClasses(fixture, 'home')"
               >
@@ -105,7 +105,7 @@
                   :src="homeTeam(fixture)?.image_path || '/img/default-avatar.svg'"
                   :alt="homeTeam(fixture)?.name || $t('survivor.detail.home')"
                   class="w-11 h-11 object-contain transition-transform"
-                  :class="isPickable(fixture) ? 'group-hover:scale-110 group-active:scale-95' : ''"
+                  :class="canPickTeam(fixture, 'home') ? 'group-hover:scale-110 group-active:scale-95' : ''"
                   @error="onLogoError"
                 />
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200 leading-tight line-clamp-2">
@@ -133,7 +133,7 @@
               <!-- Away team (pickable → button) -->
               <button
                 type="button"
-                :disabled="!isPickable(fixture) || savingFixtureUuid === fixture.uuid"
+                :disabled="!canPickTeam(fixture, 'away') || savingFixtureUuid === fixture.uuid"
                 @click="selectTeam(fixture, 'away')"
                 :class="teamButtonClasses(fixture, 'away')"
               >
@@ -141,7 +141,7 @@
                   :src="awayTeam(fixture)?.image_path || '/img/default-avatar.svg'"
                   :alt="awayTeam(fixture)?.name || $t('survivor.detail.away')"
                   class="w-11 h-11 object-contain transition-transform"
-                  :class="isPickable(fixture) ? 'group-hover:scale-110 group-active:scale-95' : ''"
+                  :class="canPickTeam(fixture, 'away') ? 'group-hover:scale-110 group-active:scale-95' : ''"
                   @error="onLogoError"
                 />
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200 leading-tight line-clamp-2">
@@ -203,14 +203,26 @@ const savingFixtureUuid = ref<string | null>(null);
 const isPickable = (fixture: FootballFixtureResponse): boolean =>
   !fixture.is_finished && !fixture.is_inplay;
 
-const hasPickableFixtures = computed(() => fixtures.value.some(isPickable));
-
 // --- Team / score helpers ---
 const homeTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === "home") || fixture.participants?.[0];
 
 const awayTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === "away") || fixture.participants?.[1];
+
+// A team's shield is blocked when the backend flags it as already picked (is_team_picked).
+const isTeamBlocked = (fixture: FootballFixtureResponse, location: "home" | "away"): boolean => {
+  const team = location === "home" ? homeTeam(fixture) : awayTeam(fixture);
+  return team?.is_team_picked === true;
+};
+
+// A team can be picked only while its fixture is pickable AND the team itself isn't blocked.
+const canPickTeam = (fixture: FootballFixtureResponse, location: "home" | "away"): boolean =>
+  isPickable(fixture) && !isTeamBlocked(fixture, location);
+
+const hasPickableFixtures = computed(() =>
+  fixtures.value.some((f) => canPickTeam(f, "home") || canPickTeam(f, "away"))
+);
 
 const hasScore = (fixture: FootballFixtureResponse): boolean =>
   Array.isArray(fixture.scores) && fixture.scores.length > 0;
@@ -277,11 +289,12 @@ const teamButtonClasses = (fixture: FootballFixtureResponse, location: "home" | 
   ];
   const picked = isPicked(fixture, location);
   if (picked) parts.push(pickHighlight(fixture));
-  if (isPickable(fixture)) {
+  if (canPickTeam(fixture, location)) {
     parts.push("cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-emerald-400/50");
     if (!picked) parts.push("hover:bg-gray-50 dark:hover:bg-gray-700/40");
   } else {
     parts.push("cursor-not-allowed");
+    if (isTeamBlocked(fixture, location) && !picked) parts.push("opacity-40 grayscale");
   }
   return parts.join(" ");
 };
@@ -290,8 +303,8 @@ const teamButtonClasses = (fixture: FootballFixtureResponse, location: "home" | 
 // Optimistic: the highlight moves to the chosen team instantly and we only
 // touch this single fixture (no full-list reload), rolling back if the save fails.
 const selectTeam = async (fixture: FootballFixtureResponse, location: "home" | "away") => {
-  // Can't pick once the match is in play or finished, and never while a save runs.
-  if (!isPickable(fixture) || savingFixtureUuid.value !== null) return;
+  // Can't pick a team once its fixture is locked, the team is already blocked, or while a save runs.
+  if (!canPickTeam(fixture, location) || savingFixtureUuid.value !== null) return;
 
   const team = location === "home" ? homeTeam(fixture) : awayTeam(fixture);
   if (!team) return;

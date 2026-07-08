@@ -17,7 +17,7 @@
       class="adsbygoogle"
       style="display: block"
       :data-ad-client="client"
-      :data-ad-slot="slot"
+      :data-ad-slot="adSlot"
       :data-ad-format="format"
       :data-full-width-responsive="responsive ? 'true' : 'false'"
     />
@@ -31,7 +31,7 @@ import { ADSENSE_CLIENT } from "@/config/ads";
 const props = withDefaults(
   defineProps<{
     /** Numeric ad-unit slot id from the AdSense dashboard. */
-    slot: string;
+    adSlot: string;
     format?: string;
     responsive?: boolean;
   }>(),
@@ -44,7 +44,7 @@ const insEl = useTemplateRef<HTMLElement>("insEl");
 // Only render real ads in production once a genuine slot id is set. This keeps
 // dev/preview clean and avoids "blank" units while slots are still placeholders.
 const enabled =
-  import.meta.env.PROD && !!props.slot && !props.slot.startsWith("[");
+  import.meta.env.PROD && !!props.adSlot && !props.adSlot.startsWith("[");
 
 type AdsByGoogle = Record<string, unknown>[];
 

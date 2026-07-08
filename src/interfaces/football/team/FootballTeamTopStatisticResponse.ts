@@ -15,7 +15,7 @@ export interface StatisticType {
 }
 
 export interface TeamValue {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface Team {

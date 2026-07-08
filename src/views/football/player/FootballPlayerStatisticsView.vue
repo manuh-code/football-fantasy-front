@@ -28,22 +28,6 @@ const router = useRouter()
 // Check if we have a return path (coming from league detail)
 const returnPath = computed(() => route.query.returnTo as string)
 
-// Dynamic breadcrumbs based on context
-const breadcrumbs = computed(() => {
-  if (returnPath.value) {
-    return [
-      { name: 'Dashboard', to: { name: 'dashboard' } },
-      { name: 'My Leagues', to: { name: 'userFantasyLeague' } },
-      { name: 'League Details', to: returnPath.value },
-      { name: 'Player Statistics' }
-    ]
-  }
-  return [
-    { name: 'Dashboard', to: { name: 'dashboard' } },
-    { name: 'Player Statistics' }
-  ]
-})
-
 const goBackToLeague = () => {
   if (returnPath.value) {
     router.push(returnPath.value)

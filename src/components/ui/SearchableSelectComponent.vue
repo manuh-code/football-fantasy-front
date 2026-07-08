@@ -450,7 +450,11 @@ const isDesktop = globalThis.window !== undefined && globalThis.window.matchMedi
 // Methods
 function toggleDropdown() {
   if (props.disabled || props.loading) return;
-  isOpen.value ? closeDropdown() : openDropdown();
+  if (isOpen.value) {
+    closeDropdown();
+  } else {
+    openDropdown();
+  }
 }
 
 function openDropdown() {

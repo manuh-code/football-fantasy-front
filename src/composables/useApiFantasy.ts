@@ -30,7 +30,7 @@ export function useApiFantasy() {
     const getTimezone = (): string => {
         try {
             return Intl.DateTimeFormat().resolvedOptions().timeZone
-        } catch (err) {
+        } catch {
             return 'UTC'
         }
     }
@@ -60,7 +60,7 @@ export function useApiFantasy() {
             } else {
                 delete config.headers.Authorization;
             }
-        } catch (error) {
+        } catch {
             // If there's an error parsing the auth data, just continue without token
             delete config.headers.Authorization;
         }
@@ -69,7 +69,7 @@ export function useApiFantasy() {
         try {
             const localeStore = useLocaleStore();
             config.headers['Accept-Language'] = localeStore.locale;
-        } catch (error) {
+        } catch {
             config.headers['Accept-Language'] = 'es';
         }
         return config;

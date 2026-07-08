@@ -621,6 +621,7 @@ const onDragEnd = (e: PointerEvent) => {
                         {{ $t('football.team.recentForm') }}
                       </p>
                       <button
+                        v-if="hasMoreLatest"
                         type="button"
                         @click="goToTab('latest')"
                         class="inline-flex items-center gap-0.5 text-2xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"

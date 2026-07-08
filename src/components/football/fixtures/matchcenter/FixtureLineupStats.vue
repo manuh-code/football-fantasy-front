@@ -7,7 +7,7 @@ interface Props {
   lineupStats: FootballFixtureLineupStatsResponse[] | null;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const TOP_N = 3;
 const FALLBACK_PLAYER = "/img/default-avatar.svg";

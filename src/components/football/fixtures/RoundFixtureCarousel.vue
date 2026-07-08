@@ -284,7 +284,7 @@ const fetchRounds = async () => {
     } else {
       rounds.value = [];
     }
-  } catch (e) {
+  } catch {
     error.value = t("football.fixtures.errors.roundsLoad");
   } finally {
     loading.value = false;

@@ -28,7 +28,7 @@ export default defineConfig({
               decodeURIComponent(req.url)
             }
             next()
-          } catch (error) {
+          } catch {
             // Si la URL está mal formada, redirigir a la página principal
             res.writeHead(302, { 'Location': '/' })
             res.end()

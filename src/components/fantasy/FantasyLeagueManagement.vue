@@ -458,7 +458,6 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable no-undef */
 import { ref, onMounted, onUnmounted, PropType, computed } from 'vue';
 import { FantasyLeagueScoringRules, FantasyRule } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules';
 import { FantasyConditionsRulesResponse, FantasyConditionRuleDefinition } from '@/interfaces/fantasy/leagues/FantasyConditionsRulesResponse';

@@ -137,7 +137,7 @@
     <!-- Ad: only once real standings are loaded. -->
     <AdUnit
       v-if="!loadingStandings && !standingsError && rankedStandings.length > 0"
-      :slot="AD_SLOTS.poolStandings"
+      :ad-slot="AD_SLOTS.poolStandings"
     />
   </div>
 </template>

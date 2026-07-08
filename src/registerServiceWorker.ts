@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 
 /// <reference types="vite-plugin-pwa/client" />
 import { registerSW } from 'virtual:pwa-register'

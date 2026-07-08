@@ -46,6 +46,14 @@ export class SurvivorService {
         }
         throw new Error('Failed to fetch my picks by survivor UUID');
     }
+
+    async deletePickById(pickId: bigint): Promise<void> {
+        const response = await this.api.delete<ApiResponse<void>>(`survivor/pick/${pickId}`);
+        if (response.data.code === 200) {
+            return;
+        }
+        throw new Error('Failed to delete pick by ID');
+    }
 }
 
 export const survivorService = new SurvivorService();

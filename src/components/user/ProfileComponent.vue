@@ -301,7 +301,7 @@ onMounted(async () => {
     if (!userData.value) {
         try {
             await userStore.setUserDataFromApi()
-        } catch (error) {
+        } catch {
             // Failed to fetch user data
         }
     }

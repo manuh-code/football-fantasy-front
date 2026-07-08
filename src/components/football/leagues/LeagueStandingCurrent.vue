@@ -244,7 +244,7 @@ const fetchStandings = async () => {
         const res = await footballLeagueService.getCurrentStandings(leagueUuid)
         if (Array.isArray(res)) standings.value = res
         else standings.value = []
-    } catch (e) {
+    } catch {
         error.value = 'Failed to load standings.'
     } finally {
         loading.value = false
