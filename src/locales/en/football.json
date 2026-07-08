@@ -59,7 +59,9 @@
     "teams": "Teams",
     "players": "Players",
     "noPlayerStats": "No player statistics available yet",
-    "noTeamStats": "No team statistics available yet"
+    "noTeamStats": "No team statistics available yet",
+    "viewAll": "View all",
+    "leader": "Leader"
   },
   "stage": {
     "choose": "Choose a stage",
