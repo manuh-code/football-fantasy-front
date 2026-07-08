@@ -39,6 +39,7 @@
     "home": "Home",
     "away": "Away",
     "tapToPick": "Tap a crest to pick your team",
+    "pickRoundSubtitle": "Pick your team for this round",
     "locked": "Locked for picks",
     "pickSavedTitle": "Pick saved",
     "pickSavedBody": "You picked {team}",
