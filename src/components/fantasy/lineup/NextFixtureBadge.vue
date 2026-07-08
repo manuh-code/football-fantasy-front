@@ -25,25 +25,6 @@ const awayScore = computed(() =>
 );
 
 const hasScore = computed(() => homeScore.value != null && awayScore.value != null);
-
-function formatFixtureDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const time = `${hours}:${minutes}`;
-
-  if (diffMs > 0 && diffDays <= 0) return `Today ${time}`;
-  if (diffDays === 1) return `Tomorrow ${time}`;
-  if (diffDays > 1 && diffDays <= 6) {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    return `${days[date.getDay()]} ${time}`;
-  }
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  return `${months[date.getMonth()]} ${date.getDate()} ${time}`;
-}
 </script>
 
 <template>

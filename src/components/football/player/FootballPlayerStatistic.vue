@@ -434,7 +434,7 @@ const searchPlayers = async (page = 1) => {
                 scrollToResults()
             }, 300)
         }
-    } catch (error) {
+    } catch {
         players.value = []
         // Reset pagination on error
         pagination.value = {

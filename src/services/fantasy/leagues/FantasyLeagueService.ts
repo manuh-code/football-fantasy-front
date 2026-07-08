@@ -1,4 +1,5 @@
 
+import type { AxiosRequestConfig } from "axios";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { FantasyLeagueCreatePayload } from "@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload";
@@ -17,6 +18,7 @@ import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/Fa
 import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
 import { FantasyDraftPlayerPicked } from "@/interfaces/fantasy/draft/FantasyDraftPlayerPicked";
 import { LineupPlayerRemovePayload } from "@/interfaces/fantasy/lineup/LineupPlayerRemovePayload";
+import type { DraftTurn } from "@/composables/useDraftChannel";
 
 
 export class FantasyLeagueService {
@@ -158,7 +160,7 @@ export class FantasyLeagueService {
     async getTeamSilent(leagueUuid: string): Promise<FantasyTeamData> {
         const response = await this.api.get<ApiResponse<FantasyTeamData>>(
             `fantasy/leagues/team/${leagueUuid}`,
-            { _silent: true } as any
+            { _silent: true } as AxiosRequestConfig & { _silent?: boolean }
         );
         if (response.data.code === 200) {
             return response.data.data;
@@ -211,8 +213,8 @@ export class FantasyLeagueService {
         throw new Error('Failed to skip draft turn');
     }
 
-    async draftState(draftUuid: string): Promise<ApiResponse<any>> {
-        const response = await this.api.get<ApiResponse<any>>(`fantasy/leagues/draft/${draftUuid}/state`);
+    async draftState(draftUuid: string): Promise<ApiResponse<unknown>> {
+        const response = await this.api.get<ApiResponse<unknown>>(`fantasy/leagues/draft/${draftUuid}/state`);
         if (response.data.code === 200) {
             return response.data;
         }
@@ -223,8 +225,8 @@ export class FantasyLeagueService {
      * Get the current active draft turn for a league.
      * Returns the DraftTurn object with user_uuid, pick, round, pick_timer, turn_started_at, etc.
      */
-    async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<any> {
-        const response = await this.api.get<ApiResponse<any>>(
+    async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<DraftTurn | null> {
+        const response = await this.api.get<ApiResponse<DraftTurn | null>>(
             `fantasy/leagues/draft/${fantasyLeagueUuid}/current-turn`
         );
         if (response.data.code === 200) {

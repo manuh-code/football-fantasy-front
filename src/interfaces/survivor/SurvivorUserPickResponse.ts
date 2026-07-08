@@ -1,6 +1,7 @@
 import { FootballTeamResponse } from "../football/team/FootballTeamResponse";
 
 export interface SurvivorUserPick {
+  id: bigint;
   result: string;
   is_pending: boolean;
   is_win: boolean;

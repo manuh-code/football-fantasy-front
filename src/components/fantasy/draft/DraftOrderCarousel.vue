@@ -293,10 +293,6 @@ const props = withDefaults(defineProps<Props>(), {
   timerUrgency: 'normal',
 });
 
-const emit = defineEmits<{
-  "time-expired": [];
-}>();
-
 const userStore = useUserStore();
 const carouselRef = ref<HTMLElement | null>(null);
 const canScrollLeft = ref(false);

@@ -38,17 +38,6 @@ onMounted(async () => {
 })
 
 /**
- * Navigate back to the league detail view (myteam tab).
- */
-function goBack() {
-  router.push({
-    name: 'fantasyLeagueDetail',
-    params: { uuid: fantasyLeagueUuid.value },
-    query: { tab: 'myteam' },
-  })
-}
-
-/**
  * After a player is added, redirect back to team view with highlight.
  */
 function handlePlayerAdded(player: FantasyPlayerDraftResponse) {

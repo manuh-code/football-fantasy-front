@@ -127,7 +127,6 @@ import SearchPlayerFantasy from "@/components/user/fantasy/SearchPlayerFantasy.v
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import { useToast } from "@/composables/useToast";
 import { useI18n } from "vue-i18n";
-import { FantasyDraftTurnSkipped } from "@/interfaces/fantasy/draft/FantasyDraftTurnSkipped";
 import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { UserDataInterface } from "@/interfaces/user/userInterface";
@@ -304,9 +303,7 @@ onMounted(async () => {
     turnStarted.value = data;
   });
 
-  channel.subscribe("turn.skipped", (message) => {
-    const skippedTurn = message.data as FantasyDraftTurnSkipped;
-  });
+  channel.subscribe("turn.skipped", () => {});
 
   channel.subscribe("player.selected", (message) => {
     const playerSelected = message.data as FantasyDraftPlayerSelected;

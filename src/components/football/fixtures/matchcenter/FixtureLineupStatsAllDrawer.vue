@@ -6,7 +6,7 @@ interface Props {
   isOpen: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<{ close: [] }>();
 
 const FALLBACK_PLAYER = "/img/default-avatar.svg";

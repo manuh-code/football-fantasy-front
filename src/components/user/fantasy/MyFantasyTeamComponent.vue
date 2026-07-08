@@ -245,10 +245,6 @@ async function loadPlayers() {
   }
 }
 
-function handleGoToLeagues() {
-  router.push({ name: "userFantasyLeague" });
-}
-
 /**
  * Navigate to the dedicated search players page with optional query params.
  */

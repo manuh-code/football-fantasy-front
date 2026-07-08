@@ -83,14 +83,22 @@ export function useDraftChannel(draftUuid: string) {
     function on(event: 'turn.started',     cb: (data: TurnStartedPayload)    => void): void
     function on(event: 'player.selected',  cb: (data: PlayerSelectedPayload) => void): void
     function on(event: 'turn.skipped',     cb: (data: TurnSkippedPayload)    => void): void
-    function on(event: 'draft.finished',   cb: (data: any)                   => void): void
-    function on(event: 'draft.started',    cb: (data: any)                   => void): void
+    function on(event: 'draft.finished',   cb: (data: unknown)               => void): void
+    function on(event: 'draft.started',    cb: (data: unknown)               => void): void
+    // The implementation signature must stay `any`: it's what makes each of the
+    // concrete-payload overloads above compatible with a single shared body (TS2394
+    // otherwise, since `unknown` can't satisfy a `(data: SpecificPayload) => void` overload).
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function on(event: string, cb: (data: any) => void): void {
         channel.subscribe(event, (msg: Types.Message) => cb(msg.data))
     }
 
-    function off(event?: string) {
-        event ? channel.unsubscribe(event) : channel.unsubscribe()
+    function off(event?: DraftEvent) {
+        if (event) {
+            channel.unsubscribe(event)
+        } else {
+            channel.unsubscribe()
+        }
     }
 
     onUnmounted(() => {

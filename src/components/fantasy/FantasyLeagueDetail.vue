@@ -569,10 +569,6 @@ const handleImageError = (event: Event) => {
   }
 };
 
-const manageLeague = () => {
-  toast.info(t("fantasy.detail.comingSoonTitle"), t("fantasy.detail.comingSoonMessage"));
-};
-
 const fetchAutoPickStatus = async () => {
   try {
     isAutoPick.value = await fantasyLeagueService.getAutoPickStatus(props.uuid);

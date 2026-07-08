@@ -110,7 +110,6 @@ import { useToast } from "@/composables/useToast";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { ButtonComponent } from "@/components/ui";
-import PlayersToDraftComponent from "@/components/user/fantasy/PlayersToDraftComponent.vue";
 import DraftRoom from "@/components/fantasy/draft/DraftRoom.vue";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 

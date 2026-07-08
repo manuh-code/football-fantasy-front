@@ -43,7 +43,6 @@ import { useBreakpoints } from '@/composables/useMediaQuery'
 import { useUserStore } from '@/store'
 import { useDraft } from '@/composables/useDraft'
 import DraftOrderCarousel from '@/components/fantasy/draft/DraftOrderCarousel.vue'
-import DraftTeamDrawer from '@/components/fantasy/draft/DraftTeamDrawer.vue'
 import SearchPlayerFantasy from '@/components/user/fantasy/SearchPlayerFantasy.vue'
 import type { PlayerPickedPayload } from '@/composables/useDraftChannel'
 
@@ -56,7 +55,6 @@ const { isMobile } = useBreakpoints()
 const userData = useUserStore().userData
 
 const searchPlayerRef = ref<InstanceType<typeof SearchPlayerFantasy> | null>(null)
-const showDrawer = ref(true)
 const drawerRefreshKey = ref(0)
 const drawerWidth = ref(360)
 

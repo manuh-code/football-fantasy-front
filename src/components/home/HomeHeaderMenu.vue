@@ -358,11 +358,6 @@ const userName = computed(() => {
 
 const handleLogin = () => router.push({ name: "login" });
 
-const handleGoHome = () => {
-  if (router.currentRoute.value.name === "home") return;
-  router.push({ name: "home" }).catch(() => {});
-};
-
 const handleViewProfile = () => {
   if (router.currentRoute.value.name === "userSettings") return;
   router.push({ name: "userSettings" });
