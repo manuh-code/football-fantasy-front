@@ -39,6 +39,7 @@
     "home": "Local",
     "away": "Visitante",
     "tapToPick": "Toca un escudo para elegir tu equipo",
+    "pickRoundSubtitle": "Elige tu equipo para esta jornada",
     "locked": "Cerrado para picks",
     "pickSavedTitle": "Pick guardado",
     "pickSavedBody": "Elegiste a {team}",

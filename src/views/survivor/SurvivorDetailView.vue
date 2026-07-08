@@ -34,15 +34,15 @@ const survivorUuid = computed(() => route.params.uuid as string);
 // Set page title
 document.title = t("survivor.detail.docTitle");
 
-// "Picks" is the default (and, for now, only) available tab. "Standings" is
-// disabled until the feature ships.
-const activeTab = ref("picks");
+// "My Picks" is the default tab: entering a survivor lands straight on the
+// user's pick timeline. "Standings" is disabled until the feature ships.
+const activeTab = ref("mypicks");
 
 // "My Survivor" is a neutral shortcut (no accent → never highlighted) that
 // navigates back to the survivor list; the rest switch the active tab.
 const items = computed<BottomNavItem[]>(() => [
   { key: "survivors", label: t("survivor.nav.survivors"), icon: "hi-solid-collection" },
-  { key: "picks", label: t("survivor.nav.picks"), icon: "hi-solid-clipboard-list", accent: "red" },
+  // { key: "picks", label: t("survivor.nav.picks"), icon: "hi-solid-clipboard-list", accent: "red" },
   { key: "mypicks", label: t("survivor.nav.mypicks"), icon: "hi-solid-check-circle", accent: "red" },
   { key: "standings", label: t("survivor.nav.standings"), icon: "bi-trophy-fill", disabled: true },
 ]);

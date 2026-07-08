@@ -49,7 +49,7 @@
       <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
       <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ error }}</p>
       <button
-        @click="load"
+        @click="load()"
         class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
       >
         {{ $t('common.actions.retry') }}
@@ -93,8 +93,12 @@
             />
           </div>
 
-          <!-- Content -->
-          <div class="flex-1 min-w-0 pb-5 last:pb-0">
+          <!-- Content (tap to open the round's fixtures and pick) -->
+          <button
+            type="button"
+            @click="openRound(item)"
+            class="flex-1 min-w-0 pb-5 last:pb-0 text-left rounded-xl px-2 -mx-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/40 active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50"
+          >
             <!-- Round eyebrow + outcome chip -->
             <div class="flex items-center justify-between gap-2 mb-1.5">
               <div class="flex items-center gap-2 min-w-0">
@@ -139,14 +143,27 @@
                 </span>
               </template>
 
-              <span class="ml-auto text-2xs text-gray-400 dark:text-gray-500 tabular-nums shrink-0">
-                {{ formatDate(item.starting_at) }}
+              <span class="ml-auto flex items-center gap-1.5 shrink-0">
+                <span class="text-2xs text-gray-400 dark:text-gray-500 tabular-nums">
+                  {{ formatDate(item.starting_at) }}
+                </span>
+                <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
               </span>
             </div>
-          </div>
+          </button>
         </li>
       </ol>
     </div>
+
+    <!-- Round pick drawer: loads the selected round's fixtures to make a pick -->
+    <SurvivorRoundPickDrawer
+      :is-open="isDrawerOpen"
+      :survivor-uuid="props.survivorUuid"
+      :round-uuid="selectedRound?.uuid || ''"
+      :round-name="selectedRound?.name || ''"
+      @close="closeDrawer"
+      @picked="onPicked"
+    />
   </div>
 </template>
 
@@ -154,6 +171,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { survivorService } from "@/services/survivor/SurvivorServive";
+import SurvivorRoundPickDrawer from "@/components/survivor/SurvivorRoundPickDrawer.vue";
 import type {
   SurvivorUserPick,
   SurvivorUserPickResponse,
@@ -166,6 +184,32 @@ const { t, locale } = useI18n();
 const picks = ref<SurvivorUserPickResponse[]>([]);
 const isLoading = ref(false);
 const error = ref("");
+
+// --- Round pick drawer ---
+// The selected round carries the uuid we already have from the picks list, so
+// the drawer loads its fixtures directly without a round selector.
+const selectedRound = ref<SurvivorUserPickResponse | null>(null);
+const isDrawerOpen = ref(false);
+// Set when a pick is saved inside the drawer; drives a silent refresh on close.
+const pendingRefresh = ref(false);
+
+const openRound = (item: SurvivorUserPickResponse) => {
+  selectedRound.value = item;
+  isDrawerOpen.value = true;
+};
+
+const closeDrawer = () => {
+  isDrawerOpen.value = false;
+  if (pendingRefresh.value) {
+    pendingRefresh.value = false;
+    // Silent so the timeline updates without flashing skeletons behind the sheet.
+    load(true);
+  }
+};
+
+const onPicked = () => {
+  pendingRefresh.value = true;
+};
 
 // Resolve the outcome styling for a pick. Mirrors SurvivorDetailComponent's
 // pick badge so the two screens speak the same visual language.
@@ -242,17 +286,17 @@ const onLogoError = (e: Event) => {
   (e.target as HTMLImageElement).src = "/img/default-avatar.svg";
 };
 
-const load = async () => {
+const load = async (silent = false) => {
   if (!props.survivorUuid) return;
-  isLoading.value = true;
+  if (!silent) isLoading.value = true;
   error.value = "";
   try {
     picks.value = await survivorService.getMyPicksBySurvivorUuid(props.survivorUuid);
   } catch (e) {
     console.error("Error loading survivor picks:", e);
-    error.value = t("survivor.mypicks.loadError");
+    if (!silent) error.value = t("survivor.mypicks.loadError");
   } finally {
-    isLoading.value = false;
+    if (!silent) isLoading.value = false;
   }
 };
 
