@@ -59,7 +59,9 @@
     "teams": "Equipos",
     "players": "Jugadores",
     "noPlayerStats": "Aún no hay estadísticas de jugadores",
-    "noTeamStats": "Aún no hay estadísticas de equipos"
+    "noTeamStats": "Aún no hay estadísticas de equipos",
+    "viewAll": "Ver todos",
+    "leader": "Líder"
   },
   "stage": {
     "choose": "Elige una etapa",
