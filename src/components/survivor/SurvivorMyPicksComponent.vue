@@ -11,8 +11,8 @@
         </p>
       </div>
 
-      <!-- Record summary chips (only once we have picks) -->
-      <div v-if="!isLoading && !error && picks.length > 0" class="flex items-center gap-1.5 shrink-0">
+      <!-- Record summary chips (only once we have picks, hidden while selecting) -->
+      <div v-if="!isLoading && !error && picks.length > 0 && !isSelectionMode" class="flex items-center gap-1.5 shrink-0">
         <span
           v-for="stat in record"
           :key="stat.key"
@@ -24,6 +24,37 @@
           {{ stat.count }}
         </span>
       </div>
+    </div>
+
+    <!-- Selection toolbar: "Seleccionar" turns into Cancel / Delete once active -->
+    <div
+      v-if="!isLoading && !error && hasDeletablePicks"
+      class="px-1 flex items-center gap-3"
+      :class="isSelectionMode ? 'justify-between' : 'justify-end'"
+    >
+      <button
+        v-if="isSelectionMode"
+        type="button"
+        @click="exitSelectionMode"
+        class="text-xs font-semibold text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300"
+      >
+        {{ $t('common.actions.cancel') }}
+      </button>
+      <button
+        type="button"
+        :disabled="isSelectionMode && selectedCount === 0"
+        @click="isSelectionMode ? requestBulkDelete() : enterSelectionMode()"
+        class="text-xs font-semibold transition-colors"
+        :class="!isSelectionMode
+          ? 'text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300'
+          : selectedCount === 0
+            ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+            : 'text-red-500 dark:text-red-400 active:text-red-600'"
+      >
+        {{ isSelectionMode
+          ? (selectedCount === 1 ? $t('survivor.mypicks.deleteSelectedOne') : $t('survivor.mypicks.deleteSelectedOther', { count: selectedCount }))
+          : $t('common.actions.select') }}
+      </button>
     </div>
 
     <!-- Loading -->
@@ -79,6 +110,7 @@
         <li
           v-for="(item, index) in picks"
           :key="item.uuid"
+          :data-pick-uuid="item.uuid"
           class="flex gap-3"
         >
           <!-- Rail: a quiet lifeline through the survivor's rounds -->
@@ -95,9 +127,13 @@
 
           <!-- Swipeable row: drag right-to-left to reveal delete -->
           <div class="relative flex-1 min-w-0 rounded-xl overflow-hidden">
-            <!-- Delete action, revealed behind the row -->
+            <!-- Delete action, revealed behind the row. Unmounted entirely in
+                 selection mode: it can't be swiped open there (see
+                 onPointerDown), but at translateX(0) it sat directly behind
+                 the row's right edge — and the selected-row tint is only
+                 60% opaque (bg-red-50/60), so its solid red bled through. -->
             <div
-              v-if="canDelete(item)"
+              v-if="canDelete(item) && !isSelectionMode"
               class="absolute inset-y-0 right-0 flex"
               :style="{ width: DELETE_WIDTH + 'px' }"
             >
@@ -125,20 +161,38 @@
               @pointermove="onPointerMove($event, item)"
               @pointerup="onPointerUp(item)"
               @pointercancel="onPointerUp(item)"
-              class="relative w-full text-left px-2 py-3 flex items-center gap-3 touch-pan-y focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50"
+              :aria-pressed="isSelectionMode && canDelete(item) ? isSelected(item) : undefined"
+              class="relative w-full text-left px-2 py-3 flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50 active:scale-[0.98]"
               :class="[
-                item.is_current ? 'bg-rose-50/60 dark:bg-rose-900/10' : 'bg-white dark:bg-gray-800',
+                isSelected(item)
+                  ? 'bg-red-50/60 dark:bg-red-900/10'
+                  : item.is_current ? 'bg-rose-50/60 dark:bg-rose-900/10' : 'bg-white dark:bg-gray-800',
                 'hover:bg-gray-50 dark:hover:bg-gray-700',
+                isSelectionMode && !canDelete(item) ? 'opacity-40' : '',
+                // Once a paint-select drag is live, this row must stop passing
+                // vertical touches through to page scroll (that's what let us
+                // paint over it) — everywhere else, keep native scroll working.
+                isPaintSelecting ? 'touch-none' : 'touch-pan-y',
                 draggingUuid === item.uuid ? '' : 'transition-transform duration-200 ease-out',
               ]"
               :style="{ transform: `translateX(${rowOffset(item)}px)` }"
             >
-              <!-- Leading: team crest or state icon -->
+              <!-- Leading: selection checkbox while picking picks to delete, else team crest / state icon -->
+              <span
+                v-if="isSelectionMode && canDelete(item)"
+                class="w-9 h-9 grid place-items-center rounded-full border-2 shrink-0 transition-colors"
+                :class="isSelected(item)
+                  ? 'bg-red-500 border-red-500 text-white'
+                  : 'border-gray-300 dark:border-gray-600 text-transparent'"
+              >
+                <v-icon name="hi-solid-check" class="w-4 h-4" />
+              </span>
               <img
-                v-if="item.pick?.team"
+                v-else-if="item.pick?.team"
                 :src="item.pick.team.image_path || '/img/default-avatar.svg'"
                 :alt="item.pick.team.name"
                 class="w-9 h-9 object-contain shrink-0"
+                :class="isSelectionMode ? 'grayscale' : ''"
                 @error="onLogoError"
               />
               <span
@@ -186,7 +240,11 @@
                 {{ formatDate(item.starting_at) }}
               </span>
 
-              <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0" />
+              <v-icon
+                v-if="!isSelectionMode"
+                name="hi-solid-chevron-right"
+                class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+              />
             </button>
           </div>
         </li>
@@ -202,6 +260,40 @@
       @close="closeDrawer"
       @picked="onPicked"
     />
+
+    <!-- Bulk delete confirmation -->
+    <BottomSheet
+      :is-visible="showBulkConfirm"
+      :title="selectedCount === 1 ? $t('survivor.mypicks.bulkConfirmTitleOne') : $t('survivor.mypicks.bulkConfirmTitleOther', { count: selectedCount })"
+      :subtitle="$t('survivor.mypicks.bulkConfirmBody')"
+      icon="hi-solid-trash"
+      icon-variant="red"
+      size="sm"
+      :persistent="isBulkDeleting"
+      @close="showBulkConfirm = false"
+    >
+      <template #footer>
+        <div class="flex gap-3">
+          <button
+            type="button"
+            :disabled="isBulkDeleting"
+            @click="showBulkConfirm = false"
+            class="flex-1 h-11 rounded-xl text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 active:bg-gray-200 dark:active:bg-gray-700 transition-colors disabled:opacity-60"
+          >
+            {{ $t('common.actions.cancel') }}
+          </button>
+          <button
+            type="button"
+            :disabled="isBulkDeleting"
+            @click="confirmBulkDelete"
+            class="flex-1 h-11 rounded-xl text-sm font-semibold bg-red-500 text-white active:bg-red-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            <v-icon v-if="isBulkDeleting" name="pr-spinner" animation="spin" class="w-4 h-4" />
+            {{ $t('common.actions.delete') }}
+          </button>
+        </div>
+      </template>
+    </BottomSheet>
   </div>
 </template>
 
@@ -211,6 +303,7 @@ import { useI18n } from "vue-i18n";
 import { useToast } from "@/composables/useToast";
 import { survivorService } from "@/services/survivor/SurvivorServive";
 import SurvivorRoundPickDrawer from "@/components/survivor/SurvivorRoundPickDrawer.vue";
+import BottomSheet from "@/components/ui/BottomSheet.vue";
 import type {
   SurvivorUserPick,
   SurvivorUserPickResponse,
@@ -357,25 +450,122 @@ const rowOffset = (item: SurvivorUserPickResponse): number => {
   return openSwipeUuid.value === item.uuid ? -DELETE_WIDTH : 0;
 };
 
+// --- Long-press + drag to multi-select ---
+// Holding a row (no swipe, no scroll) enters selection mode with that row
+// already checked; dragging from there — or from any row once already
+// selecting — keeps adding whichever row the finger passes over, like the
+// drag-to-select gesture in iOS Photos/Files.
+const PRESS_HOLD_MS = 450;
+const PAINT_MOVE_THRESHOLD = 6;
+const isPaintSelecting = ref(false);
+let pressTimer: ReturnType<typeof setTimeout> | null = null;
+let paintPointerId: number | null = null;
+let paintTarget: HTMLElement | null = null;
+
+const clearPressTimer = () => {
+  if (pressTimer !== null) {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+  }
+};
+
+// Whatever is under (x, y) — resolved by DOM position, not by which row's
+// handler happens to be firing, since a captured pointer keeps reporting
+// events on the row where the gesture started.
+const selectFromPoint = (x: number, y: number) => {
+  const el = document.elementFromPoint(x, y);
+  const uuid = el?.closest<HTMLElement>("[data-pick-uuid]")?.dataset.pickUuid;
+  if (!uuid || selectedUuids.value.has(uuid)) return;
+  const target = picks.value.find((p) => p.uuid === uuid);
+  if (!target || !canDelete(target)) return;
+  const next = new Set(selectedUuids.value);
+  next.add(uuid);
+  selectedUuids.value = next;
+};
+
+const beginPaintSelect = (e: PointerEvent) => {
+  isPaintSelecting.value = true;
+  justDragged = true;
+  paintPointerId = e.pointerId;
+  paintTarget = e.currentTarget as HTMLElement;
+  try {
+    paintTarget.setPointerCapture(e.pointerId);
+  } catch {
+    /* pointer already captured elsewhere */
+  }
+  selectFromPoint(e.clientX, e.clientY);
+};
+
+const endPaintSelect = () => {
+  isPaintSelecting.value = false;
+  if (paintTarget && paintPointerId !== null) {
+    try {
+      paintTarget.releasePointerCapture(paintPointerId);
+    } catch {
+      /* pointer already released */
+    }
+  }
+  paintTarget = null;
+  paintPointerId = null;
+  setTimeout(() => (justDragged = false), 0);
+};
+
 const onPointerDown = (e: PointerEvent, item: SurvivorUserPickResponse) => {
-  if (!canDelete(item)) return;
-  draggingUuid.value = item.uuid;
   startX = e.clientX;
   startY = e.clientY;
   axisLocked = null;
+
+  if (isSelectionMode.value) {
+    // A drag from here (any direction) starts painting more rows into the
+    // selection — see onPointerMove. A plain tap still toggles just this
+    // row through the button's own @click.
+    return;
+  }
+
+  if (!canDelete(item)) return;
+
+  // Tentatively arm the horizontal swipe-to-delete drag...
+  draggingUuid.value = item.uuid;
   baseX = openSwipeUuid.value === item.uuid ? -DELETE_WIDTH : 0;
   dragX.value = baseX;
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+
+  // ...and a long-press: holding still (no swipe, no scroll) enters
+  // multi-select instead, with this row already checked. Pointer capture is
+  // NOT taken yet in either case — only once a real gesture (swipe or
+  // paint-select) is confirmed — so a plain tap still opens the round via
+  // the button's native click.
+  clearPressTimer();
+  pressTimer = setTimeout(() => {
+    pressTimer = null;
+    if (axisLocked !== null) return; // it already became a swipe or a scroll
+    draggingUuid.value = null;
+    enterSelectionMode();
+    toggleSelected(item);
+    beginPaintSelect(e);
+  }, PRESS_HOLD_MS);
 };
 
-const onPointerMove = (e: PointerEvent, item: SurvivorUserPickResponse) => {
+// Movement past the threshold, while already selecting, starts painting —
+// checking this row first, then handing off to the same drag-across logic.
+const maybeStartPaintFromSelectionMode = (e: PointerEvent, item: SurvivorUserPickResponse) => {
+  if (!canDelete(item)) return;
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  if (Math.abs(dx) < PAINT_MOVE_THRESHOLD && Math.abs(dy) < PAINT_MOVE_THRESHOLD) return;
+  if (!selectedUuids.value.has(item.uuid)) toggleSelected(item);
+  beginPaintSelect(e);
+};
+
+const handleSwipeMove = (e: PointerEvent, item: SurvivorUserPickResponse) => {
   if (draggingUuid.value !== item.uuid) return;
   const dx = e.clientX - startX;
   const dy = e.clientY - startY;
   if (axisLocked === null) {
     if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
     // Lock to whichever axis the gesture committed to first — a vertical
-    // intent releases the row so the page keeps scrolling normally.
+    // intent releases the row so the page keeps scrolling normally (and
+    // cancels the long-press: this was a scroll, not a hold).
+    clearPressTimer();
     axisLocked = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
     if (axisLocked === "y") {
       draggingUuid.value = null;
@@ -388,7 +578,24 @@ const onPointerMove = (e: PointerEvent, item: SurvivorUserPickResponse) => {
   dragX.value = Math.min(0, Math.max(-DELETE_WIDTH - 16, baseX + dx));
 };
 
+const onPointerMove = (e: PointerEvent, item: SurvivorUserPickResponse) => {
+  if (isPaintSelecting.value) {
+    selectFromPoint(e.clientX, e.clientY);
+    return;
+  }
+  if (isSelectionMode.value) {
+    maybeStartPaintFromSelectionMode(e, item);
+    return;
+  }
+  handleSwipeMove(e, item);
+};
+
 const onPointerUp = (item: SurvivorUserPickResponse) => {
+  clearPressTimer();
+  if (isPaintSelecting.value) {
+    endPaintSelect();
+    return;
+  }
   if (draggingUuid.value !== item.uuid) return;
   draggingUuid.value = null;
   if (axisLocked === "x") {
@@ -400,6 +607,10 @@ const onPointerUp = (item: SurvivorUserPickResponse) => {
 
 const onRowClick = (item: SurvivorUserPickResponse) => {
   if (justDragged) return;
+  if (isSelectionMode.value) {
+    toggleSelected(item);
+    return;
+  }
   if (openSwipeUuid.value === item.uuid) {
     openSwipeUuid.value = null;
     return;
@@ -421,6 +632,72 @@ const handleDelete = async (item: SurvivorUserPickResponse) => {
     console.error("Error deleting survivor pick:", e);
   } finally {
     deletingUuid.value = null;
+  }
+};
+
+// --- Bulk selection & delete ---
+// A quiet "Seleccionar" link turns the leading crest of every eligible round
+// into a checkbox; tapping rows toggles them and a single red action commits
+// the whole batch through deleteAllPickById in one request.
+const isSelectionMode = ref(false);
+const selectedUuids = ref<Set<string>>(new Set());
+const showBulkConfirm = ref(false);
+const isBulkDeleting = ref(false);
+
+const hasDeletablePicks = computed(() => picks.value.some(canDelete));
+const selectedCount = computed(() => selectedUuids.value.size);
+const isSelected = (item: SurvivorUserPickResponse): boolean => selectedUuids.value.has(item.uuid);
+
+const enterSelectionMode = () => {
+  isSelectionMode.value = true;
+  selectedUuids.value = new Set();
+  openSwipeUuid.value = null;
+};
+
+const exitSelectionMode = () => {
+  isSelectionMode.value = false;
+  selectedUuids.value = new Set();
+};
+
+const toggleSelected = (item: SurvivorUserPickResponse) => {
+  if (!canDelete(item)) return;
+  const next = new Set(selectedUuids.value);
+  if (next.has(item.uuid)) next.delete(item.uuid);
+  else next.add(item.uuid);
+  selectedUuids.value = next;
+};
+
+const requestBulkDelete = () => {
+  if (selectedCount.value === 0) return;
+  showBulkConfirm.value = true;
+};
+
+const confirmBulkDelete = async () => {
+  const targets = picks.value.filter((p) => selectedUuids.value.has(p.uuid) && p.pick);
+  const pickIds = targets.map((p) => p.pick!.id);
+  if (pickIds.length === 0) {
+    showBulkConfirm.value = false;
+    return;
+  }
+  isBulkDeleting.value = true;
+  try {
+    await survivorService.deleteAllPickById(pickIds);
+    // Same as a single delete: rounds stay in the timeline, just back to "needs a pick".
+    targets.forEach((p) => {
+      p.pick = null;
+    });
+    showBulkConfirm.value = false;
+    exitSelectionMode();
+    success(
+      t("survivor.mypicks.bulkDeleteSuccessTitle"),
+      pickIds.length === 1
+        ? t("survivor.mypicks.bulkDeleteSuccessBodyOne")
+        : t("survivor.mypicks.bulkDeleteSuccessBodyOther"),
+    );
+  } catch (e) {
+    console.error("Error bulk deleting survivor picks:", e);
+  } finally {
+    isBulkDeleting.value = false;
   }
 };
 
