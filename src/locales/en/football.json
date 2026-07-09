@@ -34,7 +34,12 @@
   "leagueSelect": {
     "title": "Select your league",
     "subtitle": "Choose a league to see relevant news and matches",
-    "loading": "Loading leagues..."
+    "loading": "Loading leagues...",
+    "notice": "Pick a league to continue — you can change it anytime",
+    "available": "Available leagues",
+    "loadError": "Couldn't load leagues.",
+    "selectedTitle": "League selected",
+    "selectedBody": "You're now following {name}"
   },
   "standings": {
     "title": "League Standings",
