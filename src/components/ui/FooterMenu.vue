@@ -11,10 +11,13 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { useRoute, useRouter } from "vue-router";
 import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
+
+const { t } = useI18n();
 
 const authStore = useAuthStore();
 const leagueDetailStore = useFantasyLeagueDetailStore();
@@ -41,10 +44,11 @@ const canAccessMemberTabs = computed(
   () => leagueDetailStore.isMember || leagueDetailStore.isAdmin,
 );
 
-// Tabs shown in the bar. "leagues" is a neutral shortcut (no accent → never
-// highlighted); member-only tabs are appended when allowed.
+// Tabs shown in the bar. "home" and "leagues" are neutral shortcuts (no
+// accent → never highlighted); member-only tabs are appended when allowed.
 const items = computed<BottomNavItem[]>(() => {
   const list: BottomNavItem[] = [
+    { key: "home", label: t("home.nav.home"), icon: "hi-solid-home" },
     { key: "leagues", label: "Leagues", icon: "bi-trophy-fill" },
     { key: "overview", label: "Overview", icon: "hi-solid-information-circle", accent: "blue" },
   ];
@@ -88,7 +92,9 @@ watch(
 
 // Route a tab selection to its action.
 function onSelect(key: string) {
-  if (key === "leagues") {
+  if (key === "home") {
+    router.push({ name: "home" });
+  } else if (key === "leagues") {
     goToMyLeagues();
   } else if (key === "players") {
     goToSearchPlayers();

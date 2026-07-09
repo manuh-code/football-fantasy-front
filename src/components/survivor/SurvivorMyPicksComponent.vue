@@ -128,7 +128,7 @@
               class="relative w-full text-left px-2 py-3 flex items-center gap-3 touch-pan-y focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50"
               :class="[
                 item.is_current ? 'bg-rose-50/60 dark:bg-rose-900/10' : 'bg-white dark:bg-gray-800',
-                'hover:bg-gray-50 dark:hover:bg-gray-700/40',
+                'hover:bg-gray-50 dark:hover:bg-gray-700',
                 draggingUuid === item.uuid ? '' : 'transition-transform duration-200 ease-out',
               ]"
               :style="{ transform: `translateX(${rowOffset(item)}px)` }"
