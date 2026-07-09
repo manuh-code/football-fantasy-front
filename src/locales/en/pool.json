@@ -18,6 +18,8 @@
     "descLabel": "Description",
     "namePlaceholder": "e.g. league friends, office pool, family",
     "descPlaceholder": "What's this pool about?",
+    "league": "League",
+    "leagueInfo": "Your pool will be created for this league",
     "stage": "Stage",
     "stageInfo": "Your pool will be created for this stage",
     "current": "Current",

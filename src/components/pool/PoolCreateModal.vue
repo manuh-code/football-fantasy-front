@@ -43,6 +43,23 @@
         <span v-if="descriptionError" class="text-xs text-red-600 dark:text-red-400">{{ descriptionError }}</span>
       </div>
 
+      <!-- League — the currently selected league (read-only) -->
+      <div v-if="league" class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('pool.create.league') }}</label>
+        <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3.5">
+          <img
+            :src="league.image_path || '/img/default-avatar.svg'"
+            :alt="league.name"
+            class="w-9 h-9 object-contain shrink-0"
+            @error="onLeagueLogoError"
+          />
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ league.name }}</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ $t('pool.create.leagueInfo') }}</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Stage — auto-resolved for the current league (read-only) -->
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('pool.create.stage') }}</label>
@@ -140,6 +157,13 @@ const isLoading = ref(false);
 // The pool's stage is resolved automatically from the current league (single stage).
 const stage = ref<FootballStageResponse | null>(null);
 const loadingStage = ref(false);
+
+// The currently selected league, shown alongside the resolved stage.
+const league = computed(() => footballLeagueStore.getLeague);
+
+const onLeagueLogoError = (e: Event) => {
+  (e.target as HTMLImageElement).src = "/img/default-avatar.svg";
+};
 
 const fieldError = (field: string) => validationStore.getFieldError(field)[0] || "";
 const descriptionError = computed(() => fieldError("description"));
