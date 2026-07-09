@@ -58,9 +58,10 @@ const router = useRouter();
 const poolUuid = computed(() => route.params.uuid as string);
 const activeTab = ref("info");
 
-// "My Pools" is a neutral shortcut (no accent → never highlighted) that navigates
-// back to the pools list; the rest switch the active tab.
+// "home" and "myPools" are neutral shortcuts (no accent → never highlighted)
+// that navigate away; the rest switch the active tab.
 const items = computed<BottomNavItem[]>(() => [
+  { key: "home", label: t("home.nav.home"), icon: "hi-solid-home" },
   { key: "myPools", label: t("pool.group.tabs.myPools"), icon: "hi-solid-collection" },
   { key: "info", label: t("pool.group.tabs.info"), icon: "hi-solid-information-circle", accent: "emerald" },
   { key: "predictions", label: t("pool.group.tabs.predictions"), icon: "hi-solid-clipboard-list", accent: "blue" },
@@ -68,6 +69,10 @@ const items = computed<BottomNavItem[]>(() => [
 ]);
 
 const onSelect = (key: string) => {
+  if (key === "home") {
+    router.push({ name: "home" });
+    return;
+  }
   if (key === "myPools") {
     router.push({ name: "pools" });
     return;
