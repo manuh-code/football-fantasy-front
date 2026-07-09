@@ -34,7 +34,12 @@
   "leagueSelect": {
     "title": "Selecciona tu liga",
     "subtitle": "Elige una liga para ver noticias y partidos relevantes",
-    "loading": "Cargando ligas..."
+    "loading": "Cargando ligas...",
+    "notice": "Elige una liga para continuar; puedes cambiarla cuando quieras",
+    "available": "Ligas disponibles",
+    "loadError": "No se pudieron cargar las ligas.",
+    "selectedTitle": "Liga seleccionada",
+    "selectedBody": "Ahora sigues a {name}"
   },
   "standings": {
     "title": "Tabla de posiciones",

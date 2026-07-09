@@ -9,7 +9,7 @@
     >
       <v-icon name="hi-solid-information-circle" class="w-[18px] h-[18px] text-amber-500 dark:text-amber-400 shrink-0" />
       <p class="text-footnote text-amber-700 dark:text-amber-300 leading-snug">
-        Pick a league to continue — you can change it anytime
+        {{ $t('football.leagueSelect.notice') }}
       </p>
     </div>
 
@@ -30,13 +30,13 @@
         <v-icon name="hi-solid-exclamation" class="w-6 h-6 text-red-500" />
       </div>
       <p class="text-footnote text-red-600 dark:text-red-400 mb-4">{{ error }}</p>
-      <ButtonComponent variant="outline" size="sm" text="Retry" @click="loadLeagues" />
+      <ButtonComponent variant="outline" size="sm" :text="$t('common.actions.retry')" @click="loadLeagues" />
     </div>
 
     <!-- Section header + Leagues list -->
     <template v-else>
       <p class="px-1 mb-1.5 text-2xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
-        Available Leagues
+        {{ $t('football.leagueSelect.available') }}
       </p>
 
       <div class="rounded-2xl overflow-hidden bg-white dark:bg-gray-800/60 divide-y divide-gray-100 dark:divide-gray-700/50 pb-px">
@@ -105,6 +105,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useToast } from "@/composables/useToast";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useUserStore } from "@/store/user/useUserStore";
@@ -116,6 +117,7 @@ import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/User
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 const store = useFootballLeagueStore();
 const { success } = useToast();
 
@@ -135,7 +137,7 @@ async function loadLeagues() {
     leagues.value = await catalogService.getFootballLeagues();
   } catch (e: unknown) {
     console.error("Failed to load leagues:", e);
-    error.value = "Couldn't load leagues.";
+    error.value = t("football.leagueSelect.loadError");
   } finally {
     loading.value = false;
   }
@@ -162,7 +164,10 @@ async function selectLeague(league: FootballLeagueResponse) {
       await userStore.storeFootballLeagues(payload);
     }
     store.setLeague(league);
-    success("League selected", `You're now following ${league.name}`);
+    success(
+      t("football.leagueSelect.selectedTitle"),
+      t("football.leagueSelect.selectedBody", { name: league.name })
+    );
     leaveGate();
   } catch (e: unknown) {
     console.error("Failed to set league:", e);
