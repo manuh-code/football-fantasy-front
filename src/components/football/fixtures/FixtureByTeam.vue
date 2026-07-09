@@ -70,7 +70,7 @@ const roundsWithFixtures = computed(() =>
           v-else-if="round.finished"
           class="text-2xs text-gray-400 dark:text-gray-500 uppercase tracking-wider"
         >
-          {{ $t('football.rounds.done') }}') }}
+          {{ $t('football.rounds.done') }}
         </span>
       </div>
 

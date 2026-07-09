@@ -18,6 +18,8 @@
     "descLabel": "Descripción",
     "namePlaceholder": "ej. amigos de la liga, quiniela de la oficina, familia",
     "descPlaceholder": "¿De qué trata esta quiniela?",
+    "league": "Liga",
+    "leagueInfo": "Tu quiniela se creará para esta liga",
     "stage": "Etapa",
     "stageInfo": "Tu quiniela se creará para esta etapa",
     "current": "Actual",
