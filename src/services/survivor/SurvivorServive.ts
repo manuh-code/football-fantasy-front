@@ -54,6 +54,14 @@ export class SurvivorService {
         }
         throw new Error('Failed to delete pick by ID');
     }
+
+    async deleteAllPickById(pickIds: bigint[]): Promise<void> {
+        const response = await this.api.post<ApiResponse<void>>(`survivor/delete/all/picks`, { pick_ids: pickIds });
+        if (response.data.code === 200) {
+            return;
+        }
+        throw new Error('Failed to delete picks by IDs');
+    }
 }
 
 export const survivorService = new SurvivorService();
