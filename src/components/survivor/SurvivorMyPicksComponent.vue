@@ -104,7 +104,7 @@
     <!-- Board: timeline of rounds -->
     <div
       v-else
-      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4 sm:p-5"
+      class="picks-board bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4 sm:p-5"
     >
       <ol class="space-y-0">
         <li
@@ -748,6 +748,20 @@ onMounted(load);
 </script>
 
 <style scoped>
+/* The picks timeline is a gesture surface (tap to open, swipe to delete,
+   hold to multi-select) — not copyable text. Without this, a long-press or a
+   drag across rows on iOS starts a native text selection + callout
+   ("Copiar / Traducir") over the rounds. user-select and -webkit-touch-callout
+   inherit, so setting them on the board disables selection for every row.
+   Declared as real CSS (not a Tailwind arbitrary class) so the vendor-prefixed
+   properties iOS needs are guaranteed to ship. */
+.picks-board {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 /* Hold-to-select ring: circumference of r=16 is 2*pi*16 ≈ 100.53. Starts
    fully hidden and draws in over the same duration as the long-press timer
    (bound inline as --duration via animationDuration), so it finishes exactly
