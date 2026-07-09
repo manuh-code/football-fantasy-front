@@ -162,7 +162,7 @@
               @pointerup="onPointerUp(item)"
               @pointercancel="onPointerUp(item)"
               :aria-pressed="isSelectionMode && canDelete(item) ? isSelected(item) : undefined"
-              class="relative w-full text-left px-2 py-3 flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50 active:scale-[0.98]"
+              class="relative w-full text-left px-2 py-3 flex items-center gap-3 select-none [-webkit-touch-callout:none] focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50 active:scale-[0.98]"
               :class="[
                 isSelected(item)
                   ? 'bg-red-50/60 dark:bg-red-900/10'
@@ -177,33 +177,56 @@
               ]"
               :style="{ transform: `translateX(${rowOffset(item)}px)` }"
             >
-              <!-- Leading: selection checkbox while picking picks to delete, else team crest / state icon -->
-              <span
-                v-if="isSelectionMode && canDelete(item)"
-                class="w-9 h-9 grid place-items-center rounded-full border-2 shrink-0 transition-colors"
-                :class="isSelected(item)
-                  ? 'bg-red-500 border-red-500 text-white'
-                  : 'border-gray-300 dark:border-gray-600 text-transparent'"
-              >
-                <v-icon name="hi-solid-check" class="w-4 h-4" />
-              </span>
-              <img
-                v-else-if="item.pick?.team"
-                :src="item.pick.team.image_path || '/img/default-avatar.svg'"
-                :alt="item.pick.team.name"
-                class="w-9 h-9 object-contain shrink-0"
-                :class="isSelectionMode ? 'grayscale' : ''"
-                @error="onLogoError"
-              />
-              <span
-                v-else-if="needsPick(item)"
-                class="w-9 h-9 grid place-items-center rounded-full bg-rose-50 dark:bg-rose-900/30 shrink-0"
-              >
-                <v-icon name="hi-solid-shield-check" class="w-4 h-4 text-rose-500" />
-              </span>
-              <span v-else class="w-9 h-9 grid place-items-center rounded-full bg-gray-100 dark:bg-gray-700 shrink-0">
-                <v-icon name="hi-solid-minus" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
-              </span>
+              <!-- Leading: selection checkbox while picking picks to delete, else team crest / state icon.
+                   The hold-to-select ring overlays whichever of these is showing. -->
+              <div class="relative w-9 h-9 shrink-0">
+                <span
+                  v-if="isSelectionMode && canDelete(item)"
+                  class="w-full h-full grid place-items-center rounded-full border-2 transition-colors"
+                  :class="isSelected(item)
+                    ? 'bg-red-500 border-red-500 text-white'
+                    : 'border-gray-300 dark:border-gray-600 text-transparent'"
+                >
+                  <v-icon name="hi-solid-check" class="w-4 h-4" />
+                </span>
+                <img
+                  v-else-if="item.pick?.team"
+                  :src="item.pick.team.image_path || '/img/default-avatar.svg'"
+                  :alt="item.pick.team.name"
+                  class="w-full h-full object-contain transition-transform duration-150"
+                  :class="[isSelectionMode ? 'grayscale' : '', pressingUuid === item.uuid ? 'scale-90' : '']"
+                  @error="onLogoError"
+                />
+                <span
+                  v-else-if="needsPick(item)"
+                  class="w-full h-full grid place-items-center rounded-full bg-rose-50 dark:bg-rose-900/30 transition-transform duration-150"
+                  :class="pressingUuid === item.uuid ? 'scale-90' : ''"
+                >
+                  <v-icon name="hi-solid-shield-check" class="w-4 h-4 text-rose-500" />
+                </span>
+                <span v-else class="w-full h-full grid place-items-center rounded-full bg-gray-100 dark:bg-gray-700">
+                  <v-icon name="hi-solid-minus" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
+                </span>
+
+                <!-- Hold-to-select ring: fills over the press duration, inviting you to keep holding -->
+                <svg
+                  v-if="pressingUuid === item.uuid"
+                  class="absolute inset-0 -rotate-90 text-red-500 dark:text-red-400"
+                  viewBox="0 0 36 36"
+                >
+                  <circle
+                    class="press-ring"
+                    cx="18"
+                    cy="18"
+                    r="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    :style="{ animationDuration: PRESS_HOLD_MS + 'ms' }"
+                  />
+                </svg>
+              </div>
 
               <!-- Round + team / state -->
               <div class="min-w-0 flex-1">
@@ -458,6 +481,9 @@ const rowOffset = (item: SurvivorUserPickResponse): number => {
 const PRESS_HOLD_MS = 450;
 const PAINT_MOVE_THRESHOLD = 6;
 const isPaintSelecting = ref(false);
+// uuid of the row currently mid-hold — drives the filling ring that invites
+// the user to keep pressing until selection mode kicks in.
+const pressingUuid = ref<string | null>(null);
 let pressTimer: ReturnType<typeof setTimeout> | null = null;
 let paintPointerId: number | null = null;
 let paintTarget: HTMLElement | null = null;
@@ -467,6 +493,7 @@ const clearPressTimer = () => {
     clearTimeout(pressTimer);
     pressTimer = null;
   }
+  pressingUuid.value = null;
 };
 
 // Whatever is under (x, y) — resolved by DOM position, not by which row's
@@ -535,8 +562,10 @@ const onPointerDown = (e: PointerEvent, item: SurvivorUserPickResponse) => {
   // paint-select) is confirmed — so a plain tap still opens the round via
   // the button's native click.
   clearPressTimer();
+  pressingUuid.value = item.uuid;
   pressTimer = setTimeout(() => {
     pressTimer = null;
+    pressingUuid.value = null;
     if (axisLocked !== null) return; // it already became a swipe or a scroll
     draggingUuid.value = null;
     enterSelectionMode();
@@ -719,6 +748,23 @@ onMounted(load);
 </script>
 
 <style scoped>
+/* Hold-to-select ring: circumference of r=16 is 2*pi*16 ≈ 100.53. Starts
+   fully hidden and draws in over the same duration as the long-press timer
+   (bound inline as --duration via animationDuration), so it finishes exactly
+   as selection mode kicks in — the ring IS the countdown. */
+.press-ring {
+  stroke-dasharray: 100.53;
+  stroke-dashoffset: 100.53;
+  animation-name: press-ring-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes press-ring-fill {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
