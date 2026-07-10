@@ -1,5 +1,35 @@
 <template>
   <div class="w-full">
+    <!-- Type filter pills: skeleton while the catalog loads, hidden entirely
+         if it comes back empty (or fails) — no point filtering by nothing. -->
+    <div v-if="isTypesLoading" class="flex gap-2 pb-3 -mx-1 px-1">
+      <div v-for="n in 4" :key="`type-sk-${n}`" class="h-7 w-16 rounded-full bg-gray-100 dark:bg-gray-800 shrink-0 animate-pulse" />
+    </div>
+    <div v-else-if="showFilters" class="flex gap-2 overflow-x-auto scrollbar-hide pb-3 -mx-1 px-1">
+      <button
+        type="button"
+        @click="selectType(null)"
+        class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors active:scale-95"
+        :class="selectedTypeUuid === null
+          ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/25'
+          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
+      >
+        {{ $t('common.states.all') }}
+      </button>
+      <button
+        v-for="type in transferTypes"
+        :key="type.uuid"
+        type="button"
+        @click="selectType(type.uuid)"
+        class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors active:scale-95"
+        :class="selectedTypeUuid === type.uuid
+          ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/25'
+          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
+      >
+        {{ type.name }}
+      </button>
+    </div>
+
     <!-- Loading skeleton -->
     <div
       v-if="isLoading"
@@ -44,10 +74,13 @@
       </p>
     </div>
 
-    <!-- Transfers list -->
+    <!-- Transfers list: dimmed (not replaced by the skeleton) while a filter
+         change is refreshing it in place, so switching pills feels like an
+         update rather than the whole panel reloading. -->
     <div
       v-else
-      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden transition-opacity duration-200"
+      :class="isRefreshing ? 'opacity-50 pointer-events-none' : ''"
     >
       <ul class="divide-y divide-gray-50 dark:divide-gray-800">
         <li
@@ -117,10 +150,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { transferService } from "@/services/football/transfer/TransferService";
+import { catalogService } from "@/services/catalog/CatalogService";
 import type { TransferResponse } from "@/interfaces/football/transfer/TransferResponse";
+import type { TransferSearchPayload } from "@/interfaces/football/transfer/TransferSearchPayload";
+import type { TypeResponse } from "@/interfaces/football/type/TypeResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 
 // Transfers can be scoped either to a league (Home panel) or to a single team
@@ -134,7 +170,18 @@ const FALLBACK = "/img/default-avatar.svg";
 
 const transfers = ref<TransferResponse[]>([]);
 const isLoading = ref(false);
+const isRefreshing = ref(false);
+const hasLoadedOnce = ref(false);
 const error = ref("");
+
+// --- Type filter (pills) ---
+const transferTypes = ref<TypeResponse[]>([]);
+const isTypesLoading = ref(false);
+// null = "Todos" (no filter); otherwise the single selected type's uuid.
+const selectedTypeUuid = ref<string | null>(null);
+// Hide the whole filter row if the catalog has nothing to filter by (or
+// failed to load) rather than show a pointless single "Todos" pill.
+const showFilters = computed(() => transferTypes.value.length > 0);
 
 // Short club label for the tight movement line: crest code first, name as fallback.
 const clubLabel = (team?: FootballTeamResponse | null): string =>
@@ -179,29 +226,73 @@ const onImgError = (e: Event) => {
   (e.target as HTMLImageElement).src = FALLBACK;
 };
 
+// Guards against a slower, stale request (e.g. the previous filter) landing
+// after a newer one and overwriting its result.
+let loadToken = 0;
+
 const load = async () => {
   if (!props.teamUuid && !props.leagueUuid) return;
-  isLoading.value = true;
+  const token = ++loadToken;
+  // Only the very first load blocks the view with the full skeleton; a
+  // filter change just dims the existing list while it refreshes in place.
+  if (!hasLoadedOnce.value) isLoading.value = true;
+  isRefreshing.value = true;
   error.value = "";
   try {
-    transfers.value = props.teamUuid
-      ? await transferService.getTransfersByTeamUuid(props.teamUuid)
-      : await transferService.getTransfersByLeagueUuid(props.leagueUuid!);
+    const payload: TransferSearchPayload = {
+      type_uuids: selectedTypeUuid.value ? [selectedTypeUuid.value] : [],
+    };
+    const result = props.teamUuid
+      ? await transferService.getTransfersByTeamUuid(props.teamUuid, payload)
+      : await transferService.getTransfersByLeagueUuid(props.leagueUuid!, payload);
+    if (token !== loadToken) return;
+    transfers.value = result;
   } catch (e) {
+    if (token !== loadToken) return;
     console.error("Error loading transfers:", e);
     error.value = t("football.transfers.loadError");
   } finally {
-    isLoading.value = false;
+    if (token === loadToken) {
+      isLoading.value = false;
+      isRefreshing.value = false;
+      hasLoadedOnce.value = true;
+    }
   }
 };
 
-onMounted(load);
+const loadTypes = async () => {
+  isTypesLoading.value = true;
+  try {
+    transferTypes.value = await catalogService.getTypeTransfer();
+  } catch (e) {
+    // Non-critical: the list still works unfiltered, just skip the pills.
+    console.error("Error loading transfer types:", e);
+    transferTypes.value = [];
+  } finally {
+    isTypesLoading.value = false;
+  }
+};
+
+const selectType = (uuid: string | null) => {
+  if (selectedTypeUuid.value === uuid) return;
+  selectedTypeUuid.value = uuid;
+  load();
+};
+
+onMounted(() => {
+  load();
+  loadTypes();
+});
 
 // Reload if the active league/team changes while the panel stays mounted.
 watch(
   () => [props.leagueUuid, props.teamUuid],
   (next, prev) => {
-    if ((next[0] || next[1]) && (next[0] !== prev[0] || next[1] !== prev[1])) load();
+    if ((next[0] || next[1]) && (next[0] !== prev[0] || next[1] !== prev[1])) {
+      selectedTypeUuid.value = null;
+      hasLoadedOnce.value = false;
+      load();
+    }
   },
 );
 </script>
@@ -209,6 +300,14 @@ watch(
 <style scoped>
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

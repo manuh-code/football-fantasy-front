@@ -1,6 +1,7 @@
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { TransferResponse } from "@/interfaces/football/transfer/TransferResponse";
+import { TransferSearchPayload } from "@/interfaces/football/transfer/TransferSearchPayload";
 
 
 export class TransferService {
@@ -12,16 +13,16 @@ export class TransferService {
     }
 
 
-    async getTransfersByLeagueUuid(leagueUuid: string): Promise<TransferResponse[]> {
-        const response = await this.api.get<ApiResponse<TransferResponse[]>>(`/football/transfers/by/league/${leagueUuid}`);
+    async getTransfersByLeagueUuid(leagueUuid: string, payload: TransferSearchPayload): Promise<TransferResponse[]> {
+        const response = await this.api.post<ApiResponse<TransferResponse[]>>(`/football/transfers/by/league/${leagueUuid}`, payload);
         if (response.data.code === 200) {
             return response.data.data;
         }
         throw new Error('Failed to fetch transfers by league');
     }
 
-    async getTransfersByTeamUuid(teamUuid: string): Promise<TransferResponse[]> {
-        const response = await this.api.get<ApiResponse<TransferResponse[]>>(`/football/transfers/by/team/${teamUuid}`);
+    async getTransfersByTeamUuid(teamUuid: string, payload: TransferSearchPayload): Promise<TransferResponse[]> {
+        const response = await this.api.post<ApiResponse<TransferResponse[]>>(`/football/transfers/by/team/${teamUuid}`, payload);
         if (response.data.code === 200) {
             return response.data.data;
         }
