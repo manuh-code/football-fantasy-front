@@ -33,6 +33,11 @@ const drawerOpen = computed(() => openSlot.value !== null);
 const excludeUuid = computed(() =>
   openSlot.value === "a" ? playerB.value?.uuid ?? null : playerA.value?.uuid ?? null,
 );
+// The other slot's player, if already picked — shown in the drawer so it's
+// unmistakable that the first pick registered once it auto-advances here.
+const previousPick = computed(() =>
+  openSlot.value === "a" ? playerB.value : playerA.value,
+);
 
 const openSearch = (slot: "a" | "b") => {
   openSlot.value = slot;
@@ -41,9 +46,18 @@ const closeSearch = () => {
   openSlot.value = null;
 };
 const onPlayerSelected = (player: FootballPlayerResponse) => {
-  if (openSlot.value === "a") playerA.value = player;
-  else if (openSlot.value === "b") playerB.value = player;
-  closeSearch();
+  const slot = openSlot.value;
+  if (slot === "a") playerA.value = player;
+  else if (slot === "b") playerB.value = player;
+
+  // Auto-advance straight into the other slot's search if it's still empty,
+  // so picking two players doesn't mean hunting down the second slot again
+  // (previously required scrolling back up to it) — the sheet stays open,
+  // just re-targeted; PlayerSearchDrawer resets its query when it sees a
+  // new excludeUuid while still visible.
+  if (slot === "a" && !playerB.value) openSlot.value = "b";
+  else if (slot === "b" && !playerA.value) openSlot.value = "a";
+  else closeSearch();
 };
 const clearSlot = (slot: "a" | "b") => {
   if (slot === "a") playerA.value = null;
@@ -112,6 +126,21 @@ const comparison = computed(() =>
 const radar = computed(() => buildRadarMetrics(comparison.value));
 const hasStats = computed(() => comparison.value.length > 0);
 
+// How many categories each player leads — the number behind the VS badge,
+// so the matchup states its own headline instead of just labeling two slots.
+const tally = computed(() => {
+  let a = 0;
+  let b = 0;
+  for (const g of comparison.value) {
+    for (const s of g.stats) {
+      if (s.a == null || s.b == null) continue;
+      if (s.a > s.b) a++;
+      else if (s.b > s.a) b++;
+    }
+  }
+  return { a, b };
+});
+
 const positionName = (p: FootballPlayerResponse | null): string => p?.position?.name ?? "";
 </script>
 
@@ -128,7 +157,7 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
 
       <template v-else>
         <!-- Player slots -->
-        <div class="px-4 py-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
+        <div class="px-4 pt-5 pb-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
           <!-- Slot A -->
           <button
             @click="openSearch('a')"
@@ -145,24 +174,41 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
               >
                 <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
               </span>
-              <PlayerAvatar :player="playerA" size="xl" variant="circle" />
+              <span class="rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800" :style="{ '--tw-ring-color': COLOR_A }">
+                <PlayerAvatar :player="playerA" size="2xl" variant="circle" />
+              </span>
               <div class="text-center w-full min-w-0">
                 <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
                 <p v-if="positionName(playerA)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
               </div>
             </template>
             <template v-else>
-              <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
+              <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
                 <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
               </div>
               <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
             </template>
           </button>
 
-          <!-- VS medallion -->
-          <div class="flex items-center justify-center">
-            <span class="vs-medallion relative grid place-items-center w-11 h-11 rounded-full bg-emerald-600 ring-1 ring-emerald-500/30">
-              <span class="text-[11px] font-extrabold tracking-[0.15em] text-white">VS</span>
+          <!-- VS badge: split evenly between both players' colors — neutral by
+               design, since it doesn't belong to either side — with the live
+               tally (categories led) as the matchup's own headline. -->
+          <div class="flex flex-col items-center justify-center gap-1.5 px-1">
+            <span
+              class="vs-medallion relative grid place-items-center w-14 h-14 rounded-full shrink-0"
+              :style="{ background: `conic-gradient(${COLOR_A} 0deg 180deg, ${COLOR_B} 180deg 360deg)` }"
+            >
+              <span class="absolute inset-[3px] rounded-full bg-white dark:bg-gray-800 grid place-items-center">
+                <span class="text-[11px] font-extrabold tracking-[0.15em] text-gray-700 dark:text-gray-200">VS</span>
+              </span>
+            </span>
+            <span
+              v-if="hasStats"
+              class="text-xs font-extrabold tabular-nums whitespace-nowrap"
+              :style="{ color: tally.a === tally.b ? undefined : tally.a > tally.b ? COLOR_A : COLOR_B }"
+              :class="tally.a === tally.b ? 'text-gray-400 dark:text-gray-500' : ''"
+            >
+              {{ tally.a }}–{{ tally.b }}
             </span>
           </div>
 
@@ -182,14 +228,16 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
               >
                 <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
               </span>
-              <PlayerAvatar :player="playerB" size="xl" variant="circle" />
+              <span class="rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800" :style="{ '--tw-ring-color': COLOR_B }">
+                <PlayerAvatar :player="playerB" size="2xl" variant="circle" />
+              </span>
               <div class="text-center w-full min-w-0">
                 <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
                 <p v-if="positionName(playerB)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
               </div>
             </template>
             <template v-else>
-              <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
+              <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
                 <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
               </div>
               <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
@@ -287,6 +335,8 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
     <PlayerSearchDrawer
       :is-visible="drawerOpen"
       :exclude-uuid="excludeUuid"
+      :previous-pick="previousPick"
+      :season-uuid="seasonUuid"
       @select="onPlayerSelected"
       @close="closeSearch"
     />

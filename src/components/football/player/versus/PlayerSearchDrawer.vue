@@ -8,6 +8,12 @@ const props = defineProps<{
   isVisible: boolean;
   /** Hide this player from results (already chosen in the other slot). */
   excludeUuid?: string | null;
+  /** The player already picked in the other slot, if any — shown as a small
+   *  confirmation banner so context never gets lost when the sheet
+   *  auto-advances straight into searching for the second player. */
+  previousPick?: FootballPlayerResponse | null;
+  /** Scopes the search to players who played in this season. */
+  seasonUuid: string;
 }>();
 
 const emit = defineEmits<{
@@ -35,7 +41,7 @@ const runSearch = async (term: string) => {
   isLoading.value = true;
   error.value = null;
   try {
-    const res = await catalogService.getPlayerSearch(term);
+    const res = await catalogService.getPlayerSeasonSearch(term, props.seasonUuid);
     results.value = res ?? [];
   } catch (err) {
     console.error("Error searching players:", err);
@@ -64,8 +70,20 @@ const visibleResults = () =>
     ? results.value.filter((p) => p.uuid !== props.excludeUuid)
     : results.value;
 
+// uuid of the row currently showing its "picked" confirmation. Tapping a
+// result used to emit + hand off instantly, which — especially on the
+// second pick, where the sheet just re-targets instead of closing — read as
+// "nothing happened". Now the row visibly confirms itself first.
+const confirmingUuid = ref<string | null>(null);
+const CONFIRM_DELAY_MS = 380;
+
 const onSelect = (player: FootballPlayerResponse) => {
-  emit("select", player);
+  if (confirmingUuid.value) return;
+  confirmingUuid.value = player.uuid;
+  setTimeout(() => {
+    emit("select", player);
+    confirmingUuid.value = null;
+  }, CONFIRM_DELAY_MS);
 };
 
 const retry = () => {
@@ -73,20 +91,44 @@ const retry = () => {
   if (term.length >= MIN_QUERY) runSearch(term);
 };
 
-// ── Open/close: reset state, lock scroll, focus (desktop only) ──
+// ── Reset search state: on a fresh open, and also when the target slot
+// changes while the sheet stays open (selecting player A auto-advances
+// straight to searching for player B — see PlayerVersus.vue) ──
+watch(
+  () => [props.isVisible, props.excludeUuid] as const,
+  ([open]) => {
+    if (!open) return;
+    query.value = "";
+    results.value = [];
+    error.value = null;
+    isLoading.value = false;
+    confirmingUuid.value = null;
+    if (isDesktop) nextTick(() => searchInput.value?.focus());
+  },
+);
+
+// ── Scroll lock: only on genuine open/close transitions. Plain
+// `overflow: hidden` resets the page's scroll position on iOS Safari once
+// it's restored — the position:fixed + saved-offset trick (same as
+// BottomSheet.vue) is what keeps you exactly where you were, so picking a
+// player doesn't leave you scrolled to the top hunting for the other slot. ──
+let lockedScrollY = 0;
 watch(
   () => props.isVisible,
   (open) => {
-    if (typeof document !== "undefined") {
-      document.body.style.overflow = open ? "hidden" : "";
-    }
+    if (typeof document === "undefined") return;
     if (open) {
-      query.value = "";
-      results.value = [];
-      error.value = null;
-      isLoading.value = false;
-      if (isDesktop) nextTick(() => searchInput.value?.focus());
+      lockedScrollY = window.scrollY || document.documentElement.scrollTop;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${lockedScrollY}px`;
+      document.body.style.width = "100%";
     } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo({ top: lockedScrollY, behavior: "instant" });
       dragOffsetY.value = 0;
       isDragging.value = false;
     }
@@ -133,7 +175,12 @@ const onKeydown = (e: KeyboardEvent) => {
 onMounted(() => window.addEventListener("keydown", onKeydown));
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeydown);
-  if (typeof document !== "undefined") document.body.style.overflow = "";
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = "";
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+  }
 });
 </script>
 
@@ -175,12 +222,23 @@ onBeforeUnmount(() => {
             <div class="flex justify-center pt-2.5 pb-1.5">
               <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
             </div>
-            <div class="flex items-center justify-between px-4 pb-2.5 pt-1">
-              <h3 class="text-callout font-bold text-gray-900 dark:text-white">{{ $t('football.versus.selectPlayer') }}</h3>
+            <div class="flex items-center justify-between px-4 pb-2.5 pt-1 gap-3">
+              <div class="min-w-0">
+                <h3 class="text-callout font-bold text-gray-900 dark:text-white">
+                  {{ previousPick ? $t('football.versus.selectSecondPlayer') : $t('football.versus.selectPlayer') }}
+                </h3>
+                <!-- Confirms the other slot really did register — this is the
+                     context that was missing when the sheet re-targets itself
+                     straight into the second search. -->
+                <p v-if="previousPick" class="flex items-center gap-1 mt-0.5 text-2xs text-emerald-600 dark:text-emerald-400 truncate">
+                  <v-icon name="hi-solid-check-circle" class="w-3.5 h-3.5 shrink-0" />
+                  <span class="truncate">{{ $t('football.versus.alreadyPicked', { name: previousPick.display_name }) }}</span>
+                </p>
+              </div>
               <button
                 @click.stop="emit('close')"
                 @pointerdown.stop
-                class="w-8 h-8 -mr-1 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                class="w-8 h-8 -mr-1 shrink-0 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 :aria-label="$t('common.actions.close')"
               >
                 <v-icon name="hi-x" class="w-4 h-4" />
@@ -249,7 +307,13 @@ onBeforeUnmount(() => {
               <li v-for="player in visibleResults()" :key="player.uuid">
                 <button
                   @click="onSelect(player)"
-                  class="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
+                  :disabled="confirmingUuid !== null"
+                  class="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl text-left transition-all duration-200"
+                  :class="confirmingUuid === player.uuid
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 scale-[0.98]'
+                    : confirmingUuid !== null
+                      ? 'opacity-40'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 active:bg-gray-100 dark:active:bg-gray-800'"
                 >
                   <PlayerAvatar :player="player" size="md" variant="circle" />
                   <div class="flex-1 min-w-0">
@@ -257,13 +321,23 @@ onBeforeUnmount(() => {
                       {{ player.display_name }}
                     </p>
                     <p
-                      v-if="player.position?.name"
+                      v-if="confirmingUuid === player.uuid"
+                      class="text-2xs font-semibold text-emerald-600 dark:text-emerald-400 truncate"
+                    >
+                      {{ $t('football.versus.playerAdded', { name: player.display_name }) }}
+                    </p>
+                    <p
+                      v-else-if="player.position?.name"
                       class="text-2xs text-gray-400 dark:text-gray-500 truncate"
                     >
                       {{ player.position.name }}
                     </p>
                   </div>
-                  <v-icon name="hi-solid-plus" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
+                  <v-icon
+                    :name="confirmingUuid === player.uuid ? 'hi-solid-check-circle' : 'hi-solid-plus'"
+                    class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0 transition-transform duration-200"
+                    :class="confirmingUuid === player.uuid ? 'scale-125' : ''"
+                  />
                 </button>
               </li>
             </ul>
@@ -291,5 +365,14 @@ onBeforeUnmount(() => {
 .psd-slide-enter-from,
 .psd-slide-leave-to {
   transform: translateY(100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .psd-fade-enter-active,
+  .psd-fade-leave-active,
+  .psd-slide-enter-active,
+  .psd-slide-leave-active {
+    transition: none !important;
+  }
 }
 </style>
