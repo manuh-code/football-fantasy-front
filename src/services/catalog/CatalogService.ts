@@ -156,6 +156,14 @@ export class CatalogService {
     throw new AxiosError('Failed to search players');
   }
 
+  async getPlayerSeasonSearch(search: string, seasonUuid: string): Promise<FootballPlayerResponse[]> {
+    const response = await this.api.get<ApiResponse<FootballPlayerResponse[]>>(`football/players/search/season/${seasonUuid}/${encodeURIComponent(search)}`);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+    throw new AxiosError('Failed to search players by season');
+  }
+
   async getTypeTransfer(): Promise<TypeResponse[]> {
     const response = await this.api.get<ApiResponse<TypeResponse[]>>('catalog/types/by/model/type/transfer');
     if (response.data.code === 200) {

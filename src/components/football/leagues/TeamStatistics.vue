@@ -5,9 +5,16 @@ import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagu
 import type {
   FootballTeamTopStatisticResponse,
   Statistic,
+  Team,
+  TeamValue,
 } from "@/interfaces/football/team/FootballTeamTopStatisticResponse";
-import { extractTeamStatValue, formatTeamStatValue } from "@/utils/teamStatistics";
+import {
+  extractTeamStatValue,
+  formatTeamStatValue,
+  hasTeamStatDetail,
+} from "@/utils/teamStatistics";
 import TeamStatisticsAllDrawer from "./TeamStatisticsAllDrawer.vue";
+import TeamStatValueDetail from "./TeamStatValueDetail.vue";
 
 // Season is driven by the active stage (forwarded from LeagueStatistics). When
 // it's missing we fall back to the league's current_season in the Pinia store.
@@ -22,6 +29,17 @@ const data = ref<FootballTeamTopStatisticResponse[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 const drawerStat = ref<Statistic | null>(null);
+
+// One expanded breakdown at a time, keyed by stat + team so cards don't
+// interfere with each other.
+const expandedRow = ref<string | null>(null);
+const rowKey = (stat: Statistic, team: Team): string =>
+  `${stat.type.uuid}:${team.uuid}`;
+const toggleRow = (stat: Statistic, team: Team) => {
+  if (!hasTeamStatDetail(team.value)) return;
+  const key = rowKey(stat, team);
+  expandedRow.value = expandedRow.value === key ? null : key;
+};
 
 // Bars grow from 0 to their share the first frame after data lands, so each
 // card reads like a race filling toward the leader's mark.
@@ -43,6 +61,7 @@ const load = async () => {
   error.value = null;
   data.value = [];
   revealed.value = false;
+  expandedRow.value = null;
   try {
     data.value = await footballTeamService.getTopStatisticTeamsBySeason(uuid);
     // Let the bars mount at 0, then release them on the next frame.
@@ -75,8 +94,9 @@ const onImgError = (e: Event) => {
 const groupLabel = (group: string): string =>
   group.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
-// Numeric value behind the nested team `value`, for the proportion bars.
-const statNum = (value: unknown): number => extractTeamStatValue(value) ?? 0;
+// Headline number behind the team's value envelope, for the proportion bars.
+const statNum = (value: TeamValue | undefined): number =>
+  extractTeamStatValue(value) ?? 0;
 
 // Share of the leader's value (0–100). The leader defines the finish line.
 const share = (value: number, leader: number): number => {
@@ -177,66 +197,87 @@ const retry = () => load();
             <li
               v-for="(team, index) in stat.teams.slice(0, TOP_N)"
               :key="team.uuid"
-              class="flex items-center gap-3 px-4 py-3"
               :class="index === 0 ? 'bg-amber-50/50 dark:bg-amber-900/10' : 'border-t border-gray-50 dark:border-gray-800/70'"
             >
-              <!-- Rank slot: trophy for the leader, muted numeral for chasers -->
-              <span class="w-7 flex justify-center shrink-0">
-                <span
-                  v-if="index === 0"
-                  class="w-7 h-7 grid place-items-center rounded-full bg-amber-400 text-amber-950 shadow-sm shadow-amber-500/30"
-                >
-                  <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5" />
+              <div
+                class="flex items-center gap-3 px-4 py-3"
+                :class="hasTeamStatDetail(team.value) ? 'cursor-pointer' : ''"
+                @click="toggleRow(stat, team)"
+              >
+                <!-- Rank slot: trophy for the leader, muted numeral for chasers -->
+                <span class="w-7 flex justify-center shrink-0">
+                  <span
+                    v-if="index === 0"
+                    class="w-7 h-7 grid place-items-center rounded-full bg-amber-400 text-amber-950 shadow-sm shadow-amber-500/30"
+                  >
+                    <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5" />
+                  </span>
+                  <span
+                    v-else
+                    class="w-6 h-6 grid place-items-center rounded-full bg-gray-100 dark:bg-gray-700/70 text-2xs font-extrabold tabular-nums text-gray-500 dark:text-gray-300 select-none"
+                  >
+                    {{ index + 1 }}
+                  </span>
                 </span>
-                <span
-                  v-else
-                  class="w-6 h-6 grid place-items-center rounded-full bg-gray-100 dark:bg-gray-700/70 text-2xs font-extrabold tabular-nums text-gray-500 dark:text-gray-300 select-none"
-                >
-                  {{ index + 1 }}
-                </span>
-              </span>
 
-              <!-- Logo -->
-              <img
-                :src="teamImg(team.image_path)"
-                :alt="team.short_code || team.name"
-                class="w-10 h-10 rounded-full object-contain shrink-0 bg-gray-100 dark:bg-gray-700 ring-2"
-                :class="index === 0
-                  ? 'ring-amber-300 dark:ring-amber-500/50'
-                  : 'ring-gray-100 dark:ring-gray-700'"
-                @error="onImgError"
-              />
+                <!-- Logo -->
+                <img
+                  :src="teamImg(team.image_path)"
+                  :alt="team.short_code || team.name"
+                  class="w-10 h-10 rounded-full object-contain shrink-0 bg-gray-100 dark:bg-gray-700 ring-2"
+                  :class="index === 0
+                    ? 'ring-amber-300 dark:ring-amber-500/50'
+                    : 'ring-gray-100 dark:ring-gray-700'"
+                  @error="onImgError"
+                />
 
-              <!-- Name + short code + proportion bar -->
-              <div class="flex-1 min-w-0">
-                <p
-                  class="text-footnote font-semibold text-gray-900 dark:text-white truncate leading-snug"
-                  :title="team.name"
-                >
-                  {{ team.name }}
-                </p>
-                <span class="text-2xs text-gray-400 dark:text-gray-500">
-                  {{ team.short_code }}
-                </span>
-                <!-- Race track: this team's share of the leader's total -->
-                <div class="mt-1.5 h-1 rounded-full bg-gray-100 dark:bg-gray-700/60 overflow-hidden">
-                  <div
-                    class="stat-bar h-full rounded-full"
-                    :class="index === 0 ? 'bg-amber-400' : 'bg-gray-300 dark:bg-gray-500'"
-                    :style="{ width: (revealed ? share(statNum(team.value), statNum(stat.teams[0]?.value)) : 0) + '%' }"
-                  />
+                <!-- Name + short code + proportion bar -->
+                <div class="flex-1 min-w-0">
+                  <p
+                    class="text-footnote font-semibold text-gray-900 dark:text-white truncate leading-snug"
+                    :title="team.name"
+                  >
+                    {{ team.name }}
+                  </p>
+                  <span class="text-2xs text-gray-400 dark:text-gray-500">
+                    {{ team.short_code }}
+                  </span>
+                  <!-- Race track: this team's share of the leader's total -->
+                  <div class="mt-1.5 h-1 rounded-full bg-gray-100 dark:bg-gray-700/60 overflow-hidden">
+                    <div
+                      class="stat-bar h-full rounded-full"
+                      :class="index === 0 ? 'bg-amber-400' : 'bg-gray-300 dark:bg-gray-500'"
+                      :style="{ width: (revealed ? share(statNum(team.value), statNum(stat.teams[0]?.value)) : 0) + '%' }"
+                    />
+                  </div>
                 </div>
+
+                <!-- Value -->
+                <span
+                  class="shrink-0 min-w-[2.5rem] text-right tabular-nums font-extrabold"
+                  :class="index === 0
+                    ? 'text-xl text-amber-500'
+                    : 'text-base text-gray-500 dark:text-gray-300'"
+                >
+                  {{ formatTeamStatValue(team.value) }}
+                </span>
+
+                <!-- Expand hint -->
+                <v-icon
+                  v-if="hasTeamStatDetail(team.value)"
+                  name="hi-solid-chevron-down"
+                  class="w-3.5 h-3.5 shrink-0 text-gray-300 dark:text-gray-600 transition-transform"
+                  :class="expandedRow === rowKey(stat, team) ? 'rotate-180' : ''"
+                />
               </div>
 
-              <!-- Value -->
-              <span
-                class="shrink-0 min-w-[2.5rem] text-right tabular-nums font-extrabold"
-                :class="index === 0
-                  ? 'text-xl text-amber-500'
-                  : 'text-base text-gray-500 dark:text-gray-300'"
+              <!-- Breakdown: details table + referenced players -->
+              <div
+                v-if="expandedRow === rowKey(stat, team)"
+                class="px-4 pb-3 pl-[3.75rem]"
               >
-                {{ formatTeamStatValue(team.value) }}
-              </span>
+                <TeamStatValueDetail :value="team.value" />
+              </div>
             </li>
           </ul>
         </div>
