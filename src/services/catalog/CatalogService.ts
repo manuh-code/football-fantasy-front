@@ -149,11 +149,20 @@ export class CatalogService {
   }
 
   async getPlayerSearch(search: string): Promise<FootballPlayerResponse[]> {
-    const response = await this.api.get<ApiResponse<FootballPlayerResponse[]>>(`football/players/search/${encodeURIComponent(search) }`);
+    const response = await this.api.get<ApiResponse<FootballPlayerResponse[]>>(`football/players/search/${encodeURIComponent(search)}`);
     if (response.data.code === 200) {
       return response.data.data;
     }
     throw new AxiosError('Failed to search players');
+  }
+
+  async getTypeTransfer(): Promise<TypeResponse[]> {
+    const response = await this.api.get<ApiResponse<TypeResponse[]>>('catalog/types/by/model/type/transfer');
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+
+    throw new AxiosError('Failed to fetch type transfers');
   }
 }
 
