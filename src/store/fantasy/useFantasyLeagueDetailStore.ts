@@ -5,7 +5,7 @@ import type { UserDataInterface } from '@/interfaces/user/userInterface'
 
 /**
  * Store for the currently viewed fantasy league detail.
- * Shared between FantasyLeagueDetail and FooterMenu components.
+ * Shared between FantasyLeagueDetail and the fantasy league tabs (useFantasyLeagueTabs).
  */
 export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', () => {
   // State

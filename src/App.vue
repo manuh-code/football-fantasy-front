@@ -57,9 +57,6 @@
       <ToastContainer />
     </div>
 
-    <!-- Footer Menu - Fixed at bottom, outside transform context -->
-    <FooterMenu />
-
     <!-- PWA: update prompt + install banner + push opt-in (global, Teleported) -->
     <PwaUpdateModal />
     <PwaInstallBanner />
@@ -72,7 +69,7 @@ import { computed, onBeforeUnmount, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import HeaderMenu from "@/components/HeaderMenu.vue";
-import { ToastContainer, FooterMenu } from "@/components/ui";
+import { ToastContainer } from "@/components/ui";
 import { useThemeStore } from "./store/theme";
 import { useSwipeNavigation, useToast } from "@/composables";
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";

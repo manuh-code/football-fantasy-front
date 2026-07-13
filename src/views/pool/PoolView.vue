@@ -1,6 +1,9 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
+      <!-- Secondary section tabs: global destinations live in the fixed nav -->
+      <TopTabsBar :items="tabItems" active-key="pools" :aria-label="$t('pool.nav.aria')" />
+
       <!-- Pool Component -->
       <div class="animate-page-enter">
         <PoolComponent ref="poolComponentRef" />
@@ -55,13 +58,9 @@
       @joined="onJoined"
     />
 
-    <!-- Bottom navigation: Home / Gaming / Pools -->
-    <BottomNavBar
-      :items="navItems"
-      active-key="pools"
-      :aria-label="$t('pool.nav.aria')"
-      @select="onNavSelect"
-    />
+    <!-- Fixed bottom navigation (Home / Leagues / Play / Following); Play
+         stays selected here and returns to the Gaming screen — see HomeMenu. -->
+    <HomeMenu />
   </div>
 </template>
 
@@ -73,7 +72,9 @@ import { useToast } from "@/composables/useToast";
 import PoolComponent from "@/components/pool/PoolComponent.vue";
 import PoolCreateModal from "@/components/pool/PoolCreateModal.vue";
 import PoolJoinModal from "@/components/pool/PoolJoinModal.vue";
-import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
+import HomeMenu from "@/components/home/HomeMenu.vue";
+import TopTabsBar from "@/components/ui/TopTabsBar.vue";
+import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 
 // Set page title
@@ -92,26 +93,10 @@ const isFabMenuOpen = ref(false);
 const isCreateOpen = ref(false);
 const isJoinOpen = ref(false);
 
-// Bottom navigation: jump back to Home / Gaming; "Pools" is the current screen.
-const navItems = computed<BottomNavItem[]>(() => [
-  { key: "home", label: t("home.nav.home"), icon: "hi-solid-home", accent: "emerald" },
-  { key: "gaming", label: t("home.nav.gaming"), icon: "bi-trophy-fill", accent: "emerald" },
+// Section tab shown at the top; the list has no other options of its own.
+const tabItems = computed<BottomNavItem[]>(() => [
   { key: "pools", label: t("pool.nav.pools"), icon: "hi-solid-clipboard-list", accent: "blue" },
 ]);
-
-const onNavSelect = (key: string) => {
-  switch (key) {
-    case "home":
-      router.push({ name: "home" });
-      break;
-    case "gaming":
-      router.push({ name: "gaming" });
-      break;
-    case "pools":
-      // Already on the pools list.
-      break;
-  }
-};
 
 // Access code pre-filled into the Join sheet when arriving from an invite link.
 const joinInitialCode = ref("");

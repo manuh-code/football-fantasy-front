@@ -38,29 +38,44 @@ export default defineConfig({
     },
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      // Emitir el manifest como /manifest.json (PWABuilder y las tiendas lo esperan en esa URL)
+      manifestFilename: 'manifest.json',
+      includeAssets: [
+        'favicon.ico',
+        'img/icons/apple-touch-icon.png',
+        'img/icons/safari-pinned-tab.svg'
+      ],
       manifest: {
         id: '/',
         lang: 'es',
+        dir: 'ltr',
         name: 'Football Fantasy',
         short_name: 'FootballFantasy',
-        description: 'Una aplicación de fantasy football inspirada en el diseño de Laravel Cloud Dashboard',
+        description: 'Fantasy football de la Liga MX: arma tu equipo, compite en drafts en vivo, quinielas y survivor con tus amigos.',
         theme_color: '#059669',
         background_color: '#ffffff',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        categories: ['sports', 'games', 'entertainment'],
+        prefer_related_applications: false,
+        launch_handler: {
+          client_mode: 'navigate-existing'
+        },
         icons: [
           {
             src: 'img/icons/android-chrome-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'img/icons/android-chrome-512x512.png',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'img/icons/android-chrome-maskable-192x192.png',
@@ -73,6 +88,44 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
+          }
+        ],
+        shortcuts: [
+          {
+            name: 'Mis ligas fantasy',
+            short_name: 'Fantasy',
+            url: '/my/fantasy/leagues',
+            icons: [
+              {
+                src: 'img/icons/android-chrome-192x192.png',
+                sizes: '192x192',
+                type: 'image/png'
+              }
+            ]
+          },
+          {
+            name: 'Quinielas',
+            short_name: 'Quinielas',
+            url: '/pools',
+            icons: [
+              {
+                src: 'img/icons/android-chrome-192x192.png',
+                sizes: '192x192',
+                type: 'image/png'
+              }
+            ]
+          },
+          {
+            name: 'Survivor',
+            short_name: 'Survivor',
+            url: '/survivor',
+            icons: [
+              {
+                src: 'img/icons/android-chrome-192x192.png',
+                sizes: '192x192',
+                type: 'image/png'
+              }
+            ]
           }
         ]
       },

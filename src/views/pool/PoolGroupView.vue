@@ -1,19 +1,23 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-3xl">
+      <!-- Secondary tabs: My Pools / Info / Predictions / Standings -->
+      <TopTabsBar
+        :items="items"
+        :active-key="activeTab"
+        :aria-label="$t('pool.group.nav')"
+        @select="onSelect"
+      />
+
       <!-- Pool Group Component -->
       <div class="animate-page-enter">
         <PoolGroupComponent :pool-uuid="poolUuid" :active-tab="activeTab" />
       </div>
     </div>
 
-    <!-- Bottom navigation: My Pools / Info / Predictions / Standings -->
-    <BottomNavBar
-      :items="items"
-      :active-key="activeTab"
-      :aria-label="$t('pool.group.nav')"
-      @select="onSelect"
-    />
+    <!-- Fixed bottom navigation; Play stays selected here and returns to the
+         Gaming screen — see HomeMenu. -->
+    <HomeMenu />
 
     <!-- Visita guiada de la quiniela: solo la primera vez (o tras "Ver de nuevo"). -->
     <OnboardingTour :is-visible="showOnboarding" :steps="POOL_STEPS" @finish="finishOnboarding" />
@@ -24,7 +28,9 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import BottomNavBar, { type BottomNavItem } from "@/components/ui/BottomNavBar.vue";
+import HomeMenu from "@/components/home/HomeMenu.vue";
+import TopTabsBar from "@/components/ui/TopTabsBar.vue";
+import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import PoolGroupComponent from "@/components/pool/PoolGroupComponent.vue";
 import OnboardingTour from "@/components/onboarding/OnboardingTour.vue";
 import { POOL_STEPS } from "@/components/onboarding/onboardingSteps";
@@ -58,10 +64,9 @@ const router = useRouter();
 const poolUuid = computed(() => route.params.uuid as string);
 const activeTab = ref("info");
 
-// "home" and "myPools" are neutral shortcuts (no accent → never highlighted)
-// that navigate away; the rest switch the active tab.
+// "myPools" is a neutral shortcut (no accent → never highlighted) back to the
+// pools list; the rest switch the active tab.
 const items = computed<BottomNavItem[]>(() => [
-  { key: "home", label: t("home.nav.home"), icon: "hi-solid-home" },
   { key: "myPools", label: t("pool.group.tabs.myPools"), icon: "hi-solid-collection" },
   { key: "info", label: t("pool.group.tabs.info"), icon: "hi-solid-information-circle", accent: "emerald" },
   { key: "predictions", label: t("pool.group.tabs.predictions"), icon: "hi-solid-clipboard-list", accent: "blue" },
@@ -69,10 +74,6 @@ const items = computed<BottomNavItem[]>(() => [
 ]);
 
 const onSelect = (key: string) => {
-  if (key === "home") {
-    router.push({ name: "home" });
-    return;
-  }
   if (key === "myPools") {
     router.push({ name: "pools" });
     return;
