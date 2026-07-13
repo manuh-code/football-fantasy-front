@@ -303,7 +303,7 @@ const onDragEnd = (e: PointerEvent) => {
     </Transition>
 
     <!-- Sheet wrapper (Vue Transition: slide in/out). z-[120] is the highest in the stack:
-         above FooterMenu (z-100), RoundFixturesDrawer (z-[110]) and its own backdrop. -->
+         above the floating bottom nav (z-100), RoundFixturesDrawer (z-[110]) and its own backdrop. -->
     <Transition name="mc-slide">
       <div
         v-if="isOpen"

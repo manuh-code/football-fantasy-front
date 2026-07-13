@@ -23,6 +23,12 @@
       "placeholder": "Enter a password",
       "hint": "Required for others to join your league"
     },
+    "league": {
+      "label": "Football league",
+      "pick": "Pick a league",
+      "change": "Tap to change",
+      "empty": "No leagues available"
+    },
     "participants": {
       "label": "Number of Participants",
       "placeholder": "Select number of participants",
@@ -71,6 +77,14 @@
     "createMyTeam": "Create My Team",
     "maybeLater": "Maybe Later"
   },
+  "detailTabs": {
+    "nav": "League navigation",
+    "myLeagues": "My Leagues",
+    "overview": "Overview",
+    "team": "My Team",
+    "players": "Players",
+    "matches": "Matches"
+  },
   "userLeagues": {
     "title": "My Leagues",
     "countOne": "{count} league",
@@ -79,6 +93,7 @@
     "emptyTitle": "No Leagues Yet",
     "emptyBody": "Create your own league or join an existing one to start playing.",
     "pageTitle": "My Fantasy Leagues - Football Fantasy",
+    "navAria": "Fantasy leagues navigation",
     "fabQuickActions": "Quick actions",
     "fabClose": "Close menu",
     "createLeague": "Create League",

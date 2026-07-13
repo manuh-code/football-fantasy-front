@@ -23,8 +23,8 @@ export interface BottomNavItem {
 }
 
 // --- Single-pill guard (module-level, shared by every instance) --------------
-// Several screens mount their own <BottomNavBar> (HomeMenu, FooterMenu,
-// PoolGroupView, ...) and every instance teleports its floating pill into the
+// Several screens mount their own <BottomNavBar> (HomeMenu, MenuDraft, ...)
+// and every instance teleports its floating pill into the
 // same `#app`, all pinned to `fixed bottom-0 z-[100]`. During a route change the
 // outgoing and incoming views overlap for a tick, so two pills can land on top
 // of each other ("encimado", looking like the bar lost its style).

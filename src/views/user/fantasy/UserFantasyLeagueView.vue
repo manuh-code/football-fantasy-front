@@ -1,9 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
+      <!-- Secondary section tabs: global destinations live in the fixed nav -->
+      <TopTabsBar :items="tabItems" active-key="fantasy" :aria-label="$t('fantasy.userLeagues.navAria')" />
+
       <!-- User Fantasy League Component -->
       <div class="animate-page-enter">
-        <UserFantasyLeagueComponent />
+        <UserFantasyLeagueComponent ref="leaguesComponentRef" />
       </div>
     </div>
 
@@ -23,7 +26,7 @@
         <transition name="fab-menu">
           <div v-if="isFabMenuOpen" class="absolute bottom-20 right-0 flex flex-col gap-3 min-w-max z-[111]">
             <button
-              @click="goToCreateLeague"
+              @click="openCreate"
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
             >
               <span class="text-sm font-semibold">{{ $t('fantasy.userLeagues.createLeague') }}</span>
@@ -33,7 +36,7 @@
             </button>
 
             <button
-              @click="goToJoinLeague"
+              @click="openJoin"
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
             >
               <span class="text-sm font-semibold">{{ $t('fantasy.userLeagues.joinLeague') }}</span>
@@ -45,39 +48,79 @@
         </transition>
       </div>
     </Teleport>
+
+    <!-- Create / Join modals -->
+    <FantasyLeagueCreateModal :is-visible="isCreateOpen" @close="isCreateOpen = false" @created="onCreated" />
+    <FantasyLeagueJoinModal :is-visible="isJoinOpen" @close="isJoinOpen = false" @joined="onJoined" />
+
+    <!-- Fixed bottom navigation (Home / Leagues / Play / Following); Play
+         stays selected here and returns to the Gaming screen — see HomeMenu. -->
+    <HomeMenu />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useToast } from '@/composables/useToast'
 import UserFantasyLeagueComponent from '@/components/user/fantasy/UserFantasyLeagueComponent.vue'
+import FantasyLeagueCreateModal from '@/components/fantasy/FantasyLeagueCreateModal.vue'
+import FantasyLeagueJoinModal from '@/components/fantasy/FantasyLeagueJoinModal.vue'
+import HomeMenu from '@/components/home/HomeMenu.vue'
+import TopTabsBar from '@/components/ui/TopTabsBar.vue'
+import type { BottomNavItem } from '@/components/ui/BottomNavBar.vue'
+import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 
 const { t } = useI18n()
+const { success } = useToast()
 
 // Set page title
 document.title = t('fantasy.userLeagues.pageTitle')
 
-// Router
-const router = useRouter()
+// Refs
+const leaguesComponentRef = ref<InstanceType<typeof UserFantasyLeagueComponent> | null>(null)
 
 // State
 const isFabMenuOpen = ref(false)
+const isCreateOpen = ref(false)
+const isJoinOpen = ref(false)
 
-// Methods
+// Section tab shown at the top; the list has no other options of its own.
+const tabItems = computed<BottomNavItem[]>(() => [
+  { key: 'fantasy', label: t('fantasy.userLeagues.title'), icon: 'bi-trophy-fill', accent: 'blue' },
+])
+
+// FAB
 const toggleFabMenu = () => {
   isFabMenuOpen.value = !isFabMenuOpen.value
 }
 
-const goToCreateLeague = () => {
+const openCreate = () => {
   isFabMenuOpen.value = false
-  router.push({ name: 'createFantasyLeague' })
+  isCreateOpen.value = true
 }
 
-const goToJoinLeague = () => {
+const openJoin = () => {
   isFabMenuOpen.value = false
-  router.push({ name: 'joinFantasyLeague' })
+  isJoinOpen.value = true
+}
+
+// Modal callbacks
+const onCreated = (league: FantasyLeaguesResponse) => {
+  isCreateOpen.value = false
+  success(t('fantasy.leagueCreate.success.title'), t('fantasy.leagueCreate.success.message', { name: league.name }))
+  leaguesComponentRef.value?.reload()
+}
+
+const onJoined = (league: FantasyLeaguesResponse) => {
+  isJoinOpen.value = false
+  success(
+    t('fantasy.join.joinSuccessTitle'),
+    league.is_private
+      ? t('fantasy.join.joinRequested', { name: league.name })
+      : t('fantasy.join.joinJoined', { name: league.name })
+  )
+  leaguesComponentRef.value?.reload()
 }
 
 // Cleanup: close FAB menu when leaving the view
@@ -148,4 +191,3 @@ onUnmounted(() => {
   }
 }
 </style>
-

@@ -1,6 +1,14 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-4 md:py-6 pb-20 md:pb-8">
     <div class="container mx-auto px-4 max-w-7xl">
+      <!-- Secondary tabs: My Leagues / Overview / Team / Players / Matches -->
+      <TopTabsBar
+        :items="tabItems"
+        :active-key="activeTab"
+        :aria-label="$t('fantasy.detailTabs.nav')"
+        @select="onTabSelect"
+      />
+
       <!-- Dynamic Content Area with Smooth Transitions -->
       <div class="relative">
         <Transition name="tab-content" mode="out-in" @enter="onEnter" @leave="onLeave">
@@ -57,12 +65,19 @@
         </Transition>
       </div>
     </div>
+
+    <!-- Fixed bottom navigation; Play stays selected here and returns to the
+         Gaming screen — see HomeMenu. -->
+    <HomeMenu />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import HomeMenu from '@/components/home/HomeMenu.vue'
+import TopTabsBar from '@/components/ui/TopTabsBar.vue'
+import { useFantasyLeagueTabs } from '@/composables/useFantasyLeagueTabs'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
@@ -87,6 +102,11 @@ const isLoadingLeague = ref(false)
 const memberTabs = new Set(['myteam', 'statistics', 'matchups', 'matches'])
 // Tabs that require admin
 const adminTabs = new Set(['management'])
+
+// Secondary top tabs shared across the fantasy-league screens (the fixed
+// bottom nav lives in HomeMenu) — items, gating and navigation come from the
+// composable so detail / player search / my team stay in sync.
+const { tabItems, onTabSelect } = useFantasyLeagueTabs(() => uuid)
 
 /**
  * Validate if the user has access to the given tab.

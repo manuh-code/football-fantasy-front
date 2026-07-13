@@ -23,6 +23,12 @@
       "placeholder": "Ingresa una contraseña",
       "hint": "Necesaria para que otros se unan a tu liga"
     },
+    "league": {
+      "label": "Liga de fútbol",
+      "pick": "Selecciona una liga",
+      "change": "Toca para cambiar",
+      "empty": "No hay ligas disponibles"
+    },
     "participants": {
       "label": "Número de participantes",
       "placeholder": "Selecciona el número de participantes",
@@ -71,6 +77,14 @@
     "createMyTeam": "Crear mi equipo",
     "maybeLater": "Quizás después"
   },
+  "detailTabs": {
+    "nav": "Navegación de la liga",
+    "myLeagues": "Mis ligas",
+    "overview": "Resumen",
+    "team": "Mi equipo",
+    "players": "Jugadores",
+    "matches": "Partidos"
+  },
   "userLeagues": {
     "title": "Mis ligas",
     "countOne": "{count} liga",
@@ -79,6 +93,7 @@
     "emptyTitle": "Aún no tienes ligas",
     "emptyBody": "Crea tu propia liga o únete a una existente para empezar a jugar.",
     "pageTitle": "Mis Ligas Fantasy - Football Fantasy",
+    "navAria": "Navegación de ligas fantasy",
     "fabQuickActions": "Acciones rápidas",
     "fabClose": "Cerrar menú",
     "createLeague": "Crear liga",

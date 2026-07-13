@@ -4,8 +4,8 @@
 
       <!-- Game Mode Cards — compact iOS-style -->
       <!-- Fantasy Card -->
-<!-- 
-      <button
+
+      <!-- <button
         @click="handleNavigation('fantasy')"
         class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden active:scale-[0.98] transition-transform duration-150 focus:outline-none text-left"
       >
