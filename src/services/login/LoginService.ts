@@ -2,7 +2,7 @@ import { useApiFantasy } from '@/composables/useApiFantasy'
 import { ApiResponse } from '@/interfaces/api/ApiResponse'
 import { LoginPayload } from '@/interfaces/login/LoginPayload'
 import { LoginResponse } from '@/interfaces/login/LoginResponse'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosRequestConfig } from 'axios'
 
 export interface LoginResult {
   success: boolean
@@ -99,17 +99,28 @@ export class LoginService {
       const response = await this.api.get<ApiResponse<null>>('auth/validate', {
         headers: {
           Authorization: `Bearer ${token}`
-        }
-      });
+        },
+        // Opt out of the global 401 toast + login redirect: the router guard
+        // decides routing from the boolean result, so an expired token on a
+        // public page must not be force-redirected to login here.
+        _silent: true,
+        _skipAuthRedirect: true,
+      } as AxiosRequestConfig & { _silent?: boolean; _skipAuthRedirect?: boolean });
       const isValid = response.data.code === 200;
       this.lastValidatedToken = token;
       this.lastValidationResult = isValid;
       this.lastValidationTime = Date.now();
       return isValid;
-    } catch {
-      // If token exists but API call fails (network error, timeout),
-      // assume authenticated to avoid blocking navigation.
-      // Actual API calls will handle 401 if token is truly expired.
+    } catch (err: unknown) {
+      // A 401 means the token is genuinely invalid/expired → not authenticated.
+      // Reset the cache; the guard will redirect only on protected routes.
+      if ((err as { status?: number })?.status === 401) {
+        this.lastValidatedToken = null;
+        this.lastValidationResult = false;
+        return false;
+      }
+      // Network error/timeout (no HTTP response): don't log the user out over a
+      // flaky connection — keep the existing token.
       if (this.lastValidatedToken === token && this.lastValidationResult) {
         return true;
       }

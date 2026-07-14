@@ -96,6 +96,16 @@
     <!-- Splash screen: estilos inline para que se muestren al instante, sin
          depender del bundle CSS. Se desvanece desde src/main.ts al montar la app. -->
     <style>
+      /* Base background matches the splash so there's no white flash in the gap
+         between the platform launch screen, the HTML splash and the mounted app. */
+      html,
+      body {
+        background: #f9fafb;
+      }
+      html.dark,
+      html.dark body {
+        background: #111827;
+      }
       #app-splash {
         position: fixed;
         inset: 0;

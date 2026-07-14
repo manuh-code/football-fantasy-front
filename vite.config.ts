@@ -53,7 +53,10 @@ export default defineConfig({
         short_name: 'FootballFantasy',
         description: 'Fantasy football de la Liga MX: arma tu equipo, compite en drafts en vivo, quinielas y survivor con tus amigos.',
         theme_color: '#059669',
-        background_color: '#ffffff',
+        // Matches the inline #app-splash background in index.html so Android's
+        // native (manifest-driven) splash blends into the HTML splash instead of
+        // flashing white → gray on launch.
+        background_color: '#f9fafb',
         display: 'standalone',
         display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
