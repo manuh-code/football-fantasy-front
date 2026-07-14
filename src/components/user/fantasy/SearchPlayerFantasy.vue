@@ -26,7 +26,6 @@
       <!-- Desktop Skeleton Rows -->
       <div class="hidden md:block">
         <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-3 py-3 border-b border-gray-50 dark:border-gray-700/30 last:border-b-0">
-          <div class="w-8 h-8 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse" />
           <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
           <div class="flex-1 space-y-1.5">
             <div class="h-3.5 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" :style="{ width: `${50 + (i * 7) % 30}%` }" />
@@ -36,23 +35,20 @@
             <div class="w-8 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
             <div class="w-8 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
             <div class="w-6 h-4 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+            <div class="w-8 h-8 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse" />
           </div>
         </div>
       </div>
 
       <!-- Mobile Skeleton Cards -->
       <div class="md:hidden divide-y divide-gray-50 dark:divide-gray-700/30">
-        <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-4 py-3">
-          <div class="w-8 h-8 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
+        <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-3 py-3 border-l-2 border-l-gray-100 dark:border-l-gray-700">
           <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
           <div class="flex-1 space-y-1.5 min-w-0">
             <div class="h-3.5 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" :style="{ width: `${55 + (i * 9) % 30}%` }" />
-            <div class="h-2.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 animate-pulse w-1/4" />
+            <div class="h-2.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 animate-pulse w-2/3" />
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <div class="w-10 h-8 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
-            <div class="w-10 h-8 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
-          </div>
+          <div class="w-9 h-9 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
         </div>
       </div>
     </div>
@@ -69,7 +65,7 @@
         />
         <div>
           <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
-            Error loading players
+            {{ $t('fantasy.search.errorTitle') }}
           </h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             {{ error }}
@@ -90,10 +86,10 @@
         />
         <div>
           <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
-            No fantasy league selected
+            {{ $t('fantasy.search.noLeagueTitle') }}
           </h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-            Please select a fantasy league to view available players.
+            {{ $t('fantasy.search.noLeagueBody') }}
           </p>
         </div>
       </div>
@@ -124,10 +120,10 @@
             </div>
             <div class="text-center space-y-1">
               <p class="text-base font-bold text-gray-800 dark:text-gray-100">
-                Waiting for your turn...
+                {{ $t('fantasy.search.waitingTurnTitle') }}
               </p>
               <p class="text-footnote text-gray-400 dark:text-gray-500">
-                You can pick a player when it's your turn.
+                {{ $t('fantasy.search.waitingTurnBody') }}
               </p>
             </div>
           </div>
@@ -174,7 +170,7 @@
                 animation="spin"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                Filtering...
+                {{ $t('fantasy.search.filtering') }}
               </p>
             </div>
           </div>
@@ -196,7 +192,7 @@
               <h3
                 class="text-footnote font-semibold text-gray-900 dark:text-white"
               >
-                Available Players
+                {{ $t('fantasy.search.availablePlayers') }}
               </h3>
             </div>
           </div>
@@ -209,38 +205,38 @@
               >
                 <tr>
                   <th
+                    class="px-3 py-2.5 text-left text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    {{ $t('fantasy.search.colPlayer') }}
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-left text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    {{ $t('fantasy.search.colTeam') }}
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    {{ $t('fantasy.search.colPos') }}
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    {{ $t('fantasy.search.colTotal') }}
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    {{ $t('fantasy.search.colAvg') }}
+                  </th>
+                  <th
+                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    {{ $t('fantasy.search.colGP') }}
+                  </th>
+                  <th
                     class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-16"
                   ></th>
-                  <th
-                    class="px-3 py-2.5 text-left text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                  >
-                    Player
-                  </th>
-                  <th
-                    class="px-3 py-2.5 text-left text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                  >
-                    Team
-                  </th>
-                  <th
-                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                  >
-                    Pos
-                  </th>
-                  <th
-                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                  >
-                    Total
-                  </th>
-                  <th
-                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                  >
-                    Avg
-                  </th>
-                  <th
-                    class="px-3 py-2.5 text-center text-2xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                  >
-                    GP
-                  </th>
                 </tr>
               </thead>
               <TransitionGroup
@@ -254,35 +250,7 @@
                   class="active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
                   :class="{ 'opacity-50': props.mode === 'add' && player.in_play }"
                 >
-                  <!-- Select Button -->
-                  <td class="px-3 py-2.5">
-                    <button
-                      @click="handleAddPlayer(player)"
-                      :disabled="
-                        props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
-                      "
-                      class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                      :class="[
-                        isAddingPlayer(player.player.uuid)
-                          ? 'opacity-50 cursor-not-allowed'
-                          : '',
-                      ]"
-                    >
-                      <v-icon
-                        v-if="!isAddingPlayer(player.player.uuid)"
-                        name="hi-solid-plus"
-                        class="w-4 h-4"
-                      />
-                      <v-icon
-                        v-else
-                        name="pr-spinner"
-                        class="w-3.5 h-3.5"
-                        animation="spin"
-                      />
-                    </button>
-                  </td>
-
-                  <!-- Player Info -->
+                  <!-- Player Info — the name wraps instead of truncating -->
                   <td class="px-3 py-2.5">
                     <div class="flex items-center gap-2.5">
                       <img
@@ -294,7 +262,7 @@
                       />
                       <div class="min-w-0">
                         <p
-                          class="text-footnote font-medium text-gray-900 dark:text-white truncate"
+                          class="text-footnote font-medium text-gray-900 dark:text-white leading-snug break-words"
                         >
                           {{ player.player.display_name }}
                         </p>
@@ -331,7 +299,7 @@
                         getPositionColorClass(player.position.developer_name)
                       "
                     >
-                      {{ player.position.code }}
+                      {{ positionShort(player.position.developer_name) }}
                     </span>
                   </td>
 
@@ -361,12 +329,44 @@
                       {{ player.total_fixtures ?? 0 }}
                     </span>
                   </td>
+
+                  <!-- Select Button — row end, consistent with mobile -->
+                  <td class="px-3 py-2.5 text-center">
+                    <button
+                      @click="handleAddPlayer(player)"
+                      :disabled="
+                        props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
+                      "
+                      :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
+                      class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+                      :class="[
+                        isAddingPlayer(player.player.uuid)
+                          ? 'opacity-50 cursor-not-allowed'
+                          : '',
+                      ]"
+                    >
+                      <v-icon
+                        v-if="!isAddingPlayer(player.player.uuid)"
+                        name="hi-solid-plus"
+                        class="w-4 h-4"
+                      />
+                      <v-icon
+                        v-else
+                        name="pr-spinner"
+                        class="w-3.5 h-3.5"
+                        animation="spin"
+                      />
+                    </button>
+                  </td>
                 </tr>
               </TransitionGroup>
             </table>
           </div>
 
-          <!-- Mobile Cards -->
+          <!-- Mobile Cards — the name owns the full row width (wraps up to two
+               lines, never truncates); position/team/stats sit on a meta line
+               below, and a position-colored rail encodes the position at a
+               glance while scrolling. -->
           <TransitionGroup
             tag="div"
             :name="animateRemoval ? 'player-card' : undefined"
@@ -375,22 +375,68 @@
             <div
               v-for="player in players"
               :key="player.player.uuid"
-              class="px-4 py-3 active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
-              :class="{ 'opacity-50': props.mode === 'add' && player.in_play }"
+              class="px-3 py-3 border-l-2 active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
+              :class="[
+                getPositionRailClass(player.position.developer_name),
+                { 'opacity-50': props.mode === 'add' && player.in_play },
+              ]"
             >
               <div class="flex items-center gap-3">
-                <!-- Select Button -->
+                <!-- Avatar -->
+                <img
+                  :src="player.player.image_path || '/img/default-avatar.svg'"
+                  :alt="player.player.display_name"
+                  class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+                />
+
+                <!-- Name + meta + stats -->
+                <div class="flex-1 min-w-0">
+                  <p
+                    class="text-footnote font-semibold text-gray-900 dark:text-white leading-snug break-words line-clamp-2"
+                  >
+                    {{ player.player.display_name }}
+                  </p>
+                  <div class="flex items-end justify-between gap-2 mt-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span
+                        class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-2xs font-bold shrink-0"
+                        :class="
+                          getPositionColorClass(player.position.developer_name)
+                        "
+                      >
+                        {{ positionShort(player.position.developer_name) }}
+                      </span>
+                      <img
+                        :src="player.team.image_path || '/img/default-team.svg'"
+                        :alt="player.team.name"
+                        class="w-3.5 h-3.5 object-contain shrink-0"
+                      />
+                      <span class="text-2xs text-gray-400 dark:text-gray-500 truncate">
+                        {{ player.team.short_code }}
+                      </span>
+                    </div>
+                    <!-- Right-aligned stats share the same x across rows for scanning -->
+                    <div class="flex items-baseline gap-2.5 shrink-0 tabular-nums">
+                      <span class="text-footnote font-bold text-gray-900 dark:text-white">
+                        {{ formatNumber(player.total_points, 1) }}
+                        <span class="text-2xs font-normal text-gray-400 dark:text-gray-500">{{ $t('fantasy.search.ptsShort') }}</span>
+                      </span>
+                      <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                        {{ formatNumber(player.average_points, 2) }}
+                        <span class="text-2xs font-normal text-gray-400 dark:text-gray-500">{{ $t('fantasy.search.avgShort') }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Select Button — row end, thumb-reachable -->
                 <button
                   @click="handleAddPlayer(player)"
                   :disabled="
                     props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
                   "
-                  class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                  :class="[
-                    isAddingPlayer(player.player.uuid)
-                      ? 'opacity-50 cursor-not-allowed'
-                      : '',
-                  ]"
+                  :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
+                  class="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                 >
                   <v-icon
                     v-if="!isAddingPlayer(player.player.uuid)"
@@ -404,66 +450,6 @@
                     animation="spin"
                   />
                 </button>
-
-                <!-- Avatar -->
-                <img
-                  :src="player.player.image_path || '/img/default-avatar.svg'"
-                  :alt="player.player.display_name"
-                  class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
-                />
-
-                <!-- Info -->
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2">
-                    <p
-                      class="text-footnote font-medium text-gray-900 dark:text-white truncate"
-                    >
-                      {{ player.player.display_name }}
-                    </p>
-                    <span
-                      class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-2xs font-bold shrink-0"
-                      :class="
-                        getPositionColorClass(player.position.developer_name)
-                      "
-                    >
-                      {{ player.position.code }}
-                    </span>
-                  </div>
-                  <div class="flex items-center gap-1.5 mt-0.5">
-                    <img
-                      :src="player.team.image_path || '/img/default-team.svg'"
-                      :alt="player.team.name"
-                      class="w-3.5 h-3.5 object-contain"
-                    />
-                    <span class="text-2xs text-gray-400 dark:text-gray-500">
-                      {{ player.team.short_code }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Stats -->
-                <div class="flex items-center gap-3 shrink-0">
-                  <div class="text-right">
-                    <p
-                      class="text-footnote font-bold text-gray-900 dark:text-white tabular-nums"
-                    >
-                      {{ formatNumber(player.total_points, 1) }}
-                    </p>
-                    <p class="text-2xs text-gray-400 dark:text-gray-500">
-                      pts
-                    </p>
-                  </div>
-                  <div class="text-right">
-                    <p
-                      class="text-xs font-semibold text-blue-600 dark:text-blue-400 tabular-nums"
-                    >
-                      {{ formatNumber(player.average_points, 2) }}
-                    </p>
-                    <p class="text-2xs text-gray-400 dark:text-gray-500">
-                      avg
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </TransitionGroup>
@@ -481,18 +467,17 @@
         <!-- End of List Indicator -->
         <div v-else-if="!hasMoreData" class="py-4 text-center">
           <p class="text-xs text-gray-400 dark:text-gray-500">
-            {{ players.length }} players loaded
+            {{ $t('fantasy.search.playersLoaded', players.length) }}
           </p>
         </div>
 
-        <!-- Scroll Observer Target -->
+        <!-- Scroll Observer Target (invisible sentinel for infinite scroll) -->
         <div
           v-show="hasMoreData && !isLoadingMore"
           ref="observerTarget"
-          class="h-20 w-full flex items-center justify-center"
-        >
-          <span class="text-xs text-gray-400">Scroll detector</span>
-        </div>
+          class="h-20 w-full"
+          aria-hidden="true"
+        />
       </div>
 
       <!-- Empty State -->
@@ -512,16 +497,16 @@
           class="text-callout font-semibold text-gray-900 dark:text-white mb-1"
         >
           {{
-            selectedPosition === "ALL"
-              ? "No players available"
-              : "No players found"
+            hasActiveFilters
+              ? $t('fantasy.search.emptyFilteredTitle')
+              : $t('fantasy.search.emptyTitle')
           }}
         </h3>
         <p class="text-footnote text-gray-500 dark:text-gray-400">
           {{
-            selectedPosition === "ALL"
-              ? "There are no players available at this moment."
-              : `No ${selectedPosition.toLowerCase()} players available.`
+            hasActiveFilters
+              ? $t('fantasy.search.emptyFilteredBody')
+              : $t('fantasy.search.emptyBody')
           }}
         </p>
         <button
@@ -529,7 +514,7 @@
           @click="handleFilterChange('ALL')"
           class="mt-4 px-4 py-2 bg-blue-500 active:bg-blue-600 text-white text-footnote font-medium rounded-xl transition-colors"
         >
-          View all positions
+          {{ $t('fantasy.search.viewAllPositions') }}
         </button>
       </div>
     </div>
@@ -548,6 +533,7 @@ import { catalogService } from "@/services/catalog/CatalogService";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { useToast } from "@/composables/useToast";
 import { useI18n } from "vue-i18n";
+import { usePositionShortCode } from "@/composables/usePositionShortCode";
 import PositionFilter from "@/components/user/fantasy/search/PositionFilter.vue";
 import TeamFilter from "@/components/user/fantasy/search/TeamFilter.vue";
 import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.vue";
@@ -582,6 +568,7 @@ const route = useRoute();
 // Composables
 const toast = useToast();
 const { t } = useI18n();
+const positionShort = usePositionShortCode();
 
 // State
 const players = ref<FantasyPlayerDraftResponse[]>([]);
@@ -617,6 +604,14 @@ const canAddPlayer = computed(() =>
   props.mode === 'draft' || isDraftCompleted.value,
 );
 
+/** Any list filter active — drives the empty-state copy */
+const hasActiveFilters = computed(
+  () =>
+    selectedPosition.value !== "ALL" ||
+    selectedTeam.value !== "ALL" ||
+    playerName.value !== "",
+);
+
 const positionFilters = computed(() => {
   const filters: Array<{
     code: string;
@@ -631,7 +626,7 @@ const positionFilters = computed(() => {
   }> = [
     {
       code: "ALL",
-      name: "All",
+      name: t("fantasy.search.filterAll"),
       icon: "hi-solid-view-grid",
       color: "text-gray-600 dark:text-gray-400",
       activeClasses:
@@ -646,7 +641,7 @@ const positionFilters = computed(() => {
     if (league.value.formation.goalkeeper?.starter > 0) {
       filters.push({
         code: "GOALKEEPER",
-        name: "GK",
+        name: t("fantasy.positionsShort.goalkeeper"),
         icon: "hi-solid-shield-check",
         color: "text-blue-600 dark:text-blue-400",
         activeClasses:
@@ -661,7 +656,7 @@ const positionFilters = computed(() => {
     if (league.value.formation.defender?.starter > 0) {
       filters.push({
         code: "DEFENDER",
-        name: "DF",
+        name: t("fantasy.positionsShort.defender"),
         icon: "hi-solid-shield-exclamation",
         color: "text-emerald-600 dark:text-emerald-400",
         activeClasses:
@@ -676,7 +671,7 @@ const positionFilters = computed(() => {
     if (league.value.formation.midfielder?.starter > 0) {
       filters.push({
         code: "MIDFIELDER",
-        name: "MF",
+        name: t("fantasy.positionsShort.midfielder"),
         icon: "hi-solid-lightning-bolt",
         color: "text-amber-600 dark:text-amber-400",
         activeClasses:
@@ -691,7 +686,7 @@ const positionFilters = computed(() => {
     if (league.value.formation.attacker?.starter > 0) {
       filters.push({
         code: "ATTACKER",
-        name: "FW",
+        name: t("fantasy.positionsShort.attacker"),
         icon: "hi-solid-fire",
         color: "text-rose-600 dark:text-rose-400",
         activeClasses:
@@ -729,6 +724,17 @@ function getPositionColorClass(position: string): string {
     colors[position] ||
     "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-600"
   );
+}
+
+/** Left rail color for the mobile cards — same palette as the position badge */
+function getPositionRailClass(position: string): string {
+  const rails: Record<string, string> = {
+    GOALKEEPER: "border-l-blue-400 dark:border-l-blue-500",
+    DEFENDER: "border-l-green-400 dark:border-l-green-500",
+    MIDFIELDER: "border-l-yellow-400 dark:border-l-yellow-500",
+    ATTACKER: "border-l-red-400 dark:border-l-red-500",
+  };
+  return rails[position] || "border-l-gray-200 dark:border-l-gray-600";
 }
 
 function isAddingPlayer(playerUuid: string): boolean {
@@ -796,8 +802,8 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       await fantasyLeagueService.pickerPlayer(payload);
 
       toast.success(
-        "Player picked",
-        `${player.player.display_name} has been drafted`,
+        t("fantasy.search.pickedTitle"),
+        t("fantasy.search.pickedBody", { name: player.player.display_name }),
         { duration: 3000 },
       );
 
@@ -854,8 +860,8 @@ async function addPlayerToLineup(
     await fantasyLeagueService.addPlayer(payload);
 
     toast.success(
-      "Player added successfully",
-      `${player.player.display_name} has been added to your team`,
+      t("fantasy.search.addedTitle"),
+      t("fantasy.search.addedBody", { name: player.player.display_name }),
       { duration: 3000 },
     );
 
@@ -936,7 +942,7 @@ async function loadPlayers(append = false) {
     handlePaginationResult(response.length, append);
   } catch (err: unknown) {
     const errorMessage =
-      err instanceof Error ? err.message : "Error loading players";
+      err instanceof Error ? err.message : t("fantasy.search.loadError");
     error.value = errorMessage;
   } finally {
     isLoading.value = false;

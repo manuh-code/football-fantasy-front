@@ -42,7 +42,7 @@
         />
         <div>
           <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
-            Error loading team
+            {{ $t('fantasy.myTeam.errorTitle') }}
           </h3>
           <p class="text-xs text-gray-500 dark:text-gray-400">
             {{ error }}
@@ -63,10 +63,10 @@
         />
         <div>
           <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
-            No fantasy league selected
+            {{ $t('fantasy.myTeam.noLeagueTitle') }}
           </h3>
           <p class="text-xs text-gray-500 dark:text-gray-400">
-            Please select a fantasy league to view your team.
+            {{ $t('fantasy.myTeam.noLeagueBody') }}
           </p>
         </div>
       </div>
@@ -91,7 +91,7 @@
       <MatchupByRoundAndUser
         :league-uuid="leagueUuid!"
         :round-uuid="selectedRoundUuid"
-        :round-name="selectedRound?.round?.name ?? 'Matchup'"
+        :round-name="selectedRound?.round?.name ?? $t('fantasy.myTeam.matchupFallback')"
       />
 
       <!-- Quick Actions -->
@@ -139,10 +139,10 @@
         />
         <div>
           <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">
-            No rounds available
+            {{ $t('fantasy.myTeam.noRoundsTitle') }}
           </h3>
           <p class="text-xs text-gray-500 dark:text-gray-400">
-            There are no rounds configured for this fantasy league yet.
+            {{ $t('fantasy.myTeam.noRoundsBody') }}
           </p>
         </div>
       </div>

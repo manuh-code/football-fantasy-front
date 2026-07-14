@@ -207,12 +207,19 @@
     "starters": "Titulares",
     "bench": "Banca",
     "pts": "pts",
-    "total": "Total"
+    "total": "Total",
+    "loadError": "No se pudieron cargar los enfrentamientos.",
+    "lineupsError": "No se pudieron cargar las alineaciones.",
+    "winner": "Ganador",
+    "draw": "Empate",
+    "home": "Local",
+    "away": "Visitante"
   },
   "lineup": {
     "starters": "Titulares",
     "bench": "Banca",
-    "selectSwap": "Selecciona un jugador para cambiar"
+    "selectSwap": "Selecciona un jugador para cambiar",
+    "pts": "pts"
   },
   "management": {
     "loadingRules": "Cargando reglas de puntuación...",
@@ -249,12 +256,54 @@
   },
   "myTeam": {
     "addPlayers": "Agregar jugadores",
-    "trades": "Cambios"
+    "trades": "Cambios",
+    "errorTitle": "Error al cargar el equipo",
+    "noLeagueTitle": "Sin liga seleccionada",
+    "noLeagueBody": "Selecciona una liga Fantasy para ver tu equipo.",
+    "noRoundsTitle": "No hay rondas disponibles",
+    "noRoundsBody": "Aún no hay rondas configuradas para esta liga Fantasy.",
+    "matchupFallback": "Enfrentamiento"
   },
   "search": {
     "playerPlaceholder": "Buscar jugador...",
     "allTeams": "Todos los equipos",
     "searchTeam": "Buscar equipo...",
-    "errorAddingPlayer": "Error al agregar jugador"
+    "errorAddingPlayer": "Error al agregar jugador",
+    "availablePlayers": "Jugadores disponibles",
+    "filtering": "Filtrando...",
+    "errorTitle": "Error al cargar los jugadores",
+    "loadError": "No se pudieron cargar los jugadores. Inténtalo de nuevo.",
+    "noLeagueTitle": "Sin liga fantasy seleccionada",
+    "noLeagueBody": "Selecciona una liga fantasy para ver los jugadores disponibles.",
+    "waitingTurnTitle": "Esperando tu turno...",
+    "waitingTurnBody": "Podrás elegir un jugador cuando sea tu turno.",
+    "filterAll": "Todos",
+    "colPlayer": "Jugador",
+    "colTeam": "Equipo",
+    "colPos": "Pos",
+    "colTotal": "Total",
+    "colAvg": "Prom",
+    "colGP": "PJ",
+    "ptsShort": "pts",
+    "avgShort": "prom",
+    "selectAria": "Seleccionar a {name}",
+    "playersLoaded": "{count} jugadores cargados | {count} jugador cargado | {count} jugadores cargados",
+    "emptyTitle": "No hay jugadores disponibles",
+    "emptyBody": "Por ahora no hay jugadores disponibles.",
+    "emptyFilteredTitle": "Sin resultados",
+    "emptyFilteredBody": "No encontramos jugadores con los filtros seleccionados.",
+    "viewAllPositions": "Ver todas las posiciones",
+    "pickedTitle": "Jugador seleccionado",
+    "pickedBody": "{name} fue elegido en el draft",
+    "addedTitle": "Jugador agregado",
+    "addedBody": "{name} se agregó a tu equipo"
+  },
+  "positionsShort": {
+    "goalkeeper": "POR",
+    "defender": "DEF",
+    "midfielder": "MED",
+    "attacker": "DEL",
+    "flex": "FLEX",
+    "bench": "BAN"
   }
 }
