@@ -145,8 +145,6 @@
     "error": "Something went wrong",
     "errorUuidRequired": "League UUID is required",
     "members": "Members",
-    "status": "Status",
-    "active": "Active",
     "season": "Season",
     "myTeam": "My Team",
     "stats": "Stats",
@@ -158,8 +156,19 @@
     "date": "Date",
     "pickTimer": "Pick Timer",
     "autoPick": "Auto Pick",
-    "comingSoonTitle": "Coming Soon",
-    "comingSoonMessage": "League management page is under development!"
+    "loadError": "The league information couldn't be loaded. Please try again later.",
+    "membersCount": "{count} members | {count} member | {count} members",
+    "noParticipants": "No participants yet",
+    "dateNotSet": "To be defined",
+    "draftStatus": {
+      "none": "Not scheduled",
+      "pending": "Pending",
+      "active": "Live",
+      "completed": "Completed"
+    },
+    "enterDraftRoom": "Enter the draft room",
+    "goToDraftActivate": "Go to draft · Activate",
+    "activateHint": "You can activate the draft once you're inside the room."
   },
   "teamCreate": {
     "preview": "Preview",
@@ -221,7 +230,9 @@
     "errorLoadConditions": "Error loading condition rules",
     "errorSave": "Error saving scoring rules",
     "errorInit": "Error initializing component",
-    "updated": "Scoring rules updated successfully"
+    "updated": "Scoring rules updated successfully",
+    "noRulesTitle": "No scoring rules",
+    "noRulesBody": "This league doesn't have scoring rules configured yet."
   },
   "join": {
     "discoverTitle": "Discover Leagues",

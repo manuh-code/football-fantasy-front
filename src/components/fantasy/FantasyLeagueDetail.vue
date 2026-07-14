@@ -1,15 +1,28 @@
 <template>
   <div class="space-y-3">
-    <!-- Loading State -->
-    <div v-if="isLoading" class="flex items-center justify-center py-24">
-      <div class="flex flex-col items-center gap-3">
-        <v-icon
-          name="pr-spinner"
-          class="w-6 h-6 text-emerald-500 dark:text-emerald-400"
-          animation="spin"
+    <!-- Loading State — skeleton mirroring the real layout -->
+    <div
+      v-if="isLoading"
+      class="space-y-3"
+      role="status"
+      :aria-label="$t('fantasy.detail.loading')"
+    >
+      <div class="h-44 sm:h-52 rounded-2xl bg-gray-200/70 dark:bg-gray-800 animate-pulse" />
+      <div class="grid grid-cols-3 gap-2">
+        <div
+          v-for="n in 3"
+          :key="`sk-stat-${n}`"
+          class="h-[74px] rounded-xl bg-gray-200/70 dark:bg-gray-800 animate-pulse"
         />
-        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">{{ $t('fantasy.detail.loading') }}</p>
       </div>
+      <div class="grid grid-cols-3 gap-2">
+        <div
+          v-for="n in 3"
+          :key="`sk-action-${n}`"
+          class="h-[70px] rounded-xl bg-gray-200/70 dark:bg-gray-800 animate-pulse"
+        />
+      </div>
+      <div class="h-44 rounded-xl bg-gray-200/70 dark:bg-gray-800 animate-pulse" />
     </div>
 
     <!-- Error State -->
@@ -30,7 +43,7 @@
       <ButtonComponent
         variant="outline"
         size="sm"
-        text="Try Again"
+        :text="$t('common.actions.retry')"
         @click="fetchLeague"
       />
     </div>
@@ -51,7 +64,14 @@
           <div
             v-else
             class="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500"
-          />
+          >
+            <!-- Pitch motif: halfway line + center circle, like a top-down field -->
+            <div class="absolute inset-0 opacity-[0.14] pointer-events-none" aria-hidden="true">
+              <div class="absolute top-[-20%] bottom-[-20%] left-[64%] w-0.5 bg-white -translate-x-1/2" />
+              <div class="absolute top-1/2 left-[64%] -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-full border-2 border-white" />
+              <div class="absolute top-1/2 left-[64%] -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" />
+            </div>
+          </div>
           <!-- Layered gradient overlays for cinematic depth -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div class="absolute inset-0 bg-gradient-to-b from-black/25 to-transparent h-20" />
@@ -65,19 +85,19 @@
                 :name="league.is_private ? 'hi-solid-lock-closed' : 'hi-solid-globe-alt'"
                 class="w-2.5 h-2.5"
               />
-              {{ league.is_private ? 'Private' : 'Public' }}
+              {{ league.is_private ? $t('fantasy.leagueCard.private') : $t('fantasy.leagueCard.public') }}
             </span>
             <span
               v-if="league.isAdmin"
               class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-2xs font-bold uppercase tracking-wider bg-amber-500/90 text-white backdrop-blur-md"
             >
-              <v-icon name="hi-solid-star" class="w-2.5 h-2.5" /> Admin
+              <v-icon name="hi-solid-star" class="w-2.5 h-2.5" /> {{ $t('fantasy.leagueCard.admin') }}
             </span>
             <span
               v-else-if="league.isMember"
               class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-2xs font-bold uppercase tracking-wider bg-blue-500/90 text-white backdrop-blur-md"
             >
-              <v-icon name="hi-solid-check-circle" class="w-2.5 h-2.5" /> Member
+              <v-icon name="hi-solid-check-circle" class="w-2.5 h-2.5" /> {{ $t('fantasy.leagueCard.member') }}
             </span>
           </div>
 
@@ -105,7 +125,7 @@
                 </div>
               </div>
               <span class="text-2xs font-medium text-white/80">
-                {{ league.members_count || 0 }} member{{ (league.members_count || 0) !== 1 ? 's' : '' }}
+                {{ $t('fantasy.detail.membersCount', league.members_count || 0) }}
               </span>
             </div>
           </div>
@@ -119,7 +139,7 @@
           <ButtonComponent
             variant="primary"
             size="sm"
-            :text="league.is_private ? 'Request to Join' : 'Join League'"
+            :text="league.is_private ? $t('fantasy.leagueCard.requestToJoin') : $t('fantasy.leagueCard.joinLeague')"
             class="w-full"
             @click="handleJoinLeague"
           />
@@ -150,20 +170,25 @@
           </div>
         </div>
 
-        <!-- Status -->
+        <!-- Draft status — real state, color-coded -->
         <div class="bg-white dark:bg-gray-800/80 rounded-xl p-3 border border-gray-100 dark:border-gray-700/40">
           <div class="flex items-center gap-1.5 mb-2">
             <div class="w-5 h-5 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <v-icon name="hi-solid-lightning-bolt" class="w-3 h-3 text-blue-600 dark:text-blue-400" />
             </div>
-            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.status') }}</span>
+            <span class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.draft') }}</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <span class="relative flex h-2 w-2">
+            <span v-if="draftStatusKey === 'active'" class="relative flex h-2 w-2 shrink-0">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $t('fantasy.detail.active') }}</span>
+            <span
+              v-else
+              class="w-2 h-2 rounded-full shrink-0"
+              :class="DRAFT_DOT_CLASS[draftStatusKey]"
+            />
+            <span class="text-xs font-bold text-gray-900 dark:text-white leading-tight">{{ draftStatusLabel }}</span>
           </div>
         </div>
 
@@ -217,6 +242,95 @@
           </div>
           <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.matchups') }}</span>
         </button>
+      </div>
+
+      <!-- ==================================================== -->
+      <!-- DRAFT CARD — the primary pre-season action, so it    -->
+      <!-- sits above the description and the roster            -->
+      <!-- ==================================================== -->
+      <div
+        v-if="league.draft"
+        class="bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 overflow-hidden"
+      >
+        <!-- Accent top bar -->
+        <div class="h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500" />
+
+        <div class="px-4 py-3">
+          <!-- Header with status pill -->
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <v-icon name="gi-soccer-ball" class="w-4 h-4 text-orange-500 dark:text-orange-400" />
+              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.draft') }}</h3>
+            </div>
+            <span
+              class="text-2xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
+              :class="DRAFT_PILL_CLASS[draftStatusKey]"
+            >
+              {{ draftStatusLabel }}
+            </span>
+          </div>
+
+          <!-- Draft details -->
+          <div class="space-y-2.5">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.date') }}</span>
+              <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
+                {{ formatDate(league.draft.draft_day, true) }}
+              </span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.pickTimer') }}</span>
+              <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
+                {{ league.draft.pick_timer }}s
+              </span>
+            </div>
+
+            <!-- Auto-pick toggle -->
+            <div
+              v-if="(league.isMember || league.isAdmin) && draftStatusValue !== 'COMPLETED'"
+              class="flex justify-between items-center"
+            >
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.autoPick') }}</span>
+              <button
+                type="button"
+                role="switch"
+                :aria-checked="isAutoPick"
+                :disabled="isTogglingAutoPick"
+                :class="[
+                  'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800',
+                  isAutoPick ? 'bg-emerald-500' : 'bg-gray-200 dark:bg-gray-600',
+                  isTogglingAutoPick ? 'opacity-50 cursor-not-allowed' : ''
+                ]"
+                @click="handleToggleAutoPick"
+              >
+                <span
+                  :class="[
+                    'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    isAutoPick ? 'translate-x-4' : 'translate-x-0'
+                  ]"
+                />
+              </button>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="pt-2 space-y-2">
+              <ButtonComponent
+                v-if="draftStatusValue !== 'COMPLETED'"
+                variant="primary"
+                size="sm"
+                :text="league.isAdmin && draftStatusValue !== 'ACTIVE' ? $t('fantasy.detail.goToDraftActivate') : $t('fantasy.detail.enterDraftRoom')"
+                class="w-full"
+                @click="goToDraft"
+              />
+              <p
+                v-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
+                class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
+              >
+                {{ $t('fantasy.detail.activateHint') }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ============================== -->
@@ -315,105 +429,12 @@
               <v-icon name="hi-solid-user-group" class="w-5 h-5 text-gray-300 dark:text-gray-600" />
             </div>
             <p class="text-xs font-medium text-gray-400 dark:text-gray-500">
-              No participants yet
+              {{ $t('fantasy.detail.noParticipants') }}
             </p>
           </div>
         </div>
       </div>
 
-      <!-- ============================== -->
-      <!-- DRAFT CARD — Prominent section  -->
-      <!-- ============================== -->
-      <div
-        v-if="league.draft"
-        class="bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 overflow-hidden"
-      >
-        <!-- Accent top bar -->
-        <div class="h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500" />
-
-        <div class="px-4 py-3">
-          <!-- Header with status pill -->
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <v-icon name="gi-soccer-ball" class="w-4 h-4 text-orange-500 dark:text-orange-400" />
-              <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.draft') }}</h3>
-            </div>
-            <span
-              :class="[
-                'text-2xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider',
-                draftStatusValue === 'ACTIVE'
-                  ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
-                  : draftStatusValue === 'COMPLETED'
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                    : 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400'
-              ]"
-            >
-              {{ draftStatusValue || 'Pending' }}
-            </span>
-          </div>
-
-          <!-- Draft details -->
-          <div class="space-y-2.5">
-            <div class="flex justify-between items-center">
-              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.date') }}</span>
-              <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
-                {{ formatDate(league.draft.draft_day) }}
-              </span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.pickTimer') }}</span>
-              <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
-                {{ league.draft.pick_timer }}s
-              </span>
-            </div>
-
-            <!-- Auto-pick toggle -->
-            <div
-              v-if="(league.isMember || league.isAdmin) && draftStatusValue !== 'COMPLETED'"
-              class="flex justify-between items-center"
-            >
-              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.autoPick') }}</span>
-              <button
-                type="button"
-                role="switch"
-                :aria-checked="isAutoPick"
-                :disabled="isTogglingAutoPick"
-                :class="[
-                  'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800',
-                  isAutoPick ? 'bg-emerald-500' : 'bg-gray-200 dark:bg-gray-600',
-                  isTogglingAutoPick ? 'opacity-50 cursor-not-allowed' : ''
-                ]"
-                @click="handleToggleAutoPick"
-              >
-                <span
-                  :class="[
-                    'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-                    isAutoPick ? 'translate-x-4' : 'translate-x-0'
-                  ]"
-                />
-              </button>
-            </div>
-
-            <!-- Action buttons -->
-            <div class="pt-2 space-y-2">
-              <ButtonComponent
-                v-if="draftStatusValue !== 'COMPLETED'"
-                variant="primary"
-                size="sm"
-                :text="league.isAdmin && draftStatusValue !== 'ACTIVE' ? 'Go to Draft · Activate' : 'Enter Draft Room'"
-                class="w-full"
-                @click="goToDraft"
-              />
-              <p
-                v-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
-                class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
-              >
-                You can activate the draft once you're inside the draft room.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </template>
 
     <!-- Join League Modal -->
@@ -459,7 +480,7 @@ const props = defineProps<Props>();
 
 // Composables
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const toast = useToast();
 const validationStore = useValidationStore();
 const leagueDetailStore = useFantasyLeagueDetailStore();
@@ -496,6 +517,34 @@ const draftStatusValue = computed(() => {
   return (league.value?.draft?.status?.value || "").toUpperCase();
 });
 
+// Draft status → i18n key + color classes (static maps so Tailwind keeps them)
+type DraftStatusKey = "none" | "pending" | "active" | "completed";
+
+const draftStatusKey = computed<DraftStatusKey>(() => {
+  if (!league.value?.draft) return "none";
+  if (draftStatusValue.value === "ACTIVE") return "active";
+  if (draftStatusValue.value === "COMPLETED") return "completed";
+  return "pending";
+});
+
+const draftStatusLabel = computed(() =>
+  t(`fantasy.detail.draftStatus.${draftStatusKey.value}`),
+);
+
+const DRAFT_DOT_CLASS: Record<DraftStatusKey, string> = {
+  none: "bg-gray-300 dark:bg-gray-600",
+  pending: "bg-orange-400",
+  active: "bg-emerald-500",
+  completed: "bg-blue-500",
+};
+
+const DRAFT_PILL_CLASS: Record<DraftStatusKey, string> = {
+  none: "bg-gray-100 dark:bg-gray-700/40 text-gray-500 dark:text-gray-400",
+  pending: "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400",
+  active: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400",
+  completed: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400",
+};
+
 // Methods
 const fetchLeague = async () => {
   if (!props.uuid) {
@@ -515,8 +564,7 @@ const fetchLeague = async () => {
     }
   } catch (error) {
     console.error("Error loading league details:", error);
-    errorMessage.value =
-      "Failed to load league details. Please try again later.";
+    errorMessage.value = t("fantasy.detail.loadError");
   } finally {
     isLoading.value = false;
   }
@@ -545,15 +593,14 @@ const goToCreateTeam = () => {
   });
 };
 
-const formatDate = (dateString: string) => {
-  if (!dateString) return "N/A";
+const formatDate = (dateString: string, withTime = false) => {
+  if (!dateString) return t("fantasy.detail.dateNotSet");
   try {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(locale.value, {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      ...(withTime ? { hour: "2-digit" as const, minute: "2-digit" as const } : {}),
     }).format(new Date(dateString));
   } catch {
     return dateString;
@@ -626,8 +673,13 @@ const joinLeague = async (joinData: {
     await fantasyLeagueService.joinFantasyLeague(payload, leagueToJoin.uuid);
 
     toast.success(
-      "Success",
-      `Successfully ${leagueToJoin.is_private ? "requested to join" : "joined"} "${leagueToJoin.name}"`,
+      t("fantasy.join.joinSuccessTitle"),
+      t(
+        leagueToJoin.is_private
+          ? "fantasy.join.joinRequested"
+          : "fantasy.join.joinJoined",
+        { name: leagueToJoin.name },
+      ),
     );
     showJoinModal.value = false;
 

@@ -145,8 +145,6 @@
     "error": "Algo salió mal",
     "errorUuidRequired": "Se requiere el UUID de la liga",
     "members": "Miembros",
-    "status": "Estado",
-    "active": "Activa",
     "season": "Temporada",
     "myTeam": "Mi equipo",
     "stats": "Estadísticas",
@@ -158,8 +156,19 @@
     "date": "Fecha",
     "pickTimer": "Tiempo por selección",
     "autoPick": "Selección automática",
-    "comingSoonTitle": "Próximamente",
-    "comingSoonMessage": "¡La página de administración de la liga está en desarrollo!"
+    "loadError": "No se pudo cargar la información de la liga. Inténtalo de nuevo más tarde.",
+    "membersCount": "{count} miembros | {count} miembro | {count} miembros",
+    "noParticipants": "Aún no hay participantes",
+    "dateNotSet": "Por definir",
+    "draftStatus": {
+      "none": "Sin programar",
+      "pending": "Pendiente",
+      "active": "En vivo",
+      "completed": "Completado"
+    },
+    "enterDraftRoom": "Entrar a la sala del draft",
+    "goToDraftActivate": "Ir al draft · Activar",
+    "activateHint": "Podrás activar el draft cuando estés dentro de la sala."
   },
   "teamCreate": {
     "preview": "Vista previa",
@@ -221,7 +230,9 @@
     "errorLoadConditions": "Error al cargar las reglas de condición",
     "errorSave": "Error al guardar las reglas de puntuación",
     "errorInit": "Error al inicializar el componente",
-    "updated": "Reglas de puntuación actualizadas correctamente"
+    "updated": "Reglas de puntuación actualizadas correctamente",
+    "noRulesTitle": "Sin reglas de puntuación",
+    "noRulesBody": "Esta liga aún no tiene reglas de puntuación configuradas."
   },
   "join": {
     "discoverTitle": "Descubre ligas",
