@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { FantasyFootballPlayerVersusResponse } from '@/interfaces/user/fantasy/FantasyFootballPlayerVersusResponse'
 import type { FantasyLeagueMatchupResponse } from '@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse'
 import type { FantasyFootballPlayer } from '@/interfaces/user/fantasy/FantasyFootballPlayersResponse'
+import { usePositionShortCode } from '@/composables/usePositionShortCode'
 
 interface Props {
   matchup: FantasyLeagueMatchupResponse
@@ -13,6 +14,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits<{ close: [] }>()
+
+const positionShort = usePositionShortCode()
 
 const positionOrder: Record<string, number> = { GOALKEEPER: 0, DEFENDER: 1, MIDFIELDER: 2, ATTACKER: 3, FLEX: 4 }
 
@@ -46,11 +49,6 @@ const awayTotal = computed(() =>
 )
 
 const isCompleted = computed(() => props.matchup.status === 'completed')
-
-function positionCode(p: FantasyFootballPlayer): string {
-  const map: Record<string, string> = { GOALKEEPER: 'GK', DEFENDER: 'DEF', MIDFIELDER: 'MID', ATTACKER: 'FW', FLEX: 'FX' }
-  return map[p.position?.developer_name ?? ''] ?? p.position?.code ?? '?'
-}
 
 function positionColor(developerName: string): string {
   const map: Record<string, string> = {
@@ -150,11 +148,8 @@ function positionColor(developerName: string): string {
               class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
             />
             <div class="flex-1 min-w-0">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
                 {{ homeStarters[idx].football_player.display_name }}
-              </p>
-              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
-                {{ homeStarters[idx].position?.name }}
               </p>
             </div>
           </template>
@@ -173,7 +168,7 @@ function positionColor(developerName: string): string {
               class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0"
               :class="positionColor(homeStarters[idx]?.position?.developer_name ?? awayStarters[idx]?.position?.developer_name ?? '')"
             >
-              {{ positionCode(homeStarters[idx] ?? awayStarters[idx]) }}
+              {{ positionShort((homeStarters[idx] ?? awayStarters[idx])?.position?.developer_name) }}
             </span>
             <span
               class="text-xs font-bold tabular-nums min-w-[26px] text-left"
@@ -186,11 +181,8 @@ function positionColor(developerName: string): string {
           <!-- Away player -->
           <template v-if="awayStarters[idx]">
             <div class="flex-1 min-w-0 text-right">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
                 {{ awayStarters[idx].football_player.display_name }}
-              </p>
-              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
-                {{ awayStarters[idx].position?.name }}
               </p>
             </div>
             <img
@@ -227,11 +219,8 @@ function positionColor(developerName: string): string {
               class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
             />
             <div class="flex-1 min-w-0">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
                 {{ homeBench[idx].football_player.display_name }}
-              </p>
-              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
-                {{ homeBench[idx].position?.name }}
               </p>
             </div>
           </template>
@@ -247,7 +236,7 @@ function positionColor(developerName: string): string {
               class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0"
               :class="positionColor(homeBench[idx]?.position?.developer_name ?? awayBench[idx]?.position?.developer_name ?? '')"
             >
-              {{ positionCode(homeBench[idx] ?? awayBench[idx]) }}
+              {{ positionShort((homeBench[idx] ?? awayBench[idx])?.position?.developer_name) }}
             </span>
             <span class="text-xs font-bold tabular-nums min-w-[26px] text-left text-gray-500 dark:text-gray-400">
               {{ awayBench[idx]?.fantasy_points ?? '—' }}
@@ -257,11 +246,8 @@ function positionColor(developerName: string): string {
           <!-- Away bench -->
           <template v-if="awayBench[idx]">
             <div class="flex-1 min-w-0 text-right">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate leading-tight">
+              <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
                 {{ awayBench[idx].football_player.display_name }}
-              </p>
-              <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
-                {{ awayBench[idx].position?.name }}
               </p>
             </div>
             <img

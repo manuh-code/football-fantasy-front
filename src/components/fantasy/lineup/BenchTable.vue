@@ -41,7 +41,7 @@
               @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player?.uuid ?? '', $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-2xs font-bold shrink-0">
-                {{ getPositionShortCode(player.position.developer_name, player.position.code) }}
+                {{ positionShort(player.position.developer_name) }}
               </span>
               <img :src="player.football_player?.image_path || '/img/default-avatar.svg'" :alt="player.football_player?.display_name || 'Player'" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
               <div class="flex-1 min-w-0">
@@ -51,7 +51,7 @@
                 </div>
                 <NextFixtureBadge :fixture="player.next_fixture" />
               </div>
-              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} pts</span>
+              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} {{ $t('fantasy.lineup.pts') }}</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
                 <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               </div>
@@ -115,8 +115,10 @@ import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
 import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
+import { usePositionShortCode } from "@/composables/usePositionShortCode";
 
 const { addToast } = useToast();
+const positionShort = usePositionShortCode();
 
 interface Props {
   /** All players (the component filters bench internally) */
@@ -204,19 +206,6 @@ const emptyBenchSlots = computed(() => {
 function isSwappable(player: FantasyFootballPlayer): boolean {
   if (!props.addingPlayerPosition) return false;
   return player.position.developer_name === props.addingPlayerPosition || player.is_flex;
-}
-
-// Utility
-function getPositionShortCode(developerName: string, code: string): string {
-  const shortCodes: Record<string, string> = {
-    GOALKEEPER: "GK",
-    DEFENDER: "DEF",
-    MIDFIELDER: "MID",
-    ATTACKER: "FW",
-    FLEX: "FX",
-    BENCH: "BN",
-  };
-  return shortCodes[developerName] || code?.substring(0, 3) || "?";
 }
 
 function isHighlighted(playerUuid: string): boolean {

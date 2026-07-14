@@ -105,7 +105,12 @@ export function useApiFantasy() {
                         errorTitle = t('errors.401.title')
                         errorMessage = error.response.data?.message || t('errors.401.message')
                         authStore.clearAuth();
-                        router.push({ name: 'login' });
+                        // Requests can opt out of the global login redirect (e.g. the
+                        // token-validation call in the router guard, which decides
+                        // routing itself so public pages aren't yanked to login).
+                        if (error.config?._skipAuthRedirect !== true) {
+                            router.push({ name: 'login' });
+                        }
                         break
                     }
                     case 422: {

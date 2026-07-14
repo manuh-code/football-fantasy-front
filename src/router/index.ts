@@ -390,10 +390,19 @@ const router = createRouter({
 })
 
 // Global navigation guards
+// Routes whose guard logic actually reads the auth state. For every other
+// (public) route we skip token validation entirely, so browsing public content
+// never hits the API to validate a token — and can't be bounced to login when a
+// stale token fails validation.
+const AUTH_STATE_ROUTES = new Set(['login', 'register', 'landingpage'])
+
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  const isAuthenticated = await authStore.isAuthenticated();
   const needAuth = to.meta.requiresAuth;
+  const isAuthenticated =
+    needAuth || AUTH_STATE_ROUTES.has(to.name as string)
+      ? await authStore.isAuthenticated()
+      : false;
 
   // Update document title
   if (to.meta?.title) {
@@ -416,9 +425,13 @@ router.beforeEach(async (to, from, next) => {
     });
   }
 
-  // If user is authenticated and trying to access login or register page, redirect to dashboard
+  // An already-authenticated user hitting login/register is sent into the app.
+  // Honor an explicit ?redirect= target; otherwise land on the gaming hub
+  // (matches the post-login flows in LoginComponent / GoogleCallback). The old
+  // /dashboard route is deprecated and must not be used here.
   if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
-    return next({ name: "dashboard" });
+    const redirect = to.query.redirect as string | undefined;
+    return next(redirect && redirect.startsWith('/') ? redirect : { name: "gaming" });
   }
 
   // The landing page is a marketing page for new (anonymous) users. If an

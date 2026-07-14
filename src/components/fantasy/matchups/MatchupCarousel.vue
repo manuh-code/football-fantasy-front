@@ -75,7 +75,7 @@ onUnmounted(() => {
                 {{ matchup.home.team.team_name }}
               </p>
               <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
-                {{ matchup.status === 'completed' && matchup.winner === matchup.home.team.uuid ? 'Winner' : matchup.is_draw && matchup.status === 'completed' ? 'Draw' : 'Home' }}
+                {{ matchup.status === 'completed' && matchup.winner === matchup.home.team.uuid ? $t('fantasy.matchups.winner') : matchup.is_draw && matchup.status === 'completed' ? $t('fantasy.matchups.draw') : $t('fantasy.matchups.home') }}
               </p>
             </div>
           </div>
@@ -94,7 +94,7 @@ onUnmounted(() => {
                 {{ matchup.away.team.team_name }}
               </p>
               <p class="text-2xs text-gray-400 dark:text-gray-500 leading-tight">
-                {{ matchup.status === 'completed' && matchup.winner === matchup.away.team.uuid ? 'Winner' : matchup.is_draw && matchup.status === 'completed' ? 'Draw' : 'Away' }}
+                {{ matchup.status === 'completed' && matchup.winner === matchup.away.team.uuid ? $t('fantasy.matchups.winner') : matchup.is_draw && matchup.status === 'completed' ? $t('fantasy.matchups.draw') : $t('fantasy.matchups.away') }}
               </p>
             </div>
             <div

@@ -207,12 +207,19 @@
     "starters": "Starters",
     "bench": "Bench",
     "pts": "pts",
-    "total": "Total"
+    "total": "Total",
+    "loadError": "Couldn't load matchups.",
+    "lineupsError": "Couldn't load lineups.",
+    "winner": "Winner",
+    "draw": "Draw",
+    "home": "Home",
+    "away": "Away"
   },
   "lineup": {
     "starters": "Starters",
     "bench": "Bench",
-    "selectSwap": "Select a player to swap"
+    "selectSwap": "Select a player to swap",
+    "pts": "pts"
   },
   "management": {
     "loadingRules": "Loading scoring rules...",
@@ -249,12 +256,54 @@
   },
   "myTeam": {
     "addPlayers": "Add Players",
-    "trades": "Trades"
+    "trades": "Trades",
+    "errorTitle": "Couldn't load team",
+    "noLeagueTitle": "No league selected",
+    "noLeagueBody": "Select a fantasy league to view your team.",
+    "noRoundsTitle": "No rounds available",
+    "noRoundsBody": "There are no rounds configured for this fantasy league yet.",
+    "matchupFallback": "Matchup"
   },
   "search": {
     "playerPlaceholder": "Search player...",
     "allTeams": "All teams",
     "searchTeam": "Search team...",
-    "errorAddingPlayer": "Error adding player"
+    "errorAddingPlayer": "Error adding player",
+    "availablePlayers": "Available players",
+    "filtering": "Filtering...",
+    "errorTitle": "Error loading players",
+    "loadError": "The players couldn't be loaded. Please try again.",
+    "noLeagueTitle": "No fantasy league selected",
+    "noLeagueBody": "Select a fantasy league to view the available players.",
+    "waitingTurnTitle": "Waiting for your turn...",
+    "waitingTurnBody": "You can pick a player when it's your turn.",
+    "filterAll": "All",
+    "colPlayer": "Player",
+    "colTeam": "Team",
+    "colPos": "Pos",
+    "colTotal": "Total",
+    "colAvg": "Avg",
+    "colGP": "GP",
+    "ptsShort": "pts",
+    "avgShort": "avg",
+    "selectAria": "Select {name}",
+    "playersLoaded": "{count} players loaded | {count} player loaded | {count} players loaded",
+    "emptyTitle": "No players available",
+    "emptyBody": "There are no players available right now.",
+    "emptyFilteredTitle": "No results",
+    "emptyFilteredBody": "We couldn't find players with the selected filters.",
+    "viewAllPositions": "View all positions",
+    "pickedTitle": "Player picked",
+    "pickedBody": "{name} was drafted",
+    "addedTitle": "Player added",
+    "addedBody": "{name} was added to your team"
+  },
+  "positionsShort": {
+    "goalkeeper": "GK",
+    "defender": "DEF",
+    "midfielder": "MID",
+    "attacker": "FW",
+    "flex": "FLEX",
+    "bench": "BN"
   }
 }

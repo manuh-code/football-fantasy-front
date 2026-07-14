@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import type { FantasyRoundResponse } from '@/interfaces/fantasy/rounds/FantasyRoundResponse'
 
 interface Props {
@@ -29,25 +30,83 @@ function extractRoundLabel(name: string): string {
   return match ? `J${match[1]}` : name.substring(0, 6)
 }
 
-/**
- * Format a date string to a short, readable format.
- */
-function formatRoundDate(dateStr: string): string {
-  try {
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
-  } catch {
-    return ''
-  }
+const selectedIndex = computed(() =>
+  props.rounds.findIndex((r) => r.uuid === props.selectedRoundUuid)
+)
+
+const stripRef = ref<HTMLElement | null>(null)
+
+// --- Mouse drag-to-scroll (touch/pen keep native scrolling) ---
+const isDragging = ref(false)
+let startX = 0
+let startScroll = 0
+let moved = false
+let activePointer: number | null = null
+
+const onPointerDown = (e: PointerEvent) => {
+  if (e.pointerType !== 'mouse') return
+  const strip = stripRef.value
+  if (!strip) return
+  isDragging.value = true
+  moved = false
+  startX = e.clientX
+  startScroll = strip.scrollLeft
+  activePointer = e.pointerId
+  strip.setPointerCapture(e.pointerId)
 }
 
-const selectedRound = computed(() =>
-  props.rounds.find((r) => r.uuid === props.selectedRoundUuid) || null
-)
+const onPointerMove = (e: PointerEvent) => {
+  if (!isDragging.value) return
+  const strip = stripRef.value
+  if (!strip) return
+  const dx = e.clientX - startX
+  if (Math.abs(dx) > 3) moved = true
+  strip.scrollLeft = startScroll - dx
+}
+
+const onPointerUp = () => {
+  if (!isDragging.value) return
+  isDragging.value = false
+  const strip = stripRef.value
+  if (strip && activePointer !== null) {
+    try {
+      strip.releasePointerCapture(activePointer)
+    } catch {
+      /* pointer already released */
+    }
+  }
+  activePointer = null
+  // Reset after the (suppressed) click has had a chance to fire.
+  setTimeout(() => (moved = false), 0)
+}
+
+// --- Selection ---
+const onRoundClick = (round: FantasyRoundResponse) => {
+  if (moved) return // ignore clicks that were actually drags
+  if (props.isLoadingContent || round.uuid === props.selectedRoundUuid) return
+  emit('update:selectedRoundUuid', round.uuid)
+}
+
+// --- Keep the selected round centered ---
+const centerSelected = async () => {
+  await nextTick()
+  const strip = stripRef.value
+  if (!strip || selectedIndex.value < 0) return
+  const button = strip.querySelectorAll('button')[selectedIndex.value] as HTMLElement | undefined
+  if (!button) return
+  const stripRect = strip.getBoundingClientRect()
+  const btnRect = button.getBoundingClientRect()
+  const target =
+    strip.scrollLeft + (btnRect.left - stripRect.left) - (stripRect.width / 2 - btnRect.width / 2)
+  strip.scrollTo({ left: target, behavior: 'smooth' })
+}
+
+watch(() => props.selectedRoundUuid, centerSelected)
+watch(() => props.rounds, () => nextTick(centerSelected), { deep: false })
+onMounted(centerSelected)
 </script>
 
 <script lang="ts">
-import { computed } from 'vue'
 export default { name: 'RoundSelector' }
 </script>
 
@@ -58,71 +117,91 @@ export default { name: 'RoundSelector' }
       <v-icon name="pr-spinner" class="w-4 h-4 text-gray-300 dark:text-gray-600" animation="spin" />
     </div>
 
-    <!-- Stepper -->
-    <div v-else class="flex items-center">
-      <!-- Prev arrow -->
+    <!-- Swipeable round strip -->
+    <div v-else class="flex items-center gap-1.5">
+      <!-- Prev -->
       <button
+        type="button"
         @click="emit('selectPrevious')"
         :disabled="!canSelectPrevious || isLoadingContent"
-        class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full transition-all active:scale-90"
-        :class="canSelectPrevious && !isLoadingContent
-          ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-          : 'text-gray-200 dark:text-gray-700 pointer-events-none'"
+        :aria-label="$t('football.rounds.previous')"
+        class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 active:text-emerald-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
       >
-        <v-icon name="hi-solid-chevron-left" class="w-4 h-4" />
+        <v-icon name="hi-solid-chevron-left" class="w-5 h-5" />
       </button>
 
-      <!-- Center: round info -->
-      <div class="flex-1 flex flex-col items-center justify-center min-w-0 select-none">
-        <div class="flex items-center gap-1.5">
-          <span class="text-footnote font-bold text-gray-900 dark:text-white truncate">
-            {{ selectedRound ? extractRoundLabel(selectedRound.round.name) : '—' }}
-          </span>
-          <!-- Status badge -->
-          <span
-            v-if="selectedRound?.is_current"
-            class="inline-flex items-center px-1.5 py-0.5 text-2xs font-bold uppercase rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 leading-none"
-          >
-            Live
-          </span>
-          <span
-            v-else-if="selectedRound?.is_completed"
-            class="inline-flex items-center px-1.5 py-0.5 text-2xs font-bold uppercase rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 leading-none"
-          >
-            Final
-          </span>
-        </div>
-        <span
-          v-if="selectedRound"
-          class="text-2xs text-gray-400 dark:text-gray-500 mt-0.5"
+      <!-- Draggable / swipeable strip -->
+      <div
+        ref="stripRef"
+        class="flex-1 flex gap-2 overflow-x-auto hide-scrollbar snap-x snap-mandatory px-1 py-1 select-none cursor-grab transition-opacity"
+        :class="[
+          { 'cursor-grabbing': isDragging },
+          isLoadingContent ? 'opacity-50 pointer-events-none' : '',
+        ]"
+        @pointerdown="onPointerDown"
+        @pointermove="onPointerMove"
+        @pointerup="onPointerUp"
+        @pointercancel="onPointerUp"
+        @pointerleave="onPointerUp"
+      >
+        <button
+          v-for="round in rounds"
+          :key="round.uuid"
+          type="button"
+          @click="onRoundClick(round)"
+          :class="[
+            'snap-center shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all active:scale-95',
+            round.uuid === selectedRoundUuid
+              ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
+              : round.is_completed
+                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300',
+          ]"
         >
-          {{ formatRoundDate(selectedRound.round.starting_at) }}
-        </span>
-
-        <!-- Loading indicator -->
-        <div v-if="isLoadingContent" class="mt-1.5 w-8 h-0.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-          <div class="h-full w-full bg-blue-500 rounded-full animate-[loading_1s_ease-in-out_infinite]" />
-        </div>
+          {{ extractRoundLabel(round.round.name) }}
+          <span
+            v-if="round.is_current"
+            class="relative inline-flex w-2 h-2 rounded-full"
+            :class="round.uuid === selectedRoundUuid ? 'bg-white' : 'bg-emerald-400'"
+          >
+            <span
+              class="absolute inset-0 rounded-full animate-ping"
+              :class="round.uuid === selectedRoundUuid ? 'bg-white/70' : 'bg-emerald-400/60'"
+            />
+          </span>
+        </button>
       </div>
 
-      <!-- Next arrow -->
+      <!-- Next -->
       <button
+        type="button"
         @click="emit('selectNext')"
         :disabled="!canSelectNext || isLoadingContent"
-        class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full transition-all active:scale-90"
-        :class="canSelectNext && !isLoadingContent
-          ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-          : 'text-gray-200 dark:text-gray-700 pointer-events-none'"
+        :aria-label="$t('football.rounds.next')"
+        class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 active:text-emerald-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
       >
-        <v-icon name="hi-solid-chevron-right" class="w-4 h-4" />
+        <v-icon name="hi-solid-chevron-right" class="w-5 h-5" />
       </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-@keyframes loading {
-  0%, 100% { transform: translateX(-100%); }
-  50% { transform: translateX(100%); }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping {
+    animation: none !important;
+  }
+  * {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 </style>
