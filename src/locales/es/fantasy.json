@@ -259,6 +259,16 @@
     "joined": "¡Te uniste!",
     "joinedBody": "Ahora formas parte de \"{name}\"."
   },
+  "discover": {
+    "tab": "Buscar",
+    "searchPlaceholder": "Buscar liga por nombre...",
+    "loadError": "No se pudieron cargar las ligas. Inténtalo de nuevo más tarde.",
+    "resultCountOne": "{count} liga encontrada",
+    "resultCountOther": "{count} ligas encontradas",
+    "emptyTitle": "No encontramos ligas",
+    "emptyBody": "Intenta con otro nombre o vuelve a intentarlo más tarde.",
+    "join": "Unirse"
+  },
   "share": {
     "accessCode": "Código de acceso",
     "copyAccessCode": "Copiar código de acceso",
