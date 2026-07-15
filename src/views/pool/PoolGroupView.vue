@@ -35,10 +35,12 @@ import PoolGroupComponent from "@/components/pool/PoolGroupComponent.vue";
 import OnboardingTour from "@/components/onboarding/OnboardingTour.vue";
 import { POOL_STEPS } from "@/components/onboarding/onboardingSteps";
 import { useOnboardingStore } from "@/store/onboarding";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 const { t } = useI18n();
 
 const onboarding = useOnboardingStore();
+const authStore = useAuthStore();
 const showOnboarding = ref(false);
 
 const finishOnboarding = () => {
@@ -46,9 +48,10 @@ const finishOnboarding = () => {
   showOnboarding.value = false;
 };
 
-// Mostrar la guía la primera vez que se abre el detalle de una quiniela.
-onMounted(() => {
-  if (!onboarding.poolSeen) {
+// Mostrar la guía la primera vez que se abre el detalle de una quiniela
+// (solo para usuarios autenticados).
+onMounted(async () => {
+  if (!onboarding.poolSeen && (await authStore.isAuthenticated())) {
     setTimeout(() => {
       if (!onboarding.poolSeen) showOnboarding.value = true;
     }, 700);

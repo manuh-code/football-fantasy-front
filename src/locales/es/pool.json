@@ -73,6 +73,18 @@
       "correctDrawLabel": "Empate correcto",
       "correctDrawHint": "Acertaste el empate"
     },
+    "rules": {
+      "title": "Reglas del juego",
+      "goalLabel": "Objetivo",
+      "goalText": "Predecir el marcador exacto de cada partido.",
+      "howLabel": "Cómo se juega",
+      "step1": "Únete a un grupo de quiniela con su código de acceso.",
+      "step2": "Antes de que inicie cada partido, envía tu predicción: marcador del equipo local y del visitante.",
+      "step3": "Puedes editar tu predicción cuando quieras hasta el inicio del partido; una vez que arranca, queda bloqueada.",
+      "step4": "Solo se permite una predicción por usuario, por partido, por grupo — si la reenvías antes del inicio, se actualiza la anterior.",
+      "notAdditiveNote": "El marcador exacto y el resultado correcto no se suman: si aciertas el marcador exacto, solo ganas esos puntos.",
+      "standingsNote": "La tabla de posiciones se ordena por la suma total de puntos, ya sea por jornada o en el acumulado general del torneo."
+    },
     "toast": {
       "codeCopiedTitle": "Código de acceso copiado",
       "shareBody": "Compártelo para que otros se unan a tu quiniela.",

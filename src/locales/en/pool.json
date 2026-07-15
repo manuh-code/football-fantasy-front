@@ -74,6 +74,18 @@
       "correctDrawLabel": "Correct draw",
       "correctDrawHint": "Called the tie"
     },
+    "rules": {
+      "title": "Game rules",
+      "goalLabel": "Goal",
+      "goalText": "Predict the exact final score of each match.",
+      "howLabel": "How to play",
+      "step1": "Join a pool group using its access code.",
+      "step2": "Before each match kicks off, submit your prediction: home team score and away team score.",
+      "step3": "Edit your prediction anytime until kickoff — once the match starts, it locks and can no longer be changed.",
+      "step4": "Only one prediction is allowed per user, per match, per group — resubmitting before kickoff updates your previous one.",
+      "notAdditiveNote": "Exact score and correct outcome aren't additive: an exact score only earns those points.",
+      "standingsNote": "Standings are ranked by total points, either per matchday or across the whole tournament."
+    },
     "toast": {
       "codeCopiedTitle": "Access code copied",
       "shareBody": "Share it so others can join your pool.",

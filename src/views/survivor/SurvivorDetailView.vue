@@ -11,6 +11,7 @@
 
       <div class="animate-page-enter">
         <SurvivorMyPicksComponent v-if="activeTab === 'mypicks'" :survivor-uuid="survivorUuid" />
+        <SurvivorRulesComponent v-else-if="activeTab === 'rules'" />
         <SurvivorDetailComponent v-else :survivor-uuid="survivorUuid" />
       </div>
     </div>
@@ -27,6 +28,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import SurvivorDetailComponent from "@/components/survivor/SurvivorDetailComponent.vue";
 import SurvivorMyPicksComponent from "@/components/survivor/SurvivorMyPicksComponent.vue";
+import SurvivorRulesComponent from "@/components/survivor/SurvivorRulesComponent.vue";
 import HomeMenu from "@/components/home/HomeMenu.vue";
 import TopTabsBar from "@/components/ui/TopTabsBar.vue";
 import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
@@ -49,6 +51,7 @@ const activeTab = ref("mypicks");
 const items = computed<BottomNavItem[]>(() => [
   { key: "survivors", label: t("survivor.nav.survivors"), icon: "hi-solid-collection" },
   { key: "mypicks", label: t("survivor.nav.mypicks"), icon: "hi-solid-check-circle", accent: "red" },
+  { key: "rules", label: t("survivor.nav.rules"), icon: "hi-solid-information-circle", accent: "emerald" },
   { key: "standings", label: t("survivor.nav.standings"), icon: "bi-trophy-fill", disabled: true },
 ]);
 
@@ -57,7 +60,7 @@ const onSelect = (key: string) => {
     router.push({ name: "survivor" });
     return;
   }
-  // Standings is disabled, so only "mypicks" can be selected for now.
+  // Standings is disabled, so only "mypicks" and "rules" can be selected for now.
   activeTab.value = key;
 };
 </script>

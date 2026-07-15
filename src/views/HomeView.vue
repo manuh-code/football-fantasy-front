@@ -17,8 +17,10 @@ import HomeMenu from "@/components/home/HomeMenu.vue";
 import OnboardingTour from "@/components/onboarding/OnboardingTour.vue";
 import { HOME_STEPS } from "@/components/onboarding/onboardingSteps";
 import { useOnboardingStore } from "@/store/onboarding";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 const onboarding = useOnboardingStore();
+const authStore = useAuthStore();
 const showOnboarding = ref(false);
 
 const finishOnboarding = () => {
@@ -27,9 +29,10 @@ const finishOnboarding = () => {
 };
 
 // Mostrar la guía tras un pequeño retardo para no chocar con el splash y la
-// animación de entrada de la página.
-onMounted(() => {
-  if (!onboarding.homeSeen) {
+// animación de entrada de la página. Home es accesible sin sesión, así que la
+// visita guiada solo aplica a usuarios autenticados.
+onMounted(async () => {
+  if (!onboarding.homeSeen && (await authStore.isAuthenticated())) {
     setTimeout(() => {
       if (!onboarding.homeSeen) showOnboarding.value = true;
     }, 700);

@@ -7,6 +7,7 @@
     "survivors": "My Survivor",
     "picks": "Picks",
     "mypicks": "My Picks",
+    "rules": "Rules",
     "standings": "Standings"
   },
   "docTitle": "Survivor - Football Fantasy",
@@ -49,6 +50,29 @@
       "draw": "Draw",
       "pending": "Pending"
     }
+  },
+  "rules": {
+    "title": "Survivor rules",
+    "subtitle": "How the game works",
+    "goalLabel": "Goal",
+    "goalText": "Survive as many rounds as possible by picking, each round, a team you think will win.",
+    "howLabel": "How to play",
+    "step1": "Each round, pick one team from the available matches.",
+    "step2": "You can't reuse a team you've already picked earlier in this Survivor — once used, it's \"burned\" for the rest of the competition.",
+    "step3": "You may change your pick as many times as you like while the round hasn't started yet.",
+    "step4": "Once the first match of the round kicks off, the round locks completely: no more picks or changes are allowed.",
+    "livesLabel": "Lives",
+    "lives": {
+      "lossLabel": "Your team loses",
+      "lossHint": "The team you picked loses its match",
+      "noPickLabel": "You didn't pick in time",
+      "noPickHint": "You made no pick before the round locked",
+      "drawLabel": "Your team draws",
+      "drawHint": "A draw doesn't cost a life — you survive"
+    },
+    "livesNote": "Each participant starts with a number of lives set by the pool (typically 1). Reaching 0 lives means you're eliminated from the Survivor.",
+    "endLabel": "End of game",
+    "endText": "The Survivor ends when the tournament's rounds run out, or when a single survivor remains, depending on how the pool is configured."
   },
   "mypicks": {
     "title": "My Picks",
