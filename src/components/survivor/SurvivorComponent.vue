@@ -31,7 +31,7 @@
           v-for="survivor in survivors"
           :key="survivor.uuid"
           @click="goToSurvivor(survivor.uuid)"
-          class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden transition-all duration-200 cursor-pointer active:scale-[0.98] hover:shadow-md"
+          class="survivor-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden transition-all duration-200 cursor-pointer active:scale-[0.98] hover:shadow-md"
         >
           <div class="p-4">
             <!-- Header: icon + name + status badge -->
@@ -157,6 +157,20 @@ defineExpose({ reload: loadSurvivors });
 </script>
 
 <style scoped>
+/* A survivor card is a tap target (opens the survivor), not copyable text.
+   Without this, long-pressing a card on iOS/Android starts a native text
+   selection + callout ("Copy / Translate") over its name/description.
+   user-select and -webkit-touch-callout inherit, so setting them on the card
+   disables it for every text node inside. Declared as real CSS (not a Tailwind
+   arbitrary class) so the vendor-prefixed properties iOS needs are guaranteed
+   to ship — same approach as .pick-team-btn / .picks-board. */
+.survivor-card {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 /* Clamp survivor description to two lines (no Tailwind line-clamp plugin in this project). */
 .line-clamp-2 {
   display: -webkit-box;

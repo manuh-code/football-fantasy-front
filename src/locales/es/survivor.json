@@ -7,6 +7,7 @@
     "survivors": "Mis Survivor",
     "picks": "Picks",
     "mypicks": "Mis Picks",
+    "rules": "Reglas",
     "standings": "Posiciones"
   },
   "docTitle": "Survivor - Football Fantasy",
@@ -49,6 +50,29 @@
       "draw": "Empate",
       "pending": "Pendiente"
     }
+  },
+  "rules": {
+    "title": "Reglas del Survivor",
+    "subtitle": "Cómo funciona el juego",
+    "goalLabel": "Objetivo",
+    "goalText": "Sobrevive la mayor cantidad de jornadas posible, eligiendo en cada una un equipo que creas que va a ganar.",
+    "howLabel": "Cómo se juega",
+    "step1": "En cada jornada, elige un equipo de entre los partidos disponibles.",
+    "step2": "No puedes repetir un equipo que ya hayas elegido antes en este Survivor — una vez usado, queda \"quemado\" para el resto del torneo.",
+    "step3": "Puedes cambiar tu elección todas las veces que quieras mientras la jornada no haya comenzado.",
+    "step4": "En cuanto arranca el primer partido de la jornada, esta se bloquea por completo: ya no puedes elegir ni cambiar tu pick.",
+    "livesLabel": "Vidas",
+    "lives": {
+      "lossLabel": "Tu equipo pierde",
+      "lossHint": "El equipo que elegiste pierde su partido",
+      "noPickLabel": "No elegiste a tiempo",
+      "noPickHint": "No hiciste tu elección antes de que la jornada se bloqueara",
+      "drawLabel": "Tu equipo empata",
+      "drawHint": "Un empate no cuesta vida — sobrevives"
+    },
+    "livesNote": "Cada participante empieza con un número de vidas definido por el pool (normalmente 1). Al llegar a 0 vidas, quedas eliminado del Survivor.",
+    "endLabel": "Fin del juego",
+    "endText": "El Survivor termina cuando se agotan las jornadas del torneo o cuando queda un único sobreviviente, según cómo esté configurado el pool."
   },
   "mypicks": {
     "title": "Mis Picks",

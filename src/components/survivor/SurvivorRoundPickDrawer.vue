@@ -99,6 +99,7 @@
                 type="button"
                 :disabled="!canPickTeam(fixture, 'home') || savingFixtureUuid === fixture.uuid"
                 @click="selectTeam(fixture, 'home')"
+                class="pick-team-btn"
                 :class="teamButtonClasses(fixture, 'home')"
               >
                 <img
@@ -135,6 +136,7 @@
                 type="button"
                 :disabled="!canPickTeam(fixture, 'away') || savingFixtureUuid === fixture.uuid"
                 @click="selectTeam(fixture, 'away')"
+                class="pick-team-btn"
                 :class="teamButtonClasses(fixture, 'away')"
               >
                 <img
@@ -411,6 +413,20 @@ watch(
 </script>
 
 <style scoped>
+/* A team column is a pick target (tap to choose), not copyable text. Without
+   this, long-pressing a team on iOS/Android starts a native text selection +
+   callout ("Copy / Translate") over its name. user-select and
+   -webkit-touch-callout inherit, so setting them on the button disables it for
+   the crest and name inside. Declared as real CSS (not a Tailwind arbitrary
+   class) so the vendor-prefixed properties iOS needs are guaranteed to ship —
+   same approach as .picks-board in SurvivorMyPicksComponent. */
+.pick-team-btn {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 /* Smooth fade + slide when switching fixture states. */
 .fade-slide-enter-active,
 .fade-slide-leave-active {

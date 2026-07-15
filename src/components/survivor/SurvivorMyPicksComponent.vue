@@ -127,13 +127,15 @@
 
           <!-- Swipeable row: drag right-to-left to reveal delete -->
           <div class="relative flex-1 min-w-0 rounded-xl overflow-hidden">
-            <!-- Delete action, revealed behind the row. Unmounted entirely in
-                 selection mode: it can't be swiped open there (see
-                 onPointerDown), but at translateX(0) it sat directly behind
-                 the row's right edge — and the selected-row tint is only
-                 60% opaque (bg-red-50/60), so its solid red bled through. -->
+            <!-- Delete action, revealed behind the row. Only mounted once the
+                 row has actually slid open (rowOffset < 0) — at rest it sits
+                 directly behind the row's right edge, and every tinted row
+                 state (bg-rose-50/60 for the current round, bg-red-50/60 when
+                 selected) is only 60% opaque, so its solid red bleeds through
+                 and looks "open" without a swipe. Gating on the offset keeps it
+                 out of the DOM until the swipe begins, removing the bleed. -->
             <div
-              v-if="canDelete(item) && !isSelectionMode"
+              v-if="canDelete(item) && !isSelectionMode && rowOffset(item) < 0"
               class="absolute inset-y-0 right-0 flex"
               :style="{ width: DELETE_WIDTH + 'px' }"
             >
