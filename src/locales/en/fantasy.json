@@ -259,6 +259,16 @@
     "joined": "You're in!",
     "joinedBody": "You are now part of \"{name}\"."
   },
+  "discover": {
+    "tab": "Search",
+    "searchPlaceholder": "Search league by name...",
+    "loadError": "Couldn't load leagues. Please try again later.",
+    "resultCountOne": "{count} league found",
+    "resultCountOther": "{count} leagues found",
+    "emptyTitle": "No leagues found",
+    "emptyBody": "Try a different name or check back later.",
+    "join": "Join"
+  },
   "share": {
     "accessCode": "Access code",
     "copyAccessCode": "Copy access code",

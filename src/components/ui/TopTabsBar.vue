@@ -3,6 +3,7 @@
 // under the fixed app header. Complements BottomNavBar — the bottom nav keeps
 // the four global destinations while these tabs carry each section's own
 // options. Items reuse the BottomNavItem shape (key/label/icon/accent).
+import { nextTick, onMounted, ref, watch } from "vue";
 import type { BottomNavAccent, BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 
 const props = withDefaults(
@@ -57,6 +58,38 @@ const onClick = (item: BottomNavItem): void => {
   if (item.disabled) return;
   emit("select", item.key);
 };
+
+// The pill scrolls horizontally on narrow screens; keep the active tab visible
+// instead of leaving it clipped past the edge (e.g. the last tab on load).
+const scrollContainerRef = ref<HTMLElement | null>(null);
+const buttonRefs = new Map<string, HTMLElement>();
+
+const setButtonRef = (key: string, el: Element | null): void => {
+  if (el instanceof HTMLElement) buttonRefs.set(key, el);
+  else buttonRefs.delete(key);
+};
+
+const scrollActiveIntoView = (behavior: ScrollBehavior): void => {
+  const container = scrollContainerRef.value;
+  const activeButton = buttonRefs.get(props.activeKey);
+  if (!container || !activeButton) return;
+
+  const containerWidth = container.clientWidth;
+  const targetScrollLeft = activeButton.offsetLeft - containerWidth / 2 + activeButton.offsetWidth / 2;
+  const maxScrollLeft = container.scrollWidth - containerWidth;
+
+  container.scrollTo({
+    left: Math.max(0, Math.min(targetScrollLeft, maxScrollLeft)),
+    behavior,
+  });
+};
+
+// Jump instantly on first render, then animate on subsequent tab changes.
+onMounted(() => nextTick(() => scrollActiveIntoView("auto")));
+watch(
+  () => props.activeKey,
+  () => nextTick(() => scrollActiveIntoView("smooth")),
+);
 </script>
 
 <template>
@@ -67,11 +100,13 @@ const onClick = (item: BottomNavItem): void => {
     class="tabs-sticky sticky z-40 pointer-events-none flex justify-center mb-4"
   >
     <div
+      ref="scrollContainerRef"
       class="tabs-scroll pointer-events-auto flex items-center gap-1 p-1 rounded-full max-w-full overflow-x-auto bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/30"
     >
       <button
         v-for="item in items"
         :key="item.key"
+        :ref="(el) => setButtonRef(item.key, el as Element | null)"
         type="button"
         :aria-label="item.label"
         :aria-current="isActive(item) ? 'page' : undefined"

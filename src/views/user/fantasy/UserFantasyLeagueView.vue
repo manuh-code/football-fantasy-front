@@ -1,12 +1,18 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
-      <!-- Secondary section tabs: global destinations live in the fixed nav -->
-      <TopTabsBar :items="tabItems" active-key="fantasy" :aria-label="$t('fantasy.userLeagues.navAria')" />
+      <!-- Secondary section tabs: My Leagues / Search -->
+      <TopTabsBar
+        :items="tabItems"
+        :active-key="activeTab"
+        :aria-label="$t('fantasy.userLeagues.navAria')"
+        @select="activeTab = $event"
+      />
 
       <!-- User Fantasy League Component -->
       <div class="animate-page-enter">
-        <UserFantasyLeagueComponent ref="leaguesComponentRef" />
+        <UserFantasyLeagueComponent v-if="activeTab === 'fantasy'" ref="leaguesComponentRef" />
+        <UserFantasyLeagueSearch v-else ref="searchComponentRef" @join="openJoin" />
       </div>
     </div>
 
@@ -70,6 +76,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import UserFantasyLeagueComponent from '@/components/user/fantasy/UserFantasyLeagueComponent.vue'
+import UserFantasyLeagueSearch from '@/components/user/fantasy/UserFantasyLeagueSearch.vue'
 import FantasyLeagueCreateModal from '@/components/fantasy/FantasyLeagueCreateModal.vue'
 import FantasyLeagueJoinModal from '@/components/fantasy/FantasyLeagueJoinModal.vue'
 import HomeMenu from '@/components/home/HomeMenu.vue'
@@ -87,18 +94,21 @@ document.title = t('fantasy.userLeagues.pageTitle')
 
 // Refs
 const leaguesComponentRef = ref<InstanceType<typeof UserFantasyLeagueComponent> | null>(null)
+const searchComponentRef = ref<InstanceType<typeof UserFantasyLeagueSearch> | null>(null)
 
 // State
 const isFabMenuOpen = ref(false)
 const isCreateOpen = ref(false)
 const isJoinOpen = ref(false)
+const activeTab = ref('fantasy')
 
 // Access code pre-filled into the Join sheet when arriving from an invite link.
 const joinInitialCode = ref('')
 
-// Section tab shown at the top; the list has no other options of its own.
+// Section tabs: "my leagues" list vs. discover/search.
 const tabItems = computed<BottomNavItem[]>(() => [
   { key: 'fantasy', label: t('fantasy.userLeagues.title'), icon: 'bi-trophy-fill', accent: 'blue' },
+  { key: 'search', label: t('fantasy.discover.tab'), icon: 'hi-solid-search', accent: 'blue' },
 ])
 
 // FAB
@@ -128,6 +138,7 @@ const onJoined = (league: FantasyLeaguesResponse) => {
   isJoinOpen.value = false
   success(t('fantasy.join.joined'), t('fantasy.join.joinedBody', { name: league.name }))
   leaguesComponentRef.value?.reload()
+  searchComponentRef.value?.reload()
 }
 
 // Arriving from a shared invite link (/my/fantasy/leagues?join=CODE): open the Join
