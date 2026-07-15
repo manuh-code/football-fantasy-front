@@ -49,8 +49,8 @@ export class FantasyLeagueService {
         throw new Error('Failed to create fantasy league');
     }
 
-    async joinFantasyLeague(payload: FantasyLeagueJoined, leagueUuid: string): Promise<FantasyLeaguesResponse> {
-        const response = await this.api.post<ApiResponse<FantasyLeaguesResponse>>(`fantasy/leagues/join/${leagueUuid}`, payload);
+    async joinFantasyLeague(payload: FantasyLeagueJoined): Promise<FantasyLeaguesResponse> {
+        const response = await this.api.post<ApiResponse<FantasyLeaguesResponse>>(`fantasy/leagues/join`, payload);
         if (response.data.code === 200) {
             return response.data.data;
         }

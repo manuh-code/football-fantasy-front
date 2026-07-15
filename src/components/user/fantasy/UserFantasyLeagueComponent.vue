@@ -76,6 +76,51 @@
                 <span class="tabular-nums">{{ league.members_count ?? 0 }}/{{ league.participants_count }}</span>
               </div>
             </div>
+
+            <!-- Access code — admin can copy and share it to invite participants -->
+            <div v-if="league.isAdmin && league.password" class="mt-3 pt-3 border-t border-gray-50 dark:border-gray-700/40">
+              <p class="text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
+                {{ $t('fantasy.share.accessCode') }}
+              </p>
+              <div class="flex items-center gap-2">
+                <!-- Code chip (tap to copy just the code) -->
+                <button
+                  type="button"
+                  @click.stop="copyAccessCode(league)"
+                  :title="copiedUuid === league.uuid ? $t('fantasy.share.copiedTitle') : $t('fantasy.share.copyAccessCode')"
+                  class="group flex-1 min-w-0 flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-xl px-3 py-2 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                >
+                  <span class="flex-1 text-left font-mono text-sm font-semibold tracking-wider text-gray-900 dark:text-white truncate">
+                    {{ league.password }}
+                  </span>
+                  <v-icon
+                    :name="copiedUuid === league.uuid ? 'hi-solid-check' : 'hi-solid-duplicate'"
+                    :class="[
+                      'w-4 h-4 shrink-0 transition-colors',
+                      copiedUuid === league.uuid
+                        ? 'text-emerald-500'
+                        : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300',
+                    ]"
+                  />
+                </button>
+
+                <!-- Share invite link (native share sheet / copy link fallback) -->
+                <button
+                  type="button"
+                  @click.stop="shareLeague(league)"
+                  :title="sharedUuid === league.uuid ? $t('fantasy.share.linkCopiedTitle') : $t('fantasy.share.shareInvite')"
+                  class="shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 py-2 transition-all active:scale-[0.98] shadow-sm shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                >
+                  <v-icon
+                    :name="sharedUuid === league.uuid ? 'hi-solid-check' : 'hi-solid-share'"
+                    class="w-4 h-4"
+                  />
+                  <span class="text-2xs font-semibold">
+                    {{ sharedUuid === league.uuid ? $t('common.actions.copied') : $t('common.actions.share') }}
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -93,10 +138,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useUserStore } from "@/store/user/useUserStore";
+import { useToast } from "@/composables/useToast";
 import FantasyLeagueListSkeleton from "@/components/fantasy/FantasyLeagueListSkeleton.vue";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 
@@ -104,10 +150,19 @@ import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/Fantas
 const userStore = useUserStore();
 const router = useRouter();
 const { t, locale } = useI18n();
+const { success, error } = useToast();
 
 // State
 const isLoading = ref(false);
 const errorMessage = ref<string>("");
+
+// Tracks which league's access code was just copied (to show the "Copied" feedback).
+const copiedUuid = ref<string | null>(null);
+let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
+
+// Tracks which league's invite link was just copied (clipboard fallback feedback).
+const sharedUuid = ref<string | null>(null);
+let shareResetTimer: ReturnType<typeof setTimeout> | undefined;
 
 // Computed properties
 const fantasyLeagues = computed(() => userStore.getUserFantasyLeagues);
@@ -138,10 +193,100 @@ const viewLeague = (league: FantasyLeaguesResponse) => {
   router.push({ name: "fantasyLeagueDetail", params: { uuid: league.uuid } });
 };
 
+// Build the public invite link for a league. Opening it lands the recipient on the
+// My Leagues page with the Join sheet pre-filled with this access code (see UserFantasyLeagueView).
+const buildInviteLink = (accessCode: string) =>
+  `${window.location.origin}/my/fantasy/leagues?join=${encodeURIComponent(accessCode)}`;
+
+// Copy arbitrary text, falling back to a hidden textarea on non-secure contexts
+// or older browsers that lack the async clipboard API.
+const copyToClipboard = async (text: string) => {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+};
+
+// Copy a league's access code to the clipboard so the admin can share it.
+const copyAccessCode = async (league: FantasyLeaguesResponse) => {
+  if (!league.password) return;
+
+  try {
+    await copyToClipboard(league.password);
+
+    copiedUuid.value = league.uuid;
+    success(t("fantasy.share.toast.codeCopiedTitle"), t("fantasy.share.toast.shareBody"));
+
+    clearTimeout(copyResetTimer);
+    copyResetTimer = setTimeout(() => {
+      if (copiedUuid.value === league.uuid) copiedUuid.value = null;
+    }, 2000);
+  } catch (e) {
+    console.error("Failed to copy access code:", e);
+    error(t("fantasy.share.toast.copyFailedTitle"), t("fantasy.share.toast.copyCodeFailedBody"));
+  }
+};
+
+// Share a league's invite link. On supported devices (mobile/PWA) this opens the
+// native share sheet (WhatsApp, Telegram, etc.); elsewhere it falls back to
+// copying the link to the clipboard.
+const shareLeague = async (league: FantasyLeaguesResponse) => {
+  if (!league.password) return;
+
+  const url = buildInviteLink(league.password);
+  const shareData: ShareData = {
+    title: t("fantasy.share.shareText.title", { name: league.name }),
+    text: t("fantasy.share.shareText.text", { name: league.name, code: league.password }),
+    url,
+  };
+
+  // Prefer the native share sheet when available.
+  if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+    try {
+      await navigator.share(shareData);
+    } catch (e) {
+      // The user dismissing the share sheet rejects with AbortError — not an error.
+      if ((e as DOMException)?.name !== "AbortError") {
+        console.error("Failed to share league:", e);
+      }
+    }
+    return;
+  }
+
+  // Fallback: copy the invite link.
+  try {
+    await copyToClipboard(url);
+
+    sharedUuid.value = league.uuid;
+    success(t("fantasy.share.toast.linkCopiedTitle"), t("fantasy.share.toast.shareBody"));
+
+    clearTimeout(shareResetTimer);
+    shareResetTimer = setTimeout(() => {
+      if (sharedUuid.value === league.uuid) sharedUuid.value = null;
+    }, 2000);
+  } catch (e) {
+    console.error("Failed to copy invite link:", e);
+    error(t("fantasy.share.toast.copyFailedTitle"), t("fantasy.share.toast.copyLinkFailedBody"));
+  }
+};
+
 // Lifecycle
 onMounted(async () => {
   // Always refresh leagues to reflect recent joins or changes
   await loadFantasyLeagues();
+});
+
+onUnmounted(() => {
+  clearTimeout(copyResetTimer);
+  clearTimeout(shareResetTimer);
 });
 
 // Let the parent view refresh the list after creating/joining a league.

@@ -18,11 +18,6 @@
       "label": "League Name",
       "placeholder": "Enter your league name"
     },
-    "password": {
-      "label": "League Password",
-      "placeholder": "Enter a password",
-      "hint": "Required for others to join your league"
-    },
     "league": {
       "label": "Football league",
       "pick": "Pick a league",
@@ -53,19 +48,7 @@
     "admin": "Admin",
     "member": "Member",
     "participantsShort": "part.",
-    "membersShort": "memb.",
-    "requestToJoin": "Request to Join",
-    "joinLeague": "Join League"
-  },
-  "joinModal": {
-    "title": "Join Private League",
-    "subtitle": "Enter the password to join this league",
-    "noDescription": "No description provided.",
-    "password": {
-      "label": "Password",
-      "placeholder": "Enter league password..."
-    },
-    "joinLeague": "Join League"
+    "membersShort": "memb."
   },
   "createTeamModal": {
     "title": "Welcome to the League!",
@@ -123,7 +106,35 @@
       "autoPickOn": "Auto Pick activated",
       "autoPickOff": "Auto Pick deactivated",
       "yourTurn": "It's your turn!",
-      "yourTurnSub": "Pick a player for your team"
+      "yourTurnSub": "Pick a player for your team",
+      "playerSelected": "{name} picked"
+    },
+    "order": {
+      "title": "Draft Order",
+      "online": "online",
+      "userFallback": "User"
+    },
+    "timer": {
+      "yourTurn": "Your turn!",
+      "userTurn": "{name}'s turn",
+      "pickRound": "Pick #{pick} · Round {round}",
+      "expired": "Expired",
+      "sec": "sec",
+      "waiting": "Waiting for draft...",
+      "waitingSub": "The timer will start when a turn begins",
+      "unknown": "Unknown"
+    },
+    "completed": {
+      "title": "Draft Completed!",
+      "subtitle": "All picks have been made. Check your roster!"
+    },
+    "drawer": {
+      "myTeam": "My Team",
+      "swipeUp": "Swipe up to view",
+      "swipeDown": "Swipe down to minimize"
+    },
+    "picked": {
+      "teamFallback": "Team"
     },
     "board": {
       "failedLoad": "Failed to load draft board",
@@ -242,17 +253,30 @@
     "noRulesBody": "This league doesn't have scoring rules configured yet."
   },
   "join": {
-    "discoverTitle": "Discover Leagues",
-    "discoverSub": "Find and join fantasy football competitions",
-    "searchPlaceholder": "Search by name...",
-    "noLeaguesFound": "No leagues found",
-    "noResultsTitle": "No Results",
-    "noResultsNone": "No leagues available at the moment",
-    "noResultsSearch": "No leagues found for \"{query}\"",
-    "searchError": "Failed to search for leagues. Please try again.",
-    "joinSuccessTitle": "Success",
-    "joinRequested": "Successfully requested to join \"{name}\"",
-    "joinJoined": "Successfully joined \"{name}\""
+    "title": "Join Fantasy League",
+    "subtitle": "Enter the access code you were given",
+    "codePlaceholder": "Enter the access code...",
+    "joined": "You're in!",
+    "joinedBody": "You are now part of \"{name}\"."
+  },
+  "share": {
+    "accessCode": "Access code",
+    "copyAccessCode": "Copy access code",
+    "copiedTitle": "Copied!",
+    "shareInvite": "Share invite link",
+    "linkCopiedTitle": "Link copied!",
+    "toast": {
+      "codeCopiedTitle": "Access code copied",
+      "shareBody": "Share it so others can join your league.",
+      "copyFailedTitle": "Couldn't copy",
+      "copyCodeFailedBody": "Copy the access code manually.",
+      "linkCopiedTitle": "Invite link copied",
+      "copyLinkFailedBody": "Copy the invite link manually."
+    },
+    "shareText": {
+      "title": "Join \"{name}\"",
+      "text": "Join my Fantasy league \"{name}\" on Football Fantasy. Access code: {code}"
+    }
   },
   "myTeam": {
     "addPlayers": "Add Players",

@@ -29,7 +29,7 @@
                 v-if="desktopState !== 'peek'"
                 class="text-footnote font-semibold text-gray-900 dark:text-white truncate"
               >
-                My Team
+                {{ $t('fantasy.draft.drawer.myTeam') }}
               </h2>
             </div>
 
@@ -129,15 +129,15 @@
               <h3
                 class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight"
               >
-                My Team
+                {{ $t('fantasy.draft.drawer.myTeam') }}
               </h3>
               <p
                 class="text-2xs text-gray-500 dark:text-gray-400 leading-tight"
               >
                 {{
                   mobileState === "peek"
-                    ? "Swipe up to view"
-                    : "Swipe down to minimize"
+                    ? $t('fantasy.draft.drawer.swipeUp')
+                    : $t('fantasy.draft.drawer.swipeDown')
                 }}
               </p>
             </div>

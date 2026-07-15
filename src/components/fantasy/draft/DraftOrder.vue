@@ -9,11 +9,11 @@
         </span>
         <div>
           <h3 class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight">
-            Draft Order
+            {{ $t('fantasy.draft.order.title') }}
           </h3>
           <p class="text-2xs text-gray-500 dark:text-gray-400">
             {{ $t('football.rounds.rounds') }} {{ currentRound }}/{{ totalRounds }}
-            · <span class="text-green-500">{{ onlineCount }}</span>/{{ totalMembers }} online
+            · <span class="text-green-500">{{ onlineCount }}</span>/{{ totalMembers }} {{ $t('fantasy.draft.order.online') }}
           </p>
         </div>
       </div>
@@ -134,7 +134,7 @@
                 ? 'font-medium text-gray-900 dark:text-gray-100'
                 : 'text-gray-400 dark:text-gray-500'"
           >
-            {{ entry.user.firstname ?? 'User' }}
+            {{ entry.user.firstname ?? $t('fantasy.draft.order.userFallback') }}
           </span>
         </div>
       </div>

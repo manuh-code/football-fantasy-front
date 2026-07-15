@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-4 pt-2 space-y-2 transition-[margin-left] duration-300"
+    class="pt-2 space-y-2.5 transition-[margin-left] duration-300"
     :style="{ marginLeft: `${drawerWidth}px` }"
   >
     <!-- Draft Completed -->
@@ -310,7 +310,7 @@ onMounted(async () => {
     const userName = `${playerSelected.user?.firstname ?? ''} ${playerSelected.user?.lastname ?? ''}`.trim();
     const playerName = playerSelected.player?.display_name ?? playerSelected.player?.common_name ?? '';
     toast.info(
-      `${userName} selected`,
+      t('fantasy.draft.room.playerSelected', { name: userName }),
       playerName,
       {
         image: playerSelected.player?.image_path,

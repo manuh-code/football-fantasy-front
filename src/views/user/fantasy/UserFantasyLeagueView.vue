@@ -51,7 +51,12 @@
 
     <!-- Create / Join modals -->
     <FantasyLeagueCreateModal :is-visible="isCreateOpen" @close="isCreateOpen = false" @created="onCreated" />
-    <FantasyLeagueJoinModal :is-visible="isJoinOpen" @close="isJoinOpen = false" @joined="onJoined" />
+    <FantasyLeagueJoinModal
+      :is-visible="isJoinOpen"
+      :initial-code="joinInitialCode"
+      @close="isJoinOpen = false"
+      @joined="onJoined"
+    />
 
     <!-- Fixed bottom navigation (Home / Leagues / Play / Following); Play
          stays selected here and returns to the Gaming screen — see HomeMenu. -->
@@ -60,8 +65,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import UserFantasyLeagueComponent from '@/components/user/fantasy/UserFantasyLeagueComponent.vue'
 import FantasyLeagueCreateModal from '@/components/fantasy/FantasyLeagueCreateModal.vue'
@@ -73,6 +79,8 @@ import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/Fantas
 
 const { t } = useI18n()
 const { success } = useToast()
+const route = useRoute()
+const router = useRouter()
 
 // Set page title
 document.title = t('fantasy.userLeagues.pageTitle')
@@ -84,6 +92,9 @@ const leaguesComponentRef = ref<InstanceType<typeof UserFantasyLeagueComponent> 
 const isFabMenuOpen = ref(false)
 const isCreateOpen = ref(false)
 const isJoinOpen = ref(false)
+
+// Access code pre-filled into the Join sheet when arriving from an invite link.
+const joinInitialCode = ref('')
 
 // Section tab shown at the top; the list has no other options of its own.
 const tabItems = computed<BottomNavItem[]>(() => [
@@ -102,6 +113,7 @@ const openCreate = () => {
 
 const openJoin = () => {
   isFabMenuOpen.value = false
+  joinInitialCode.value = '' // FAB flow starts from an empty form.
   isJoinOpen.value = true
 }
 
@@ -114,14 +126,20 @@ const onCreated = (league: FantasyLeaguesResponse) => {
 
 const onJoined = (league: FantasyLeaguesResponse) => {
   isJoinOpen.value = false
-  success(
-    t('fantasy.join.joinSuccessTitle'),
-    league.is_private
-      ? t('fantasy.join.joinRequested', { name: league.name })
-      : t('fantasy.join.joinJoined', { name: league.name })
-  )
+  success(t('fantasy.join.joined'), t('fantasy.join.joinedBody', { name: league.name }))
   leaguesComponentRef.value?.reload()
 }
+
+// Arriving from a shared invite link (/my/fantasy/leagues?join=CODE): open the Join
+// sheet pre-filled with the code, then strip the query so a refresh doesn't reopen it.
+onMounted(() => {
+  const code = route.query.join
+  if (typeof code === 'string' && code.trim()) {
+    joinInitialCode.value = code.trim()
+    isJoinOpen.value = true
+    router.replace({ query: { ...route.query, join: undefined } })
+  }
+})
 
 // Cleanup: close FAB menu when leaving the view
 onUnmounted(() => {

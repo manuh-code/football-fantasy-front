@@ -60,7 +60,7 @@
                   </div>
                 </div>
                 <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-[72px] text-center leading-tight">
-                  {{ participant.firstname ?? 'Team' }} {{ (idx + 1) }}
+                  {{ participant.firstname ?? $t('fantasy.draft.picked.teamFallback') }} {{ (idx + 1) }}
                 </span>
               </div>
             </th>
@@ -122,7 +122,7 @@
                   class="text-2xs sm:text-2xs font-bold px-1.5 py-px rounded"
                   :class="positionBadgeClass(cell.player?.position?.developer_name)"
                 >
-                  {{ cell.player?.position?.code ?? '—' }}
+                  {{ positionShort(cell.player?.position?.developer_name) }}
                 </span>
               </div>
 
@@ -140,6 +140,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
+import { usePositionShortCode } from '@/composables/usePositionShortCode';
 import DraftPlayerPickedSkeleton from '@/components/fantasy/draft/DraftPlayerPickedSkeleton.vue';
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService';
 import type { FantasyDraftPlayerPicked } from '@/interfaces/fantasy/draft/FantasyDraftPlayerPicked';
@@ -149,6 +150,8 @@ import type { UserDataInterface } from '@/interfaces/user/userInterface';
 const props = defineProps<{
   fantasyLeagueUuid: string;
 }>();
+
+const positionShort = usePositionShortCode();
 
 const picks = ref<FantasyDraftPlayerPicked[]>([]);
 const isLoading = ref(false);
