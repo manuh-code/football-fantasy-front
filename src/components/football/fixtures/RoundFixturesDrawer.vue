@@ -138,7 +138,6 @@ watch(
       document.body.style.overflow = open ? "hidden" : "";
     }
     if (!open) {
-      dragOffsetY.value = 0;
       isDragging.value = false;
     }
   },
@@ -176,8 +175,15 @@ const onDragEnd = (e: PointerEvent) => {
   const elapsed = Date.now() - dragStartTime.value;
   const velocity = elapsed > 0 ? dragOffsetY.value / elapsed : 0;
   const shouldClose = dragOffsetY.value > 100 || velocity > 0.6;
-  dragOffsetY.value = 0;
-  if (shouldClose) emit("close");
+  if (shouldClose) {
+    // Let the sheet's own leave transition carry it the rest of the way from
+    // wherever the drag released it. Snapping the offset back to 0 first would
+    // fight the leave animation and turn the close into a stutter instead of
+    // one continuous motion.
+    emit("close");
+  } else {
+    dragOffsetY.value = 0;
+  }
 };
 
 // ── Fixture helpers (mirror parent component) ──
@@ -313,7 +319,7 @@ const selectedRoundName = computed(() => {
     </Transition>
 
     <!-- Sheet wrapper -->
-    <Transition name="rd-slide">
+    <Transition name="rd-slide" @after-leave="dragOffsetY = 0">
       <div
         v-if="isOpen"
         class="fixed bottom-0 left-0 right-0 z-[110] md:left-4 md:right-4 md:bottom-4 md:max-w-2xl md:mx-auto pointer-events-none"

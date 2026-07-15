@@ -95,7 +95,7 @@
     </Transition>
 
     <!-- Sheet -->
-    <Transition name="ss-slide">
+    <Transition name="ss-slide" @after-leave="dragOffsetY = 0">
       <div
         v-if="isOpen"
         class="fixed bottom-0 left-0 right-0 z-[140] md:left-4 md:right-4 md:bottom-4 md:max-w-md md:mx-auto pointer-events-none"
@@ -514,8 +514,15 @@ const onDragEnd = (e: PointerEvent) => {
   const elapsed = Date.now() - dragStartTime.value;
   const velocity = elapsed > 0 ? dragOffsetY.value / elapsed : 0;
   const shouldClose = dragOffsetY.value > 100 || velocity > 0.6;
-  dragOffsetY.value = 0;
-  if (shouldClose) closeDropdown();
+  if (shouldClose) {
+    // Let the sheet's own leave transition carry it the rest of the way from
+    // wherever the drag released it. Snapping the offset back to 0 first would
+    // fight the leave animation and turn the close into a stutter instead of
+    // one continuous motion.
+    closeDropdown();
+  } else {
+    dragOffsetY.value = 0;
+  }
 };
 
 // Body scroll lock + focus management while open
@@ -528,7 +535,6 @@ watch(isOpen, (open) => {
       nextTick(() => searchInputRef.value?.focus());
     }
   } else {
-    dragOffsetY.value = 0;
     isDragging.value = false;
   }
 });
