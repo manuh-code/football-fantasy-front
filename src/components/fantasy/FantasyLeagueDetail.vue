@@ -130,20 +130,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Join action bar -->
-        <div
-          v-if="!league.isMember && !league.isAdmin"
-          class="bg-white dark:bg-gray-800 px-4 py-3"
-        >
-          <ButtonComponent
-            variant="primary"
-            size="sm"
-            :text="league.is_private ? $t('fantasy.leagueCard.requestToJoin') : $t('fantasy.leagueCard.joinLeague')"
-            class="w-full"
-            @click="handleJoinLeague"
-          />
-        </div>
       </div>
 
       <!-- ============================== -->
@@ -437,16 +423,6 @@
 
     </template>
 
-    <!-- Join League Modal -->
-    <JoinLeagueModal
-      :is-visible="showJoinModal"
-      :league="league"
-      :is-loading="isJoining"
-      :password-error="passwordError"
-      @close="closeJoinModal"
-      @join="joinLeague"
-    />
-
     <!-- Create Team Invitation Modal -->
     <CreateTeamModal
       :is-visible="showCreateTeamModal"
@@ -461,10 +437,8 @@ import { ref, onMounted, watch, computed, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useToast } from "@/composables/useToast";
-import { useValidationStore } from "@/store/validation/useValidationStore";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { ButtonComponent } from "@/components/ui";
-import JoinLeagueModal from "@/components/fantasy/JoinLeagueModal.vue";
 import CreateTeamModal from "@/components/fantasy/team/CreateTeamModal.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
@@ -482,7 +456,6 @@ const props = defineProps<Props>();
 const router = useRouter();
 const { t, locale } = useI18n();
 const toast = useToast();
-const validationStore = useValidationStore();
 const leagueDetailStore = useFantasyLeagueDetailStore();
 const { fantasyLeagueChannel } = useAblyBroadcast();
 
@@ -490,9 +463,7 @@ const { fantasyLeagueChannel } = useAblyBroadcast();
 const league = ref<FantasyLeaguesResponse | null>(null);
 const isLoading = ref(true);
 const errorMessage = ref<string>("");
-const showJoinModal = ref(false);
 const showCreateTeamModal = ref(false);
-const isJoining = ref(false);
 const isDraftActivatedViaAbly = ref(false);
 const isAutoPick = ref(false);
 const isTogglingAutoPick = ref(false);
@@ -505,12 +476,6 @@ watch(
     showCreateTeamModal.value = value === true;
   },
 );
-
-// Get password error from validation store
-const passwordError = computed(() => {
-  const passwordErrors = validationStore.getFieldError("password");
-  return passwordErrors.length > 0 ? passwordErrors[0] : "";
-});
 
 const draftStatusValue = computed(() => {
   if (isDraftActivatedViaAbly.value) return "ACTIVE";
@@ -637,76 +602,6 @@ const handleToggleAutoPick = async () => {
   } finally {
     isTogglingAutoPick.value = false;
   }
-};
-
-const handleJoinLeague = () => {
-  if (!league.value) return;
-
-  // Clear any previous password errors
-  validationStore.clearFieldError("password");
-
-  // If league is public, join directly without modal
-  if (!league.value.is_private) {
-    joinLeague({ league: league.value });
-  } else {
-    // If league is private, show modal to request password
-    showJoinModal.value = true;
-  }
-};
-
-const joinLeague = async (joinData: {
-  league: FantasyLeaguesResponse;
-  password?: string;
-}) => {
-  try {
-    isJoining.value = true;
-    validationStore.clearFieldError("password");
-    const { league: leagueToJoin, password } = joinData;
-
-    // Prepare payload for the API
-    const payload = {
-      fantasy_league_uuid: leagueToJoin.uuid,
-      password: leagueToJoin.is_private ? password || null : null,
-    };
-
-    // Call the API to join the league
-    await fantasyLeagueService.joinFantasyLeague(payload, leagueToJoin.uuid);
-
-    toast.success(
-      t("fantasy.join.joinSuccessTitle"),
-      t(
-        leagueToJoin.is_private
-          ? "fantasy.join.joinRequested"
-          : "fantasy.join.joinJoined",
-        { name: leagueToJoin.name },
-      ),
-    );
-    showJoinModal.value = false;
-
-    // Refresh the league data to update member status
-    await fetchLeague();
-  } catch (error) {
-    console.error("Error joining league:", error);
-
-    // The interceptor in useApiFantasy already handles 422 errors and stores them in the validation store
-    // For non-422 errors, close the modal and let the interceptor show the toast
-    if (
-      error &&
-      typeof error === "object" &&
-      "status" in error &&
-      error.status !== 422
-    ) {
-      showJoinModal.value = false;
-    }
-    // If it's a 422 error, the modal stays open and shows the validation error from the store
-  } finally {
-    isJoining.value = false;
-  }
-};
-
-const closeJoinModal = () => {
-  showJoinModal.value = false;
-  validationStore.clearFieldError("password");
 };
 
 let leagueChannel: ReturnType<typeof fantasyLeagueChannel> | null = null;

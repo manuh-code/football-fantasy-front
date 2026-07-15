@@ -21,10 +21,10 @@
 
       <div>
         <p class="text-lg font-extrabold text-white leading-tight">
-          Draft Completed!
+          {{ $t('fantasy.draft.completed.title') }}
         </p>
         <p class="text-sm text-white/70 mt-1">
-          All picks have been made. Check your roster!
+          {{ $t('fantasy.draft.completed.subtitle') }}
         </p>
       </div>
 

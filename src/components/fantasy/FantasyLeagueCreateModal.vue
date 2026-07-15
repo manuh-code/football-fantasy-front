@@ -22,23 +22,6 @@
         :disabled="isLoading"
       />
 
-      <!-- Password -->
-      <div>
-        <FormInput
-          id="fantasy-league-password"
-          v-model="password"
-          type="password"
-          :label="$t('fantasy.leagueCreate.password.label')"
-          icon="hi-solid-lock-closed"
-          :placeholder="$t('fantasy.leagueCreate.password.placeholder')"
-          :error="fieldError('password')"
-          :disabled="isLoading"
-        />
-        <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
-          {{ $t('fantasy.leagueCreate.password.hint') }}
-        </p>
-      </div>
-
       <!-- League — pick which football league this fantasy league belongs to -->
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.leagueCreate.league.label') }}</label>
@@ -222,7 +205,6 @@ const footballLeagueStore = useFootballLeagueStore();
 
 // Form state
 const name = ref("");
-const password = ref("");
 const isLoading = ref(false);
 
 // League selection. Defaults to the app's current league, but the user can pick
@@ -271,7 +253,6 @@ const fieldError = (field: string) => validationStore.getFieldError(field)[0] ||
 const canSubmit = computed(
   () =>
     name.value.trim().length > 0 &&
-    password.value.trim().length > 0 &&
     participantsCount.value !== null &&
     !!selectedLeague.value
 );
@@ -324,7 +305,6 @@ watch(
   (visible) => {
     if (visible) {
       name.value = "";
-      password.value = "";
       showLeaguePicker.value = false;
       selectedLeague.value = footballLeagueStore.getLeague;
       validationStore.clearValidatorError();
@@ -336,7 +316,6 @@ watch(
 
 // Clear field errors as the user edits.
 watch(name, () => fieldError("name") && validationStore.clearFieldError("name"));
-watch(password, () => fieldError("password") && validationStore.clearFieldError("password"));
 watch(participantsCount, () => fieldError("participants_count") && validationStore.clearFieldError("participants_count"));
 
 const close = () => {
@@ -353,7 +332,6 @@ const handleCreate = async () => {
     const payload: FantasyLeagueCreatePayload = {
       name: name.value.trim(),
       league_uuid: selectedLeague.value.uuid,
-      password: password.value.trim(),
       participants_count: participantsCount.value,
     };
     const league = await fantasyLeagueService.storeFantasyLeague(payload);

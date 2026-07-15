@@ -18,11 +18,6 @@
       "label": "Nombre de la liga",
       "placeholder": "Ingresa el nombre de tu liga"
     },
-    "password": {
-      "label": "Contraseña de la liga",
-      "placeholder": "Ingresa una contraseña",
-      "hint": "Necesaria para que otros se unan a tu liga"
-    },
     "league": {
       "label": "Liga de fútbol",
       "pick": "Selecciona una liga",
@@ -53,19 +48,7 @@
     "admin": "Admin",
     "member": "Miembro",
     "participantsShort": "part.",
-    "membersShort": "miemb.",
-    "requestToJoin": "Solicitar unirse",
-    "joinLeague": "Unirse a la liga"
-  },
-  "joinModal": {
-    "title": "Unirse a liga privada",
-    "subtitle": "Ingresa la contraseña para unirte a esta liga",
-    "noDescription": "Sin descripción.",
-    "password": {
-      "label": "Contraseña",
-      "placeholder": "Ingresa la contraseña de la liga..."
-    },
-    "joinLeague": "Unirse a la liga"
+    "membersShort": "miemb."
   },
   "createTeamModal": {
     "title": "¡Bienvenido a la liga!",
@@ -123,7 +106,35 @@
       "autoPickOn": "Selección automática activada",
       "autoPickOff": "Selección automática desactivada",
       "yourTurn": "¡Es tu turno!",
-      "yourTurnSub": "Elige un jugador para tu equipo"
+      "yourTurnSub": "Elige un jugador para tu equipo",
+      "playerSelected": "{name} seleccionó"
+    },
+    "order": {
+      "title": "Orden del draft",
+      "online": "en línea",
+      "userFallback": "Usuario"
+    },
+    "timer": {
+      "yourTurn": "¡Tu turno!",
+      "userTurn": "Turno de {name}",
+      "pickRound": "Selección #{pick} · Ronda {round}",
+      "expired": "Expiró",
+      "sec": "seg",
+      "waiting": "Esperando el draft...",
+      "waitingSub": "El cronómetro iniciará cuando comience un turno",
+      "unknown": "Desconocido"
+    },
+    "completed": {
+      "title": "¡Draft completado!",
+      "subtitle": "Ya se hicieron todas las selecciones. ¡Revisa tu equipo!"
+    },
+    "drawer": {
+      "myTeam": "Mi equipo",
+      "swipeUp": "Desliza para ver",
+      "swipeDown": "Desliza para minimizar"
+    },
+    "picked": {
+      "teamFallback": "Equipo"
     },
     "board": {
       "failedLoad": "No se pudo cargar el tablero del draft",
@@ -242,17 +253,30 @@
     "noRulesBody": "Esta liga aún no tiene reglas de puntuación configuradas."
   },
   "join": {
-    "discoverTitle": "Descubre ligas",
-    "discoverSub": "Encuentra y únete a competencias de fantasy",
-    "searchPlaceholder": "Buscar por nombre...",
-    "noLeaguesFound": "No se encontraron ligas",
-    "noResultsTitle": "Sin resultados",
-    "noResultsNone": "No hay ligas disponibles por el momento",
-    "noResultsSearch": "No se encontraron ligas para \"{query}\"",
-    "searchError": "No se pudo buscar ligas. Inténtalo de nuevo.",
-    "joinSuccessTitle": "Éxito",
-    "joinRequested": "Solicitaste unirte a \"{name}\" correctamente",
-    "joinJoined": "Te uniste a \"{name}\" correctamente"
+    "title": "Unirse a liga Fantasy",
+    "subtitle": "Ingresa el código de acceso que te compartieron",
+    "codePlaceholder": "Ingresa el código de acceso...",
+    "joined": "¡Te uniste!",
+    "joinedBody": "Ahora formas parte de \"{name}\"."
+  },
+  "share": {
+    "accessCode": "Código de acceso",
+    "copyAccessCode": "Copiar código de acceso",
+    "copiedTitle": "¡Copiado!",
+    "shareInvite": "Compartir enlace de invitación",
+    "linkCopiedTitle": "¡Enlace copiado!",
+    "toast": {
+      "codeCopiedTitle": "Código de acceso copiado",
+      "shareBody": "Compártelo para que otros se unan a tu liga.",
+      "copyFailedTitle": "No se pudo copiar",
+      "copyCodeFailedBody": "Copia el código de acceso manualmente.",
+      "linkCopiedTitle": "Enlace de invitación copiado",
+      "copyLinkFailedBody": "Copia el enlace de invitación manualmente."
+    },
+    "shareText": {
+      "title": "Únete a \"{name}\"",
+      "text": "Únete a mi liga Fantasy \"{name}\" en Football Fantasy. Código de acceso: {code}"
+    }
   },
   "myTeam": {
     "addPlayers": "Agregar jugadores",
