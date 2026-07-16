@@ -24,45 +24,52 @@
         :style="sheetStyle"
         role="alertdialog"
         aria-modal="true"
-        @touchstart="onTouchStart"
-        @touchmove="onTouchMove"
-        @touchend="onTouchEnd"
       >
-        <!-- Drag handle -->
+        <!-- Draggable region: only the handle + header dismiss on swipe/drag,
+             so a form's own scroll/interaction in the content below is never
+             mistaken for a close gesture. -->
         <div
-          v-if="dismissible"
-          class="flex-shrink-0 flex items-center justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing"
-          @mousedown="startMouseDrag"
+          class="flex-shrink-0"
+          @touchstart="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
         >
-          <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-        </div>
+          <!-- Drag handle -->
+          <div
+            v-if="dismissible"
+            class="flex-shrink-0 flex items-center justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing"
+            @mousedown="startMouseDrag"
+          >
+            <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+          </div>
 
-        <!-- Header -->
-        <div v-if="title || $slots.header" class="flex-shrink-0 px-5 pt-3 pb-2">
-          <slot name="header">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div
-                  v-if="icon"
-                  :class="['w-9 h-9 rounded-xl flex items-center justify-center', iconBgClass]"
+          <!-- Header -->
+          <div v-if="title || $slots.header" class="flex-shrink-0 px-5 pt-3 pb-2">
+            <slot name="header">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    v-if="icon"
+                    :class="['w-9 h-9 rounded-xl flex items-center justify-center', iconBgClass]"
+                  >
+                    <v-icon :name="icon" :class="['w-4.5 h-4.5', iconColorClass]" />
+                  </div>
+                  <div>
+                    <h2 class="text-base font-bold text-gray-900 dark:text-white">{{ title }}</h2>
+                    <p v-if="subtitle" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ subtitle }}</p>
+                  </div>
+                </div>
+                <button
+                  v-if="dismissible"
+                  @click="close"
+                  class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
+                  :aria-label="$t('common.actions.close')"
                 >
-                  <v-icon :name="icon" :class="['w-4.5 h-4.5', iconColorClass]" />
-                </div>
-                <div>
-                  <h2 class="text-base font-bold text-gray-900 dark:text-white">{{ title }}</h2>
-                  <p v-if="subtitle" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ subtitle }}</p>
-                </div>
+                  <v-icon name="hi-solid-x" class="w-4 h-4" />
+                </button>
               </div>
-              <button
-                v-if="dismissible"
-                @click="close"
-                class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
-                :aria-label="$t('common.actions.close')"
-              >
-                <v-icon name="hi-solid-x" class="w-4 h-4" />
-              </button>
-            </div>
-          </slot>
+            </slot>
+          </div>
         </div>
 
         <!-- Content (scrollable) -->
@@ -130,11 +137,6 @@ const sheetStyle = computed(() => {
 
 function onTouchStart(e: TouchEvent) {
   if (!props.dismissible) return
-  const target = e.target as HTMLElement
-  // Don't intercept scroll inside content
-  const scrollable = target.closest('.overflow-y-auto')
-  if (scrollable && scrollable.scrollTop > 0) return
-
   touchStartY.value = e.touches[0].clientY
   touchDeltaY.value = 0
   isSwiping.value = false
