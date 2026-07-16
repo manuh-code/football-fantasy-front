@@ -7,7 +7,7 @@
        header to the scrolling content instead of the screen. -->
   <Teleport to="body">
   <header
-    class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800 safe-area-top"
+    class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200/70 dark:border-white/10 safe-area-top"
   >
     <div class="max-w-7xl mx-auto flex items-center gap-2 px-4 h-12 sm:h-14">
       <!-- Brand -->
@@ -27,14 +27,14 @@
       <button
         v-if="hasLeague"
         @click="openDrawer"
-        class="flex items-center gap-1.5 min-w-0 max-w-[55%] sm:max-w-[260px] h-9 pl-1.5 pr-2 rounded-full bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 transition-colors focus:outline-none"
+        class="flex items-center gap-1.5 min-w-0 max-w-[55%] sm:max-w-[260px] h-9 pl-1.5 pr-2.5 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200/70 dark:border-white/10 shadow-sm transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
         :aria-label="$t('home.header.changeStage')"
         aria-haspopup="dialog"
       >
         <img
           :src="leagueImage || '/img/default-avatar.svg'"
           :alt="leagueName"
-          class="w-6 h-6 rounded-md object-cover shrink-0"
+          class="w-6 h-6 rounded-md object-cover shrink-0 ring-1 ring-black/5 dark:ring-white/10"
         />
         <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate min-w-0">
           {{ currentStageLabel || leagueName }}
@@ -50,7 +50,7 @@
         <button
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
-          class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white rounded-full font-semibold text-footnote transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+          class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white rounded-full font-semibold text-footnote transition-all duration-150 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           :aria-label="$t('home.header.login')"
         >
           {{ $t('home.header.login') }}

@@ -414,6 +414,18 @@
       "unfollowedMsg": "Dejaste de seguir a {name}.",
       "error": "No pudimos actualizar este equipo. Inténtalo de nuevo."
     },
+    "notifications": {
+      "title": "Notificaciones",
+      "aria": "Notificaciones del equipo",
+      "buttonAria": "Configurar notificaciones",
+      "buttonTitle": "Notificaciones",
+      "hint": "Elige qué eventos de {name} quieres recibir.",
+      "summary": "{count} de {total} activadas",
+      "toggleAria": "Notificar {name}",
+      "empty": "No hay eventos para configurar todavía.",
+      "loadError": "No pudimos cargar las notificaciones. Inténtalo de nuevo.",
+      "saveError": "No pudimos guardar el cambio. Inténtalo de nuevo."
+    },
     "tabs": {
       "team": "Equipo",
       "players": "Jugadores",

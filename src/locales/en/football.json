@@ -414,6 +414,18 @@
       "unfollowedMsg": "You stopped following {name}.",
       "error": "We couldn't update this team. Please try again."
     },
+    "notifications": {
+      "title": "Notifications",
+      "aria": "Team notifications",
+      "buttonAria": "Set up notifications",
+      "buttonTitle": "Notifications",
+      "hint": "Choose which {name} events you want to get.",
+      "summary": "{count} of {total} on",
+      "toggleAria": "Notify {name}",
+      "empty": "No events to set up yet.",
+      "loadError": "We couldn't load your notifications. Please try again.",
+      "saveError": "We couldn't save the change. Please try again."
+    },
     "tabs": {
       "team": "Team",
       "players": "Players",

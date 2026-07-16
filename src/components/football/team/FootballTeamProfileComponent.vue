@@ -11,6 +11,7 @@ import type { FootballFixtureResponse } from "@/interfaces/football/fixture/Foot
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import TransferComponent from "@/components/football/transfer/TransferComponent.vue";
+import TeamNotificationsDrawer from "./TeamNotificationsDrawer.vue";
 import FootballTeamProfileSkeleton from "./FootballTeamProfileSkeleton.vue";
 import { useUserStore } from "@/store/user/useUserStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
@@ -83,6 +84,11 @@ const toggleFollow = async () => {
     isFollowLoading.value = false;
   }
 };
+
+// ── Per-event notifications ──
+// Only offered for teams the user already follows (the endpoint is scoped to
+// favorite teams). Opens a sheet layered above this one.
+const isNotificationsOpen = ref(false);
 
 // ── Tabs (each one maps to a property of FootballTeamProfileResponse) ──
 type ProfileTab =
@@ -428,6 +434,17 @@ const onDragEnd = (e: PointerEvent) => {
                 >
                   <v-icon v-if="isFollowLoading" name="pr-spinner" class="w-4 h-4 animate-spin" />
                   <v-icon v-else :name="isFollowing ? 'hi-solid-star' : 'bi-star'" class="w-5 h-5" />
+                </button>
+                <!-- Notifications — only for followed teams -->
+                <button
+                  v-if="profile?.team && isFollowing"
+                  @click.stop="isNotificationsOpen = true"
+                  @pointerdown.stop
+                  class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                  :aria-label="$t('football.team.notifications.buttonAria')"
+                  :title="$t('football.team.notifications.buttonTitle')"
+                >
+                  <v-icon name="hi-solid-bell" class="w-5 h-5" />
                 </button>
                 <button
                   @click.stop="emit('close')"
@@ -925,6 +942,13 @@ const onDragEnd = (e: PointerEvent) => {
         </div>
       </div>
     </Transition>
+
+    <!-- Per-event notifications, layered above this sheet -->
+    <TeamNotificationsDrawer
+      :is-open="isNotificationsOpen"
+      :team="profile?.team ?? null"
+      @close="isNotificationsOpen = false"
+    />
   </Teleport>
 </template>
 

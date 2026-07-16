@@ -28,6 +28,13 @@
       "title": "Sesión cerrada",
       "message": "Tu sesión se cerró correctamente"
     },
+    "favoriteTeams": {
+      "title": "Mis equipos",
+      "subtitle": "Configura las notificaciones de tus equipos favoritos",
+      "manageAria": "Configurar notificaciones de {name}",
+      "empty": "Aún no sigues a ningún equipo",
+      "emptyHint": "Sigue equipos para recibir notificaciones de sus eventos."
+    },
     "appearance": {
       "title": "Apariencia",
       "subtitle": "Personaliza cómo se ve la app en tu dispositivo",
