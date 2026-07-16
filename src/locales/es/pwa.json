@@ -19,11 +19,8 @@
     "gotIt": "Entendido"
   },
   "update": {
-    "title": "Nueva versión disponible",
-    "subtitle": "Hay una actualización lista para instalar",
-    "body": "Mejoramos la app con nuevas funciones y correcciones. Actualiza para obtener la última versión.",
-    "later": "Después",
-    "update": "Actualizar",
+    "applyingTitle": "Actualizando…",
+    "applyingMessage": "Cargando la última versión.",
     "offlineTitle": "Lista para usar sin conexión",
     "offlineMessage": "La app ahora funciona sin conexión."
   },

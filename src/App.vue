@@ -57,8 +57,8 @@
       <ToastContainer />
     </div>
 
-    <!-- PWA: update prompt + install banner + push opt-in (global, Teleported) -->
-    <PwaUpdateModal />
+    <!-- PWA: install banner + push opt-in (global, Teleported).
+         La actualización es invisible (usePwaAutoUpdate), sin modal. -->
     <PwaInstallBanner />
     <PushPermissionModal />
   </div>
@@ -75,7 +75,7 @@ import { useSwipeNavigation, useToast } from "@/composables";
 import FootballFixtureService from "@/services/football/fixture/FootballFixtureService";
 import { useDevResetStores } from "@/composables/useDevResetStores";
 import { usePushNotifications } from "./composables/usePushNotifications";
-import PwaUpdateModal from "@/components/pwa/PwaUpdateModal.vue";
+import { usePwaAutoUpdate } from "@/composables/usePwaAutoUpdate";
 import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
 import PushPermissionModal from "@/components/pwa/PushPermissionModal.vue";
 
@@ -92,6 +92,9 @@ const toast = useToast();
 
 // Initialize swipe navigation
 const swipeNav = useSwipeNavigation();
+
+// Auto-actualización invisible de la PWA (aplica el SW nuevo en un momento seguro).
+usePwaAutoUpdate();
 
 // Dev tools: Ctrl+Shift+K to reset all stores (dev mode only)
 let cleanupDevShortcut: (() => void) | undefined;

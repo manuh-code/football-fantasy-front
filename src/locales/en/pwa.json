@@ -19,11 +19,8 @@
     "gotIt": "Got it"
   },
   "update": {
-    "title": "New version available",
-    "subtitle": "An update is ready to install",
-    "body": "We've improved the app with new features and fixes. Update to get the latest version.",
-    "later": "Later",
-    "update": "Update",
+    "applyingTitle": "Updating…",
+    "applyingMessage": "Loading the latest version.",
     "offlineTitle": "Ready to use offline",
     "offlineMessage": "The app now works without a connection."
   },

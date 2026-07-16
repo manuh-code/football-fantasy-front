@@ -15,7 +15,8 @@ const UPDATE_CHECK_INTERVAL_MS = 60 * 1000 // 60s
 
 const updateSW = registerSW({
   onNeedRefresh() {
-    // A new version is waiting to be activated. Surface it via PwaUpdateModal.vue.
+    // A new version is waiting to be activated. usePwaAutoUpdate applies it at a
+    // safe moment (navigation / foreground, never during the live draft).
     _setNeedRefresh(true)
   },
   onOfflineReady() {

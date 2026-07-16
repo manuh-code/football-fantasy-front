@@ -435,8 +435,31 @@ router.beforeEach(async (to, from, next) => {
   next();
 })
 
+// Resiliencia ante chunks purgados: si el import dinámico de una ruta falla porque
+// su chunk ya no existe (un deploy nuevo mientras la pestaña seguía abierta),
+// recargamos UNA sola vez para traer el index.html + assets nuevos. El flag en
+// sessionStorage evita un bucle de recargas si el fallo persiste por otra causa.
+const CHUNK_RELOAD_KEY = 'pwa-chunk-reloaded'
+function reloadOnceForChunkError(message: string | undefined): void {
+  const isChunkError =
+    !!message &&
+    /dynamically imported module|Importing a module script failed|Failed to fetch/i.test(message)
+  if (isChunkError && !sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, '1')
+    window.location.reload()
+  }
+}
+router.onError((error) => reloadOnceForChunkError(error?.message))
+// Vite emite este evento cuando falla la precarga de un módulo dinámico.
+window.addEventListener('vite:preloadError', (event) => {
+  reloadOnceForChunkError((event as unknown as { payload?: Error }).payload?.message)
+})
+
 // Scroll to top on every navigation
 router.afterEach((to, from) => {
+  // Una navegación completada implica que los chunks cargaron bien: limpiamos el
+  // guard para que un fallo futuro pueda volver a recargar una vez.
+  sessionStorage.removeItem(CHUNK_RELOAD_KEY)
   // Skip if navigating to same route (e.g. query changes)
   if (to.path === from.path) return;
   window.scrollTo({ top: 0, left: 0 });

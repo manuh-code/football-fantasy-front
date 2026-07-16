@@ -1,7 +1,8 @@
 {
   "nav": {
     "aria": "Pools navigation",
-    "pools": "Pools"
+    "pools": "Pools",
+    "rules": "Rules"
   },
   "myPools": "My Pools",
   "emptyTitle": "No Pools Yet",
@@ -45,7 +46,8 @@
       "myPools": "My Pools",
       "info": "Info",
       "predictions": "Predictions",
-      "standings": "Standings"
+      "standings": "Standings",
+      "rules": "Rules"
     },
     "scoringRules": "Scoring rules",
     "members": "Members",
