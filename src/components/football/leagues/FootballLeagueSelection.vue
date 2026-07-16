@@ -47,23 +47,38 @@
           :disabled="isSaving"
           @click="selectLeague(league)"
           :class="[
-            'group w-full flex items-center gap-3.5 px-4 py-3 text-left transition-colors active:bg-gray-100/70 dark:active:bg-gray-700/40 focus:outline-none focus-visible:bg-gray-100/70 dark:focus-visible:bg-gray-700/40',
+            'group relative w-full flex items-center gap-3.5 px-4 py-3 text-left transition-colors focus:outline-none',
+            currentLeagueUuid === league.uuid
+              ? 'bg-emerald-500/10'
+              : 'hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10 focus-visible:bg-black/5 dark:focus-visible:bg-white/10',
             isSaving && savingUuid !== league.uuid ? 'opacity-40' : '',
           ]"
         >
-          <!-- Crest -->
+          <!-- Selected accent — a single emerald rail is the primary "current" cue -->
+          <span
+            v-if="currentLeagueUuid === league.uuid"
+            class="absolute inset-y-0 left-0 w-[3px] bg-emerald-500"
+            aria-hidden="true"
+          />
+          <!-- Crest — always on a real white chip so dark-inked or transparent logos
+               (e.g. the Premier League crest) stay legible in dark mode; `object-contain`
+               keeps the full badge visible instead of cropping it to the circle.
+               The white fill is an inline style on purpose: main.scss globally remaps
+               `.bg-white` to `var(--color-bg)` (dark in dark mode), so a class won't hold. -->
           <div
+            :style="{ backgroundColor: '#ffffff' }"
             :class="[
               'w-11 h-11 rounded-full flex items-center justify-center overflow-hidden shrink-0 ring-1 transition-shadow',
               currentLeagueUuid === league.uuid
-                ? 'ring-emerald-500/30'
-                : 'ring-black/5 dark:ring-white/10',
+                ? 'ring-emerald-500/60'
+                : 'ring-black/10 dark:ring-white/10',
             ]"
           >
             <img
               :src="league.image_path || '/img/default-avatar.svg'"
-              class="w-full h-full object-cover"
+              class="w-full h-full object-contain p-1"
               :alt="league.name"
+              loading="lazy"
             />
           </div>
 
