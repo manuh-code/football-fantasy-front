@@ -66,7 +66,39 @@
     "overview": "Overview",
     "team": "My Team",
     "players": "Players",
-    "matches": "Matches"
+    "matches": "Matches",
+    "standings": "Standings"
+  },
+  "standings": {
+    "title": "Standings",
+    "teams": "{count} team | {count} teams",
+    "you": "You",
+    "loading": "Loading standings",
+    "error": "Couldn't load standings",
+    "loadError": "Something went wrong loading the standings.",
+    "col": {
+      "team": "Team",
+      "played": "GP",
+      "wins": "W",
+      "draws": "D",
+      "losses": "L",
+      "pointsFor": "PF",
+      "pointsAgainst": "PA",
+      "diff": "DIFF"
+    },
+    "full": {
+      "played": "Games played",
+      "wins": "Wins",
+      "draws": "Draws",
+      "losses": "Losses",
+      "pointsFor": "Points for",
+      "pointsAgainst": "Points against",
+      "diff": "Difference"
+    },
+    "empty": {
+      "title": "No results yet",
+      "body": "The table fills in once matchups begin."
+    }
   },
   "userLeagues": {
     "title": "My Leagues",

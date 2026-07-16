@@ -19,6 +19,7 @@ import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraft
 import { FantasyDraftPlayerPicked } from "@/interfaces/fantasy/draft/FantasyDraftPlayerPicked";
 import { LineupPlayerRemovePayload } from "@/interfaces/fantasy/lineup/LineupPlayerRemovePayload";
 import type { DraftTurn } from "@/composables/useDraftChannel";
+import { FantasyStandingResponse } from "@/interfaces/fantasy/standing/FantasyStandingResponse";
 
 
 export class FantasyLeagueService {
@@ -282,6 +283,14 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch matchup for round');
+    }
+
+    async getStandingsByLeague(leagueUuid: string): Promise<FantasyStandingResponse[]> {
+        const response = await this.api.get<ApiResponse<FantasyStandingResponse[]>>(`fantasy/leagues/standings/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch standings for league');
     }
 }
 

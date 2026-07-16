@@ -17,6 +17,11 @@
             <FantasyLeagueDetail :uuid="uuid" />
           </div>
 
+          <!-- Standings Content — league-wide table (visible to everyone) -->
+          <div v-else-if="activeTab === 'standings'" key="standings">
+            <FantasyStandings :fantasy-league-uuid="uuid" />
+          </div>
+
           <!-- My Team Content -->
           <div v-else-if="activeTab === 'myteam'" key="myteam">
             <MyFantasyTeamComponent :fantasy-league-uuid="uuid" />
@@ -76,6 +81,7 @@ import HomeMenu from '@/components/home/HomeMenu.vue'
 import TopTabsBar from '@/components/ui/TopTabsBar.vue'
 import { useFantasyLeagueTabs } from '@/composables/useFantasyLeagueTabs'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
+import FantasyStandings from '@/components/fantasy/standings/FantasyStandings.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
