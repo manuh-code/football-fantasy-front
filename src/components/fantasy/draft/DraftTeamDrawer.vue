@@ -64,12 +64,14 @@
                 :formation="league?.formation ?? null"
                 :highlighted-player-uuid="highlightedPlayerUuid"
                 :league-uuid="fantasyLeagueUuid ?? ''"
+                :disable-remove="true"
               />
               <BenchTable
                 :players="players"
                 :formation="league?.formation ?? null"
                 :highlighted-player-uuid="highlightedPlayerUuid"
                 :league-uuid="fantasyLeagueUuid ?? ''"
+                :disable-remove="true"
               />
             </div>
           </div>
@@ -189,12 +191,14 @@
               :formation="league?.formation ?? null"
               :highlighted-player-uuid="highlightedPlayerUuid"
               :league-uuid="fantasyLeagueUuid ?? ''"
+              :disable-remove="true"
             />
             <BenchTable
               :players="players"
               :formation="league?.formation ?? null"
               :highlighted-player-uuid="highlightedPlayerUuid"
               :league-uuid="fantasyLeagueUuid ?? ''"
+              :disable-remove="true"
             />
           </div>
         </div>

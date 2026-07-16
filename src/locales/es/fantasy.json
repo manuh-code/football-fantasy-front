@@ -209,6 +209,21 @@
     "createdTitle": "¡Equipo creado!",
     "createdMessage": "\"{name}\" está listo para competir."
   },
+  "editTeam": {
+    "title": "Editar equipo",
+    "subtitle": "Personaliza la identidad de tu equipo",
+    "titleView": "Equipo rival",
+    "subtitleView": "Vista de solo lectura",
+    "changeLogoHint": "Cambiar el logo del equipo",
+    "previewNamePlaceholder": "Tu equipo",
+    "memberSince": "Desde {date}",
+    "memberSinceLabel": "Miembro desde",
+    "revertLogo": "Deshacer",
+    "saveChanges": "Guardar cambios",
+    "savedTitle": "¡Equipo actualizado!",
+    "savedMessage": "Los cambios de \"{name}\" se guardaron.",
+    "opponentNote": "Solo puedes editar tu propio equipo."
+  },
   "matchups": {
     "selectLeague": "Selecciona una liga Fantasy para ver los enfrentamientos.",
     "noRounds": "No hay rondas disponibles",

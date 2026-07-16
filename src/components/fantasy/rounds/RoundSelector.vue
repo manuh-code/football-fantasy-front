@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { FantasyRoundResponse } from '@/interfaces/fantasy/rounds/FantasyRoundResponse'
 
 interface Props {
@@ -22,12 +23,14 @@ const emit = defineEmits<{
   (e: 'selectNext'): void
 }>()
 
+const { t } = useI18n()
+
 /**
- * Extract a short label from the round name (e.g. "Regular Season - 10" → "J10")
+ * Extract a short label from the round name (e.g. "Regular Season - 10" → "Jornada 10")
  */
 function extractRoundLabel(name: string): string {
   const match = name.match(/(\d+)/)
-  return match ? `J${match[1]}` : name.substring(0, 6)
+  return match ? `${t('football.rounds.rounds')} ${match[1]}` : name.substring(0, 6)
 }
 
 const selectedIndex = computed(() =>
