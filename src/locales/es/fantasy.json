@@ -157,9 +157,7 @@
     "errorUuidRequired": "Se requiere el UUID de la liga",
     "members": "Miembros",
     "season": "Temporada",
-    "myTeam": "Mi equipo",
     "stats": "Estadísticas",
-    "matchups": "Enfrentamientos",
     "about": "Acerca de",
     "participants": "Participantes",
     "open": "Abierta",
@@ -239,7 +237,14 @@
     "winner": "Ganador",
     "draw": "Empate",
     "home": "Local",
-    "away": "Visitante"
+    "away": "Visitante",
+    "vs": "VS",
+    "statusPending": "Pendiente",
+    "statusCompleted": "Finalizado",
+    "statusCancelled": "Cancelado",
+    "viewLineups": "Ver alineaciones",
+    "hideLineups": "Ocultar alineaciones",
+    "roundFallback": "Jornada"
   },
   "lineup": {
     "starters": "Titulares",

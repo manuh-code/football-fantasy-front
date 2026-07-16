@@ -157,9 +157,7 @@
     "errorUuidRequired": "League UUID is required",
     "members": "Members",
     "season": "Season",
-    "myTeam": "My Team",
     "stats": "Stats",
-    "matchups": "Matchups",
     "about": "About",
     "participants": "Participants",
     "open": "Open",
@@ -239,7 +237,14 @@
     "winner": "Winner",
     "draw": "Draw",
     "home": "Home",
-    "away": "Away"
+    "away": "Away",
+    "vs": "VS",
+    "statusPending": "Pending",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "viewLineups": "View lineups",
+    "hideLineups": "Hide lineups",
+    "roundFallback": "Round"
   },
   "lineup": {
     "starters": "Starters",
