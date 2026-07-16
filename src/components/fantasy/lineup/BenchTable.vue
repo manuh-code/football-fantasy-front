@@ -23,7 +23,7 @@
         >
           <div class="relative overflow-hidden">
             <button
-              v-if="!addingPlayerPosition && !player.in_play"
+              v-if="!addingPlayerPosition && !player.in_play && !disableRemove"
               class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
               :disabled="removingPlayer === player.football_player?.uuid"
               @click="removePlayer(player.football_player?.uuid ?? '', player.football_player?.display_name || 'Player')"
@@ -34,11 +34,11 @@
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
               :class="{ 'opacity-50 pointer-events-none': player.in_play }"
-              :style="!addingPlayerPosition && !player.in_play ? { transform: `translateX(${getSwipeOffset(player.football_player?.uuid ?? '')}px)`, transition: getSwipeTransition(player.football_player?.uuid ?? '') } : {}"
-              @touchstart="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player?.uuid ?? '', $event)"
-              @touchmove="!addingPlayerPosition && !player.in_play && onSwipeMove(player.football_player?.uuid ?? '', $event)"
-              @touchend="!addingPlayerPosition && !player.in_play && onSwipeEnd(player.football_player?.uuid ?? '')"
-              @mousedown="!addingPlayerPosition && !player.in_play && onSwipeStart(player.football_player?.uuid ?? '', $event)"
+              :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player?.uuid ?? '')}px)`, transition: getSwipeTransition(player.football_player?.uuid ?? '') } : {}"
+              @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player?.uuid ?? '', $event)"
+              @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player?.uuid ?? '', $event)"
+              @touchend="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeEnd(player.football_player?.uuid ?? '')"
+              @mousedown="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player?.uuid ?? '', $event)"
             >
               <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-2xs font-bold shrink-0">
                 {{ positionShort(player.position.developer_name) }}
@@ -133,12 +133,15 @@ interface Props {
   addingPlayerPosition?: string | null;
   /** Fantasy round UUID required for lineup update */
   fantasyRoundUuid?: string;
+  /** Disables the swipe-to-delete action (e.g. while in draft mode) */
+  disableRemove?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   highlightedPlayerUuid: null,
   addingPlayerPosition: null,
   fantasyRoundUuid: '',
+  disableRemove: false,
 });
 
 const emit = defineEmits<{

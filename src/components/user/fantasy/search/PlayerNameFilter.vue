@@ -35,12 +35,14 @@ function clear() {
       name="hi-solid-search"
       class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none"
     />
+    <label for="player-name-filter" class="sr-only">{{ $t('fantasy.search.playerPlaceholder') }}</label>
     <input
+      id="player-name-filter"
       v-model="query"
       type="text"
       :disabled="disabled"
       :placeholder="$t('fantasy.search.playerPlaceholder')"
-      class="w-full pl-9 pr-9 py-2.5 text-footnote text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 dark:focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="w-full pl-9 pr-9 py-2.5 text-base md:text-footnote text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 dark:focus:border-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     />
     <button
       v-if="query"

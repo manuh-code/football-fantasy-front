@@ -209,6 +209,21 @@
     "createdTitle": "Team Created!",
     "createdMessage": "\"{name}\" is ready to compete."
   },
+  "editTeam": {
+    "title": "Edit team",
+    "subtitle": "Personalize your team's identity",
+    "titleView": "Opponent team",
+    "subtitleView": "View only",
+    "changeLogoHint": "Change team logo",
+    "previewNamePlaceholder": "Your team",
+    "memberSince": "Since {date}",
+    "memberSinceLabel": "Member since",
+    "revertLogo": "Undo",
+    "saveChanges": "Save changes",
+    "savedTitle": "Team updated!",
+    "savedMessage": "Changes to \"{name}\" were saved.",
+    "opponentNote": "You can only edit your own team."
+  },
   "matchups": {
     "selectLeague": "Select a fantasy league to view matches.",
     "noRounds": "No rounds available",
