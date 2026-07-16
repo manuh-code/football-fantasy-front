@@ -90,14 +90,16 @@ const ACCENT_TEXT: Record<BottomNavAccent, string> = {
   sky: "text-sky-600 dark:text-sky-400",
   amber: "text-amber-600 dark:text-amber-400",
 };
+// Active-item chip: a stronger tint plus a crisp inset ring so the selected
+// destination reads as a raised, clearly-selected key — not just a ghost tint.
 const ACCENT_BG: Record<BottomNavAccent, string> = {
-  blue: "bg-blue-500/10 dark:bg-blue-400/10",
-  emerald: "bg-emerald-500/10 dark:bg-emerald-400/10",
-  orange: "bg-orange-500/10 dark:bg-orange-400/10",
-  red: "bg-red-500/10 dark:bg-red-400/10",
-  purple: "bg-purple-500/10 dark:bg-purple-400/10",
-  sky: "bg-sky-500/10 dark:bg-sky-400/10",
-  amber: "bg-amber-500/10 dark:bg-amber-400/10",
+  blue: "bg-blue-500/15 ring-1 ring-inset ring-blue-500/30 dark:bg-blue-400/15 dark:ring-blue-400/30",
+  emerald: "bg-emerald-500/15 ring-1 ring-inset ring-emerald-500/30 dark:bg-emerald-400/15 dark:ring-emerald-400/30",
+  orange: "bg-orange-500/15 ring-1 ring-inset ring-orange-500/30 dark:bg-orange-400/15 dark:ring-orange-400/30",
+  red: "bg-red-500/15 ring-1 ring-inset ring-red-500/30 dark:bg-red-400/15 dark:ring-red-400/30",
+  purple: "bg-purple-500/15 ring-1 ring-inset ring-purple-500/30 dark:bg-purple-400/15 dark:ring-purple-400/30",
+  sky: "bg-sky-500/15 ring-1 ring-inset ring-sky-500/30 dark:bg-sky-400/15 dark:ring-sky-400/30",
+  amber: "bg-amber-500/15 ring-1 ring-inset ring-amber-500/30 dark:bg-amber-400/15 dark:ring-amber-400/30",
 };
 
 const isActive = (item: BottomNavItem): boolean =>
@@ -120,6 +122,9 @@ const itemSizeClass = computed(() =>
 );
 const itemLabelSizeClass = computed(() => (isDense.value ? "text-2xs" : "text-xs"));
 const rowGapClass = computed(() => (isDense.value ? "gap-0.5" : "gap-1"));
+// Slightly smaller glyphs in dense mode so 5–6 destinations stay on one row on
+// the narrowest phones without crowding.
+const iconSizeClass = computed(() => (isDense.value ? "w-5 h-5" : "w-6 h-6"));
 
 const activeItem = computed(() => props.items.find((item) => isActive(item)) ?? null);
 const indicatorColorClass = computed(() =>
@@ -364,8 +369,15 @@ const onBarPointerCancel = () => {
           class="relative z-10 flex shrink-0 flex-col items-center justify-center rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
           :class="[itemSizeClass, itemClasses(item)]"
         >
-          <v-icon :name="item.icon" class="w-6 h-6 shrink-0" />
-          <span class="whitespace-nowrap font-semibold tracking-tight leading-none" :class="itemLabelSizeClass">{{ item.label }}</span>
+          <v-icon
+            :name="item.icon"
+            class="shrink-0 transition-transform duration-200 ease-out"
+            :class="[iconSizeClass, isActive(item) ? 'scale-110' : '']"
+          />
+          <span
+            class="whitespace-nowrap tracking-tight leading-none"
+            :class="[itemLabelSizeClass, isActive(item) ? 'font-bold' : 'font-semibold']"
+          >{{ item.label }}</span>
         </button>
       </div>
     </nav>

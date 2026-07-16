@@ -28,6 +28,13 @@
       "title": "Signed Out",
       "message": "You have been signed out successfully"
     },
+    "favoriteTeams": {
+      "title": "My teams",
+      "subtitle": "Manage notifications for your favorite teams",
+      "manageAria": "Set up notifications for {name}",
+      "empty": "You don't follow any teams yet",
+      "emptyHint": "Follow teams to get notified about their events."
+    },
     "appearance": {
       "title": "Appearance",
       "subtitle": "Customize how the app looks on your device",

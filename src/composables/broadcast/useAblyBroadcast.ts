@@ -25,11 +25,19 @@ export function useAblyBroadcast() {
     }
 
     const inPlayChannel = channel('inplay-channel_' + userStore.getTimezone);
-    const matchCenterFixtureChannel = (fixtureUuid: string) => channel(`match-center-fixture-${userStore.getTimezone}-${fixtureUuid}`);
+
+    // Match center uses two channels per fixture:
+    //  - base channel `match-center-fixture-{uuid}` → presence only (we enter it
+    //    announcing our timezone so the backend knows which localized channel to
+    //    publish to).
+    //  - localized channel `match-center-fixture-{uuid}_{tz}` → all live events,
+    //    with dates already converted to the viewer's timezone.
+    const matchCenterFixtureChannel = (fixtureUuid: string) => channel(`match-center-fixture-${fixtureUuid}`);
+    const matchCenterFixtureLocalizedChannel = (fixtureUuid: string) => channel(`match-center-fixture-${fixtureUuid}_${userStore.getTimezone}`);
 
     const draftFantasyLeagueChannel = (leagueUuid: string) => channel(`draft-${leagueUuid}`);
     const fantasyLeagueChannel = (leagueUuid: string) => channel(`fantasy-league-${leagueUuid}`);
     const draftRoomChannel = (draftUuid: string) => channel(`draft-${draftUuid}`);
 
-    return { ably, channel, inPlayChannel, matchCenterFixtureChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
+    return { ably, channel, inPlayChannel, matchCenterFixtureChannel, matchCenterFixtureLocalizedChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
 }

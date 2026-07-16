@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch, onBeforeUnmount, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import type * as Ably from "ably";
+import type { Types } from "ably";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
+import { useUserStore } from "@/store";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import type { ScoreResponse } from "@/interfaces/football/fixture/ScoreResponse";
@@ -121,15 +122,32 @@ const retry = () => {
 // event mutates the reactive `fixture` object in place, so the change flows
 // down to the relevant child component through its props (scoreboard, events
 // timeline, statistics, player stats and live commentary).
-const { matchCenterFixtureChannel } = useAblyBroadcast();
-let liveChannel: Ably.RealtimeChannel | null = null;
+const { matchCenterFixtureChannel, matchCenterFixtureLocalizedChannel } = useAblyBroadcast();
+const userStore = useUserStore();
+// Base channel: presence only (announce our timezone to the backend).
+let presenceChannel: Types.RealtimeChannelCallbacks | null = null;
+// Localized channel (per-timezone): all live match-center events.
+let liveChannel: Types.RealtimeChannelCallbacks | null = null;
 
 // Backend may publish a single item or a batch — normalize to an array.
 const toArray = <T,>(payload: T | T[]): T[] =>
   Array.isArray(payload) ? payload : payload != null ? [payload] : [];
 
+// 0. match-center-fixture → kickoff date/time, already localized to the
+//    viewer's timezone by the backend. Patch only the fields it carries.
+const onFixtureInfo = (msg: Types.Message) => {
+  const f = fixture.value;
+  if (!f) return;
+  const data = msg.data as Partial<FootballFixtureResponse> | null | undefined;
+  if (!data) return;
+  if (data.starting_at != null) f.starting_at = data.starting_at;
+  if (data.starting_date != null) f.starting_date = data.starting_date;
+  if (data.hour != null) f.hour = data.hour;
+  if (data.starting_at_timestamp != null) f.starting_at_timestamp = data.starting_at_timestamp;
+};
+
 // 1. match-center-score → keep the scoreboard header in sync.
-const onScore = (msg: Ably.InboundMessage) => {
+const onScore = (msg: Types.Message) => {
   const f = fixture.value;
   if (!f?.participants) return;
   for (const s of toArray<ScoreResponse>(msg.data)) {
@@ -147,7 +165,7 @@ const onScore = (msg: Ably.InboundMessage) => {
 };
 
 // 2. match-center-event → append / replace events in the timeline.
-const onEvent = (msg: Ably.InboundMessage) => {
+const onEvent = (msg: Types.Message) => {
   const f = fixture.value;
   if (!f) return;
   if (!f.events) f.events = [];
@@ -159,7 +177,7 @@ const onEvent = (msg: Ably.InboundMessage) => {
 };
 
 // 3. match-center-statistics → upsert each stat by type + side.
-const onStatistics = (msg: Ably.InboundMessage) => {
+const onStatistics = (msg: Types.Message) => {
   const f = fixture.value;
   if (!f) return;
   if (!f.statistics) f.statistics = [];
@@ -173,7 +191,7 @@ const onStatistics = (msg: Ably.InboundMessage) => {
 };
 
 // 4. match-center-lineup-stats → replace the top list for each stat type.
-const onLineupStats = (msg: Ably.InboundMessage) => {
+const onLineupStats = (msg: Types.Message) => {
   const f = fixture.value;
   if (!f) return;
   if (!f.lineupStats) f.lineupStats = [];
@@ -185,7 +203,7 @@ const onLineupStats = (msg: Ably.InboundMessage) => {
 };
 
 // 5. match-center-comments → append / replace live commentary by order.
-const onComments = (msg: Ably.InboundMessage) => {
+const onComments = (msg: Types.Message) => {
   const f = fixture.value;
   if (!f) return;
   if (!f.comments) f.comments = [];
@@ -198,7 +216,17 @@ const onComments = (msg: Ably.InboundMessage) => {
 
 const subscribeRealtime = (uuid: string) => {
   unsubscribeRealtime();
-  liveChannel = matchCenterFixtureChannel(uuid);
+
+  // Enter presence on the base channel announcing our timezone, so the backend
+  // publishes localized updates on the per-timezone channel below.
+  presenceChannel = matchCenterFixtureChannel(uuid);
+  presenceChannel.presence.enter({ timezone: userStore.getTimezone }, (err) => {
+    if (err) console.error("Error entering match center presence:", err);
+  });
+
+  // Subscribe to the localized channel for every live section of the match center.
+  liveChannel = matchCenterFixtureLocalizedChannel(uuid);
+  liveChannel.subscribe("match-center-fixture", onFixtureInfo);
   liveChannel.subscribe("match-center-score", onScore);
   liveChannel.subscribe("match-center-event", onEvent);
   liveChannel.subscribe("match-center-statistics", onStatistics);
@@ -207,13 +235,19 @@ const subscribeRealtime = (uuid: string) => {
 };
 
 const unsubscribeRealtime = () => {
-  if (!liveChannel) return;
-  liveChannel.unsubscribe("match-center-score", onScore);
-  liveChannel.unsubscribe("match-center-event", onEvent);
-  liveChannel.unsubscribe("match-center-statistics", onStatistics);
-  liveChannel.unsubscribe("match-center-lineup-stats", onLineupStats);
-  liveChannel.unsubscribe("match-center-comments", onComments);
-  liveChannel = null;
+  if (liveChannel) {
+    liveChannel.unsubscribe("match-center-fixture", onFixtureInfo);
+    liveChannel.unsubscribe("match-center-score", onScore);
+    liveChannel.unsubscribe("match-center-event", onEvent);
+    liveChannel.unsubscribe("match-center-statistics", onStatistics);
+    liveChannel.unsubscribe("match-center-lineup-stats", onLineupStats);
+    liveChannel.unsubscribe("match-center-comments", onComments);
+    liveChannel = null;
+  }
+  if (presenceChannel) {
+    presenceChannel.presence.leave();
+    presenceChannel = null;
+  }
 };
 
 watch(

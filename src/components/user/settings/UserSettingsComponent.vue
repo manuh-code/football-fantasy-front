@@ -92,6 +92,42 @@
       </button>
     </div>
 
+    <!-- Favorite teams -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+      <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $t('user.settings.favoriteTeams.title') }}</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('user.settings.favoriteTeams.subtitle') }}</p>
+      </div>
+
+      <!-- Team list -->
+      <div v-if="favoriteTeams.length" class="divide-y divide-gray-100 dark:divide-gray-700">
+        <button
+          v-for="team in favoriteTeams"
+          :key="team.uuid"
+          @click="openNotifications(team)"
+          class="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+          :aria-label="$t('user.settings.favoriteTeams.manageAria', { name: team.name })"
+        >
+          <TeamLogo :team="team" size="md" variant="square" class="flex-shrink-0" />
+          <p class="flex-1 text-left min-w-0 text-sm font-medium text-gray-900 dark:text-white truncate">
+            {{ team.name }}
+          </p>
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+            <v-icon name="hi-solid-bell" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          </div>
+        </button>
+      </div>
+
+      <!-- Empty state -->
+      <div v-else class="px-5 py-8 flex flex-col items-center text-center">
+        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center mb-3">
+          <v-icon name="hi-solid-star" class="w-6 h-6 text-gray-300 dark:text-gray-600" />
+        </div>
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('user.settings.favoriteTeams.empty') }}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-[16rem]">{{ $t('user.settings.favoriteTeams.emptyHint') }}</p>
+      </div>
+    </div>
+
     <!-- Logout -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <button
@@ -111,6 +147,13 @@
         </div>
       </button>
     </div>
+
+    <!-- Per-event notifications for the selected favorite team -->
+    <TeamNotificationsDrawer
+      :is-open="isNotificationsOpen"
+      :team="notificationsTeam"
+      @close="isNotificationsOpen = false"
+    />
   </div>
 </template>
 
@@ -121,6 +164,9 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/store/user/useUserStore'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useToast } from '@/composables/useToast'
+import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
+import TeamLogo from '@/components/football/ui/TeamLogo.vue'
+import TeamNotificationsDrawer from '@/components/football/team/TeamNotificationsDrawer.vue'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -129,6 +175,17 @@ const authStore = useAuthStore()
 const toast = useToast()
 
 const isLoggingOut = ref(false)
+
+// ── Favorite teams → per-event notifications ──
+const favoriteTeams = computed<FootballTeamResponse[]>(() => userStore.getFavoriteTeam ?? [])
+
+const isNotificationsOpen = ref(false)
+const notificationsTeam = ref<FootballTeamResponse | null>(null)
+
+function openNotifications(team: FootballTeamResponse) {
+  notificationsTeam.value = team
+  isNotificationsOpen.value = true
+}
 
 const avatarUrl = computed(() => userStore.getAvatarUrl)
 
