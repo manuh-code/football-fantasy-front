@@ -2,11 +2,12 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
       <!-- Secondary section tabs: global destinations live in the fixed nav -->
-      <TopTabsBar :items="tabItems" active-key="pools" :aria-label="$t('pool.nav.aria')" />
+      <TopTabsBar :items="tabItems" :active-key="activeTab" :aria-label="$t('pool.nav.aria')" @select="activeTab = $event" />
 
-      <!-- Pool Component -->
+      <!-- Pool / Rules Component -->
       <div class="animate-page-enter">
-        <PoolComponent ref="poolComponentRef" />
+        <PoolComponent v-if="activeTab === 'pools'" ref="poolComponentRef" />
+        <PoolRulesComponent v-else />
       </div>
     </div>
 
@@ -70,6 +71,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "@/composables/useToast";
 import PoolComponent from "@/components/pool/PoolComponent.vue";
+import PoolRulesComponent from "@/components/pool/PoolRulesComponent.vue";
 import PoolCreateModal from "@/components/pool/PoolCreateModal.vue";
 import PoolJoinModal from "@/components/pool/PoolJoinModal.vue";
 import HomeMenu from "@/components/home/HomeMenu.vue";
@@ -93,9 +95,11 @@ const isFabMenuOpen = ref(false);
 const isCreateOpen = ref(false);
 const isJoinOpen = ref(false);
 
-// Section tab shown at the top; the list has no other options of its own.
+// Section tabs shown at the top: the pools list and the game rules.
+const activeTab = ref("pools");
 const tabItems = computed<BottomNavItem[]>(() => [
   { key: "pools", label: t("pool.nav.pools"), icon: "hi-solid-clipboard-list", accent: "blue" },
+  { key: "rules", label: t("pool.nav.rules"), icon: "hi-solid-information-circle", accent: "emerald" },
 ]);
 
 // Access code pre-filled into the Join sheet when arriving from an invite link.

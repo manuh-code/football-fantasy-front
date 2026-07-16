@@ -1,7 +1,8 @@
 {
   "nav": {
     "aria": "Navegación de quinielas",
-    "pools": "Quinielas"
+    "pools": "Quinielas",
+    "rules": "Reglas"
   },
   "myPools": "Mis quinielas",
   "emptyTitle": "Aún no tienes quinielas",
@@ -44,7 +45,8 @@
       "myPools": "Mis quinielas",
       "info": "Info",
       "predictions": "Predicciones",
-      "standings": "Posiciones"
+      "standings": "Posiciones",
+      "rules": "Reglas"
     },
     "scoringRules": "Reglas de puntuación",
     "members": "Miembros",

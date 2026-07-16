@@ -9,9 +9,10 @@
         @select="onSelect"
       />
 
-      <!-- Pool Group Component -->
+      <!-- Pool Group / Rules Component -->
       <div class="animate-page-enter">
-        <PoolGroupComponent :pool-uuid="poolUuid" :active-tab="activeTab" />
+        <PoolRulesComponent v-if="activeTab === 'rules'" />
+        <PoolGroupComponent v-else :pool-uuid="poolUuid" :active-tab="activeTab" />
       </div>
     </div>
 
@@ -32,6 +33,7 @@ import HomeMenu from "@/components/home/HomeMenu.vue";
 import TopTabsBar from "@/components/ui/TopTabsBar.vue";
 import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import PoolGroupComponent from "@/components/pool/PoolGroupComponent.vue";
+import PoolRulesComponent from "@/components/pool/PoolRulesComponent.vue";
 import OnboardingTour from "@/components/onboarding/OnboardingTour.vue";
 import { POOL_STEPS } from "@/components/onboarding/onboardingSteps";
 import { useOnboardingStore } from "@/store/onboarding";
@@ -74,6 +76,7 @@ const items = computed<BottomNavItem[]>(() => [
   { key: "info", label: t("pool.group.tabs.info"), icon: "hi-solid-information-circle", accent: "emerald" },
   { key: "predictions", label: t("pool.group.tabs.predictions"), icon: "hi-solid-clipboard-list", accent: "blue" },
   { key: "standings", label: t("pool.group.tabs.standings"), icon: "bi-trophy-fill", accent: "amber" },
+  { key: "rules", label: t("pool.group.tabs.rules"), icon: "hi-solid-bookmark", accent: "purple" },
 ]);
 
 const onSelect = (key: string) => {

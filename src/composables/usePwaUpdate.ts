@@ -2,7 +2,7 @@ import { ref } from 'vue'
 
 /**
  * Reactive bridge between the service-worker registration (registerServiceWorker.ts)
- * and the Vue UI (PwaUpdateModal.vue).
+ * and the auto-update controller (usePwaAutoUpdate.ts).
  *
  * Uses module-level singleton refs — the same pattern as usePushNotifications.ts —
  * so it works even though registerServiceWorker.ts is imported in main.ts BEFORE

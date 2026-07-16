@@ -133,7 +133,15 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        // El SW de Firebase (public/firebase-messaging-sw.js) NO debe entrar al
+        // precache de Workbox: se registra aparte en usePushNotifications con su
+        // propio scope (/firebase-cloud-messaging-push-scope). Excluirlo hace que
+        // navigator.serviceWorker.register() siempre resuelva contra el archivo
+        // estático y lo desacopla del ciclo de vida del SW de la PWA.
+        globIgnores: ['firebase-messaging-sw.js'],
+        // Al activarse un SW nuevo, borra los precaches de versiones anteriores.
+        cleanupOutdatedCaches: true
       }
     })
   ],
