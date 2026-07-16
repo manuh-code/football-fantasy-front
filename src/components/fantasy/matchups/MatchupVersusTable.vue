@@ -10,9 +10,11 @@ interface Props {
   versusData: FantasyFootballPlayerVersusResponse | null
   isLoading: boolean
   error: string | null
+  /** Drop the card chrome + internal header so it can nest inside a collapsible. */
+  embedded?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { embedded: false })
 const emit = defineEmits<{ close: [] }>()
 
 const positionShort = usePositionShortCode()
@@ -63,10 +65,10 @@ function positionColor(developerName: string): string {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden">
+  <div :class="embedded ? '' : 'bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden'">
 
-    <!-- ── Section Header ── -->
-    <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
+    <!-- ── Section Header (hidden when embedded — the parent card owns it) ── -->
+    <div v-if="!embedded" class="px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
       <div class="flex items-center gap-3">
         <!-- Home team -->
         <div class="flex items-center gap-2 flex-1 min-w-0">

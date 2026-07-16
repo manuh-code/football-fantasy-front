@@ -193,42 +193,20 @@
       </div>
 
       <!-- ============================== -->
-      <!-- QUICK ACCESS — Action buttons  -->
+      <!-- QUICK ACCESS — Stats shortcut  -->
+      <!-- (My Team / Matches now live in the top tab bar)  -->
       <!-- ============================== -->
-      <div
+      <button
         v-if="league.isMember || league.isAdmin"
-        class="grid grid-cols-3 gap-2"
+        @click="navigateToTab('statistics')"
+        class="w-full flex items-center gap-3 py-3 px-4 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-orange-200 dark:hover:border-orange-800/40 active:scale-[0.99] transition-all"
       >
-        <button
-          @click="navigateToTab('myteam')"
-          class="flex flex-col items-center gap-1.5 py-3 px-2 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-emerald-200 dark:hover:border-emerald-800/40 active:scale-[0.97] transition-all"
-        >
-          <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-            <v-icon name="hi-solid-user-group" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.myTeam') }}</span>
-        </button>
-
-        <button
-          @click="navigateToTab('statistics')"
-          class="flex flex-col items-center gap-1.5 py-3 px-2 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-orange-200 dark:hover:border-orange-800/40 active:scale-[0.97] transition-all"
-        >
-          <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-            <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-orange-600 dark:text-orange-400" />
-          </div>
-          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.stats') }}</span>
-        </button>
-
-        <button
-          @click="navigateToTab('matchups')"
-          class="flex flex-col items-center gap-1.5 py-3 px-2 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-red-200 dark:hover:border-red-800/40 active:scale-[0.97] transition-all"
-        >
-          <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-            <v-icon name="gi-crossed-swords" class="w-4 h-4 text-red-600 dark:text-red-400" />
-          </div>
-          <span class="text-2xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.matchups') }}</span>
-        </button>
-      </div>
+        <div class="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center shrink-0">
+          <v-icon name="hi-solid-chart-bar" class="w-4.5 h-4.5 text-orange-600 dark:text-orange-400" />
+        </div>
+        <span class="flex-1 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.stats') }}</span>
+        <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
+      </button>
 
       <!-- ==================================================== -->
       <!-- DRAFT CARD — the primary pre-season action, so it    -->
