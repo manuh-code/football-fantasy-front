@@ -131,7 +131,7 @@
             type="text"
             maxlength="30"
             :placeholder="$t('fantasy.teamCreate.teamNamePlaceholder')"
-            class="w-full pl-3.5 pr-14 py-3 rounded-xl border text-sm bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-800"
+            class="w-full pl-3.5 pr-14 py-3 rounded-xl border text-base md:text-sm bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-800"
             :class="nameError ? 'border-red-300 dark:border-red-500/60' : 'border-gray-200 dark:border-gray-700'"
           />
           <span class="absolute right-3 top-1/2 -translate-y-1/2 text-2xs text-gray-400 tabular-nums">
@@ -157,7 +157,7 @@
             type="text"
             maxlength="4"
             :placeholder="$t('fantasy.teamCreate.initialsPlaceholder')"
-            class="flex-1 min-w-0 px-3.5 py-3 rounded-xl border text-sm bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 uppercase tracking-[0.3em] font-bold text-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-800"
+            class="flex-1 min-w-0 px-3.5 py-3 rounded-xl border text-base md:text-sm bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 uppercase tracking-[0.3em] font-bold text-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-800"
             :class="initialsError ? 'border-red-300 dark:border-red-500/60' : 'border-gray-200 dark:border-gray-700'"
             @input="onInitialsInput"
           />
