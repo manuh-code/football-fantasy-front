@@ -66,7 +66,39 @@
     "overview": "Resumen",
     "team": "Mi equipo",
     "players": "Jugadores",
-    "matches": "Partidos"
+    "matches": "Partidos",
+    "standings": "Tabla"
+  },
+  "standings": {
+    "title": "Tabla general",
+    "teams": "{count} equipo | {count} equipos",
+    "you": "Tú",
+    "loading": "Cargando tabla",
+    "error": "No se pudo cargar la tabla",
+    "loadError": "Ocurrió un error al cargar la tabla general.",
+    "col": {
+      "team": "Equipo",
+      "played": "PJ",
+      "wins": "G",
+      "draws": "E",
+      "losses": "P",
+      "pointsFor": "PF",
+      "pointsAgainst": "PC",
+      "diff": "DIF"
+    },
+    "full": {
+      "played": "Partidos jugados",
+      "wins": "Ganados",
+      "draws": "Empatados",
+      "losses": "Perdidos",
+      "pointsFor": "Puntos a favor",
+      "pointsAgainst": "Puntos en contra",
+      "diff": "Diferencia"
+    },
+    "empty": {
+      "title": "Aún no hay resultados",
+      "body": "La tabla se llenará cuando comiencen los enfrentamientos."
+    }
   },
   "userLeagues": {
     "title": "Mis ligas",
