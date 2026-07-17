@@ -206,6 +206,7 @@
     "rounds": "Rounds",
     "noRoundMatches": "No matches in this round",
     "noWeekFixtures": "No fixtures this week",
+    "live": "Live",
     "errors": {
       "weeklyLoad": "Error loading weekly fixtures",
       "noStage": "No stage selected",

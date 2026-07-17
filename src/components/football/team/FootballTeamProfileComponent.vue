@@ -218,28 +218,6 @@ const resultClass = (fixture: FootballFixtureResponse, location: "home" | "away"
     : "text-red-500 dark:text-red-400";
 };
 
-// ── Date formatting (locale-aware) for fixtures ──
-const dateLocale = computed(() => (locale.value === "es" ? "es-ES" : "en-US"));
-
-const formatFixtureDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return dateString;
-  return date.toLocaleDateString(dateLocale.value, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-};
-
-const formatFixtureTime = (dateString: string): string => {
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "";
-  return date.toLocaleTimeString(dateLocale.value, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
 // ── Recent form: latest 5 fixtures surfaced on the Team tab ──
 const recentFixtures = computed<FootballFixtureResponse[]>(() =>
   (profile.value?.latest ?? []).slice(0, 5),
@@ -566,7 +544,8 @@ const onDragEnd = (e: PointerEvent) => {
                           </span>
                         </div>
                         <span class="shrink-0 text-2xs font-semibold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                          {{ formatFixtureDate(profile.next_fixture.starting_at) }} · {{ formatFixtureTime(profile.next_fixture.starting_at) }}
+                          {{ profile.next_fixture.starting_date }}
+                         
                         </span>
                       </div>
 
@@ -805,7 +784,8 @@ const onDragEnd = (e: PointerEvent) => {
                   >
                     <div class="text-center mb-2">
                       <span class="text-2xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
-                        {{ formatFixtureDate(fixture.starting_at) }} · {{ formatFixtureTime(fixture.starting_at) }}
+                        {{ fixture.starting_date}}
+                       
                       </span>
                     </div>
                     <div class="flex items-center gap-2">
