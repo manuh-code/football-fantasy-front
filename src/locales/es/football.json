@@ -207,6 +207,7 @@
     "noRoundMatches": "No hay partidos en esta ronda",
     "noWeekFixtures": "No hay partidos esta semana",
     "live": "En vivo",
+    "halfTime": "Descanso",
     "errors": {
       "weeklyLoad": "Error al cargar los partidos de la semana",
       "noStage": "No hay etapa seleccionada",

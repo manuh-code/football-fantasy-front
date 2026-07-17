@@ -104,7 +104,7 @@
               </span>
               <span
                 v-else
-                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-2xs font-semibold"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-2xs font-semibold tabular-nums"
                 :class="stateBadgeClass(fixture)"
               >
                 <span v-if="isLive(fixture)" class="relative flex h-1.5 w-1.5">
@@ -268,6 +268,7 @@ import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
 import FixtureMatchCenter from "@/components/football/fixtures/FixtureMatchCenter.vue";
 import RoundCarousel from "@/components/ui/RoundCarousel.vue";
+import { formatLiveMatchClock, useLiveMatchClockTick } from "@/composables/football/useLiveMatchClock";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
@@ -396,9 +397,18 @@ const isHalfTime = (fixture: FootballFixtureResponse): boolean =>
 const isFinished = (fixture: FootballFixtureResponse): boolean =>
   stateCodeOf(fixture).includes("FT") || stateNameOf(fixture).includes("finished");
 
+// Running match minute, extrapolated client-side from the `currentperiod`
+// snapshot (see useLiveMatchClock) — ticks every second, frozen during HT.
+const clockTick = useLiveMatchClockTick();
+const liveClockLabel = (fixture: FootballFixtureResponse): string =>
+  formatLiveMatchClock(fixture, clockTick.value, { paused: isHalfTime(fixture) });
+
 const stateLabel = (fixture: FootballFixtureResponse): string => {
   if (!fixture.state) return t("pool.prediction.played");
-  if (isLive(fixture)) return isHalfTime(fixture) ? t("pool.prediction.badge.halfTime") : t("pool.prediction.badge.live");
+  if (isLive(fixture)) {
+    if (isHalfTime(fixture)) return t("pool.prediction.badge.halfTime");
+    return liveClockLabel(fixture) || t("pool.prediction.badge.live");
+  }
   if (isFinished(fixture)) return t("pool.prediction.badge.fullTime");
   if (stateNameOf(fixture).includes("postponed")) return t("pool.prediction.badge.postponed");
   if (stateNameOf(fixture).includes("cancelled")) return t("pool.prediction.badge.cancelled");
