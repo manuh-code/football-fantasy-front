@@ -69,8 +69,6 @@ async function loadMatchups() {
       selectedRoundUuid.value,
     )
     matchups.value = response.data
-    // Open the first matchup so the tab never lands on a wall of closed cards.
-    if (matchups.value.length) toggle(matchups.value[0])
   } catch (err: unknown) {
     error.value = err instanceof Error ? err.message : t('fantasy.matchups.loadError')
     console.error('Error loading matchups:', error.value)

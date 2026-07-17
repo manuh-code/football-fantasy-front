@@ -144,12 +144,27 @@
         @update:selected-team="onTeamFilterChange"
       />
 
+      <!-- Participant Filter -->
+      <ParticipantFilter
+        :participants="participants"
+        :selected-user="selectedUser"
+        :disabled="props.disabled"
+        @update:selected-user="onParticipantChange"
+      />
+
       <!-- Position Filters -->
       <PositionFilter
         :filters="positionFilters"
         :selected-position="selectedPosition"
         :disabled="props.disabled"
         @update:selected-position="handleFilterChange"
+      />
+
+      <!-- Availability Filters -->
+      <AvailabilityFilter
+        :selected-availability="selectedAvailability"
+        :disabled="props.disabled"
+        @update:selected-availability="onAvailabilityChange"
       />
 
       <!-- Show players if available -->
@@ -333,6 +348,7 @@
                   <!-- Select Button — row end, consistent with mobile -->
                   <td class="px-3 py-2.5 text-center">
                     <button
+                      v-if="player.is_available"
                       @click="handleAddPlayer(player)"
                       :disabled="
                         props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
@@ -356,6 +372,14 @@
                         class="w-3.5 h-3.5"
                         animation="spin"
                       />
+                    </button>
+                    <button
+                      v-else
+                      disabled
+                      :aria-label="$t('fantasy.search.tradeAria', { name: player.player.display_name })"
+                      class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                    >
+                      <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4" />
                     </button>
                   </td>
                 </tr>
@@ -431,6 +455,7 @@
 
                 <!-- Select Button — row end, thumb-reachable -->
                 <button
+                  v-if="player.is_available"
                   @click="handleAddPlayer(player)"
                   :disabled="
                     props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
@@ -449,6 +474,14 @@
                     class="w-3.5 h-3.5"
                     animation="spin"
                   />
+                </button>
+                <button
+                  v-else
+                  disabled
+                  :aria-label="$t('fantasy.search.tradeAria', { name: player.player.display_name })"
+                  class="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                >
+                  <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -537,7 +570,10 @@ import { usePositionShortCode } from "@/composables/usePositionShortCode";
 import PositionFilter from "@/components/user/fantasy/search/PositionFilter.vue";
 import TeamFilter from "@/components/user/fantasy/search/TeamFilter.vue";
 import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.vue";
+import AvailabilityFilter from "@/components/user/fantasy/search/AvailabilityFilter.vue";
+import ParticipantFilter from "@/components/user/fantasy/search/ParticipantFilter.vue";
 import LineupDrawer from "@/components/fantasy/lineup/LineupDrawer.vue";
+import type { UserDataInterface } from "@/interfaces/user/userInterface";
 import type { LineupSlotSelection } from "@/components/fantasy/lineup/LineupDrawer.vue";
 
 interface Props {
@@ -584,6 +620,8 @@ const addingPlayers = ref<Set<string>>(new Set());
 const selectedPosition = ref<string>("ALL");
 const selectedTeam = ref<string>("ALL");
 const playerName = ref<string>("");
+const selectedAvailability = ref<string>("available");
+const selectedUser = ref<string>("ALL");
 const teams = ref<FootballTeamResponse[]>([]);
 const slotType = ref<string>("STARTER");
 const initialLoadComplete = ref(false);
@@ -595,6 +633,11 @@ let observer: IntersectionObserver | null = null;
 
 // Computed
 const leagueUuid = computed(() => props.fantasyLeagueUuid);
+
+/** League participants, sourced from the already-loaded league detail */
+const participants = computed<UserDataInterface[]>(
+  () => league.value?.participants ?? [],
+);
 
 /** In 'add' mode, only allow adding players when the draft is COMPLETED */
 const isDraftCompleted = computed(() =>
@@ -609,7 +652,9 @@ const hasActiveFilters = computed(
   () =>
     selectedPosition.value !== "ALL" ||
     selectedTeam.value !== "ALL" ||
-    playerName.value !== "",
+    playerName.value !== "" ||
+    selectedAvailability.value !== "available" ||
+    selectedUser.value !== "ALL",
 );
 
 const positionFilters = computed(() => {
@@ -765,6 +810,16 @@ async function loadTeams() {
 
 function onTeamFilterChange(value: string | number | null) {
   selectedTeam.value = String(value || "ALL");
+  loadPlayers(false);
+}
+
+function onAvailabilityChange(value: string) {
+  selectedAvailability.value = value;
+  loadPlayers(false);
+}
+
+function onParticipantChange(value: string) {
+  selectedUser.value = value;
   loadPlayers(false);
 }
 
@@ -972,6 +1027,15 @@ function buildPayloadFilters(): FantasyPlayerDraftPayload["filters"] {
 
   if (playerName.value) {
     filters.player_name = playerName.value;
+  }
+
+  // availability always sent — its default ("available") is a real filter value
+  if (selectedAvailability.value) {
+    filters.availability = selectedAvailability.value;
+  }
+
+  if (selectedUser.value !== "ALL") {
+    filters.user_uuid = selectedUser.value;
   }
 
   return Object.keys(filters).length > 0 ? filters : undefined;

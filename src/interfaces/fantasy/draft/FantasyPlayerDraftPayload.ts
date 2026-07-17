@@ -5,5 +5,7 @@ export interface FantasyPlayerDraftPayload {
         position_uuid?: string;
         team_uuid?: string;
         player_name?: string;
+        availability?: string | null;
+        user_uuid?: string | null;
     };
 }
