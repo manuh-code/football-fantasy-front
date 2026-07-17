@@ -116,7 +116,15 @@
     "decreaseScore": "Decrease {team} score",
     "saved": "Saved",
     "saveErrorRetry": "Couldn't save · Retry",
-    "tapToSet": "Tap to set your prediction"
+    "tapToSet": "Tap to set your prediction",
+    "yourPrediction": "Your prediction",
+    "badge": {
+      "live": "Live",
+      "halfTime": "Half Time",
+      "fullTime": "Finished",
+      "postponed": "Postponed",
+      "cancelled": "Cancelled"
+    }
   },
   "standing": {
     "noStandings": "No Standings",

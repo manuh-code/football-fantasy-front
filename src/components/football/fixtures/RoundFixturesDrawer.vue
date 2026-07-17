@@ -213,6 +213,9 @@ const getAwayScore = (fixture: FootballFixtureResponse): number =>
   getAwayParticipant(fixture)?.current_score?.score ?? 0;
 
 const isMatchLive = (fixture: FootballFixtureResponse): boolean => {
+  // The API's `is_inplay` flag is the authoritative live signal — prefer it over
+  // guessing from `state.name`, which drifts as the backend's state labels change.
+  if (fixture.is_inplay != null) return fixture.is_inplay;
   if (fixture.state) {
     const stateName = fixture.state.name.toLowerCase();
     return (

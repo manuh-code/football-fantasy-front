@@ -120,6 +120,9 @@ const hasScores = (fx: FootballFixtureResponse): boolean => {
 const scoreOf = (team: FootballTeamResponse | undefined): number => team?.current_score?.score ?? 0;
 
 const isLive = (fx: FootballFixtureResponse): boolean => {
+  // The API's `is_inplay` flag is the authoritative live signal — prefer it over
+  // guessing from `state.name`, which drifts as the backend's state labels change.
+  if (fx.is_inplay != null) return fx.is_inplay;
   if (fx.state) {
     const s = fx.state.name.toLowerCase();
     return s.includes("live") || s.includes("in play") || s.includes("ht") || s.includes("half time");

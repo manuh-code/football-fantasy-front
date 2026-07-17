@@ -90,7 +90,8 @@
           <div
             v-for="fixture in fixtures"
             :key="fixture.uuid"
-            class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4"
+            @click="openMatchCenter(fixture)"
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/30 transition-colors"
           >
             <!-- Kickoff + status -->
             <div class="flex items-center justify-center gap-2 mb-3">
@@ -103,9 +104,14 @@
               </span>
               <span
                 v-else
-                class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-2xs font-semibold"
+                :class="stateBadgeClass(fixture)"
               >
-                {{ fixture.state?.name || $t('pool.prediction.played') }}
+                <span v-if="isLive(fixture)" class="relative flex h-1.5 w-1.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                  <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+                </span>
+                {{ stateLabel(fixture) }}
               </span>
             </div>
 
@@ -126,7 +132,7 @@
               <!-- Center: result or prediction inputs -->
               <div class="flex flex-col items-center justify-center">
                 <template v-if="isPredictable(fixture)">
-                  <div class="flex items-start gap-2.5 touch-manipulation">
+                  <div class="flex items-start gap-2.5 touch-manipulation" @click.stop>
                     <!-- Home stepper -->
                     <div class="flex flex-col items-center gap-1.5">
                       <button
@@ -201,7 +207,7 @@
                   <button
                     v-else-if="saveStatus[fixture.uuid] === 'error'"
                     type="button"
-                    @click="savePrediction(fixture.uuid)"
+                    @click.stop="savePrediction(fixture.uuid)"
                     class="flex items-center gap-1 text-2xs text-red-500 mt-2"
                   >
                     <v-icon name="hi-solid-exclamation" class="w-3 h-3" />
@@ -214,6 +220,15 @@
                 <template v-else>
                   <span class="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
                     {{ goalsFor(fixture, 'home') }} <span class="text-gray-300 dark:text-gray-600">-</span> {{ goalsFor(fixture, 'away') }}
+                  </span>
+                  <span
+                    v-if="fixture.prediction"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-2xs font-semibold mt-2 whitespace-nowrap"
+                    :class="predictionBadgeClass(fixture)"
+                  >
+                    <v-icon :name="predictionIcon(fixture)" class="w-2.5 h-2.5 shrink-0" />
+                    {{ $t('pool.prediction.yourPrediction') }}
+                    {{ fixture.prediction.home_score }}-{{ fixture.prediction.away_score }}
                   </span>
                 </template>
               </div>
@@ -235,6 +250,14 @@
       </div>
       </transition>
     </template>
+
+    <!-- Match Center drawer -->
+    <FixtureMatchCenter
+      :is-open="matchCenterOpen"
+      :fixture-uuid="selectedFixtureUuid"
+      :stage-uuid="props.stageUuid"
+      @close="matchCenterOpen = false"
+    />
   </div>
 </template>
 
@@ -243,6 +266,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
+import FixtureMatchCenter from "@/components/football/fixtures/FixtureMatchCenter.vue";
 import RoundCarousel from "@/components/ui/RoundCarousel.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
@@ -279,6 +303,15 @@ const lastSaved: Record<string, string> = {};
 
 // Reasonable upper bound for a football scoreline.
 const MAX_SCORE = 20;
+
+// Match Center drawer (opened by tapping a fixture card).
+const selectedFixtureUuid = ref<string | null>(null);
+const matchCenterOpen = ref(false);
+
+const openMatchCenter = (fixture: FootballFixtureResponse) => {
+  selectedFixtureUuid.value = fixture.uuid;
+  matchCenterOpen.value = true;
+};
 
 // Persist a single fixture's prediction (1-by-1).
 const savePrediction = async (fixtureUuid: string) => {
@@ -340,6 +373,78 @@ const goalsFor = (fixture: FootballFixtureResponse, location: "home" | "away"): 
   if (typeof current === "number") return current;
   const score = fixture.scores?.find((s) => s.score?.participant === location);
   return typeof score?.score?.goals === "number" ? score.score.goals : 0;
+};
+
+// --- Fixture state badge (scheduled / live / half time / finished / postponed / cancelled) ---
+// Mirrors the string-matching convention used across the football fixture components
+// (e.g. FixtureScoreboardHeader.vue) since the API doesn't expose a fixed state enum.
+const stateNameOf = (fixture: FootballFixtureResponse): string => fixture.state?.name?.toLowerCase() ?? "";
+const stateCodeOf = (fixture: FootballFixtureResponse): string => fixture.state?.state?.toUpperCase() ?? "";
+
+const isLive = (fixture: FootballFixtureResponse): boolean => {
+  // The API's `is_inplay` flag is the authoritative live signal — prefer it over
+  // guessing from `state.name`, which drifts as the backend's state labels change.
+  if (fixture.is_inplay != null) return fixture.is_inplay;
+  const name = stateNameOf(fixture);
+  if (!name) return false;
+  return name.includes("live") || name.includes("in play") || name.includes("ht") || name.includes("half time");
+};
+
+const isHalfTime = (fixture: FootballFixtureResponse): boolean =>
+  stateNameOf(fixture).includes("half time") || stateCodeOf(fixture) === "HT";
+
+const isFinished = (fixture: FootballFixtureResponse): boolean =>
+  stateCodeOf(fixture).includes("FT") || stateNameOf(fixture).includes("finished");
+
+const stateLabel = (fixture: FootballFixtureResponse): string => {
+  if (!fixture.state) return t("pool.prediction.played");
+  if (isLive(fixture)) return isHalfTime(fixture) ? t("pool.prediction.badge.halfTime") : t("pool.prediction.badge.live");
+  if (isFinished(fixture)) return t("pool.prediction.badge.fullTime");
+  if (stateNameOf(fixture).includes("postponed")) return t("pool.prediction.badge.postponed");
+  if (stateNameOf(fixture).includes("cancelled")) return t("pool.prediction.badge.cancelled");
+  return fixture.state.name || t("pool.prediction.played");
+};
+
+const stateBadgeClass = (fixture: FootballFixtureResponse): string => {
+  if (isLive(fixture)) return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
+  if (isFinished(fixture)) return "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
+  return "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500";
+};
+
+// --- Prediction vs. result comparison (shown once a fixture is no longer predictable) ---
+type PredictionOutcome = "exact" | "correct" | "miss";
+
+const predictionOutcome = (fixture: FootballFixtureResponse): PredictionOutcome | null => {
+  const prediction = fixture.prediction;
+  if (!prediction) return null;
+  const actualHome = goalsFor(fixture, "home");
+  const actualAway = goalsFor(fixture, "away");
+  if (prediction.home_score === actualHome && prediction.away_score === actualAway) return "exact";
+  const actualDiff = Math.sign(actualHome - actualAway);
+  const predictedDiff = Math.sign(prediction.home_score - prediction.away_score);
+  return actualDiff === predictedDiff ? "correct" : "miss";
+};
+
+const predictionBadgeClass = (fixture: FootballFixtureResponse): string => {
+  switch (predictionOutcome(fixture)) {
+    case "exact":
+      return "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
+    case "correct":
+      return "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400";
+    default:
+      return "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500";
+  }
+};
+
+const predictionIcon = (fixture: FootballFixtureResponse): string => {
+  switch (predictionOutcome(fixture)) {
+    case "exact":
+      return "hi-solid-check-circle";
+    case "correct":
+      return "hi-solid-check";
+    default:
+      return "hi-solid-x-circle";
+  }
 };
 
 // --- Formatting ---

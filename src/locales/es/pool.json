@@ -115,7 +115,15 @@
     "decreaseScore": "Disminuir marcador de {team}",
     "saved": "Guardado",
     "saveErrorRetry": "No se pudo guardar · Reintentar",
-    "tapToSet": "Toca para hacer tu predicción"
+    "tapToSet": "Toca para hacer tu predicción",
+    "yourPrediction": "Tu predicción",
+    "badge": {
+      "live": "En vivo",
+      "halfTime": "Descanso",
+      "fullTime": "Finalizado",
+      "postponed": "Aplazado",
+      "cancelled": "Cancelado"
+    }
   },
   "standing": {
     "noStandings": "Sin posiciones",
