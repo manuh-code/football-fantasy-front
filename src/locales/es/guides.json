@@ -2,7 +2,7 @@
   "hub": {
     "badge": "Guías",
     "title": "Guías y reglas de Fantasy MX",
-    "subtitle": "Aprende a jugar cada modo de la app: fantasy, draft, quinielas y Survivor. Todo explicado paso a paso, para que empieces a competir con tus amigos hoy mismo.",
+    "subtitle": "Aprende a jugar cada modo de la app: fantasy con draft en vivo, quinielas de marcador exacto y Survivor con vidas. Disponible para Liga MX, Premier League, LaLiga, Serie A y Bundesliga.",
     "read": "Leer guía",
     "minRead": "min de lectura"
   },
@@ -16,136 +16,189 @@
   "items": {
     "fantasy": {
       "title": "Cómo jugar Fantasy en Fantasy MX",
-      "excerpt": "Todo lo que necesitas para crear tu liga, hacer el draft y sumar puntos con el rendimiento real de los jugadores.",
-      "intro": "El modo Fantasy convierte cada jornada de la Liga MX en una competencia entre tú y tus amigos. Armas un equipo con jugadores reales y, cada semana, sumas puntos según lo que esos jugadores hacen de verdad en la cancha. Esta guía te explica, paso a paso, cómo empezar.",
+      "excerpt": "Crea tu liga, haz el draft, arma tu alineación y gana tus enfrentamientos semanales cara a cara.",
+      "intro": "El modo Fantasy convierte cada jornada en una competencia entre tú y tus amigos. Armas un equipo con jugadores reales de la liga que elijas —Liga MX, Premier League, LaLiga, Serie A o Bundesliga— y cada semana te enfrentas cara a cara contra otro equipo de tu liga. Gana quien más puntos suma con sus titulares.",
       "sections": [
         {
           "h": "¿Qué es una liga fantasy?",
-          "p": "Una liga fantasy es un grupo privado donde cada participante dirige su propio equipo. En lugar de jugar tú, tus jugadores reales de la Liga MX puntúan por ti: si tu delantero marca, sumas; si tu portero deja el arco en cero, también. Gana quien mejor arma y gestiona su plantilla a lo largo del torneo."
+          "p": "Una liga fantasy es un grupo donde cada participante dirige su propio equipo. Tus jugadores reales puntúan por ti: si tu delantero marca, sumas; si tu portero deja el arco en cero, también. La diferencia de Fantasy MX es que no solo acumulas puntos en una tabla: cada jornada juegas un enfrentamiento directo contra otro participante, como en una liga de verdad."
         },
         {
           "h": "Crea o únete a una liga",
-          "p": "Puedes crear tu propia liga y elegir su nombre, el número de participantes y las reglas, o unirte a una liga existente con el código que te comparta el administrador. Al crear una liga tú eres el administrador y defines cómo se reparten los puntos."
+          "p": "Al crear una liga eliges su nombre, la competencia sobre la que se juega y el número de participantes; tú quedas como administrador y defines las reglas de puntuación. Para unirte a una liga tienes dos caminos:",
+          "list": [
+            { "t": "Con código", "d": "El administrador te comparte un código de acceso o un enlace de invitación para entrar a su liga privada." },
+            { "t": "Explorando ligas públicas", "d": "Desde la pestaña Buscar puedes encontrar ligas abiertas por nombre y unirte directamente." }
+          ]
         },
         {
-          "h": "El draft: elige a tus jugadores",
-          "p": "Antes de empezar, todas las ligas hacen un draft en vivo. Por turnos, cada participante elige a un jugador hasta completar su plantilla. Como cada jugador solo puede pertenecer a un equipo dentro de la liga, el orden de selección y la estrategia importan. Tenemos una guía dedicada solo al draft."
+          "h": "Crea tu equipo",
+          "p": "Antes del draft le das identidad a tu equipo: nombre, siglas y, si quieres, tu propio escudo. Ese equipo es el que verán tus rivales cada jornada en los enfrentamientos."
         },
         {
-          "h": "Arma tu alineación",
-          "p": "Con tu plantilla lista, cada jornada decides quién es titular y quién va a la banca. Solo los titulares suman puntos, así que conviene revisar lesiones, sanciones y el calendario antes de que arranque la jornada."
+          "h": "El draft: reparte a los jugadores",
+          "p": "Todas las ligas arrancan con un draft en vivo: por turnos y contra el reloj, cada participante elige jugadores hasta completar su plantilla. Cada jugador solo puede pertenecer a un equipo dentro de la liga. Tenemos una guía dedicada solo al draft."
         },
         {
-          "h": "Cómo se suman los puntos",
-          "p": "Tus jugadores puntúan según su desempeño real: goles, asistencias, portería a cero, minutos jugados, tarjetas y más. Cada liga puede configurar cuántos puntos vale cada acción y por posición, así que revisa las reglas de la tuya. El detalle está en la guía del sistema de puntos."
+          "h": "Tu plantilla: titulares, FLEX y banca",
+          "p": "Tu plantilla se organiza por posiciones según la formación que define la liga. Solo los titulares suman puntos en el enfrentamiento:",
+          "list": [
+            { "t": "POR · DEF · MED · DEL", "d": "Los puestos fijos de tu once: portero, defensas, medios y delanteros, en el número que marque la formación de tu liga." },
+            { "t": "FLEX", "d": "Un lugar comodín que puedes ocupar con jugadores de distintas posiciones. Te da margen para alinear a quien mejor viene." },
+            { "t": "Banca", "d": "Tus suplentes. No suman puntos, pero puedes intercambiarlos con tus titulares antes de cada jornada." }
+          ],
+          "note": "Revisa lesiones, sanciones y calendario antes de que arranque la jornada: los puntos de la banca no cuentan para el marcador."
         },
         {
-          "h": "Gana el torneo",
-          "p": "Jornada tras jornada, los puntos se acumulan en la tabla de tu liga. El que más sabe de fútbol —y mejor gestiona su equipo— termina en lo más alto."
+          "h": "Enfrentamientos cara a cara",
+          "p": "Cada jornada la app programa duelos de local y visitante entre los equipos de tu liga. El marcador del enfrentamiento es la suma de puntos de los titulares de cada equipo: quien suma más, gana; si terminan iguales, es empate. El resultado alimenta la tabla de la liga con ganados, empatados y perdidos, puntos a favor y en contra, como una tabla de futbol de verdad."
+        },
+        {
+          "h": "Refuerza tu equipo durante el torneo",
+          "p": "Tu plantilla no es definitiva. A lo largo de la temporada puedes agregar jugadores disponibles que nadie haya elegido y proponer cambios para ajustar tu equipo jornada a jornada. Los filtros de posición, equipo y estadísticas te ayudan a encontrar refuerzos."
+        },
+        {
+          "h": "Gana la liga",
+          "p": "Jornada tras jornada, tus resultados se acumulan en la tabla de posiciones de tu liga. El que mejor draftea, mejor alinea y mejor refuerza su equipo termina en lo más alto."
         }
       ]
     },
     "draft": {
       "title": "Cómo funciona el draft en vivo",
-      "excerpt": "El corazón del fantasy: elige a tus jugadores por turnos, en tiempo real y contra el reloj.",
-      "intro": "El draft es el momento en que se reparten los jugadores entre todos los participantes de una liga fantasy. En Fantasy MX es un evento en vivo: todos conectados a la vez, eligiendo por turnos y con un cronómetro para cada selección.",
+      "excerpt": "Turnos en tiempo real, cronómetro por elección y auto-pick para que el draft nunca se detenga.",
+      "intro": "El draft es el momento en que se reparten los jugadores entre todos los participantes de una liga fantasy. En Fantasy MX es un evento en vivo: todos conectados a la vez, eligiendo por turnos, con cronómetro para cada selección y actualizaciones al instante.",
       "sections": [
         {
           "h": "Qué es el draft",
-          "p": "El draft es una selección por turnos. Cada jugador de la Liga MX solo puede pertenecer a un equipo dentro de tu liga, así que cuando alguien lo elige, deja de estar disponible para los demás. Por eso cada turno cuenta."
+          "p": "El draft es una selección por turnos. Cada jugador de la competencia solo puede pertenecer a un equipo dentro de tu liga, así que cuando alguien lo elige, deja de estar disponible para los demás. Por eso cada turno cuenta."
         },
         {
-          "h": "Turnos en tiempo real",
-          "p": "Cuando el administrador inicia el draft, todos los participantes reciben una notificación y entran a la sala. La app te muestra de quién es el turno en cada momento y actualiza las selecciones al instante para todos los que están dentro."
+          "h": "Antes de empezar: la activación",
+          "p": "El administrador de la liga es quien activa el draft cuando el grupo está listo. En ese momento todos los participantes reciben una notificación para entrar a la sala. Mientras tanto, la app te muestra si el draft está pendiente, activo o completado."
         },
         {
-          "h": "El cronómetro",
-          "p": "Cada turno tiene un tiempo límite para elegir. Si se agota, el turno avanza, así que conviene llegar con una lista de objetivos preparada antes de que sea tu momento."
+          "h": "Turnos y cronómetro",
+          "p": "La sala muestra el orden de selección y de quién es el turno en cada momento. Cada elección tiene un tiempo límite configurado por la liga:",
+          "list": [
+            { "t": "Tu turno", "d": "La app te avisa cuando te toca y el cronómetro empieza a correr. Elige antes de que llegue a cero." },
+            { "t": "Auto-pick", "d": "Si la liga lo tiene activado y tu tiempo se agota, la app elige por ti para que el draft no se detenga. También te sirve si sabes que no podrás conectarte." }
+          ]
         },
         {
-          "h": "Presencia: quién está conectado",
-          "p": "La sala del draft muestra quién está en línea en tiempo real. Esto ayuda a saber si alguien se desconectó y a mantener el ritmo del evento."
+          "h": "Presencia y tablero",
+          "p": "La sala muestra quién está en línea en tiempo real, y el tablero del draft registra todas las selecciones ronda por ronda. Así sabes qué posiciones ya reforzaron tus rivales y qué huecos les quedan."
         },
         {
           "h": "Estrategia para el draft",
-          "p": "Prioriza jugadores que sumen en varias facetas, cuida el equilibrio entre posiciones y ten alternativas listas: es muy probable que alguien elija a tu objetivo antes de tu turno. No dependas de un solo nombre."
+          "p": "Llega con la tarea hecha y no dependas de un solo nombre:",
+          "list": [
+            { "t": "Lleva una lista", "d": "Ten varios objetivos por posición: es muy probable que alguien elija a tu favorito antes de tu turno." },
+            { "t": "Equilibra posiciones", "d": "Recuerda que tu alineación exige portero, defensas, medios, delanteros y un FLEX. No te cargues de una sola posición." },
+            { "t": "Usa los filtros", "d": "En la búsqueda puedes filtrar por posición y equipo, y comparar puntos totales, promedio y partidos jugados." },
+            { "t": "Piensa en la banca", "d": "Los últimos turnos son para suplentes que te salven en jornadas con bajas." }
+          ]
         }
       ]
     },
     "quiniela": {
       "title": "Cómo jugar la quiniela",
-      "excerpt": "Predice los resultados de la jornada, compite con tu grupo y sube en la tabla.",
-      "intro": "La quiniela es el modo más rápido y social de Fantasy MX. Cada jornada predices los resultados de los partidos y compites con tus amigos por ver quién acierta más. No necesitas draft ni gestionar un equipo: solo tu conocimiento del fútbol.",
+      "excerpt": "Predice el marcador exacto de cada partido y compite con tu grupo jornada a jornada.",
+      "intro": "La quiniela es el modo más rápido y social de Fantasy MX. Cada jornada pronosticas el marcador exacto de los partidos y compites con tus amigos por ver quién le atina más. No necesitas draft ni gestionar un equipo: solo tu conocimiento del futbol.",
       "sections": [
         {
           "h": "Qué es una quiniela",
-          "p": "Una quiniela es un grupo donde todos predicen los resultados de la jornada. Por cada acierto sumas puntos y, al cierre de cada jornada, se actualiza la tabla del grupo."
+          "p": "Una quiniela es un grupo privado donde todos predicen los resultados de una liga y una etapa concretas —por ejemplo, el torneo actual de la Liga MX o la temporada de la Premier League—. Por cada acierto sumas puntos y la tabla del grupo se actualiza conforme se juegan los partidos."
         },
         {
           "h": "Crea o únete a un grupo",
-          "p": "Puedes crear tu propia quiniela e invitar a tus amigos con un código, o unirte a una existente. Los grupos son privados: compites solo con la gente que invitas."
+          "p": "Puedes crear tu propia quiniela eligiendo la liga y la etapa en la que se jugará, e invitar a tu gente con un código de acceso o un enlace para compartir. Los grupos son privados: compites solo con quienes tú invitas."
         },
         {
-          "h": "Haz tus predicciones",
-          "p": "Antes de que empiece la jornada marcas tu pronóstico para cada partido. Puedes ajustarlo hasta el cierre; una vez que arranca el partido, tu predicción queda fija."
+          "h": "Haz tu predicción",
+          "p": "Para cada partido capturas un marcador exacto: los goles del local y los del visitante. Puedes ajustar tu predicción todas las veces que quieras hasta que el partido comience; en cuanto rueda el balón, queda bloqueada. Solo hay una predicción por partido: si la cambias antes del inicio, simplemente se actualiza la anterior."
         },
         {
           "h": "Cómo se puntúa",
-          "p": "Sumas puntos por cada resultado que aciertas. Cuantos más partidos aciertes en la jornada, más subes en la clasificación de tu grupo."
+          "p": "Cada grupo define cuántos puntos vale cada tipo de acierto, siempre en tres niveles:",
+          "list": [
+            { "t": "Resultado exacto", "d": "Le atinaste al marcador final tal cual. Es el acierto mejor pagado." },
+            { "t": "Ganador correcto", "d": "No acertaste el marcador, pero sí quién ganaba el partido." },
+            { "t": "Empate correcto", "d": "Pronosticaste empate y el partido terminó empatado, aunque con otro marcador." }
+          ],
+          "note": "Los puntos no se suman entre sí: si aciertas el marcador exacto, ganas solo los puntos de ese nivel. Revisa las reglas de puntuación de tu grupo en la pestaña de información."
         },
         {
           "h": "La tabla en tiempo real",
-          "p": "Conforme se juegan los partidos, la clasificación de tu quiniela se actualiza en vivo. Sigue la jornada con tus amigos y presume tus aciertos."
+          "p": "Conforme se juegan los partidos, la clasificación de tu quiniela se actualiza en vivo. Puedes ver la tabla de cada jornada o el acumulado general del torneo, y presumir tus aciertos con tu grupo."
         }
       ]
     },
     "survivor": {
       "title": "Cómo funciona el Survivor",
-      "excerpt": "Elige un ganador por jornada, sin repetir equipo. Falla una vez y quedas fuera.",
-      "intro": "El Survivor es el modo de eliminación de Fantasy MX. La regla es simple pero implacable: cada jornada eliges un equipo que crees que va a ganar. Si aciertas, sigues con vida; si fallas, quedas eliminado. El último en pie gana.",
+      "excerpt": "Elige un ganador por jornada sin repetir equipo. Administra tus vidas y sé el último en pie.",
+      "intro": "El Survivor es el modo de eliminación de Fantasy MX. Cada jornada eliges un equipo que crees que va a ganar. Si gana, sigues con vida; si pierde, pierdes una vida. Cuando te quedas sin vidas, estás fuera. El último en pie gana.",
       "sections": [
         {
           "h": "La regla de oro",
-          "p": "Cada jornada eliges un solo equipo ganador. Si tu equipo gana, avanzas a la siguiente jornada. Si empata o pierde, quedas eliminado del Survivor."
+          "p": "Cada jornada eliges un solo equipo de entre los partidos disponibles. Tu pick vive o muere con el resultado de ese partido, así que elige con cabeza."
+        },
+        {
+          "h": "El sistema de vidas",
+          "p": "Cada participante empieza con el número de vidas que defina el pool (normalmente una). Esto es lo que pasa con tu pick cada jornada:",
+          "list": [
+            { "t": "Tu equipo gana", "d": "Sobrevives y avanzas a la siguiente jornada con tus vidas intactas." },
+            { "t": "Tu equipo empata", "d": "El empate no cuesta vida: sobrevives, aunque el equipo queda usado." },
+            { "t": "Tu equipo pierde", "d": "Pierdes una vida." },
+            { "t": "No elegiste a tiempo", "d": "Quedarte sin pick antes del cierre también cuesta una vida. No dejes pasar la jornada." }
+          ],
+          "note": "Al llegar a cero vidas quedas eliminado del Survivor. Si el pool reparte más de una vida, un tropiezo no te manda a casa, pero cada error cuenta."
         },
         {
           "h": "No puedes repetir equipo",
-          "p": "Aquí está el reto: una vez que usas un equipo, no puedes volver a elegirlo en las siguientes jornadas. Tienes que dosificar a los favoritos y decidir cuándo 'gastar' a los mejores."
+          "p": "Una vez que usas un equipo, queda quemado para el resto del torneo: no puedes volver a elegirlo en jornadas siguientes. Aquí está el verdadero reto del Survivor, porque tienes que decidir cuándo gastar a los favoritos."
+        },
+        {
+          "h": "Cambios y cierre de jornada",
+          "p": "Puedes cambiar tu pick todas las veces que quieras mientras la jornada no haya comenzado. En cuanto arranca el primer partido de la jornada, se bloquea por completo: ya no puedes elegir ni cambiar nada."
         },
         {
           "h": "Estrategia: piensa a futuro",
-          "p": "No basta con elegir al favorito de la semana. Como no puedes repetir, conviene mirar el calendario de las próximas jornadas y reservar a ciertos equipos para partidos más difíciles."
+          "p": "No basta con elegir al favorito de la semana. Como no puedes repetir, conviene mirar el calendario de las próximas jornadas y reservar a ciertos equipos para las fechas difíciles. En Mis Picks tienes tu historial completo con ganados, empatados y perdidos para planear lo que viene."
         },
         {
-          "h": "Eliminación y último en pie",
-          "p": "Jornada tras jornada, los que fallan van cayendo. El Survivor termina cuando queda un único sobreviviente —o los que aguanten hasta el final— y ese se lleva la gloria."
+          "h": "Fin del juego",
+          "p": "El Survivor termina cuando se agotan las jornadas del torneo o cuando queda un único sobreviviente, según cómo esté configurado el pool. Sobrevive más jornadas que todos y la gloria es tuya."
         }
       ]
     },
     "puntos": {
       "title": "El sistema de puntos del fantasy",
-      "excerpt": "Cómo se convierten los goles, asistencias y actuaciones reales en puntos para tu equipo.",
-      "intro": "En el modo Fantasy, tus jugadores puntúan según lo que hacen de verdad en la cancha. Esta guía explica cómo se calculan esos puntos y por qué pueden cambiar de una liga a otra.",
+      "excerpt": "Cómo se convierten goles, asistencias y actuaciones reales en puntos, y cómo deciden tus enfrentamientos.",
+      "intro": "En el modo Fantasy, tus jugadores puntúan según lo que hacen de verdad en la cancha. Esos puntos deciden tus enfrentamientos de cada jornada. Esta guía explica cómo se calculan y por qué pueden cambiar de una liga a otra.",
       "sections": [
         {
           "h": "Puntos basados en el rendimiento real",
-          "p": "Después de cada partido de la Liga MX, Fantasy MX toma las estadísticas reales de tus jugadores —goles, asistencias, minutos, portería a cero, tarjetas, etc.— y las convierte en puntos para tu equipo."
+          "p": "Después de cada partido, Fantasy MX toma las estadísticas reales de tus jugadores —goles, asistencias, minutos, portería a cero, tarjetas y más— y las convierte en puntos para tu equipo. Da igual si tu liga es de la Liga MX, la Premier League, LaLiga, la Serie A o la Bundesliga: el mecanismo es el mismo."
         },
         {
           "h": "Cada acción vale puntos",
-          "p": "Las acciones positivas suman, como un gol o una asistencia, y algunas acciones negativas pueden restar, como una tarjeta roja. La idea es premiar a los jugadores que de verdad influyen en el partido."
+          "p": "Las acciones positivas suman, como un gol o una asistencia, y algunas acciones negativas restan, como una tarjeta roja. La idea es premiar a los jugadores que de verdad influyen en el partido."
         },
         {
           "h": "Los puntos dependen de la posición",
-          "p": "Una misma acción puede valer distinto según la posición del jugador. Por ejemplo, un gol suele premiarse más a un defensa que a un delantero, porque es menos habitual. Así se equilibra el valor de cada posición."
+          "p": "Una misma acción puede valer distinto según la posición del jugador. Por ejemplo, un gol suele premiarse más a un defensa que a un delantero, porque es menos habitual. Así se equilibra el valor de cada posición en tu alineación."
         },
         {
           "h": "Cada liga define sus reglas",
-          "p": "El administrador de cada liga fantasy puede configurar cuántos puntos vale cada acción y con qué condiciones. Por eso, antes de armar tu equipo, conviene revisar las reglas de puntuación de tu liga concreta: dos ligas pueden premiar cosas distintas."
+          "p": "El administrador de cada liga fantasy configura las reglas de puntuación: qué acciones puntúan, cuántos puntos valen por posición y bajo qué condiciones. Dos ligas pueden premiar cosas distintas, así que revisa las reglas de la tuya antes de armar tu equipo."
+        },
+        {
+          "h": "Solo puntúan tus titulares",
+          "p": "El marcador de tu enfrentamiento semanal es la suma de puntos de tus titulares, incluido el puesto FLEX. Los jugadores de tu banca acumulan estadísticas, pero sus puntos no cuentan para el duelo: alinear bien es tan importante como draftear bien."
         },
         {
           "h": "Revisa tus puntos cada jornada",
-          "p": "Al cerrar cada jornada verás el desglose de cuánto sumó cada uno de tus jugadores. Es la mejor forma de entender qué funcionó y de ajustar tu alineación para la siguiente."
+          "p": "En cada enfrentamiento puedes ver el desglose de cuánto sumó cada uno de tus jugadores, y en la búsqueda de jugadores tienes sus puntos totales, promedio y partidos jugados. Es la mejor forma de entender qué funcionó y ajustar tu alineación para la siguiente jornada."
         }
       ]
     }

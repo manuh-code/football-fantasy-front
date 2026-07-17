@@ -1,8 +1,8 @@
 {
   "hub": {
     "badge": "Guides",
-    "title": "Fantasy MX guides & rules",
-    "subtitle": "Learn how to play every mode in the app: fantasy, draft, pools, and Survivor. Everything explained step by step so you can start competing with your friends today.",
+    "title": "Fantasy MX guides and rules",
+    "subtitle": "Learn how to play every mode in the app: fantasy with a live draft, exact-score pools and Survivor with lives. Available for Liga MX, Premier League, LaLiga, Serie A and Bundesliga.",
     "read": "Read guide",
     "minRead": "min read"
   },
@@ -16,136 +16,189 @@
   "items": {
     "fantasy": {
       "title": "How to play Fantasy on Fantasy MX",
-      "excerpt": "Everything you need to create your league, run the draft, and score points from players' real performance.",
-      "intro": "Fantasy mode turns every Liga MX matchday into a competition between you and your friends. You build a team of real players and, each week, you score points based on what those players actually do on the pitch. This guide walks you through how to get started.",
+      "excerpt": "Create your league, run the draft, set your lineup and win your weekly head-to-head matchups.",
+      "intro": "Fantasy mode turns every matchday into a competition between you and your friends. You build a team with real players from the league of your choice — Liga MX, Premier League, LaLiga, Serie A or Bundesliga — and every week you face another team from your league head to head. Whoever scores more points with their starters wins.",
       "sections": [
         {
           "h": "What is a fantasy league?",
-          "p": "A fantasy league is a private group where each participant manages their own team. Instead of you playing, your real Liga MX players score for you: if your striker scores, you score too; if your goalkeeper keeps a clean sheet, so do you. Whoever best builds and manages their squad over the tournament wins."
+          "p": "A fantasy league is a group where each participant manages their own team. Your real players score for you: if your striker scores, you earn points; if your keeper keeps a clean sheet, you do too. What makes Fantasy MX different is that you don't just pile up points in a table: every matchday you play a direct matchup against another participant, just like a real league."
         },
         {
           "h": "Create or join a league",
-          "p": "You can create your own league and choose its name, the number of participants, and the rules, or join an existing league with the code the admin shares with you. When you create a league you are the admin and you decide how points are awarded."
+          "p": "When you create a league you choose its name, the competition it runs on and the number of participants; you become the admin and define the scoring rules. To join a league there are two ways in:",
+          "list": [
+            { "t": "With a code", "d": "The admin shares an access code or an invite link so you can enter their private league." },
+            { "t": "Browsing public leagues", "d": "From the Discover tab you can find open leagues by name and join directly." }
+          ]
         },
         {
-          "h": "The draft: pick your players",
-          "p": "Before it all begins, every league runs a live draft. In turns, each participant picks a player until their squad is complete. Because each player can only belong to one team within the league, pick order and strategy matter. We have a guide dedicated to the draft alone."
+          "h": "Create your team",
+          "p": "Before the draft you give your team an identity: a name, initials and, if you want, your own crest. That's the team your rivals will see every matchday in the matchups."
         },
         {
-          "h": "Set your lineup",
-          "p": "With your squad ready, each matchday you decide who starts and who sits on the bench. Only starters score points, so it's worth checking injuries, suspensions, and the schedule before the matchday kicks off."
+          "h": "The draft: players get distributed",
+          "p": "Every league starts with a live draft: taking turns against the clock, each participant picks players until their squad is complete. Each player can only belong to one team within the league. We have a guide dedicated to the draft."
         },
         {
-          "h": "How points are scored",
-          "p": "Your players score based on their real performance: goals, assists, clean sheets, minutes played, cards, and more. Each league can configure how many points each action is worth and by position, so review your league's rules. The details are in the scoring system guide."
+          "h": "Your squad: starters, FLEX and bench",
+          "p": "Your squad is organized by position according to the formation your league defines. Only starters score points in the matchup:",
+          "list": [
+            { "t": "GK · DEF · MID · FWD", "d": "The fixed spots in your eleven: goalkeeper, defenders, midfielders and forwards, in the numbers your league's formation requires." },
+            { "t": "FLEX", "d": "A wildcard spot you can fill with players from different positions. It gives you room to start whoever is in form." },
+            { "t": "Bench", "d": "Your substitutes. They don't score points, but you can swap them with your starters before each matchday." }
+          ],
+          "note": "Check injuries, suspensions and the schedule before the matchday kicks off: bench points don't count toward the score."
         },
         {
-          "h": "Win the tournament",
-          "p": "Matchday after matchday, points add up in your league's standings. Whoever knows the most about football — and manages their team best — ends up on top."
+          "h": "Head-to-head matchups",
+          "p": "Every matchday the app schedules home-and-away duels between the teams in your league. The matchup score is the sum of each team's starters' points: whoever scores more wins; if you finish level, it's a draw. The result feeds the league table with wins, draws and losses, points for and against, just like a real football table."
+        },
+        {
+          "h": "Strengthen your team during the season",
+          "p": "Your squad isn't final. Throughout the season you can add available players nobody has picked and propose trades to adjust your team matchday by matchday. Position, team and stats filters help you find reinforcements."
+        },
+        {
+          "h": "Win the league",
+          "p": "Matchday after matchday, your results accumulate in your league's standings. Whoever drafts best, sets the best lineups and strengthens their team best finishes on top."
         }
       ]
     },
     "draft": {
       "title": "How the live draft works",
-      "excerpt": "The heart of fantasy: pick your players in turns, in real time, and against the clock.",
-      "intro": "The draft is when players are distributed among all the participants of a fantasy league. On Fantasy MX it's a live event: everyone connected at once, picking in turns, with a timer for each selection.",
+      "excerpt": "Real-time turns, a pick timer and auto-pick so the draft never stalls.",
+      "intro": "The draft is the moment when players get distributed among all the participants of a fantasy league. On Fantasy MX it's a live event: everyone connected at once, picking in turns, with a timer for every selection and instant updates.",
       "sections": [
         {
           "h": "What the draft is",
-          "p": "The draft is a turn-based selection. Each Liga MX player can only belong to one team within your league, so when someone picks them, they're no longer available to the rest. That's why every turn counts."
+          "p": "The draft is a turn-based selection. Each player in the competition can only belong to one team within your league, so once someone picks them, they're gone for everyone else. That's why every turn counts."
         },
         {
-          "h": "Turns in real time",
-          "p": "When the admin starts the draft, all participants get a notification and enter the room. The app shows whose turn it is at any moment and updates picks instantly for everyone inside."
+          "h": "Before it starts: activation",
+          "p": "The league admin is the one who activates the draft when the group is ready. At that moment every participant gets a notification to enter the room. Until then, the app shows you whether the draft is pending, active or completed."
         },
         {
-          "h": "The timer",
-          "p": "Each turn has a time limit to pick. If it runs out, the turn moves on, so it's smart to arrive with a shortlist of targets ready before it's your moment."
+          "h": "Turns and the timer",
+          "p": "The room shows the pick order and whose turn it is at every moment. Each pick has a time limit configured by the league:",
+          "list": [
+            { "t": "Your turn", "d": "The app alerts you when you're up and the clock starts ticking. Pick before it hits zero." },
+            { "t": "Auto-pick", "d": "If your league has it enabled and your time runs out, the app picks for you so the draft never stalls. It also helps when you know you won't be able to connect." }
+          ]
         },
         {
-          "h": "Presence: who's online",
-          "p": "The draft room shows who is online in real time. This helps you know if someone disconnected and keeps the event moving."
+          "h": "Presence and the board",
+          "p": "The room shows who's online in real time, and the draft board records every selection round by round. That way you know which positions your rivals have covered and which gaps they still have."
         },
         {
           "h": "Draft strategy",
-          "p": "Prioritize players who contribute in several areas, keep your positions balanced, and have alternatives ready: it's very likely someone will pick your target before your turn. Don't rely on a single name."
+          "p": "Come prepared and never depend on a single name:",
+          "list": [
+            { "t": "Bring a list", "d": "Have several targets per position: someone will very likely take your favorite before your turn." },
+            { "t": "Balance positions", "d": "Remember your lineup needs a goalkeeper, defenders, midfielders, forwards and a FLEX. Don't overload one position." },
+            { "t": "Use the filters", "d": "In the search you can filter by position and team, and compare total points, average and games played." },
+            { "t": "Think about the bench", "d": "The last rounds are for substitutes who save you on matchdays with absences." }
+          ]
         }
       ]
     },
     "quiniela": {
       "title": "How to play the pool",
-      "excerpt": "Predict the matchday results, compete with your group, and climb the table.",
-      "intro": "The pool is the fastest, most social mode on Fantasy MX. Each matchday you predict the results of the games and compete with your friends over who gets the most right. No draft, no team management: just your football knowledge.",
+      "excerpt": "Predict the exact score of every match and compete with your group matchday after matchday.",
+      "intro": "The pool is the fastest, most social mode on Fantasy MX. Every matchday you predict the exact score of the matches and compete with your friends to see who gets the most right. No draft, no team management: just your football knowledge.",
       "sections": [
         {
           "h": "What a pool is",
-          "p": "A pool is a group where everyone predicts the matchday results. For each correct pick you score points and, at the close of each matchday, the group's table is updated."
+          "p": "A pool is a private group where everyone predicts the results of a specific league and stage — for example, the current Liga MX tournament or the Premier League season. Every correct call earns points and the group table updates as matches are played."
         },
         {
           "h": "Create or join a group",
-          "p": "You can create your own pool and invite your friends with a code, or join an existing one. Groups are private: you only compete with the people you invite."
+          "p": "You can create your own pool by choosing the league and stage it will run on, and invite your people with an access code or a shareable link. Groups are private: you only compete with the people you invite."
         },
         {
-          "h": "Make your predictions",
-          "p": "Before the matchday starts you set your forecast for each game. You can adjust it until the deadline; once a match kicks off, your prediction is locked."
+          "h": "Make your prediction",
+          "p": "For each match you enter an exact score: goals for the home side and goals for the away side. You can adjust your prediction as many times as you like until the match kicks off; once the ball rolls, it locks. There's only one prediction per match: if you change it before kickoff, it simply replaces the previous one."
         },
         {
-          "h": "How it's scored",
-          "p": "You score points for each result you get right. The more matches you nail in the matchday, the higher you climb in your group's standings."
+          "h": "How scoring works",
+          "p": "Each group defines how many points every type of correct call is worth, always across three tiers:",
+          "list": [
+            { "t": "Exact score", "d": "You nailed the final score exactly. It's the best-paid call." },
+            { "t": "Correct winner", "d": "You missed the score but called who would win the match." },
+            { "t": "Correct draw", "d": "You predicted a draw and the match ended level, even if with a different score." }
+          ],
+          "note": "Points don't stack: if you hit the exact score, you earn only that tier's points. Check your group's scoring rules in the info tab."
         },
         {
-          "h": "The real-time table",
-          "p": "As the matches are played, your pool's standings update live. Follow the matchday with your friends and show off your correct picks."
+          "h": "The live table",
+          "p": "As matches are played, your pool's standings update live. You can view each matchday's table or the overall tournament total, and show off your calls to your group."
         }
       ]
     },
     "survivor": {
       "title": "How Survivor works",
-      "excerpt": "Pick a winner each matchday, without repeating teams. Miss once and you're out.",
-      "intro": "Survivor is the elimination mode on Fantasy MX. The rule is simple but merciless: each matchday you pick a team you think will win. Get it right and you stay alive; get it wrong and you're eliminated. The last one standing wins.",
+      "excerpt": "Pick one winner per matchday without repeating teams. Manage your lives and be the last one standing.",
+      "intro": "Survivor is Fantasy MX's elimination mode. Every matchday you pick one team you think will win. If it wins, you stay alive; if it loses, you lose a life. When you run out of lives, you're out. The last one standing wins.",
       "sections": [
         {
           "h": "The golden rule",
-          "p": "Each matchday you pick a single winning team. If your team wins, you advance to the next matchday. If it draws or loses, you're eliminated from Survivor."
+          "p": "Every matchday you pick a single team from the available matches. Your pick lives or dies with that match's result, so choose wisely."
         },
         {
-          "h": "You can't repeat teams",
-          "p": "Here's the challenge: once you use a team, you can't pick it again in later matchdays. You have to ration your favorites and decide when to 'spend' the best ones."
+          "h": "The lives system",
+          "p": "Each participant starts with the number of lives the pool defines (usually one). Here's what happens to your pick every matchday:",
+          "list": [
+            { "t": "Your team wins", "d": "You survive and advance to the next matchday with your lives intact." },
+            { "t": "Your team draws", "d": "A draw costs no life: you survive, though the team is used up." },
+            { "t": "Your team loses", "d": "You lose a life." },
+            { "t": "You didn't pick in time", "d": "Missing the deadline also costs a life. Don't let the matchday slip by." }
+          ],
+          "note": "When you reach zero lives you're eliminated from the Survivor. If the pool hands out more than one life, a stumble won't send you home, but every mistake counts."
+        },
+        {
+          "h": "You can't repeat a team",
+          "p": "Once you use a team, it's burned for the rest of the tournament: you can't pick it again in later matchdays. That's the real challenge of Survivor — deciding when to spend the favorites."
+        },
+        {
+          "h": "Changes and matchday lock",
+          "p": "You can change your pick as many times as you like while the matchday hasn't started. As soon as the first match of the matchday kicks off, it locks completely: no more picking or changing."
         },
         {
           "h": "Strategy: think ahead",
-          "p": "Picking the week's favorite isn't enough. Since you can't repeat, it pays to look at the schedule for upcoming matchdays and save certain teams for tougher games."
+          "p": "Picking the week's favorite isn't enough. Since you can't repeat, look at the schedule for upcoming matchdays and save certain teams for the tough dates. In My Picks you have your full history of wins, draws and losses to plan what's next."
         },
         {
-          "h": "Elimination and the last one standing",
-          "p": "Matchday after matchday, those who miss drop out. Survivor ends when a single survivor remains — or those who last until the end — and that person takes the glory."
+          "h": "How it ends",
+          "p": "The Survivor ends when the tournament runs out of matchdays or when a single survivor remains, depending on how the pool is configured. Outlast everyone and the glory is yours."
         }
       ]
     },
     "puntos": {
       "title": "The fantasy scoring system",
-      "excerpt": "How goals, assists, and real performances turn into points for your team.",
-      "intro": "In Fantasy mode, your players score based on what they actually do on the pitch. This guide explains how those points are calculated and why they can change from one league to another.",
+      "excerpt": "How goals, assists and real performances become points, and how they decide your matchups.",
+      "intro": "In Fantasy mode, your players score based on what they actually do on the pitch. Those points decide your matchups every matchday. This guide explains how they're calculated and why they can change from league to league.",
       "sections": [
         {
           "h": "Points based on real performance",
-          "p": "After each Liga MX match, Fantasy MX takes your players' real stats — goals, assists, minutes, clean sheets, cards, etc. — and turns them into points for your team."
+          "p": "After every match, Fantasy MX takes your players' real stats — goals, assists, minutes, clean sheets, cards and more — and turns them into points for your team. It works the same whether your league runs on Liga MX, the Premier League, LaLiga, Serie A or the Bundesliga."
         },
         {
           "h": "Every action is worth points",
-          "p": "Positive actions add up, like a goal or an assist, and some negative actions can subtract, like a red card. The idea is to reward players who genuinely influence the match."
+          "p": "Positive actions add points, like a goal or an assist, and some negative actions subtract, like a red card. The idea is to reward the players who truly influence the match."
         },
         {
           "h": "Points depend on position",
-          "p": "The same action can be worth different amounts depending on the player's position. For example, a goal is usually rewarded more for a defender than for a striker, because it's less common. This balances the value of each position."
+          "p": "The same action can be worth different amounts depending on the player's position. For example, a goal usually pays more for a defender than for a forward, because it's less common. That balances the value of every position in your lineup."
         },
         {
-          "h": "Each league sets its own rules",
-          "p": "The admin of each fantasy league can configure how many points each action is worth and under what conditions. That's why, before building your team, it's worth reviewing the scoring rules of your specific league: two leagues can reward different things."
+          "h": "Each league defines its rules",
+          "p": "Each fantasy league's admin configures the scoring rules: which actions score, how many points they're worth per position and under what conditions. Two leagues can reward different things, so check your league's rules before building your team."
         },
         {
-          "h": "Check your points every matchday",
-          "p": "At the close of each matchday you'll see a breakdown of how much each of your players scored. It's the best way to understand what worked and to adjust your lineup for the next one."
+          "h": "Only your starters score",
+          "p": "Your weekly matchup score is the sum of your starters' points, including the FLEX spot. Your bench players accumulate stats, but their points don't count toward the duel: setting a good lineup matters as much as drafting well."
+        },
+        {
+          "h": "Review your points every matchday",
+          "p": "In every matchup you can see the breakdown of how much each of your players scored, and the player search shows their total points, average and games played. It's the best way to understand what worked and adjust your lineup for the next matchday."
         }
       ]
     }

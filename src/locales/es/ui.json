@@ -43,31 +43,31 @@
   "about": {
     "title": "Acerca de",
     "badge": "Conoce Fantasy MX",
-    "heading": "Vive la Liga MX como nunca antes",
-    "subtitle": "Fantasy MX es la plataforma gratuita donde sigues el futbol mexicano en vivo, armas tu equipo fantasy con draft en tiempo real y compites contra tus amigos en quinielas y Survivor.",
+    "heading": "Tu futbol, tus amigos, cinco grandes ligas",
+    "subtitle": "Fantasy MX es la plataforma gratuita donde sigues en vivo la Liga MX, la Premier League, LaLiga, la Serie A y la Bundesliga, armas tu equipo fantasy con draft en tiempo real y compites contra tus amigos en quinielas y Survivor.",
     "intro": {
       "heading": "¿Qué es Fantasy MX?",
-      "p1": "Fantasy MX nace de la afición por el futbol mexicano. Reunimos en un solo lugar todo lo que un aficionado quiere: la tabla de posiciones actualizada, el calendario de la jornada, los resultados en vivo y las estadísticas de equipos y jugadores de la Liga MX. Todo con un diseño rápido, claro y pensado para el móvil.",
-      "p2": "Pero no nos quedamos en seguir los partidos: convertimos cada jornada en un juego. Puedes formar tu propio equipo fantasy, medir tus predicciones en quinielas privadas con tus amigos y sobrevivir jornada a jornada en el modo Survivor. Cada acierto suma y cada semana hay una nueva oportunidad de quedar en lo más alto."
+      "p1": "Fantasy MX nace de la afición por el futbol. Reunimos en un solo lugar todo lo que un aficionado quiere: tablas de posiciones, calendarios, resultados en vivo y estadísticas de equipos y jugadores de cinco grandes ligas: Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Todo con un diseño rápido, claro y pensado para el móvil.",
+      "p2": "Pero no nos quedamos en seguir los partidos: convertimos cada jornada en un juego. Forma tu equipo fantasy y enfrenta a tus amigos en duelos cara a cara, predice marcadores exactos en quinielas privadas y administra tus vidas jornada a jornada en el modo Survivor. Cada acierto suma y cada semana hay una nueva oportunidad de quedar en lo más alto."
     },
     "modes": {
       "heading": "Modos de juego",
-      "subtitle": "Cuatro formas de vivir cada jornada de la Liga MX.",
+      "subtitle": "Cuatro formas de vivir cada jornada, en la liga que tú elijas.",
       "follow": {
         "title": "Sigue tu liga",
-        "desc": "Tabla de posiciones, calendario, resultados en vivo y estadísticas de jugadores y equipos, actualizados jornada a jornada."
+        "desc": "Tabla de posiciones, calendario, resultados en vivo y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, actualizados jornada a jornada."
       },
       "fantasy": {
         "title": "Fantasy con draft en vivo",
-        "desc": "Crea una liga fantasy con tus amigos y elige a tus jugadores en un draft en tiempo real, con turnos y cronómetro. Tu equipo suma puntos según el rendimiento real en la cancha."
+        "desc": "Crea una liga con tus amigos, elige a tus jugadores en un draft en vivo y enfréntalos cada jornada en duelos cara a cara. Alinea a tus titulares, aprovecha el puesto FLEX y gestiona tu banca."
       },
       "pool": {
         "title": "Quinielas",
-        "desc": "Arma tu quiniela de la jornada, invita a tus amigos y compite por quién predice más resultados. Tabla de posiciones privada y en tiempo real."
+        "desc": "Predice el marcador exacto de cada partido y suma puntos por resultado exacto, ganador o empate correcto. Tabla privada y en tiempo real con tu grupo."
       },
       "survivor": {
         "title": "Survivor",
-        "desc": "Elige un equipo ganador cada jornada sin repetir. Si aciertas, avanzas; si fallas, quedas eliminado. El último en pie se lleva la gloria."
+        "desc": "Elige un equipo ganador cada jornada sin repetir. Si pierde, pierdes una vida; el empate te salva. El último en pie se lleva la gloria."
       }
     },
     "how": {
@@ -78,11 +78,11 @@
       },
       "step2": {
         "title": "Elige tu modo de juego",
-        "desc": "Sigue la liga, crea o únete a una liga fantasy, arma una quiniela o entra a un Survivor con tus amigos."
+        "desc": "Sigue tu liga favorita, crea o únete a una liga fantasy, arma una quiniela o entra a un Survivor con tus amigos."
       },
       "step3": {
         "title": "Compite cada jornada",
-        "desc": "Suma puntos con los resultados reales de la Liga MX y sube en la tabla de tu grupo semana tras semana."
+        "desc": "Suma puntos con los resultados reales de tu liga y sube en la tabla de tu grupo semana tras semana."
       }
     },
     "features": {

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Football Fantasy — Live your league and challenge your friends",
-    "description": "Follow your league live, create pools with your friends and build your fantasy team. Free and on your phone."
+    "description": "Follow Liga MX, Premier League, LaLiga, Serie A and Bundesliga live. Build your fantasy team with a live draft, play exact-score pools and survive in Survivor. Free."
   },
   "brand": "Football Fantasy",
   "nav": {
@@ -11,61 +11,61 @@
     "signup": "Sign up"
   },
   "hero": {
-    "badge": "Your league · Your friends · Your team",
+    "badge": "Fantasy · Pools · Survivor",
     "titleLine1": "Live your league.",
     "titleLine2": "Challenge your friends.",
-    "subtitle": "Follow live scores and stats, create pools with your group and build your fantasy team. All in one place, completely free.",
-    "ctaPrimary": "Create a free account",
+    "subtitle": "Follow five top leagues live, build your fantasy team with a real-time draft, predict scores in pools and survive matchday after matchday in Survivor. All in one place, completely free.",
+    "ctaPrimary": "Create free account",
     "ctaSecondary": "Explore the app",
     "note": "No cost · No card · Install it on your phone",
-    "social": "Join the football fans community"
+    "leaguesLabel": "Available for"
   },
   "preview": {
-    "title": "Your league",
+    "title": "League of friends",
+    "matchday": "Matchday 12 · Head to head",
     "live": "LIVE",
-    "min": "67'",
-    "standings": "Standings",
-    "matchday": "Matchday 12",
-    "points": "PTS"
+    "vs": "VS",
+    "starters": "Top starters",
+    "pts": "pts"
   },
   "stats": {
-    "leagues": { "value": "Multi-league", "label": "Follow your favorite leagues" },
-    "pools": { "value": "Pools", "label": "Compete with your friends" },
-    "free": { "value": "100% free", "label": "No payments, no annoying ads" }
+    "leagues": { "value": "5 leagues", "label": "Liga MX, Premier League, LaLiga, Serie A and Bundesliga" },
+    "modes": { "value": "3 game modes", "label": "Fantasy, pools and Survivor with your friends" },
+    "free": { "value": "100% free", "label": "No payments, no subscriptions" }
   },
   "features": {
     "title": "Everything you need to live football",
-    "subtitle": "Scores, competition and fun with your people, in a single app.",
+    "subtitle": "Five leagues, three game modes and your group of friends, in a single app.",
     "items": {
       "live": {
-        "title": "Follow your league live",
-        "body": "Standings, fixtures, stats and the team of the week, always up to date."
-      },
-      "pools": {
-        "title": "Pools with friends",
-        "body": "Predict the scores, climb the leaderboard and invite your group with a code."
+        "title": "Five leagues live",
+        "body": "Standings, results, fixtures and stats for Liga MX, Premier League, LaLiga, Serie A and Bundesliga."
       },
       "fantasy": {
-        "title": "Fantasy League",
-        "body": "Build your team, draft your players and design your own crest."
+        "title": "Fantasy with a live draft",
+        "body": "Draft your players in turns and face your friends every matchday in head-to-head duels."
+      },
+      "pools": {
+        "title": "Exact-score pools",
+        "body": "Predict the score of every match and earn points for exact score, correct winner or correct draw."
+      },
+      "survivor": {
+        "title": "Survivor with lives",
+        "body": "One pick per matchday, no repeating teams. If your team loses, you lose a life; the last one standing wins."
       },
       "versus": {
         "title": "Compare and analyze",
-        "body": "Put two players head to head and find out who performs best."
-      },
-      "notifications": {
-        "title": "Instant notifications",
-        "body": "Get notified the moment your draft starts or there's news in your league."
+        "body": "Put two players head to head and find out who performs better before setting your lineup."
       },
       "pwa": {
         "title": "Install it as an app",
-        "body": "Works on your phone like a native app, no app store required."
+        "body": "Works on your phone like a native app, with notifications for your draft and your leagues."
       }
     }
   },
   "how": {
-    "title": "Get started in 3 steps",
-    "subtitle": "In less than a minute you're already competing.",
+    "title": "Start in 3 steps",
+    "subtitle": "You'll be competing in less than a minute.",
     "steps": {
       "one": {
         "title": "Create your account",
@@ -73,17 +73,17 @@
       },
       "two": {
         "title": "Pick your league",
-        "body": "Select your favorite league and start following every matchday."
+        "body": "Liga MX, Premier League, LaLiga, Serie A or Bundesliga: you decide which football to follow."
       },
       "three": {
-        "title": "Create or join a pool",
-        "body": "Invite your friends with a code and let the best one win."
+        "title": "Pick your game mode",
+        "body": "Create a fantasy league, a pool or a Survivor and invite your friends with a code."
       }
     }
   },
   "cta": {
     "title": "Ready to play?",
-    "subtitle": "Join for free and prove you know more about football than your friends.",
+    "subtitle": "Join for free and prove you know more football than your friends.",
     "button": "Create my free account",
     "secondary": "I already have an account"
   },

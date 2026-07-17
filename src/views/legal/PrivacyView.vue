@@ -40,6 +40,25 @@
         </div>
       </div>
 
+      <!-- Índice -->
+      <nav
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-5"
+        aria-label="Índice del aviso de privacidad"
+      >
+        <p class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Índice</p>
+        <ol class="mt-3 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+          <li v-for="(section, i) in tocSections" :key="i">
+            <a
+              :href="`#privacidad-${i + 1}`"
+              class="inline-flex items-baseline gap-2 text-footnote text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+            >
+              <span class="text-2xs font-bold tabular-nums text-gray-400 dark:text-gray-500">{{ i + 1 }}.</span>
+              {{ section }}
+            </a>
+          </li>
+        </ol>
+      </nav>
+
       <!-- Content -->
       <article class="legal bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-5 sm:p-6">
         <p>
@@ -51,7 +70,7 @@
           protegemos tus datos personales.
         </p>
 
-        <h2>1. Identidad y domicilio del Responsable</h2>
+        <h2 id="privacidad-1">1. Identidad y domicilio del Responsable</h2>
         <ul>
           <li><strong>Responsable:</strong> {{ company.legalName }}</li>
           <li><strong>Nombre comercial:</strong> {{ company.appName }}</li>
@@ -60,16 +79,17 @@
           <li><strong>Sitio web:</strong> {{ company.website }}</li>
         </ul>
 
-        <h2>2. Datos personales que recabamos</h2>
+        <h2 id="privacidad-2">2. Datos personales que recabamos</h2>
         <p>Para las finalidades descritas en este Aviso podemos recabar las siguientes categorías de datos personales:</p>
         <ul>
           <li><strong>Datos de identificación:</strong> nombre y apellidos.</li>
           <li><strong>Datos de contacto:</strong> correo electrónico y número de teléfono.</li>
           <li>
             <strong>Datos de cuenta y perfil:</strong> nombre de usuario, fotografía o avatar,
-            equipo de futbol favorito, liga seleccionada, así como tus preferencias e historial de
+            equipo de futbol favorito, la liga o ligas de futbol que sigues (por ejemplo, Liga MX,
+            Premier League, LaLiga, Serie A o Bundesliga), así como tus preferencias e historial de
             actividad dentro de la aplicación (ligas fantasy, quinielas/pools, predicciones,
-            tablas de posiciones y estadísticas).
+            Survivor, tablas de posiciones y estadísticas).
           </li>
           <li>
             <strong>Datos técnicos y de navegación:</strong> dirección IP, identificadores del
@@ -91,7 +111,7 @@
           los proveedores de inicio de sesión social.
         </p>
 
-        <h2>3. No recabamos datos personales sensibles</h2>
+        <h2 id="privacidad-3">3. No recabamos datos personales sensibles</h2>
         <p>
           No solicitamos ni tratamos datos personales sensibles (aquellos que puedan revelar
           origen racial o étnico, estado de salud, información genética, creencias religiosas,
@@ -100,14 +120,16 @@
           pagos.
         </p>
 
-        <h2>4. Finalidades del tratamiento</h2>
+        <h2 id="privacidad-4">4. Finalidades del tratamiento</h2>
         <h3>4.1 Finalidades primarias (necesarias)</h3>
         <p>Son indispensables para prestarte el servicio y para la relación entre tú y nosotros:</p>
         <ul>
           <li>Crear, identificar, autenticar y administrar tu cuenta.</li>
           <li>
-            Prestar los servicios de la aplicación: ligas fantasy, quinielas/pools, predicciones,
-            tablas de posiciones y estadísticas.
+            Prestar los servicios de la aplicación: ligas fantasy (incluido el draft en vivo y los
+            enfrentamientos entre participantes), quinielas/pools de predicción, Survivor, tablas de
+            posiciones y estadísticas de las ligas de futbol disponibles (por ejemplo, Liga MX,
+            Premier League, LaLiga, Serie A y Bundesliga).
           </li>
           <li>
             Enviar notificaciones (incluidas notificaciones push) relacionadas con el
@@ -132,18 +154,20 @@
           motivo para negarte los servicios que contrataste.
         </p>
 
-        <h2>5. Uso de cookies, web beacons y tecnologías similares</h2>
+        <h2 id="privacidad-5">5. Uso de cookies, web beacons y tecnologías similares</h2>
         <p>
           Utilizamos cookies, almacenamiento local (localStorage), web beacons y tecnologías
           similares para mantener tu sesión, recordar tus preferencias, habilitar funciones de la
           aplicación y obtener métricas de uso mediante herramientas de analítica (por ejemplo,
-          {{ company.analyticsProvider }}). Estas tecnologías pueden recabar datos como tu
+          {{ company.analyticsProvider }}). En caso de mostrarse publicidad, nuestro proveedor de
+          anuncios ({{ company.adsProvider }}) también puede utilizar cookies e identificadores
+          similares conforme a sus propias políticas. Estas tecnologías pueden recabar datos como tu
           dirección IP, las secciones que visitas, el tiempo de navegación y características de tu
           dispositivo. Puedes deshabilitar las cookies desde la configuración de tu navegador,
           considerando que ello podría afectar el correcto funcionamiento de algunas funciones.
         </p>
 
-        <h2>6. Transferencias de datos</h2>
+        <h2 id="privacidad-6">6. Transferencias de datos</h2>
         <p>
           Para operar el servicio podemos compartir o dar acceso a tus datos personales a
           proveedores que actúan como encargados por nuestra cuenta, entre ellos:
@@ -152,6 +176,7 @@
           <li>Proveedores de infraestructura, hospedaje y almacenamiento en la nube.</li>
           <li>Proveedor de notificaciones push ({{ company.pushProvider }}).</li>
           <li>Proveedor de analítica web ({{ company.analyticsProvider }}).</li>
+          <li>Proveedor de publicidad ({{ company.adsProvider }}), en caso de mostrarse anuncios dentro de la aplicación.</li>
           <li>Proveedores de autenticación / inicio de sesión social (Google, Facebook).</li>
         </ul>
         <p>
@@ -163,7 +188,7 @@
           tratado, para el cumplimiento de un contrato, o por requerimiento de autoridad competente).
         </p>
 
-        <h2>7. Medios para ejercer tus Derechos ARCO</h2>
+        <h2 id="privacidad-7">7. Medios para ejercer tus Derechos ARCO</h2>
         <p>
           Tienes derecho a <strong>Acceder</strong> a tus datos personales, a
           <strong>Rectificar</strong>los cuando sean inexactos o incompletos, a
@@ -188,7 +213,7 @@
           salvo los gastos justificados de envío o reproducción que correspondan conforme a la Ley.
         </p>
 
-        <h2>8. Revocación del consentimiento</h2>
+        <h2 id="privacidad-8">8. Revocación del consentimiento</h2>
         <p>
           Puedes revocar en cualquier momento el consentimiento que nos has otorgado para el
           tratamiento de tus datos, enviando tu solicitud a {{ company.contactEmail }}. Considera
@@ -197,7 +222,7 @@
           concluya.
         </p>
 
-        <h2>9. Limitación del uso o divulgación de tus datos</h2>
+        <h2 id="privacidad-9">9. Limitación del uso o divulgación de tus datos</h2>
         <p>
           Puedes limitar el uso o divulgación de tus datos personales ajustando las preferencias de
           tu cuenta dentro de la aplicación o solicitándolo al correo {{ company.contactEmail }}.
@@ -205,7 +230,7 @@
           momento a través del enlace incluido en dichas comunicaciones.
         </p>
 
-        <h2>10. Medidas de seguridad</h2>
+        <h2 id="privacidad-10">10. Medidas de seguridad</h2>
         <p>
           Hemos adoptado y mantenemos medidas de seguridad administrativas, técnicas y físicas para
           proteger tus datos personales contra daño, pérdida, alteración, destrucción o uso, acceso o
@@ -261,7 +286,7 @@
           conforme a lo previsto en la Ley.
         </p>
 
-        <h2>11. Menores de edad</h2>
+        <h2 id="privacidad-11">11. Menores de edad</h2>
         <p>
           La aplicación está dirigida a personas mayores de <strong>{{ company.minAge }}</strong>
           años. No recabamos intencionalmente datos de menores de edad sin el consentimiento de
@@ -269,14 +294,14 @@
           datos personales, contáctanos a {{ company.contactEmail }} para eliminarlos.
         </p>
 
-        <h2>12. Cambios al Aviso de Privacidad</h2>
+        <h2 id="privacidad-12">12. Cambios al Aviso de Privacidad</h2>
         <p>
           Nos reservamos el derecho de modificar o actualizar el presente Aviso de Privacidad en
           cualquier momento. Cualquier cambio será publicado en {{ company.website }} y/o dentro de
           la aplicación, indicando la fecha de la última actualización.
         </p>
 
-        <h2>13. Autoridad</h2>
+        <h2 id="privacidad-13">13. Autoridad</h2>
         <p>
           Si consideras que tu derecho a la protección de datos personales ha sido vulnerado, puedes
           acudir al Instituto Nacional de Transparencia, Acceso a la Información y Protección de
@@ -284,7 +309,7 @@
           <a href="https://home.inai.org.mx" target="_blank" rel="noopener noreferrer">home.inai.org.mx</a>.
         </p>
 
-        <h2>14. Consentimiento</h2>
+        <h2 id="privacidad-14">14. Consentimiento</h2>
         <p>
           Al registrarte y/o utilizar {{ company.appName }}, manifiestas que has leído, entendido y
           aceptado los términos del presente Aviso de Privacidad, y otorgas tu consentimiento para
@@ -315,9 +340,29 @@ const company = {
   website: "[https://fantasymx.cloud]",
   pushProvider: "[Firebase Cloud Messaging]",
   analyticsProvider: "[Google Analytics]",
+  adsProvider: "[Google AdSense]",
   minAge: "18",
-  lastUpdated: "[25 de junio de 2026]",
+  lastUpdated: "[17 de julio de 2026]",
 };
+
+// Índice: un título por sección, en el mismo orden que los <h2 id="privacidad-N">.
+// El documento es intencionalmente solo en español (cumplimiento LFPDPPP).
+const tocSections = [
+  "Identidad y domicilio del Responsable",
+  "Datos personales que recabamos",
+  "No recabamos datos personales sensibles",
+  "Finalidades del tratamiento",
+  "Cookies y tecnologías similares",
+  "Transferencias de datos",
+  "Derechos ARCO",
+  "Revocación del consentimiento",
+  "Limitación del uso o divulgación",
+  "Medidas de seguridad",
+  "Menores de edad",
+  "Cambios al Aviso de Privacidad",
+  "Autoridad",
+  "Consentimiento",
+] as const;
 
 const goBack = () => {
   if (window.history.length > 1) router.back();
@@ -339,6 +384,7 @@ const goBack = () => {
   color: rgb(17 24 39); /* gray-900 */
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
+  scroll-margin-top: 1rem; /* aire al saltar desde el índice */
 }
 .dark .legal h2 {
   color: #fff;

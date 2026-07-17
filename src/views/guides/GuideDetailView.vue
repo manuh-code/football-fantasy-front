@@ -15,10 +15,15 @@
           {{ t('guides.nav.back') }}
         </router-link>
 
-        <div
-          class="mt-6 grid place-items-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft"
-        >
-          <v-icon :name="meta.icon" class="w-7 h-7" />
+        <div class="mt-6 flex items-center gap-4">
+          <div
+            class="grid place-items-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft shrink-0"
+          >
+            <v-icon :name="meta.icon" class="w-7 h-7" />
+          </div>
+          <p class="text-xs font-bold uppercase tracking-widest text-primary-600 dark:text-primary-400">
+            {{ t('guides.hub.badge') }} · {{ meta.minRead }} {{ t('guides.hub.minRead') }}
+          </p>
         </div>
 
         <h1 class="mt-5 text-3xl md:text-4xl font-extrabold tracking-tight leading-[1.1]">
@@ -35,14 +40,46 @@
       <section
         v-for="(section, i) in sections"
         :key="i"
-        class="py-6 border-t border-gray-100 dark:border-gray-800 first:border-t-0"
+        class="py-7 border-t border-gray-100 dark:border-gray-800 first:border-t-0"
       >
-        <h2 class="text-xl md:text-2xl font-bold tracking-tight">
+        <span class="block w-6 h-1 rounded-full bg-primary-500/80" aria-hidden="true" />
+        <h2 class="mt-3 text-xl md:text-2xl font-bold tracking-tight">
           {{ rt(section.h) }}
         </h2>
-        <p class="mt-3 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+        <p v-if="section.p" class="mt-3 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
           {{ rt(section.p) }}
         </p>
+
+        <!-- Rule / term list -->
+        <ul v-if="section.list" class="mt-4 space-y-2.5">
+          <li
+            v-for="(item, j) in asItems(section.list)"
+            :key="j"
+            class="flex items-start gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 px-4 py-3 ring-1 ring-gray-100 dark:ring-gray-700/50"
+          >
+            <span
+              class="mt-1 grid place-items-center w-5 h-5 rounded-md bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 shrink-0"
+              aria-hidden="true"
+            >
+              <v-icon name="hi-solid-check" class="w-3 h-3" />
+            </span>
+            <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+              <strong class="font-bold text-gray-900 dark:text-white">{{ rt(item.t) }}</strong>
+              <span aria-hidden="true"> — </span>{{ rt(item.d) }}
+            </p>
+          </li>
+        </ul>
+
+        <!-- Highlighted note -->
+        <aside
+          v-if="section.note"
+          class="mt-4 flex items-start gap-3 rounded-xl border-l-4 border-primary-500 bg-primary-50/70 dark:bg-primary-900/20 px-4 py-3"
+        >
+          <v-icon name="hi-solid-light-bulb" class="w-5 h-5 shrink-0 text-primary-600 dark:text-primary-400 mt-0.5" />
+          <p class="text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+            {{ rt(section.note) }}
+          </p>
+        </aside>
       </section>
     </div>
 
@@ -117,13 +154,17 @@ watchEffect(() => {
   if (!meta.value) router.replace({ name: 'not-found' })
 })
 
-// Section list ([{ h, p }, ...]) comes from i18n. `tm` returns the raw messages
-// for the active locale (and is itself reactive to locale changes); `rt`
-// resolves each leaf to a plain string.
+// Section list comes from i18n. Each section is `{ h, p?, list?, note? }`,
+// where `list` is an array of `{ t, d }` term/description rules. `tm` returns
+// the raw messages for the active locale (and is itself reactive to locale
+// changes); `rt` resolves each leaf to a plain string.
 const sections = computed<Array<Record<string, unknown>>>(() => {
   if (!base.value) return []
   return tm(`${base.value}.sections`) as Array<Record<string, unknown>>
 })
+
+// Narrow a section's raw `list` message into iterable term/description items.
+const asItems = (list: unknown) => list as Array<Record<string, unknown>>
 
 const related = computed(() => GUIDES.filter((g) => g.key !== meta.value?.key))
 
