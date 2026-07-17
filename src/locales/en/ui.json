@@ -43,31 +43,31 @@
   "about": {
     "title": "About",
     "badge": "Meet Fantasy MX",
-    "heading": "Experience Liga MX like never before",
-    "subtitle": "Fantasy MX is the free platform where you follow Mexican football live, build your fantasy team with a real-time draft, and compete against your friends in pools and Survivor.",
+    "heading": "Your football, your friends, five top leagues",
+    "subtitle": "Fantasy MX is the free platform where you follow Liga MX, the Premier League, LaLiga, Serie A and the Bundesliga live, build your fantasy team with a real-time draft, and compete against your friends in pools and Survivor.",
     "intro": {
       "heading": "What is Fantasy MX?",
-      "p1": "Fantasy MX was born out of a passion for Mexican football. We bring together everything a fan wants in one place: the live standings table, the matchday schedule, live results, and detailed statistics for Liga MX teams and players — all with a fast, clean design built for mobile.",
-      "p2": "But we go beyond just following the matches: we turn every matchday into a game. You can build your own fantasy team, test your predictions in private pools with friends, and survive week by week in Survivor mode. Every correct pick counts, and each week brings a new chance to reach the top."
+      "p1": "Fantasy MX was born out of a passion for football. We bring together everything a fan wants in one place: standings, fixtures, live results, and team and player stats for five top leagues: Liga MX, Premier League, LaLiga, Serie A and Bundesliga. All in a fast, clean design built for mobile.",
+      "p2": "But we don't stop at following matches: we turn every matchday into a game. Build your fantasy team and face your friends in head-to-head duels, predict exact scores in private pools, and manage your lives matchday after matchday in Survivor mode. Every correct call counts, and every week brings a new chance to finish on top."
     },
     "modes": {
       "heading": "Game modes",
-      "subtitle": "Four ways to experience every Liga MX matchday.",
+      "subtitle": "Four ways to live every matchday, in the league you choose.",
       "follow": {
         "title": "Follow your league",
-        "desc": "Standings, schedule, live results, and player and team statistics, updated matchday after matchday."
+        "desc": "Standings, fixtures, live results, and team and player stats for Liga MX, Premier League, LaLiga, Serie A and Bundesliga, updated matchday after matchday."
       },
       "fantasy": {
         "title": "Fantasy with live draft",
-        "desc": "Create a fantasy league with your friends and pick your players in a real-time draft, with turns and a timer. Your team scores based on real on-field performance."
+        "desc": "Create a league with your friends, pick your players in a live draft and face them every matchday in head-to-head duels. Set your starters, use the FLEX spot and manage your bench."
       },
       "pool": {
         "title": "Pools",
-        "desc": "Build your matchday pool, invite your friends, and compete over who predicts the most results. Private, real-time standings."
+        "desc": "Predict the exact score of every match and earn points for exact score, correct winner or correct draw. A private, real-time table with your group."
       },
       "survivor": {
         "title": "Survivor",
-        "desc": "Pick a winning team every matchday without repeating. Get it right and you advance; get it wrong and you're out. The last one standing takes the glory."
+        "desc": "Pick a winning team every matchday without repeating. If it loses, you lose a life; a draw keeps you alive. The last one standing takes the glory."
       }
     },
     "how": {
@@ -78,11 +78,11 @@
       },
       "step2": {
         "title": "Choose your game mode",
-        "desc": "Follow the league, create or join a fantasy league, build a pool, or enter a Survivor with your friends."
+        "desc": "Follow your favorite league, create or join a fantasy league, set up a pool, or enter a Survivor with your friends."
       },
       "step3": {
         "title": "Compete every matchday",
-        "desc": "Score points from real Liga MX results and climb your group's standings week after week."
+        "desc": "Earn points from your league's real results and climb your group's table week after week."
       }
     },
     "features": {

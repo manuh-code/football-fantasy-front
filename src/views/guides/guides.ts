@@ -18,10 +18,10 @@ export interface GuideMeta {
 }
 
 export const GUIDES: GuideMeta[] = [
-  { key: 'fantasy', slug: 'como-jugar-fantasy', icon: 'bi-trophy-fill', minRead: 4 },
-  { key: 'draft', slug: 'como-funciona-el-draft', icon: 'hi-solid-cursor-click', minRead: 3 },
+  { key: 'fantasy', slug: 'como-jugar-fantasy', icon: 'bi-trophy-fill', minRead: 5 },
+  { key: 'draft', slug: 'como-funciona-el-draft', icon: 'hi-solid-cursor-click', minRead: 4 },
   { key: 'quiniela', slug: 'como-jugar-quiniela', icon: 'hi-solid-clipboard-check', minRead: 3 },
-  { key: 'survivor', slug: 'como-funciona-survivor', icon: 'hi-solid-fire', minRead: 3 },
+  { key: 'survivor', slug: 'como-funciona-survivor', icon: 'hi-solid-fire', minRead: 4 },
   { key: 'puntos', slug: 'sistema-de-puntos', icon: 'hi-solid-chart-bar', minRead: 3 },
 ]
 

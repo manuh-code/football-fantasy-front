@@ -67,7 +67,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "landingpage" */ '@/views/landing/LandingView.vue'),
     meta: {
       title: 'Football Fantasy — Vive tu liga y reta a tus amigos',
-      description: 'Sigue tu liga en vivo, crea quinielas con tus amigos y arma tu equipo fantasy. Gratis y desde tu móvil.',
+      description: 'Sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Arma tu fantasy con draft en vivo, juega quinielas de marcador exacto y sobrevive en Survivor. Gratis.',
       requiresAuth: false
     }
   },
@@ -77,8 +77,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "about" */ '@/views/AboutView.vue'),
     meta: {
-      title: 'Acerca de Fantasy MX — Fantasy, quinielas y Survivor de la Liga MX',
-      description: 'Conoce Fantasy MX: sigue la Liga MX en vivo, arma tu equipo fantasy con draft en tiempo real, crea quinielas con tus amigos y juega Survivor. Gratis y desde tu móvil.',
+      title: 'Acerca de Fantasy MX — Fantasy, quinielas y Survivor de 5 grandes ligas',
+      description: 'Conoce Fantasy MX: sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, arma tu fantasy con draft en tiempo real, crea quinielas y juega Survivor. Gratis.',
       requiresAuth: false
     }
   },
@@ -322,7 +322,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "guides" */ '@/views/guides/GuidesView.vue'),
     meta: {
       title: 'Guías y reglas — Fantasy MX',
-      description: 'Aprende a jugar Fantasy MX: guías de fantasy, draft, quinielas, Survivor y el sistema de puntos. Paso a paso y gratis.',
+      description: 'Aprende a jugar Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto, Survivor con vidas y el sistema de puntos. Paso a paso y gratis.',
       requiresAuth: false
     }
   },

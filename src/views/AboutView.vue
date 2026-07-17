@@ -22,6 +22,18 @@
           {{ $t('ui.about.subtitle') }}
         </p>
 
+        <!-- League rail: the five competitions the app covers -->
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <span
+            v-for="league in leagues"
+            :key="league"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 ring-1 ring-gray-200 dark:ring-gray-700 shadow-soft"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-500" aria-hidden="true" />
+            {{ league }}
+          </span>
+        </div>
+
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <router-link
             :to="{ name: 'register' }"
@@ -213,6 +225,9 @@
 <script setup lang="ts">
 // About page: original, publicly reachable content describing Fantasy MX and its
 // game modes. Copy lives in i18n (ui.about.*) for es/en.
+
+// Proper nouns, identical in every locale, so they live here instead of i18n.
+const leagues = ['Liga MX', 'Premier League', 'LaLiga', 'Serie A', 'Bundesliga'] as const
 
 const modes = [
   { key: 'follow', icon: 'md-sportssoccer' },

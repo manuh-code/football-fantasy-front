@@ -91,28 +91,23 @@
 
           <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">{{ $t('landing.hero.note') }}</p>
 
-          <!-- Community strip -->
-          <div class="mt-7 flex items-center justify-center lg:justify-start gap-3">
-            <div class="flex -space-x-2.5" aria-hidden="true">
-              <span
-                v-for="a in avatars"
-                :key="a.abbr"
-                class="grid place-items-center w-8 h-8 rounded-full bg-gradient-to-br text-white text-2xs font-bold ring-2 ring-white dark:ring-gray-900 shadow-soft"
-                :class="[a.from, a.to]"
-              >
-                {{ a.abbr }}
-              </span>
-            </div>
-            <div class="text-left">
-              <div class="flex text-amber-400" aria-hidden="true">
-                <v-icon v-for="s in 5" :key="s" name="bi-star-fill" class="w-3.5 h-3.5" />
-              </div>
-              <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('landing.hero.social') }}</p>
-            </div>
+          <!-- League rail: the five competitions the app covers -->
+          <div class="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+            <span class="w-full lg:w-auto text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 lg:mr-1">
+              {{ $t('landing.hero.leaguesLabel') }}
+            </span>
+            <span
+              v-for="league in leagues"
+              :key="league"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 ring-1 ring-gray-200 dark:ring-gray-700 shadow-soft"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-500" aria-hidden="true" />
+              {{ league }}
+            </span>
           </div>
         </div>
 
-        <!-- Product mock -->
+        <!-- Product mock: a live head-to-head fantasy matchup -->
         <div class="relative mx-auto w-full max-w-sm lg:max-w-md" data-reveal style="--reveal-delay: 160ms" aria-hidden="true">
           <div class="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-to-tr from-primary-400/30 via-primary-300/20 to-transparent blur-3xl" />
 
@@ -123,7 +118,7 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="grid place-items-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft">
-                  <v-icon name="md-sportssoccer" class="w-4 h-4" />
+                  <v-icon name="bi-trophy-fill" class="w-4 h-4" />
                 </span>
                 <div class="leading-tight">
                   <p class="text-sm font-bold">{{ $t('landing.preview.title') }}</p>
@@ -139,39 +134,50 @@
               </span>
             </div>
 
-            <!-- Live match -->
+            <!-- Matchup scoreline -->
             <div class="mt-4 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 p-4 text-white shadow-medium">
-              <div class="flex items-center justify-between">
-                <span class="grid place-items-center w-11 h-11 rounded-full bg-white/15 font-extrabold text-sm">GDL</span>
-                <div class="text-center px-2">
-                  <div class="text-2xl font-extrabold tracking-tight tabular-nums">2 · 1</div>
-                  <div class="text-2xs text-primary-100/80 mt-0.5">{{ $t('landing.preview.min') }}</div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex flex-col items-center gap-1.5 flex-1 min-w-0">
+                  <span class="grid place-items-center w-11 h-11 rounded-full bg-white/15 font-extrabold text-sm">
+                    {{ matchup.home.abbr }}
+                  </span>
+                  <span class="text-2xs font-semibold text-primary-100/90 truncate max-w-full">{{ matchup.home.name }}</span>
                 </div>
-                <span class="grid place-items-center w-11 h-11 rounded-full bg-white/15 font-extrabold text-sm">CAZ</span>
+                <div class="text-center px-1 shrink-0">
+                  <div class="text-2xl font-extrabold tracking-tight tabular-nums">
+                    {{ matchup.home.pts }} · {{ matchup.away.pts }}
+                  </div>
+                  <div class="text-2xs font-bold tracking-[0.25em] text-primary-100/70 mt-0.5">
+                    {{ $t('landing.preview.vs') }}
+                  </div>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 flex-1 min-w-0">
+                  <span class="grid place-items-center w-11 h-11 rounded-full bg-white/15 font-extrabold text-sm">
+                    {{ matchup.away.abbr }}
+                  </span>
+                  <span class="text-2xs font-semibold text-primary-100/90 truncate max-w-full">{{ matchup.away.name }}</span>
+                </div>
               </div>
             </div>
 
-            <!-- Standings -->
+            <!-- Top starters feed -->
             <div class="mt-4">
-              <div class="flex items-center justify-between px-1">
-                <p class="text-2xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('landing.preview.standings') }}</p>
-                <p class="text-2xs font-semibold uppercase tracking-wide text-gray-400">{{ $t('landing.preview.points') }}</p>
-              </div>
+              <p class="px-1 text-2xs font-semibold uppercase tracking-wide text-gray-400">
+                {{ $t('landing.preview.starters') }}
+              </p>
               <ul class="mt-2 space-y-1.5">
                 <li
-                  v-for="row in previewTable"
-                  :key="row.pos"
-                  class="flex items-center gap-3 rounded-xl px-2 py-1.5"
-                  :class="row.pos === 1 ? 'bg-primary-50 dark:bg-primary-900/20 ring-1 ring-primary-100 dark:ring-primary-800/40' : ''"
+                  v-for="starter in previewStarters"
+                  :key="starter.abbr"
+                  class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 px-2.5 py-1.5"
                 >
-                  <span class="w-4 text-center text-xs font-bold" :class="row.pos === 1 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400'">
-                    {{ row.pos }}
+                  <span class="grid place-items-center w-7 h-7 rounded-full bg-gradient-to-br from-primary-500 to-emerald-400 text-white text-2xs font-bold shrink-0">
+                    {{ starter.abbr }}
                   </span>
-                  <span class="grid place-items-center w-7 h-7 rounded-full bg-gradient-to-br text-white text-2xs font-bold shadow-soft shrink-0" :class="[row.from, row.to]">
-                    {{ row.abbr.charAt(0) }}
+                  <span class="text-xs font-semibold truncate">{{ starter.name }}</span>
+                  <span class="ml-auto text-sm font-extrabold tabular-nums text-primary-600 dark:text-primary-400">
+                    +{{ starter.pts }}
                   </span>
-                  <span class="h-2 rounded-full bg-gray-200 dark:bg-gray-700" :class="row.w" />
-                  <span class="ml-auto text-sm font-bold tabular-nums">{{ row.pts }}</span>
                 </li>
               </ul>
             </div>
@@ -208,7 +214,9 @@
             data-reveal
             :style="{ '--reveal-delay': `${i * 90}ms` }"
           >
-            <span class="grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br text-white shadow-soft shrink-0" :class="stat.accent">
+            <span
+              class="grid place-items-center w-11 h-11 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/15 shrink-0"
+            >
               <v-icon :name="stat.icon" class="w-5 h-5" />
             </span>
             <div>
@@ -241,13 +249,11 @@
           :style="{ '--reveal-delay': `${(i % 3) * 90}ms` }"
         >
           <span
-            class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            :class="feature.gradient"
+            class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary-500 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             aria-hidden="true"
           />
           <div
-            class="grid place-items-center w-12 h-12 rounded-xl bg-gradient-to-br text-white shadow-soft group-hover:scale-110 transition-transform duration-300"
-            :class="feature.gradient"
+            class="grid place-items-center w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/15 group-hover:scale-110 transition-transform duration-300"
           >
             <v-icon :name="feature.icon" class="w-6 h-6" />
           </div>
@@ -419,44 +425,45 @@ import { onBeforeUnmount, onMounted } from "vue";
 
 const currentYear = new Date().getFullYear();
 
-// Stat cards: gradient accent + icon; text comes from landing.stats.<key>.
+// The five competitions available in the app. Proper nouns, identical in every
+// locale, so they live here instead of i18n.
+const leagues = ["Liga MX", "Premier League", "LaLiga", "Serie A", "Bundesliga"] as const;
+
+// Stat cards: icon per key; text comes from landing.stats.<key>.
 const stats = [
-  { key: "leagues", icon: "hi-solid-globe-alt", accent: "from-primary-500 to-emerald-400" },
-  { key: "pools", icon: "bi-trophy-fill", accent: "from-amber-500 to-orange-400" },
-  { key: "free", icon: "hi-solid-shield-check", accent: "from-blue-500 to-cyan-400" },
+  { key: "leagues", icon: "hi-solid-globe-alt" },
+  { key: "modes", icon: "bi-trophy-fill" },
+  { key: "free", icon: "hi-solid-shield-check" },
 ] as const;
 
-// Feature cards: icon + gradient; text comes from landing.features.items.<key>.
+// Feature cards: icon per key; text comes from landing.features.items.<key>.
 const features = [
-  { key: "live", icon: "md-sportssoccer", gradient: "from-primary-500 to-emerald-400" },
-  { key: "pools", icon: "bi-trophy-fill", gradient: "from-blue-500 to-cyan-400" },
-  { key: "fantasy", icon: "hi-solid-user-group", gradient: "from-amber-500 to-orange-400" },
-  { key: "versus", icon: "md-comparearrows-round", gradient: "from-purple-500 to-fuchsia-400" },
-  { key: "notifications", icon: "hi-solid-bell", gradient: "from-rose-500 to-red-400" },
-  { key: "pwa", icon: "hi-solid-download", gradient: "from-emerald-500 to-teal-400" },
+  { key: "live", icon: "md-sportssoccer" },
+  { key: "fantasy", icon: "bi-trophy-fill" },
+  { key: "pools", icon: "hi-solid-clipboard-check" },
+  { key: "survivor", icon: "hi-solid-fire" },
+  { key: "versus", icon: "md-comparearrows-round" },
+  { key: "pwa", icon: "hi-solid-download" },
 ] as const;
 
 // "How it works" steps: text comes from landing.how.steps.<key>.
 const steps = [
   { key: "one", icon: "hi-solid-user-add" },
-  { key: "two", icon: "md-sportssoccer" },
-  { key: "three", icon: "hi-solid-share" },
+  { key: "two", icon: "hi-solid-globe-alt" },
+  { key: "three", icon: "bi-trophy-fill" },
 ] as const;
 
-// Decorative avatar stack for the community strip (language-neutral initials).
-const avatars = [
-  { abbr: "JL", from: "from-primary-500", to: "to-emerald-400" },
-  { abbr: "MR", from: "from-blue-500", to: "to-cyan-400" },
-  { abbr: "AC", from: "from-amber-500", to: "to-orange-400" },
-  { abbr: "SP", from: "from-purple-500", to: "to-fuchsia-400" },
-] as const;
+// Decorative head-to-head matchup shown inside the hero mock. Invented,
+// language-neutral team names; the panel is aria-hidden.
+const matchup = {
+  home: { abbr: "GAL", name: "Los Galácticos", pts: 68 },
+  away: { abbr: "RBV", name: "Rayo Bravo FC", pts: 63 },
+} as const;
 
-// Mini standings shown inside the hero product mock — purely decorative.
-const previewTable = [
-  { pos: 1, abbr: "MTY", from: "from-primary-500", to: "to-emerald-400", pts: 34, w: "w-2/3" },
-  { pos: 2, abbr: "AME", from: "from-amber-500", to: "to-orange-400", pts: 31, w: "w-1/2" },
-  { pos: 3, abbr: "CAZ", from: "from-blue-500", to: "to-cyan-400", pts: 29, w: "w-2/5" },
-  { pos: 4, abbr: "TIG", from: "from-purple-500", to: "to-fuchsia-400", pts: 27, w: "w-1/3" },
+const previewStarters = [
+  { abbr: "JH", name: "J. Hernández", pts: 12 },
+  { abbr: "CA", name: "C. Aguirre", pts: 8 },
+  { abbr: "MT", name: "M. Torres", pts: 7 },
 ] as const;
 
 // Reveal-on-scroll: elements marked with [data-reveal] fade/slide in once visible.
@@ -495,7 +502,8 @@ onBeforeUnmount(() => observer?.disconnect());
   -webkit-mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 35%, transparent 78%);
   mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 35%, transparent 78%);
 }
-:global(.dark) .hero-grid {
+/* `.dark .foo` (not `:global(.dark)`) — the build drops scoped :global(.dark) rules. */
+.dark .hero-grid {
   background-image:
     linear-gradient(to right, rgba(52, 211, 153, 0.06) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(52, 211, 153, 0.06) 1px, transparent 1px);

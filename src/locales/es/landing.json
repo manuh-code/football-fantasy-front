@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Football Fantasy — Vive tu liga y reta a tus amigos",
-    "description": "Sigue tu liga en vivo, crea quinielas con tus amigos y arma tu equipo fantasy. Gratis y desde tu móvil."
+    "description": "Sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Arma tu fantasy con draft en vivo, juega quinielas de marcador exacto y sobrevive en Survivor. Gratis."
   },
   "brand": "Football Fantasy",
   "nav": {
@@ -11,55 +11,55 @@
     "signup": "Crear cuenta"
   },
   "hero": {
-    "badge": "Tu liga · Tus amigos · Tu equipo",
+    "badge": "Fantasy · Quiniela · Survivor",
     "titleLine1": "Vive tu liga.",
     "titleLine2": "Reta a tus amigos.",
-    "subtitle": "Sigue resultados y estadísticas en vivo, crea quinielas con tu grupo y arma tu equipo fantasy. Todo en un solo lugar, totalmente gratis.",
+    "subtitle": "Sigue cinco grandes ligas en vivo, arma tu equipo fantasy con draft en tiempo real, predice marcadores en quinielas y sobrevive jornada a jornada en Survivor. Todo en un solo lugar, totalmente gratis.",
     "ctaPrimary": "Crear cuenta gratis",
     "ctaSecondary": "Explorar la app",
     "note": "Sin costo · Sin tarjeta · Instálala en tu móvil",
-    "social": "Únete a la comunidad de fans del fútbol"
+    "leaguesLabel": "Disponible para"
   },
   "preview": {
-    "title": "Tu liga",
+    "title": "Liga entre amigos",
+    "matchday": "Jornada 12 · Duelo directo",
     "live": "EN VIVO",
-    "min": "67'",
-    "standings": "Tabla general",
-    "matchday": "Jornada 12",
-    "points": "PTS"
+    "vs": "VS",
+    "starters": "Titulares destacados",
+    "pts": "pts"
   },
   "stats": {
-    "leagues": { "value": "Multiliga", "label": "Sigue tus ligas favoritas" },
-    "pools": { "value": "Quinielas", "label": "Compite con tus amigos" },
-    "free": { "value": "100% gratis", "label": "Sin pagos ni anuncios molestos" }
+    "leagues": { "value": "5 ligas", "label": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga" },
+    "modes": { "value": "3 modos de juego", "label": "Fantasy, quinielas y Survivor con tus amigos" },
+    "free": { "value": "100% gratis", "label": "Sin pagos ni suscripciones" }
   },
   "features": {
-    "title": "Todo lo que necesitas para vivir el fútbol",
-    "subtitle": "Resultados, competencia y diversión con tu gente, en una sola app.",
+    "title": "Todo lo que necesitas para vivir el futbol",
+    "subtitle": "Cinco ligas, tres modos de juego y tu grupo de amigos, en una sola app.",
     "items": {
       "live": {
-        "title": "Sigue tu liga en vivo",
-        "body": "Posiciones, partidos, estadísticas y el equipo de la semana siempre actualizados."
-      },
-      "pools": {
-        "title": "Quinielas con amigos",
-        "body": "Predice los marcadores, sube en la clasificación e invita a tu grupo con un código."
+        "title": "Cinco ligas en vivo",
+        "body": "Posiciones, resultados, calendario y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga."
       },
       "fantasy": {
-        "title": "Liga Fantasy",
-        "body": "Crea tu equipo, haz el draft de jugadores y diseña tu propio escudo."
+        "title": "Fantasy con draft en vivo",
+        "body": "Draftea a tus jugadores por turnos y enfrenta a tus amigos cada jornada en duelos cara a cara."
+      },
+      "pools": {
+        "title": "Quinielas de marcador exacto",
+        "body": "Predice el marcador de cada partido y suma por resultado exacto, ganador o empate correcto."
+      },
+      "survivor": {
+        "title": "Survivor con vidas",
+        "body": "Un pick por jornada, sin repetir equipo. Si tu equipo pierde, pierdes una vida; el último en pie gana."
       },
       "versus": {
         "title": "Compara y analiza",
-        "body": "Enfrenta a dos jugadores cara a cara y descubre quién rinde mejor."
-      },
-      "notifications": {
-        "title": "Notificaciones al instante",
-        "body": "Entérate al momento cuando empieza tu draft o hay novedades en tu liga."
+        "body": "Enfrenta a dos jugadores cara a cara y descubre quién rinde mejor antes de alinear."
       },
       "pwa": {
         "title": "Instálala como app",
-        "body": "Funciona en tu móvil como una app nativa, sin pasar por ninguna tienda."
+        "body": "Funciona en tu móvil como una app nativa, con notificaciones de tu draft y tus ligas."
       }
     }
   },
@@ -73,17 +73,17 @@
       },
       "two": {
         "title": "Elige tu liga",
-        "body": "Selecciona tu liga favorita y empieza a seguir cada jornada."
+        "body": "Liga MX, Premier League, LaLiga, Serie A o Bundesliga: tú decides qué futbol seguir."
       },
       "three": {
-        "title": "Crea o únete a una quiniela",
-        "body": "Invita a tus amigos con un código y que gane el que más sabe."
+        "title": "Elige tu modo de juego",
+        "body": "Crea un fantasy, una quiniela o un Survivor e invita a tus amigos con un código."
       }
     }
   },
   "cta": {
     "title": "¿Listo para jugar?",
-    "subtitle": "Únete gratis y demuestra que sabes más de fútbol que tus amigos.",
+    "subtitle": "Únete gratis y demuestra que sabes más de futbol que tus amigos.",
     "button": "Crear mi cuenta gratis",
     "secondary": "Ya tengo cuenta"
   },
