@@ -207,6 +207,7 @@
     "noRoundMatches": "No matches in this round",
     "noWeekFixtures": "No fixtures this week",
     "live": "Live",
+    "halfTime": "Half Time",
     "errors": {
       "weeklyLoad": "Error loading weekly fixtures",
       "noStage": "No stage selected",

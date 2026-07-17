@@ -10,6 +10,7 @@ import { ScoreResponse } from "./ScoreResponse";
 import { FootballStatisticResponse } from "./FootballStatisticResponse";
 import { FootballSidelinedResponse } from "./FootballSidelinedResponse";
 import { FootballWeatherReportResponse } from "./FootballWeatherReportResponse";
+import { FootballLiveClockResponse } from "./FootballLiveClockResponse";
 import { FootballEventFilterResponse } from "../event/FootballEventFilterResponse";
 import { FootballLineupResponse } from "./FootballLineupResponse";
 import { FootballFixtureFormationResponse } from "./FootballFixtureFormationResponse";
@@ -43,6 +44,7 @@ export interface FootballFixtureResponse {
     prediction?: PoolPredictionResponse | null;
     pick?: SurvivorPickResponse | null;
     aggregate?: FootballFixtureAggregateResponse | null;
+    currentperiod?: FootballLiveClockResponse | null;
 
     name: string;
     starting_at: string;

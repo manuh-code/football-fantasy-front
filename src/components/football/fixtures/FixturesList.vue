@@ -4,6 +4,7 @@ import type { FootballFixtureResponse } from "@/interfaces/football/fixture/Foot
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import FixturesListSkeleton from "./FixturesListSkeleton.vue";
+import { formatLiveMatchClock, useLiveMatchClockTick } from "@/composables/football/useLiveMatchClock";
 
 const props = defineProps<{
   fixtures: FootballFixtureResponse[];
@@ -102,6 +103,17 @@ const isMatchFinished = (fixture: FootballFixtureResponse): boolean => {
   return home?.meta?.winner !== null && home?.meta?.winner !== undefined;
 };
 
+const isHalfTime = (fixture: FootballFixtureResponse): boolean => {
+  const stateName = fixture.state?.name?.toLowerCase() ?? "";
+  return stateName.includes("half time") || fixture.state?.state?.toUpperCase() === "HT";
+};
+
+// Running match minute, extrapolated client-side from the `currentperiod`
+// snapshot (see useLiveMatchClock) — ticks every second, frozen during HT.
+const clockTick = useLiveMatchClockTick();
+const liveClockLabel = (fixture: FootballFixtureResponse): string =>
+  formatLiveMatchClock(fixture, clockTick.value, { paused: isHalfTime(fixture) });
+
 
 const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
   if (fixture.state) {
@@ -198,7 +210,9 @@ const getTeamResultClass = (
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
             </span>
-            <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">{{ $t('football.fixtures.live') }}</span>
+            <span class="text-2xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase tabular-nums">
+              {{ isHalfTime(fixture) ? $t('football.fixtures.halfTime') : (liveClockLabel(fixture) || $t('football.fixtures.live')) }}
+            </span>
           </div>
 
           <!-- Kickoff hour (not live) — raw value from the API, no formatting -->
