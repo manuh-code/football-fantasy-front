@@ -50,26 +50,37 @@
           </p>
         </button>
 
-        <!-- Score -->
-        <div class="flex items-center gap-2 px-2 shrink-0">
-          <span
-            class="text-2xl font-black tabular-nums"
-            :class="matchup.winner === matchup.home.team.uuid
-              ? 'text-gray-900 dark:text-white'
-              : 'text-gray-400 dark:text-gray-500'"
-          >
-            {{ matchup.home.score }}
+        <!-- Score — also the entry point into the lineups drawer -->
+        <button
+          type="button"
+          class="group flex flex-col items-center gap-1 px-2 py-1 -m-1 shrink-0 rounded-xl transition-transform active:scale-[0.95] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+          :aria-label="$t('fantasy.matchups.viewLineups')"
+          @click="emit('view-lineups')"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="text-2xl font-black tabular-nums"
+              :class="matchup.winner === matchup.home.team.uuid
+                ? 'text-gray-900 dark:text-white'
+                : 'text-gray-400 dark:text-gray-500'"
+            >
+              {{ matchup.home.score }}
+            </span>
+            <span class="text-2xs font-medium text-gray-300 dark:text-gray-600 uppercase">vs</span>
+            <span
+              class="text-2xl font-black tabular-nums"
+              :class="matchup.winner === matchup.away.team.uuid
+                ? 'text-gray-900 dark:text-white'
+                : 'text-gray-400 dark:text-gray-500'"
+            >
+              {{ matchup.away.score }}
+            </span>
+          </div>
+          <span class="flex items-center gap-0.5 text-2xs font-medium text-gray-400 dark:text-gray-500 transition-colors group-hover:text-emerald-500 dark:group-hover:text-emerald-400">
+            <v-icon name="hi-solid-eye" class="w-2.5 h-2.5" />
+            {{ $t('fantasy.matchups.viewLineups') }}
           </span>
-          <span class="text-2xs font-medium text-gray-300 dark:text-gray-600 uppercase">vs</span>
-          <span
-            class="text-2xl font-black tabular-nums"
-            :class="matchup.winner === matchup.away.team.uuid
-              ? 'text-gray-900 dark:text-white'
-              : 'text-gray-400 dark:text-gray-500'"
-          >
-            {{ matchup.away.score }}
-          </span>
-        </div>
+        </button>
 
         <!-- Away Team -->
         <button
@@ -126,6 +137,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   "team-select": [team: FantasyTeamData];
+  "view-lineups": [];
 }>();
 
 function selectTeam(team: FantasyTeamData) {
