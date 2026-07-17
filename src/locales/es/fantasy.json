@@ -373,6 +373,7 @@
     "ptsShort": "pts",
     "avgShort": "prom",
     "selectAria": "Seleccionar a {name}",
+    "tradeAria": "Intercambiar a {name}",
     "playersLoaded": "{count} jugadores cargados | {count} jugador cargado | {count} jugadores cargados",
     "emptyTitle": "No hay jugadores disponibles",
     "emptyBody": "Por ahora no hay jugadores disponibles.",
@@ -382,7 +383,14 @@
     "pickedTitle": "Jugador seleccionado",
     "pickedBody": "{name} fue elegido en el draft",
     "addedTitle": "Jugador agregado",
-    "addedBody": "{name} se agregó a tu equipo"
+    "addedBody": "{name} se agregó a tu equipo",
+    "availabilityAvailable": "Disponibles",
+    "availabilityAll": "Todos",
+    "availabilityTaken": "Tomados",
+    "participantsAll": "Todos los participantes",
+    "participantsTitle": "Filtrar por participante",
+    "participantsEmpty": "No hay participantes",
+    "participantFallbackName": "Participante"
   },
   "positionsShort": {
     "goalkeeper": "POR",

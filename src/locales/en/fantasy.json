@@ -373,6 +373,7 @@
     "ptsShort": "pts",
     "avgShort": "avg",
     "selectAria": "Select {name}",
+    "tradeAria": "Trade {name}",
     "playersLoaded": "{count} players loaded | {count} player loaded | {count} players loaded",
     "emptyTitle": "No players available",
     "emptyBody": "There are no players available right now.",
@@ -382,7 +383,14 @@
     "pickedTitle": "Player picked",
     "pickedBody": "{name} was drafted",
     "addedTitle": "Player added",
-    "addedBody": "{name} was added to your team"
+    "addedBody": "{name} was added to your team",
+    "availabilityAvailable": "Available",
+    "availabilityAll": "All",
+    "availabilityTaken": "Taken",
+    "participantsAll": "All participants",
+    "participantsTitle": "Filter by participant",
+    "participantsEmpty": "No participants",
+    "participantFallbackName": "Participant"
   },
   "positionsShort": {
     "goalkeeper": "GK",

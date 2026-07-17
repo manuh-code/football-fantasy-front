@@ -43,14 +43,20 @@ const benchRows = computed(() =>
   Array.from({ length: Math.max(homeBench.value.length, awayBench.value.length) }, (_, i) => i),
 )
 
-const homeTotal = computed(() =>
-  props.versusData?.home_lineup.players.reduce((sum, p) => sum + (p.fantasy_points ?? 0), 0) ?? 0,
-)
-const awayTotal = computed(() =>
-  props.versusData?.away_lineup.players.reduce((sum, p) => sum + (p.fantasy_points ?? 0), 0) ?? 0,
-)
-
 const isCompleted = computed(() => props.matchup.status === 'completed')
+
+/** Per-position duel outcome — drives the winner emphasis on each rung. */
+function starterHomeWins(idx: number): boolean {
+  return (homeStarters.value[idx]?.fantasy_points ?? 0) > (awayStarters.value[idx]?.fantasy_points ?? 0)
+}
+function starterAwayWins(idx: number): boolean {
+  return (awayStarters.value[idx]?.fantasy_points ?? 0) > (homeStarters.value[idx]?.fantasy_points ?? 0)
+}
+function scoreChipClass(isWinner: boolean): string {
+  return isWinner
+    ? 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-700 dark:text-emerald-300 font-extrabold'
+    : 'text-gray-400 dark:text-gray-500 font-semibold'
+}
 
 function positionColor(developerName: string): string {
   const map: Record<string, string> = {
@@ -127,84 +133,87 @@ function positionColor(developerName: string): string {
       <p class="text-footnote text-red-700 dark:text-red-300">{{ error }}</p>
     </div>
 
-    <!-- ── Versus rows ── -->
+    <!-- ── Versus lineups — a position-by-position duel ladder ── -->
     <template v-else-if="versusData">
 
-      <!-- Starters subheader -->
-      <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-100 dark:border-gray-700/60 flex items-center gap-2">
-        <v-icon name="hi-solid-star" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
-        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.matchups.starters') }}</h3>
+      <!-- Starters eyebrow -->
+      <div class="px-4 py-2.5 bg-gray-50/80 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700/60 flex items-center gap-2">
+        <v-icon name="hi-solid-star" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
+        <h3 class="text-2xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">{{ $t('fantasy.matchups.starters') }}</h3>
       </div>
 
-      <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
+      <!-- Duel ladder: a center spine threads the position rungs together -->
+      <div class="relative">
         <div
-          v-for="idx in starterRows"
-          :key="`starter-${idx}`"
-          class="flex items-center gap-3 px-4 py-2.5"
-        >
-          <!-- Home player -->
-          <template v-if="homeStarters[idx]">
-            <img
-              :src="homeStarters[idx].football_player.image_path || '/img/default-avatar.svg'"
-              :alt="homeStarters[idx].football_player.display_name"
-              class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
-            />
-            <div class="flex-1 min-w-0">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
-                {{ homeStarters[idx].football_player.display_name }}
-              </p>
-            </div>
-          </template>
-          <div v-else class="w-8 h-8 shrink-0" />
-          <div v-if="!homeStarters[idx]" class="flex-1" />
+          class="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gray-200/80 dark:bg-gray-700/70"
+          aria-hidden="true"
+        />
+        <div class="relative divide-y divide-gray-100 dark:divide-gray-700/60">
+          <div
+            v-for="idx in starterRows"
+            :key="`starter-${idx}`"
+            class="flex items-center gap-3 px-4 py-2.5"
+          >
+            <!-- Home player -->
+            <template v-if="homeStarters[idx]">
+              <img
+                :src="homeStarters[idx].football_player.image_path || '/img/default-avatar.svg'"
+                :alt="homeStarters[idx].football_player.display_name"
+                class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+              />
+              <div class="flex-1 min-w-0">
+                <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
+                  {{ homeStarters[idx].football_player.display_name }}
+                </p>
+              </div>
+            </template>
+            <div v-else class="w-8 h-8 shrink-0" />
+            <div v-if="!homeStarters[idx]" class="flex-1" />
 
-          <!-- Points + position badge -->
-          <div class="flex items-center gap-1 shrink-0">
-            <span
-              class="text-xs font-bold tabular-nums min-w-[26px] text-right"
-              :class="(homeStarters[idx]?.fantasy_points ?? 0) > (awayStarters[idx]?.fantasy_points ?? 0)
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-gray-600 dark:text-gray-400'"
-            >{{ homeStarters[idx]?.fantasy_points ?? 0 }}</span>
-            <span
-              class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0"
-              :class="positionColor(homeStarters[idx]?.position?.developer_name ?? awayStarters[idx]?.position?.developer_name ?? '')"
-            >
-              {{ positionShort((homeStarters[idx] ?? awayStarters[idx])?.position?.developer_name) }}
-            </span>
-            <span
-              class="text-xs font-bold tabular-nums min-w-[26px] text-left"
-              :class="(awayStarters[idx]?.fantasy_points ?? 0) > (homeStarters[idx]?.fantasy_points ?? 0)
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-gray-600 dark:text-gray-400'"
-            >{{ awayStarters[idx]?.fantasy_points ?? 0 }}</span>
+            <!-- Duel: score · position rung · score -->
+            <div class="relative z-10 flex items-center gap-1.5 shrink-0">
+              <span
+                class="min-w-[30px] px-1.5 py-0.5 rounded-md text-xs tabular-nums text-center transition-colors"
+                :class="scoreChipClass(starterHomeWins(idx))"
+              >{{ homeStarters[idx]?.fantasy_points ?? 0 }}</span>
+              <span
+                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0 ring-4 ring-white dark:ring-gray-800"
+                :class="positionColor(homeStarters[idx]?.position?.developer_name ?? awayStarters[idx]?.position?.developer_name ?? '')"
+              >
+                {{ positionShort((homeStarters[idx] ?? awayStarters[idx])?.position?.developer_name) }}
+              </span>
+              <span
+                class="min-w-[30px] px-1.5 py-0.5 rounded-md text-xs tabular-nums text-center transition-colors"
+                :class="scoreChipClass(starterAwayWins(idx))"
+              >{{ awayStarters[idx]?.fantasy_points ?? 0 }}</span>
+            </div>
+
+            <!-- Away player -->
+            <template v-if="awayStarters[idx]">
+              <div class="flex-1 min-w-0 text-right">
+                <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
+                  {{ awayStarters[idx].football_player.display_name }}
+                </p>
+              </div>
+              <img
+                :src="awayStarters[idx].football_player.image_path || '/img/default-avatar.svg'"
+                :alt="awayStarters[idx].football_player.display_name"
+                class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+              />
+            </template>
+            <div v-else class="flex-1" />
+            <div v-if="!awayStarters[idx]" class="w-8 h-8 shrink-0" />
           </div>
-
-          <!-- Away player -->
-          <template v-if="awayStarters[idx]">
-            <div class="flex-1 min-w-0 text-right">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white break-words line-clamp-2 leading-tight">
-                {{ awayStarters[idx].football_player.display_name }}
-              </p>
-            </div>
-            <img
-              :src="awayStarters[idx].football_player.image_path || '/img/default-avatar.svg'"
-              :alt="awayStarters[idx].football_player.display_name"
-              class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
-            />
-          </template>
-          <div v-else class="flex-1" />
-          <div v-if="!awayStarters[idx]" class="w-8 h-8 shrink-0" />
         </div>
       </div>
 
-      <!-- Bench subheader -->
+      <!-- Bench eyebrow -->
       <div
         v-if="benchRows.length"
-        class="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-y border-gray-100 dark:border-gray-700/60 flex items-center gap-2"
+        class="px-4 py-2.5 bg-gray-50/80 dark:bg-gray-700/30 border-y border-gray-100 dark:border-gray-700/60 flex items-center gap-2"
       >
-        <v-icon name="hi-solid-users" class="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0" />
-        <h3 class="text-footnote font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.matchups.bench') }}</h3>
+        <v-icon name="hi-solid-users" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
+        <h3 class="text-2xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">{{ $t('fantasy.matchups.bench') }}</h3>
       </div>
 
       <div v-if="benchRows.length" class="divide-y divide-gray-100 dark:divide-gray-700/60">
@@ -230,8 +239,8 @@ function positionColor(developerName: string): string {
           <div v-if="!homeBench[idx]" class="flex-1" />
 
           <!-- Points + position badge -->
-          <div class="flex items-center gap-1 shrink-0">
-            <span class="text-xs font-bold tabular-nums min-w-[26px] text-right text-gray-500 dark:text-gray-400">
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="min-w-[30px] text-xs font-semibold tabular-nums text-center text-gray-400 dark:text-gray-500">
               {{ homeBench[idx]?.fantasy_points ?? '—' }}
             </span>
             <span
@@ -240,7 +249,7 @@ function positionColor(developerName: string): string {
             >
               {{ positionShort((homeBench[idx] ?? awayBench[idx])?.position?.developer_name) }}
             </span>
-            <span class="text-xs font-bold tabular-nums min-w-[26px] text-left text-gray-500 dark:text-gray-400">
+            <span class="min-w-[30px] text-xs font-semibold tabular-nums text-center text-gray-400 dark:text-gray-500">
               {{ awayBench[idx]?.fantasy_points ?? '—' }}
             </span>
           </div>
@@ -261,25 +270,6 @@ function positionColor(developerName: string): string {
           <div v-else class="flex-1" />
           <div v-if="!awayBench[idx]" class="w-8 h-8 shrink-0" />
         </div>
-      </div>
-
-      <!-- Total row -->
-      <div class="px-4 py-3 border-t border-gray-100 dark:border-gray-700/60 bg-gray-50 dark:bg-gray-700/40 flex items-center">
-        <span
-          class="text-footnote font-bold tabular-nums flex-1"
-          :class="homeTotal > awayTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300'"
-        >
-          {{ homeTotal }}
-          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">{{ $t('fantasy.matchups.pts') }}</span>
-        </span>
-        <span class="text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ $t('fantasy.matchups.total') }}</span>
-        <span
-          class="text-footnote font-bold tabular-nums flex-1 text-right"
-          :class="awayTotal > homeTotal ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300'"
-        >
-          {{ awayTotal }}
-          <span class="text-2xs font-normal text-gray-400 dark:text-gray-500 ml-0.5">{{ $t('fantasy.matchups.pts') }}</span>
-        </span>
       </div>
 
     </template>
