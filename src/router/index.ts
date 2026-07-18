@@ -55,8 +55,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/HomeView.vue'),
     meta: {
-      title: 'Home - Football Fantasy',
-      description: 'Football Fantasy main page',
+      title: 'Fantasy MX — Posiciones, resultados y estadísticas en vivo',
+      description: 'Sigue en vivo las posiciones, resultados y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, y juega fantasy, quinielas y Survivor gratis.',
       requiresAuth: false
     }
   },

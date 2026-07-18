@@ -27,8 +27,14 @@
           "h": "Create or join a league",
           "p": "When you create a league you choose its name, the competition it runs on and the number of participants; you become the admin and define the scoring rules. To join a league there are two ways in:",
           "list": [
-            { "t": "With a code", "d": "The admin shares an access code or an invite link so you can enter their private league." },
-            { "t": "Browsing public leagues", "d": "From the Discover tab you can find open leagues by name and join directly." }
+            {
+              "t": "With a code",
+              "d": "The admin shares an access code or an invite link so you can enter their private league."
+            },
+            {
+              "t": "Browsing public leagues",
+              "d": "From the Discover tab you can find open leagues by name and join directly."
+            }
           ]
         },
         {
@@ -43,9 +49,18 @@
           "h": "Your squad: starters, FLEX and bench",
           "p": "Your squad is organized by position according to the formation your league defines. Only starters score points in the matchup:",
           "list": [
-            { "t": "GK · DEF · MID · FWD", "d": "The fixed spots in your eleven: goalkeeper, defenders, midfielders and forwards, in the numbers your league's formation requires." },
-            { "t": "FLEX", "d": "A wildcard spot you can fill with players from different positions. It gives you room to start whoever is in form." },
-            { "t": "Bench", "d": "Your substitutes. They don't score points, but you can swap them with your starters before each matchday." }
+            {
+              "t": "GK · DEF · MID · FWD",
+              "d": "The fixed spots in your eleven: goalkeeper, defenders, midfielders and forwards, in the numbers your league's formation requires."
+            },
+            {
+              "t": "FLEX",
+              "d": "A wildcard spot you can fill with players from different positions. It gives you room to start whoever is in form."
+            },
+            {
+              "t": "Bench",
+              "d": "Your substitutes. They don't score points, but you can swap them with your starters before each matchday."
+            }
           ],
           "note": "Check injuries, suspensions and the schedule before the matchday kicks off: bench points don't count toward the score."
         },
@@ -80,8 +95,14 @@
           "h": "Turns and the timer",
           "p": "The room shows the pick order and whose turn it is at every moment. Each pick has a time limit configured by the league:",
           "list": [
-            { "t": "Your turn", "d": "The app alerts you when you're up and the clock starts ticking. Pick before it hits zero." },
-            { "t": "Auto-pick", "d": "If your league has it enabled and your time runs out, the app picks for you so the draft never stalls. It also helps when you know you won't be able to connect." }
+            {
+              "t": "Your turn",
+              "d": "The app alerts you when you're up and the clock starts ticking. Pick before it hits zero."
+            },
+            {
+              "t": "Auto-pick",
+              "d": "If your league has it enabled and your time runs out, the app picks for you so the draft never stalls. It also helps when you know you won't be able to connect."
+            }
           ]
         },
         {
@@ -92,10 +113,22 @@
           "h": "Draft strategy",
           "p": "Come prepared and never depend on a single name:",
           "list": [
-            { "t": "Bring a list", "d": "Have several targets per position: someone will very likely take your favorite before your turn." },
-            { "t": "Balance positions", "d": "Remember your lineup needs a goalkeeper, defenders, midfielders, forwards and a FLEX. Don't overload one position." },
-            { "t": "Use the filters", "d": "In the search you can filter by position and team, and compare total points, average and games played." },
-            { "t": "Think about the bench", "d": "The last rounds are for substitutes who save you on matchdays with absences." }
+            {
+              "t": "Bring a list",
+              "d": "Have several targets per position: someone will very likely take your favorite before your turn."
+            },
+            {
+              "t": "Balance positions",
+              "d": "Remember your lineup needs a goalkeeper, defenders, midfielders, forwards and a FLEX. Don't overload one position."
+            },
+            {
+              "t": "Use the filters",
+              "d": "In the search you can filter by position and team, and compare total points, average and games played."
+            },
+            {
+              "t": "Think about the bench",
+              "d": "The last rounds are for substitutes who save you on matchdays with absences."
+            }
           ]
         }
       ]
@@ -121,9 +154,18 @@
           "h": "How scoring works",
           "p": "Each group defines how many points every type of correct call is worth, always across three tiers:",
           "list": [
-            { "t": "Exact score", "d": "You nailed the final score exactly. It's the best-paid call." },
-            { "t": "Correct winner", "d": "You missed the score but called who would win the match." },
-            { "t": "Correct draw", "d": "You predicted a draw and the match ended level, even if with a different score." }
+            {
+              "t": "Exact score",
+              "d": "You nailed the final score exactly. It's the best-paid call."
+            },
+            {
+              "t": "Correct winner",
+              "d": "You missed the score but called who would win the match."
+            },
+            {
+              "t": "Correct draw",
+              "d": "You predicted a draw and the match ended level, even if with a different score."
+            }
           ],
           "note": "Points don't stack: if you hit the exact score, you earn only that tier's points. Check your group's scoring rules in the info tab."
         },
@@ -146,10 +188,22 @@
           "h": "The lives system",
           "p": "Each participant starts with the number of lives the pool defines (usually one). Here's what happens to your pick every matchday:",
           "list": [
-            { "t": "Your team wins", "d": "You survive and advance to the next matchday with your lives intact." },
-            { "t": "Your team draws", "d": "A draw costs no life: you survive, though the team is used up." },
-            { "t": "Your team loses", "d": "You lose a life." },
-            { "t": "You didn't pick in time", "d": "Missing the deadline also costs a life. Don't let the matchday slip by." }
+            {
+              "t": "Your team wins",
+              "d": "You survive and advance to the next matchday with your lives intact."
+            },
+            {
+              "t": "Your team draws",
+              "d": "A draw costs no life: you survive, though the team is used up."
+            },
+            {
+              "t": "Your team loses",
+              "d": "You lose a life."
+            },
+            {
+              "t": "You didn't pick in time",
+              "d": "Missing the deadline also costs a life. Don't let the matchday slip by."
+            }
           ],
           "note": "When you reach zero lives you're eliminated from the Survivor. If the pool hands out more than one life, a stumble won't send you home, but every mistake counts."
         },
@@ -199,6 +253,365 @@
         {
           "h": "Review your points every matchday",
           "p": "In every matchup you can see the breakdown of how much each of your players scored, and the player search shows their total points, average and games played. It's the best way to understand what worked and adjust your lineup for the next matchday."
+        }
+      ]
+    },
+    "estrategia": {
+      "title": "Draft strategy: how to build a winning team",
+      "excerpt": "Tiers, pick order and common mistakes: prepare your draft like a pro.",
+      "intro": "The draft defines half your season: good picks give you a team that competes on its own, and mistakes chase you matchday after matchday. This guide goes beyond the rules — if you don't know them yet, start with the draft guide — and focuses on how to pick better than your rivals.",
+      "sections": [
+        {
+          "h": "Before the draft: study your league",
+          "p": "Every fantasy league defines its formation (how many goalkeepers, defenders, midfielders and forwards start, plus the FLEX and the bench) and its scoring rules. Review both before preparing anything: if your league pays a lot for clean sheets, defenders from organized teams are worth more; if it rewards assists well, look for the players who take corners and free kicks."
+        },
+        {
+          "h": "Build your list in tiers",
+          "p": "Instead of a single list from 1 to 50, group players by position into levels of similar value. When your turn comes, don't ask who's the best available — ask which tier is about to run out. If three top-tier forwards remain but only one midfielder, the midfielder is the right pick even if the forward is more famous."
+        },
+        {
+          "h": "Early rounds: guaranteed minutes",
+          "p": "Start with players who play everything: undisputed starters on teams that create a lot. A slightly less brilliant player who plays 90 minutes every matchday usually scores more by season's end than a star who rotates or gets injured. Consistency wins fantasy leagues."
+        },
+        {
+          "h": "Set-piece takers: the hidden points",
+          "p": "Players who take penalties, free kicks and corners concentrate the plays that end in goals or assists. Between two similar options, keep the taker: they participate in their team's points even on an off day."
+        },
+        {
+          "h": "Goalkeeper and defenders: not too early",
+          "p": "The points gap between the best goalkeeper and a good one is usually smaller than between the best forward and an average one. Prioritize attack in the early rounds and cover goal and defense in the middle ones, targeting teams that concede little."
+        },
+        {
+          "h": "The FLEX and the bench: your room to maneuver",
+          "p": "The last spots on your squad are the ones that save seasons. Think of them like this:",
+          "list": [
+            {
+              "t": "Draft for the FLEX",
+              "d": "A good extra player from your strongest position is worth double if they can start in the wildcard spot."
+            },
+            {
+              "t": "A bench with purpose",
+              "d": "Your substitutes should cover different positions to respond to injuries and suspensions: don't stack three backups for the same spot."
+            },
+            {
+              "t": "Keep the schedule in mind",
+              "d": "If two of your starters rest on the same matchday, your bench must be able to cover both at once."
+            }
+          ]
+        },
+        {
+          "h": "Common mistakes that lose drafts",
+          "p": "Most drafts are lost for the same reasons:",
+          "list": [
+            {
+              "t": "Drafting with your heart",
+              "d": "Loading up on players from your favorite club rarely maximizes points. Let performance decide, not the shirt."
+            },
+            {
+              "t": "Chasing last season",
+              "d": "Last tournament's points don't carry over. Look at the present: current minutes, role in the team and fitness."
+            },
+            {
+              "t": "Ignoring the clock",
+              "d": "If you let the timer run without a plan, you end up picking in a rush or leaving the decision to auto-pick. Arrive with your list ready."
+            },
+            {
+              "t": "Not watching your rivals",
+              "d": "The draft board tells you what everyone needs. If you're the only one without a goalkeeper and two good ones remain, you can still wait a round."
+            }
+          ]
+        },
+        {
+          "h": "The draft doesn't end on draft day",
+          "p": "Free agents and trades exist to fix things. Spot the in-form players nobody drafted early, and propose trades where both sides win: leagues are won by managing, not just drafting."
+        }
+      ]
+    },
+    "ligas": {
+      "title": "Which league should you pick for fantasy? A guide to all 5",
+      "excerpt": "Liga MX, Premier League, LaLiga, Serie A and Bundesliga: what changes when you play fantasy, pools or Survivor in each one.",
+      "intro": "On Fantasy MX every mode plays the same in any competition, but each league has its own rhythm: format, number of matchdays, kickoff times and style of play. Choosing well makes your season more fun and your predictions sharper.",
+      "sections": [
+        {
+          "h": "The rules don't change — the football does",
+          "p": "Fantasy with draft and matchups, exact-score pools and Survivor work identically across the five leagues. What changes is the context: how many teams there are, how long the season lasts, what time matches kick off, and how predictable results are."
+        },
+        {
+          "h": "Liga MX: short, intense tournaments",
+          "p": "Mexican football plays two tournaments per year (Apertura and Clausura) with 18 teams and a short regular season that leads into the liguilla playoffs. For fantasy that means agile seasons where every matchday matters a lot; for Survivor, less margin for error and tournaments that resolve quickly. Its evening kickoffs are ideal if you live in Mexico."
+        },
+        {
+          "h": "Premier League: depth and rotations",
+          "p": "Twenty teams, 38 matchdays and the deepest squads in the world. There are plenty of draft-worthy players, but also more rotation, so following lineups matters. It's the league with the most information available for decision-making."
+        },
+        {
+          "h": "LaLiga: hierarchy and control",
+          "p": "Spanish football rewards control of the game. The big clubs tend to dominate their matches, which makes for relatively reliable Survivor picks, and their attackers concentrate a lot of fantasy points. Watch out for rivalry matchdays: that's where favorites fall."
+        },
+        {
+          "h": "Serie A: the art of the tight score",
+          "p": "Italy keeps its tactical reputation: closed scorelines and defenders as protagonists. For exact-score pools, 1-0 and 1-1 pay off more than in other leagues; for fantasy, goalkeepers and defenders are gold thanks to clean sheets."
+        },
+        {
+          "h": "Bundesliga: goals and high tempo",
+          "p": "With 18 teams and 34 matchdays, German football is among Europe's most attacking: high pressing, fast transitions and lots of goals. Ideal for an attack-heavy fantasy squad, and for pools if you like big scorelines — even if the exact score is harder to nail."
+        },
+        {
+          "h": "How to decide",
+          "p": "Four questions settle the choice:",
+          "list": [
+            {
+              "t": "Kickoff times",
+              "d": "The league you can watch live is the one you'll predict best. European leagues play mornings and midday in Mexican time; Liga MX plays evenings and nights."
+            },
+            {
+              "t": "Knowledge",
+              "d": "Play where you know the squads and the streaks: in fantasy, information is the edge."
+            },
+            {
+              "t": "Your group",
+              "d": "The best league is the one your friends follow too. The most fun mode is the one you brag about in the group chat."
+            },
+            {
+              "t": "Length",
+              "d": "Short and intense tournament? Liga MX. A long 38-matchday season to manage? Premier League, LaLiga or Serie A."
+            }
+          ]
+        },
+        {
+          "h": "Why not all of them?",
+          "p": "You can join leagues, pools and Survivors in different competitions at the same time. Many people play fantasy with friends in a European league and the family pool in Liga MX: each group picks its competition when it's created."
+        }
+      ]
+    },
+    "consejosQuiniela": {
+      "title": "How to win your pool: tips for predicting scores",
+      "excerpt": "From the likely scoreline to the calculated risk: real strategy for exact-score pools.",
+      "intro": "Nailing an exact score takes a lot of knowledge and a bit of luck. Over a full season, the difference between first place and the rest of the table is method: understanding the points, playing the likely scorelines and knowing when to take risks. Here's the method.",
+      "sections": [
+        {
+          "h": "Master your group's scoring system",
+          "p": "Every pool configures how much the exact score, the correct winner and the correct draw are worth. If the exact score pays much more, taking risks makes sense; if the gap is small, locking in the winner matchday after matchday builds the win. Check the values in your group's info tab before defining your style."
+        },
+        {
+          "h": "Low scorelines rule",
+          "p": "In professional football most matches end with few goals: 1-0, 2-1, 1-1 and 2-0 repeat far more often than any thrashing. When in doubt, predict low. A spectacular 4-3 is almost never the smart play."
+        },
+        {
+          "h": "Winner first, scoreline second",
+          "p": "Split the prediction into two decisions: first who wins (or whether it's a draw), then the most typical scoreline for that result. Clear favorite at home? 2-0 or 2-1. Tight match between equals? 1-1 or 1-0. Chaining the two questions is more reliable than imagining the score all at once."
+        },
+        {
+          "h": "Don't dismiss the draw",
+          "p": "The draw is the result almost nobody predicts, and it happens more than it seems: around one in four matches. If your group rewards the correct draw, spotting two or three likely draws per matchday earns you points your rivals are giving away."
+        },
+        {
+          "h": "Use the data already in the app",
+          "p": "You don't need to leave Fantasy MX to do your homework:",
+          "list": [
+            {
+              "t": "Standings",
+              "d": "The real gap between two teams shows in the table and their goal difference, not in the prestige of the crest."
+            },
+            {
+              "t": "Stats and streaks",
+              "d": "Teams that score little and concede little point to short scorelines; an attack on a streak justifies adding a goal to your call."
+            },
+            {
+              "t": "Player comparison",
+              "d": "The head-to-head between each team's key players tells you which attack arrives in better form."
+            },
+            {
+              "t": "Fixtures",
+              "d": "A big club that played international competition midweek often rotates on the weekend: be suspicious of the tired favorite."
+            }
+          ]
+        },
+        {
+          "h": "Deadline discipline",
+          "p": "You can edit your predictions until each match kicks off: use that. Fill in the whole matchday in advance so no match is left empty, and review your calls once lineups come out. A match without a prediction is free points for your rivals; pools are also won by not failing through neglect."
+        },
+        {
+          "h": "Predict with your head, not your shirt",
+          "p": "The most common mistake of all: always predicting a win for your team, or a loss for your archrival. Step away from your fandom for a moment and ask what score you'd pick if you didn't support anyone. Your spot in the group table will thank you."
+        }
+      ]
+    },
+    "glosario": {
+      "title": "Fantasy MX glossary: speak the language of the game",
+      "excerpt": "Draft, FLEX, pick, lives, exact score… every term in the app explained briefly.",
+      "intro": "First time in a fantasy league or a Survivor? Here's the vocabulary you'll see across Fantasy MX, grouped by game mode, so no word catches you offside.",
+      "sections": [
+        {
+          "h": "Fantasy terms",
+          "list": [
+            {
+              "t": "Draft",
+              "d": "Live event where a league's participants pick players in turns until their squads are complete."
+            },
+            {
+              "t": "Pick",
+              "d": "Each individual selection, both in the draft and in Survivor."
+            },
+            {
+              "t": "Squad",
+              "d": "The full set of players on your team: starters and bench."
+            },
+            {
+              "t": "Starters",
+              "d": "The players you field on a matchday; only they score points in your matchup."
+            },
+            {
+              "t": "Bench",
+              "d": "Your substitutes. They don't score, but you can swap them with starters before each matchday."
+            },
+            {
+              "t": "FLEX",
+              "d": "Wildcard lineup spot that accepts players from different positions."
+            },
+            {
+              "t": "Matchup",
+              "d": "The weekly head-to-head duel against another team in your league; whoever's starters score more wins."
+            },
+            {
+              "t": "Free agent",
+              "d": "A player no team in the league owns, available to add to yours."
+            },
+            {
+              "t": "Trade",
+              "d": "An exchange of players between two teams in the same league."
+            },
+            {
+              "t": "Auto-pick",
+              "d": "Option that lets the app pick for you if your draft time runs out."
+            },
+            {
+              "t": "Public and private league",
+              "d": "Private leagues are joined with an access code; public ones appear for everyone in the Discover tab."
+            }
+          ]
+        },
+        {
+          "h": "Pool terms",
+          "list": [
+            {
+              "t": "Exact score",
+              "d": "Getting both teams' goals exactly right. The best-paid call."
+            },
+            {
+              "t": "Correct winner",
+              "d": "Calling which team wins the match without nailing the score."
+            },
+            {
+              "t": "Correct draw",
+              "d": "Predicting a draw when the match ends level, with any scoreline."
+            },
+            {
+              "t": "Lock",
+              "d": "The moment a match kicks off and your prediction is frozen."
+            },
+            {
+              "t": "Stage",
+              "d": "The tournament or season the pool runs on, for example a Liga MX Apertura."
+            },
+            {
+              "t": "Overall",
+              "d": "The table that adds up points from every matchday in the stage."
+            }
+          ]
+        },
+        {
+          "h": "Survivor terms",
+          "list": [
+            {
+              "t": "Life",
+              "d": "Your margin for error. You lose one when a pick fails or you don't pick in time; at zero lives you're eliminated."
+            },
+            {
+              "t": "Matchday pick",
+              "d": "The single team you choose each matchday hoping it wins."
+            },
+            {
+              "t": "Burned team",
+              "d": "A team you already used in a previous matchday and can't pick again."
+            },
+            {
+              "t": "Last one standing",
+              "d": "The final survivor once everyone else is eliminated: the Survivor winner."
+            }
+          ]
+        },
+        {
+          "h": "Football and stats terms",
+          "list": [
+            {
+              "t": "Matchday",
+              "d": "Each round of matches in the real league; it's also the unit of play in every mode of the app."
+            },
+            {
+              "t": "Clean sheet",
+              "d": "Finishing the match without conceding; usually earns extra points for goalkeepers and defenders."
+            },
+            {
+              "t": "Assist",
+              "d": "The pass that ends in a teammate's goal."
+            },
+            {
+              "t": "GP and average",
+              "d": "Games played and points per game; you'll see them when comparing players in the search."
+            },
+            {
+              "t": "Liguilla",
+              "d": "Liga MX's knockout final phase, played after the regular season."
+            }
+          ]
+        },
+        {
+          "h": "Missing a word?",
+          "p": "The rest of the guides explain each mode in depth using these terms in context: if something still doesn't add up, the answer is one guide away."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently asked questions about Fantasy MX",
+      "excerpt": "What everyone asks before starting: accounts, leagues, drafts, locks and devices.",
+      "intro": "Straight answers to the most common questions about Fantasy MX. If yours isn't here, the guides for each mode go into full detail.",
+      "sections": [
+        {
+          "h": "Is Fantasy MX free?",
+          "p": "Yes, completely. Every mode — fantasy, pools and Survivor — is free, with no subscriptions or in-app payments. The project is supported by discreet advertising on content screens."
+        },
+        {
+          "h": "Do I need an account to use the app?",
+          "p": "Not to follow results, standings and stats: come in and explore any league you like. An account is needed to play — creating or joining fantasy leagues, pools and Survivors — because your teams and predictions are saved to your profile. Creating one takes seconds with your email or Google."
+        },
+        {
+          "h": "Which leagues can I follow?",
+          "p": "Liga MX, Premier League, LaLiga, Serie A and Bundesliga. Every fantasy league, pool or Survivor is created on one of these competitions, and you can play in several at once."
+        },
+        {
+          "h": "How many people do I need to play?",
+          "p": "Pools and Survivor work with very small groups. In fantasy leagues, whoever creates the league sets the number of participants: the more there are, the more contested the draft, but a handful of friends is plenty of competition."
+        },
+        {
+          "h": "What if I can't make it to the draft?",
+          "p": "Turn on auto-pick: when your time runs out, the app will pick for you and the draft will keep moving. When you're back, you can adjust your team through free agents and trades."
+        },
+        {
+          "h": "Until when can I change predictions and lineups?",
+          "p": "The general rule across the app is kickoff: pool predictions lock when each match starts, your Survivor pick locks when the matchday's first match begins, and your fantasy lineup must be set before the matchday starts."
+        },
+        {
+          "h": "How do I invite my friends?",
+          "p": "Every league, pool or Survivor has an access code and an invite link to share. Whoever receives it lands straight in your group, no extra steps."
+        },
+        {
+          "h": "What devices does it work on?",
+          "p": "Any modern browser, and you can install it on your phone as an app (PWA) without going through any store. Once installed, you'll get notifications for your draft, your leagues and your results."
+        },
+        {
+          "h": "What about my data?",
+          "p": "We collect only what's needed to run your account and your games, we don't sell your data, and you can exercise your rights of access, rectification, cancellation and objection at any time. The full details are in our privacy notice, available from the footer."
         }
       ]
     }

@@ -148,6 +148,7 @@ const onFixtureInfo = (msg: Types.Message) => {
 
 // 1. match-center-score → keep the scoreboard header in sync.
 const onScore = (msg: Types.Message) => {
+  console.log("onScore", msg.data);
   const f = fixture.value;
   if (!f?.participants) return;
   for (const s of toArray<ScoreResponse>(msg.data)) {

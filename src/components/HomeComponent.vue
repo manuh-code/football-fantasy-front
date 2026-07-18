@@ -38,8 +38,6 @@
           </Transition>
         </div>
 
-        <!-- Ad: only on this content surface (a league + stage are selected). -->
-        <AdUnit :ad-slot="AD_SLOTS.homeContent" />
       </template>
     </template>
 
@@ -71,8 +69,6 @@ import { useI18n } from "vue-i18n";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import HomeHeaderMenu from "@/components/home/HomeHeaderMenu.vue";
 import TabsMenu from "@/components/ui/TabsMenu.vue";
-import AdUnit from "@/components/ads/AdUnit.vue";
-import { AD_SLOTS } from "@/config/ads";
 
 // Lazy-load heavy content panels. Keep the raw loaders so we can warm the
 // chunks on mount — that way the slide transition has a resolved component to

@@ -39,6 +39,10 @@
       <StandingsTable v-else :standings="standings" @team-selected="openTeamProfile" />
     </div>
 
+    <!-- Ad: only below a fully loaded table (AdSense policy — never next to
+         skeletons, errors or empty states). -->
+    <AdUnit v-if="!loading && !error && standings.length > 0" :ad-slot="AD_SLOTS.homeContent" />
+
     <!-- Team profile drawer -->
     <FootballTeamProfileComponent
       :is-open="isProfileOpen"
@@ -53,6 +57,8 @@
 import { ref, onMounted, watch } from "vue";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
 import NoResults from "@/components/ui/NoResults.vue";
+import AdUnit from "@/components/ads/AdUnit.vue";
+import { AD_SLOTS } from "@/config/ads";
 import StandingsTable from "./StandingsTable.vue";
 import StandingsTableSkeleton from "./StandingsTableSkeleton.vue";
 import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";

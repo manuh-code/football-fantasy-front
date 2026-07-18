@@ -13,7 +13,7 @@ export const ADSENSE_CLIENT = "ca-pub-9871390969430404";
 // unit stays disabled and renders nothing, so it is safe to ship before you have
 // the real ids.
 export const AD_SLOTS = {
-  /** Below the Home content panels (standings / fixtures / statistics). */
+  /** Below the standings table on Home — rendered only once real rows loaded. */
   homeContent: "2724260479",
   /** In-feed unit after the pool standings list. */
   poolStandings: "[POOL_STANDINGS_SLOT_ID]",
