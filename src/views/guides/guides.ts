@@ -23,6 +23,11 @@ export const GUIDES: GuideMeta[] = [
   { key: 'quiniela', slug: 'como-jugar-quiniela', icon: 'hi-solid-clipboard-check', minRead: 3 },
   { key: 'survivor', slug: 'como-funciona-survivor', icon: 'hi-solid-fire', minRead: 4 },
   { key: 'puntos', slug: 'sistema-de-puntos', icon: 'hi-solid-chart-bar', minRead: 3 },
+  { key: 'estrategia', slug: 'estrategia-de-draft', icon: 'hi-solid-light-bulb', minRead: 5 },
+  { key: 'ligas', slug: 'que-liga-elegir', icon: 'hi-solid-globe-alt', minRead: 5 },
+  { key: 'consejosQuiniela', slug: 'consejos-quiniela', icon: 'hi-solid-lightning-bolt', minRead: 4 },
+  { key: 'glosario', slug: 'glosario-fantasy', icon: 'hi-solid-collection', minRead: 6 },
+  { key: 'faq', slug: 'preguntas-frecuentes', icon: 'hi-solid-information-circle', minRead: 5 },
 ]
 
 export const getGuideBySlug = (slug: string): GuideMeta | undefined =>

@@ -27,8 +27,14 @@
           "h": "Crea o únete a una liga",
           "p": "Al crear una liga eliges su nombre, la competencia sobre la que se juega y el número de participantes; tú quedas como administrador y defines las reglas de puntuación. Para unirte a una liga tienes dos caminos:",
           "list": [
-            { "t": "Con código", "d": "El administrador te comparte un código de acceso o un enlace de invitación para entrar a su liga privada." },
-            { "t": "Explorando ligas públicas", "d": "Desde la pestaña Buscar puedes encontrar ligas abiertas por nombre y unirte directamente." }
+            {
+              "t": "Con código",
+              "d": "El administrador te comparte un código de acceso o un enlace de invitación para entrar a su liga privada."
+            },
+            {
+              "t": "Explorando ligas públicas",
+              "d": "Desde la pestaña Buscar puedes encontrar ligas abiertas por nombre y unirte directamente."
+            }
           ]
         },
         {
@@ -43,9 +49,18 @@
           "h": "Tu plantilla: titulares, FLEX y banca",
           "p": "Tu plantilla se organiza por posiciones según la formación que define la liga. Solo los titulares suman puntos en el enfrentamiento:",
           "list": [
-            { "t": "POR · DEF · MED · DEL", "d": "Los puestos fijos de tu once: portero, defensas, medios y delanteros, en el número que marque la formación de tu liga." },
-            { "t": "FLEX", "d": "Un lugar comodín que puedes ocupar con jugadores de distintas posiciones. Te da margen para alinear a quien mejor viene." },
-            { "t": "Banca", "d": "Tus suplentes. No suman puntos, pero puedes intercambiarlos con tus titulares antes de cada jornada." }
+            {
+              "t": "POR · DEF · MED · DEL",
+              "d": "Los puestos fijos de tu once: portero, defensas, medios y delanteros, en el número que marque la formación de tu liga."
+            },
+            {
+              "t": "FLEX",
+              "d": "Un lugar comodín que puedes ocupar con jugadores de distintas posiciones. Te da margen para alinear a quien mejor viene."
+            },
+            {
+              "t": "Banca",
+              "d": "Tus suplentes. No suman puntos, pero puedes intercambiarlos con tus titulares antes de cada jornada."
+            }
           ],
           "note": "Revisa lesiones, sanciones y calendario antes de que arranque la jornada: los puntos de la banca no cuentan para el marcador."
         },
@@ -80,8 +95,14 @@
           "h": "Turnos y cronómetro",
           "p": "La sala muestra el orden de selección y de quién es el turno en cada momento. Cada elección tiene un tiempo límite configurado por la liga:",
           "list": [
-            { "t": "Tu turno", "d": "La app te avisa cuando te toca y el cronómetro empieza a correr. Elige antes de que llegue a cero." },
-            { "t": "Auto-pick", "d": "Si la liga lo tiene activado y tu tiempo se agota, la app elige por ti para que el draft no se detenga. También te sirve si sabes que no podrás conectarte." }
+            {
+              "t": "Tu turno",
+              "d": "La app te avisa cuando te toca y el cronómetro empieza a correr. Elige antes de que llegue a cero."
+            },
+            {
+              "t": "Auto-pick",
+              "d": "Si la liga lo tiene activado y tu tiempo se agota, la app elige por ti para que el draft no se detenga. También te sirve si sabes que no podrás conectarte."
+            }
           ]
         },
         {
@@ -92,10 +113,22 @@
           "h": "Estrategia para el draft",
           "p": "Llega con la tarea hecha y no dependas de un solo nombre:",
           "list": [
-            { "t": "Lleva una lista", "d": "Ten varios objetivos por posición: es muy probable que alguien elija a tu favorito antes de tu turno." },
-            { "t": "Equilibra posiciones", "d": "Recuerda que tu alineación exige portero, defensas, medios, delanteros y un FLEX. No te cargues de una sola posición." },
-            { "t": "Usa los filtros", "d": "En la búsqueda puedes filtrar por posición y equipo, y comparar puntos totales, promedio y partidos jugados." },
-            { "t": "Piensa en la banca", "d": "Los últimos turnos son para suplentes que te salven en jornadas con bajas." }
+            {
+              "t": "Lleva una lista",
+              "d": "Ten varios objetivos por posición: es muy probable que alguien elija a tu favorito antes de tu turno."
+            },
+            {
+              "t": "Equilibra posiciones",
+              "d": "Recuerda que tu alineación exige portero, defensas, medios, delanteros y un FLEX. No te cargues de una sola posición."
+            },
+            {
+              "t": "Usa los filtros",
+              "d": "En la búsqueda puedes filtrar por posición y equipo, y comparar puntos totales, promedio y partidos jugados."
+            },
+            {
+              "t": "Piensa en la banca",
+              "d": "Los últimos turnos son para suplentes que te salven en jornadas con bajas."
+            }
           ]
         }
       ]
@@ -121,9 +154,18 @@
           "h": "Cómo se puntúa",
           "p": "Cada grupo define cuántos puntos vale cada tipo de acierto, siempre en tres niveles:",
           "list": [
-            { "t": "Resultado exacto", "d": "Le atinaste al marcador final tal cual. Es el acierto mejor pagado." },
-            { "t": "Ganador correcto", "d": "No acertaste el marcador, pero sí quién ganaba el partido." },
-            { "t": "Empate correcto", "d": "Pronosticaste empate y el partido terminó empatado, aunque con otro marcador." }
+            {
+              "t": "Resultado exacto",
+              "d": "Le atinaste al marcador final tal cual. Es el acierto mejor pagado."
+            },
+            {
+              "t": "Ganador correcto",
+              "d": "No acertaste el marcador, pero sí quién ganaba el partido."
+            },
+            {
+              "t": "Empate correcto",
+              "d": "Pronosticaste empate y el partido terminó empatado, aunque con otro marcador."
+            }
           ],
           "note": "Los puntos no se suman entre sí: si aciertas el marcador exacto, ganas solo los puntos de ese nivel. Revisa las reglas de puntuación de tu grupo en la pestaña de información."
         },
@@ -146,10 +188,22 @@
           "h": "El sistema de vidas",
           "p": "Cada participante empieza con el número de vidas que defina el pool (normalmente una). Esto es lo que pasa con tu pick cada jornada:",
           "list": [
-            { "t": "Tu equipo gana", "d": "Sobrevives y avanzas a la siguiente jornada con tus vidas intactas." },
-            { "t": "Tu equipo empata", "d": "El empate no cuesta vida: sobrevives, aunque el equipo queda usado." },
-            { "t": "Tu equipo pierde", "d": "Pierdes una vida." },
-            { "t": "No elegiste a tiempo", "d": "Quedarte sin pick antes del cierre también cuesta una vida. No dejes pasar la jornada." }
+            {
+              "t": "Tu equipo gana",
+              "d": "Sobrevives y avanzas a la siguiente jornada con tus vidas intactas."
+            },
+            {
+              "t": "Tu equipo empata",
+              "d": "El empate no cuesta vida: sobrevives, aunque el equipo queda usado."
+            },
+            {
+              "t": "Tu equipo pierde",
+              "d": "Pierdes una vida."
+            },
+            {
+              "t": "No elegiste a tiempo",
+              "d": "Quedarte sin pick antes del cierre también cuesta una vida. No dejes pasar la jornada."
+            }
           ],
           "note": "Al llegar a cero vidas quedas eliminado del Survivor. Si el pool reparte más de una vida, un tropiezo no te manda a casa, pero cada error cuenta."
         },
@@ -199,6 +253,365 @@
         {
           "h": "Revisa tus puntos cada jornada",
           "p": "En cada enfrentamiento puedes ver el desglose de cuánto sumó cada uno de tus jugadores, y en la búsqueda de jugadores tienes sus puntos totales, promedio y partidos jugados. Es la mejor forma de entender qué funcionó y ajustar tu alineación para la siguiente jornada."
+        }
+      ]
+    },
+    "estrategia": {
+      "title": "Estrategia de draft: cómo armar un equipo ganador",
+      "excerpt": "Tiers, orden de selección y errores comunes: prepara tu draft como profesional.",
+      "intro": "El draft define la mitad de tu temporada: los aciertos te dan un equipo que compite solo, y los errores te persiguen jornada tras jornada. Esta guía va más allá de las reglas —si aún no las conoces, empieza por la guía del draft— y se enfoca en cómo elegir mejor que tus rivales.",
+      "sections": [
+        {
+          "h": "Antes del draft: estudia tu liga",
+          "p": "Cada liga fantasy define su formación (cuántos porteros, defensas, medios y delanteros titulares, más el FLEX y la banca) y sus reglas de puntuación. Revisa ambas antes de preparar nada: si tu liga premia mucho la portería a cero, los defensas de equipos ordenados valen más; si paga bien las asistencias, busca a los que cobran los tiros de esquina y las faltas."
+        },
+        {
+          "h": "Arma tu lista por niveles (tiers)",
+          "p": "En lugar de una lista única del 1 al 50, agrupa a los jugadores por posición en niveles de valor parecido. Cuando llegue tu turno no te preguntes quién es el mejor disponible, sino qué nivel está a punto de agotarse. Si quedan tres delanteros de primer nivel pero un solo medio, el medio es la elección correcta aunque el delantero sea más famoso."
+        },
+        {
+          "h": "Primeras rondas: minutos garantizados",
+          "p": "Al inicio elige jugadores que lo juegan todo: titulares indiscutibles en equipos que generan mucho. Un jugador algo menos brillante que disputa los 90 minutos cada jornada suele sumar más al final del torneo que una estrella que rota o se lesiona. La regularidad gana ligas fantasy."
+        },
+        {
+          "h": "Cobradores: los puntos escondidos",
+          "p": "Los jugadores que cobran penales, tiros libres y esquinas concentran las jugadas que terminan en gol o asistencia. Ante dos opciones parecidas, quédate con el cobrador: participa en los puntos de su equipo incluso cuando no tiene su mejor día."
+        },
+        {
+          "h": "Portero y defensas: no tan pronto",
+          "p": "La diferencia de puntos entre el mejor portero y uno bueno suele ser menor que entre el mejor delantero y uno del montón. Prioriza el ataque en las primeras rondas y cubre la portería y la defensa en las intermedias, buscando equipos que reciban pocos goles."
+        },
+        {
+          "h": "El FLEX y la banca: tu margen de maniobra",
+          "p": "Los últimos puestos de tu plantilla son los que salvan temporadas. Piénsalos así:",
+          "list": [
+            {
+              "t": "El FLEX se draftea",
+              "d": "Un buen jugador extra de tu posición más fuerte vale doble si puede alinearse en el puesto comodín."
+            },
+            {
+              "t": "Banca con propósito",
+              "d": "Tus suplentes deben cubrir posiciones distintas para responder a lesiones y sanciones: no acumules tres suplentes del mismo puesto."
+            },
+            {
+              "t": "Calendario en mente",
+              "d": "Si dos de tus titulares descansan la misma jornada, tu banca debe poder cubrirlos a la vez."
+            }
+          ]
+        },
+        {
+          "h": "Errores comunes que pierden drafts",
+          "p": "Casi todos los drafts se pierden por los mismos motivos:",
+          "list": [
+            {
+              "t": "Draftear con el corazón",
+              "d": "Llenarte de jugadores de tu equipo favorito rara vez maximiza puntos. Que decida el rendimiento, no la playera."
+            },
+            {
+              "t": "Perseguir la temporada pasada",
+              "d": "Los puntos del torneo anterior no se transfieren. Fíjate en el presente: minutos actuales, rol en el equipo y estado físico."
+            },
+            {
+              "t": "Ignorar el reloj",
+              "d": "Si dejas correr el cronómetro sin plan, terminas eligiendo a la carrera o dejándole la decisión al auto-pick. Llega con tu lista hecha."
+            },
+            {
+              "t": "No mirar a tus rivales",
+              "d": "El tablero del draft te dice qué necesita cada quien. Si eres el único sin portero y quedan dos buenos, todavía puedes esperar una ronda."
+            }
+          ]
+        },
+        {
+          "h": "El draft no termina el día del draft",
+          "p": "Los agentes libres y los cambios existen para corregir. Detecta pronto a los jugadores en racha que nadie drafteó y propón intercambios donde ambas partes ganen: la liga se gana gestionando, no solo drafteando."
+        }
+      ]
+    },
+    "ligas": {
+      "title": "¿Qué liga elegir para tu fantasy? Guía de las 5 competencias",
+      "excerpt": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga: qué cambia al jugar fantasy, quiniela o Survivor en cada una.",
+      "intro": "En Fantasy MX todos los modos se juegan igual en cualquier competencia, pero cada liga tiene su propio ritmo: formato, cantidad de jornadas, horarios y estilo de juego. Elegir bien hace tu temporada más divertida y tus predicciones más certeras.",
+      "sections": [
+        {
+          "h": "Las reglas no cambian, el futbol sí",
+          "p": "El fantasy con draft y enfrentamientos, las quinielas de marcador exacto y el Survivor funcionan idéntico en las cinco ligas. Lo que cambia es el contexto: cuántos equipos hay, cuánto dura la temporada, a qué hora se juega y qué tan predecibles son los resultados."
+        },
+        {
+          "h": "Liga MX: torneos cortos e intensos",
+          "p": "El futbol mexicano juega dos torneos por año (Apertura y Clausura) con 18 equipos y una fase regular corta que desemboca en la liguilla. Para el fantasy significa temporadas ágiles donde cada jornada pesa mucho; para el Survivor, menos margen de error y torneos que se resuelven rápido. Sus horarios de tarde y noche son ideales si vives en México."
+        },
+        {
+          "h": "Premier League: profundidad y rotaciones",
+          "p": "Veinte equipos, 38 jornadas y las plantillas más profundas del mundo. Hay muchísimos jugadores válidos para el draft, pero también más rotaciones, así que seguir las alineaciones importa. Es la liga con más información disponible para tomar decisiones."
+        },
+        {
+          "h": "LaLiga: jerarquía y control",
+          "p": "El futbol español premia el control del juego. Los equipos grandes suelen dominar sus partidos, lo que da picks de Survivor relativamente confiables, y sus atacantes concentran muchos puntos fantasy. Cuidado con las jornadas de rivalidades: es donde caen los favoritos."
+        },
+        {
+          "h": "Serie A: el arte del resultado corto",
+          "p": "Italia mantiene su fama táctica: marcadores cerrados y defensas protagonistas. Para las quinielas de marcador exacto, el 1-0 y el 1-1 rinden más que en otras ligas; para el fantasy, porteros y defensas valen oro por la portería a cero."
+        },
+        {
+          "h": "Bundesliga: goles y ritmo alto",
+          "p": "Con 18 equipos y 34 jornadas, el futbol alemán es de los más ofensivos de Europa: presión alta, transiciones rápidas y muchos goles. Ideal para un fantasy cargado al ataque, y para quinielas si te gustan los marcadores largos, aunque el exacto sea más difícil de clavar."
+        },
+        {
+          "h": "Cómo decidir",
+          "p": "Cuatro preguntas resuelven la elección:",
+          "list": [
+            {
+              "t": "Horarios",
+              "d": "La liga que puedas ver en vivo es la que mejor vas a predecir. Las europeas se juegan por la mañana y el mediodía en horario de México; la Liga MX por la tarde y noche."
+            },
+            {
+              "t": "Conocimiento",
+              "d": "Juega donde conozcas planteles y rachas: en fantasy, la ventaja es información."
+            },
+            {
+              "t": "Tu grupo",
+              "d": "La mejor liga es la que tus amigos también siguen. El modo más divertido es el que se presume en el chat."
+            },
+            {
+              "t": "Duración",
+              "d": "¿Torneo corto e intenso? Liga MX. ¿Temporada larga para gestionar? Premier League, LaLiga o Serie A."
+            }
+          ]
+        },
+        {
+          "h": "¿Y por qué no todas?",
+          "p": "Puedes participar en ligas, quinielas y Survivors de competencias distintas a la vez. Muchos juegan el fantasy con amigos en una liga europea y la quiniela familiar en la Liga MX: cada grupo elige su competencia al momento de crearse."
+        }
+      ]
+    },
+    "consejosQuiniela": {
+      "title": "Cómo ganar tu quiniela: consejos para predecir marcadores",
+      "excerpt": "Del marcador probable al riesgo calculado: estrategia real para quinielas de marcador exacto.",
+      "intro": "Acertar un marcador exacto tiene mucho de conocimiento y un poco de suerte. A lo largo de una temporada completa, la diferencia entre el primero de la tabla y el resto está en el método: entender los puntos, jugar los marcadores probables y saber cuándo arriesgar. Aquí va el método.",
+      "sections": [
+        {
+          "h": "Domina el sistema de puntos de tu grupo",
+          "p": "Cada quiniela configura cuánto vale el marcador exacto, el ganador correcto y el empate correcto. Si el exacto paga mucho más, arriesgar tiene sentido; si la diferencia es pequeña, asegurar el ganador jornada tras jornada construye la victoria. Revisa los valores en la pestaña de información de tu grupo antes de definir tu estilo."
+        },
+        {
+          "h": "Los marcadores bajos mandan",
+          "p": "En el futbol profesional la mayoría de los partidos termina con pocos goles: el 1-0, el 2-1, el 1-1 y el 2-0 se repiten mucho más que cualquier goleada. Ante la duda, pronostica corto. Un 4-3 espectacular casi nunca es la jugada inteligente."
+        },
+        {
+          "h": "Primero el ganador, después el marcador",
+          "p": "Divide la predicción en dos decisiones: primero quién gana (o si hay empate) y después el marcador más típico de ese resultado. ¿Favorito claro en casa? 2-0 o 2-1. ¿Partido cerrado entre parejos? 1-1 o 1-0. Encadenar las dos preguntas es más fiable que imaginar el marcador de golpe."
+        },
+        {
+          "h": "No desprecies el empate",
+          "p": "El empate es el resultado que casi nadie pronostica y ocurre más de lo que parece: alrededor de uno de cada cuatro partidos. Si tu grupo premia el empate correcto, detectar dos o tres empates probables por jornada te da puntos que tus rivales están regalando."
+        },
+        {
+          "h": "Usa los datos que ya tienes en la app",
+          "p": "No hace falta salir de Fantasy MX para investigar:",
+          "list": [
+            {
+              "t": "Tabla de posiciones",
+              "d": "La diferencia real entre dos equipos se ve en la tabla y en su diferencia de goles, no en el prestigio del escudo."
+            },
+            {
+              "t": "Estadísticas y rachas",
+              "d": "Equipos que anotan poco y reciben poco apuntan a marcadores cortos; un ataque en racha justifica subirle un gol a tu pronóstico."
+            },
+            {
+              "t": "Comparador de jugadores",
+              "d": "El cara a cara entre los referentes de cada equipo te dice qué ofensiva llega mejor al partido."
+            },
+            {
+              "t": "Calendario",
+              "d": "Un grande que jugó competencia internacional entre semana suele rotar el fin de semana: sospecha del favorito cansado."
+            }
+          ]
+        },
+        {
+          "h": "Disciplina de cierre",
+          "p": "Puedes editar tus predicciones hasta que cada partido comienza: úsalo. Llena toda la jornada con antelación para no dejar partidos vacíos y repasa tus pronósticos cuando salgan las alineaciones. Un partido sin predicción son puntos regalados; la quiniela también se gana no fallando por descuido."
+        },
+        {
+          "h": "Predice con la cabeza, no con la playera",
+          "p": "El error más común de todos: pronosticar siempre la victoria de tu equipo o la derrota de tu clásico rival. Sepárate un momento de tu afición y pregúntate qué marcador pondrías si no le fueras a nadie. Tu posición en la tabla del grupo te lo va a agradecer."
+        }
+      ]
+    },
+    "glosario": {
+      "title": "Glosario de Fantasy MX: habla el idioma del juego",
+      "excerpt": "Draft, FLEX, pick, vidas, marcador exacto… todos los términos de la app explicados en corto.",
+      "intro": "¿Primera vez en un fantasy o en un Survivor? Aquí está el vocabulario que verás en Fantasy MX, agrupado por modo de juego, para que ninguna palabra te agarre fuera de lugar.",
+      "sections": [
+        {
+          "h": "Términos del fantasy",
+          "list": [
+            {
+              "t": "Draft",
+              "d": "Evento en vivo donde los participantes de una liga eligen jugadores por turnos hasta completar sus plantillas."
+            },
+            {
+              "t": "Pick",
+              "d": "Cada elección individual, tanto en el draft como en el Survivor."
+            },
+            {
+              "t": "Plantilla",
+              "d": "El conjunto completo de jugadores de tu equipo: titulares y banca."
+            },
+            {
+              "t": "Titulares",
+              "d": "Los jugadores que alineas en una jornada; solo ellos suman puntos en tu enfrentamiento."
+            },
+            {
+              "t": "Banca",
+              "d": "Tus suplentes. No puntúan, pero puedes intercambiarlos con titulares antes de cada jornada."
+            },
+            {
+              "t": "FLEX",
+              "d": "Puesto comodín de la alineación que acepta jugadores de distintas posiciones."
+            },
+            {
+              "t": "Enfrentamiento",
+              "d": "El duelo semanal cara a cara contra otro equipo de tu liga; gana quien más puntos suma con sus titulares."
+            },
+            {
+              "t": "Agente libre",
+              "d": "Jugador que ningún equipo de la liga tiene en su plantilla y que puedes agregar al tuyo."
+            },
+            {
+              "t": "Cambio",
+              "d": "Intercambio de jugadores entre dos equipos de la misma liga."
+            },
+            {
+              "t": "Auto-pick",
+              "d": "Opción con la que la app elige por ti si tu tiempo del draft se agota."
+            },
+            {
+              "t": "Liga pública y privada",
+              "d": "A las privadas se entra con código de acceso; las públicas aparecen para todos en la pestaña Buscar."
+            }
+          ]
+        },
+        {
+          "h": "Términos de la quiniela",
+          "list": [
+            {
+              "t": "Marcador exacto",
+              "d": "Acertar los goles exactos de ambos equipos. Es el acierto mejor pagado."
+            },
+            {
+              "t": "Ganador correcto",
+              "d": "Acertar qué equipo gana el partido, sin acertar el marcador."
+            },
+            {
+              "t": "Empate correcto",
+              "d": "Pronosticar empate y que el partido termine empatado, con cualquier marcador."
+            },
+            {
+              "t": "Cierre",
+              "d": "El momento en que un partido comienza y tu predicción queda bloqueada."
+            },
+            {
+              "t": "Etapa",
+              "d": "El torneo o temporada sobre la que se juega la quiniela, por ejemplo un Apertura de la Liga MX."
+            },
+            {
+              "t": "General o acumulado",
+              "d": "La tabla que suma los puntos de todas las jornadas de la etapa."
+            }
+          ]
+        },
+        {
+          "h": "Términos del Survivor",
+          "list": [
+            {
+              "t": "Vida",
+              "d": "Tu margen de error. Pierdes una al fallar un pick o al no elegir a tiempo; con cero vidas quedas eliminado."
+            },
+            {
+              "t": "Pick de la jornada",
+              "d": "El único equipo que eliges por jornada esperando que gane su partido."
+            },
+            {
+              "t": "Equipo quemado",
+              "d": "Equipo que ya usaste en una jornada anterior y no puedes volver a elegir."
+            },
+            {
+              "t": "Último en pie",
+              "d": "El sobreviviente final cuando todos los demás quedaron eliminados: el ganador del Survivor."
+            }
+          ]
+        },
+        {
+          "h": "Términos de futbol y estadística",
+          "list": [
+            {
+              "t": "Jornada",
+              "d": "Cada ronda de partidos de la liga real; también es la unidad de juego de todos los modos de la app."
+            },
+            {
+              "t": "Portería a cero",
+              "d": "Terminar el partido sin recibir gol; suele dar puntos extra a porteros y defensas."
+            },
+            {
+              "t": "Asistencia",
+              "d": "El pase que termina en gol de un compañero."
+            },
+            {
+              "t": "PJ y promedio",
+              "d": "Partidos jugados y puntos por partido; los verás al comparar jugadores en la búsqueda."
+            },
+            {
+              "t": "Liguilla",
+              "d": "La fase final por eliminación directa de la Liga MX, posterior a la fase regular."
+            }
+          ]
+        },
+        {
+          "h": "¿Falta alguna palabra?",
+          "p": "El resto de las guías explica cada modo a fondo usando estos términos en contexto: si algo sigue sin cuadrar, la respuesta está a una guía de distancia."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Preguntas frecuentes sobre Fantasy MX",
+      "excerpt": "Lo que todos preguntan antes de empezar: cuentas, ligas, draft, cierres y dispositivos.",
+      "intro": "Respuestas directas a las dudas más comunes sobre Fantasy MX. Si la tuya no está aquí, las guías de cada modo entran en todo el detalle.",
+      "sections": [
+        {
+          "h": "¿Fantasy MX es gratis?",
+          "p": "Sí, completamente. Todos los modos —fantasy, quinielas y Survivor— son gratuitos, sin suscripciones ni pagos dentro de la app. El proyecto se sostiene con publicidad discreta en las pantallas de contenido."
+        },
+        {
+          "h": "¿Necesito cuenta para usar la app?",
+          "p": "Para seguir resultados, posiciones y estadísticas no: entra y explora la liga que quieras. La cuenta hace falta para jugar —crear o unirte a ligas fantasy, quinielas y Survivor—, porque tus equipos y predicciones se guardan en tu perfil. Crearla toma segundos con tu correo o con Google."
+        },
+        {
+          "h": "¿Qué ligas puedo seguir?",
+          "p": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Cada liga fantasy, quiniela o Survivor se crea sobre una de estas competencias, y puedes participar en varias a la vez."
+        },
+        {
+          "h": "¿Cuánta gente necesito para jugar?",
+          "p": "Las quinielas y el Survivor funcionan desde grupos muy pequeños. En las ligas fantasy, quien crea la liga define el número de participantes: mientras más sean, más disputado el draft, pero con un puñado de amigos ya hay competencia de sobra."
+        },
+        {
+          "h": "¿Qué pasa si no puedo conectarme al draft?",
+          "p": "Activa el auto-pick: cuando tu tiempo se agote, la app elegirá por ti y el draft seguirá su curso. Al volver, podrás ajustar tu equipo con agentes libres y proponiendo cambios."
+        },
+        {
+          "h": "¿Hasta cuándo puedo cambiar predicciones y alineaciones?",
+          "p": "La regla general en toda la app es el inicio del juego: las predicciones de quiniela se bloquean cuando arranca cada partido, el pick del Survivor cuando comienza el primer partido de la jornada, y tu alineación fantasy debe quedar lista antes de que la jornada arranque."
+        },
+        {
+          "h": "¿Cómo invito a mis amigos?",
+          "p": "Cada liga, quiniela o Survivor tiene un código de acceso y un enlace de invitación para compartir. Quien lo reciba entra directo a tu grupo, sin pasos extra."
+        },
+        {
+          "h": "¿En qué dispositivos funciona?",
+          "p": "En cualquier navegador moderno, y puedes instalarla en tu teléfono como una app (PWA) sin pasar por ninguna tienda. Instalada, recibirás notificaciones de tu draft, tus ligas y tus resultados."
+        },
+        {
+          "h": "¿Qué pasa con mis datos?",
+          "p": "Recabamos solo lo necesario para operar tu cuenta y tus juegos, no vendemos tus datos y puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición en cualquier momento. El detalle completo está en nuestro aviso de privacidad, disponible desde el pie de página."
         }
       ]
     }
