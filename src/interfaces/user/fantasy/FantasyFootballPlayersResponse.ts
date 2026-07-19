@@ -2,6 +2,7 @@ import { FootballNextFixtureResponse } from "@/interfaces/football/fixture/Footb
 import { FootballPlayerResponse } from "@/interfaces/football/player/FootballPlayerResponse";
 import { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import { TypeResponse } from "@/interfaces/football/type/TypeResponse";
+import { CountryResponse } from "@/interfaces/country/CountryResponse";
 
 export interface FantasyFootballPlayersResponse {
     total_fantasy_points: number;
@@ -18,4 +19,5 @@ export interface FantasyFootballPlayer {
     position: TypeResponse;
     team: FootballTeamResponse;
     next_fixture: FootballNextFixtureResponse;
+    country?: CountryResponse | null;
 }

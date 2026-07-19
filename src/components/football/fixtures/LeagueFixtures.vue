@@ -285,8 +285,15 @@ onMounted(() => {
 });
 
 // ── Derived list state ──
-const listLoading = computed(
-  () => isLoadingFixtures.value || (mode.value === "playoffs" && isLoadingStages.value),
+// The list feeds off a two-step pipeline (regular: rounds → fixtures, playoffs:
+// stages → fixtures). Keep it in its skeleton state across the WHOLE pipeline —
+// not just the fixtures leg — so the "no matches" empty state can't flash in the
+// gap while the rounds/stages request is still in flight and no round/stage has
+// been selected to kick off the fixtures request yet.
+const listLoading = computed(() =>
+  mode.value === "playoffs"
+    ? isLoadingStages.value || isLoadingFixtures.value
+    : isLoadingRounds.value || isLoadingFixtures.value,
 );
 
 const emptyIcon = computed(() =>

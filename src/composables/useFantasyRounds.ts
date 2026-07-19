@@ -23,6 +23,21 @@ function formatRoundDate(dateStr: string): string {
 }
 
 /**
+ * Numeric round value parsed from the round name (e.g. "Regular Season - 10" → 10).
+ * Rounds without a number (knockouts) sort last.
+ */
+function roundNumber(r: FantasyRoundResponse): number {
+  const match = /(\d+)/.exec(r.round?.name ?? '')
+  return match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER
+}
+
+/** Kickoff time of a round, used as a tie-breaker / fallback for sorting. */
+function roundTime(r: FantasyRoundResponse): number {
+  const t = r.round?.starting_at ? new Date(r.round.starting_at).getTime() : NaN
+  return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t
+}
+
+/**
  * Composable to manage fantasy league rounds selection.
  * Encapsulates loading, navigation, and UI scroll logic for round chips.
  */
@@ -86,7 +101,13 @@ export function useFantasyRounds(leagueUuid: () => string | undefined) {
     isLoadingRounds.value = true
 
     try {
-      rounds.value = await fantasyLeagueService.getFantasyRoundsByLeagueUuid(uuid)
+      const data = await fantasyLeagueService.getFantasyRoundsByLeagueUuid(uuid)
+
+      // The API doesn't guarantee round order (e.g. "Jornada 1" came back between
+      // rounds 10 and 11), which left the current round rendered out of place in
+      // the strip. Sort ascending by round number, falling back to the kickoff
+      // date for rounds whose name has no number (knockouts).
+      rounds.value = [...data].sort((a, b) => roundNumber(a) - roundNumber(b) || roundTime(a) - roundTime(b))
 
       // Auto-select current round
       const currentRound = rounds.value.find((r) => r.is_current)
