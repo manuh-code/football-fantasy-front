@@ -40,7 +40,11 @@ const selectedIndex = computed(() =>
 const stripRef = ref<HTMLElement | null>(null)
 
 // --- Mouse drag-to-scroll (touch/pen keep native scrolling) ---
+// Pixels the pointer must travel before a press becomes a drag. Below this a
+// press stays a plain click so the round button gets selected.
+const DRAG_THRESHOLD = 4
 const isDragging = ref(false)
+let pressing = false
 let startX = 0
 let startScroll = 0
 let moved = false
@@ -50,32 +54,45 @@ const onPointerDown = (e: PointerEvent) => {
   if (e.pointerType !== 'mouse') return
   const strip = stripRef.value
   if (!strip) return
-  isDragging.value = true
+  // Record the press origin but DON'T capture the pointer yet. Capturing here
+  // retargets the eventual `click` to the strip, so the round <button> never
+  // receives it and rounds become unselectable on desktop. We only capture once
+  // the pointer actually crosses the drag threshold (see onPointerMove).
+  pressing = true
   moved = false
   startX = e.clientX
   startScroll = strip.scrollLeft
   activePointer = e.pointerId
-  strip.setPointerCapture(e.pointerId)
 }
 
 const onPointerMove = (e: PointerEvent) => {
-  if (!isDragging.value) return
+  if (!pressing) return
   const strip = stripRef.value
   if (!strip) return
   const dx = e.clientX - startX
-  if (Math.abs(dx) > 3) moved = true
+  if (!isDragging.value) {
+    if (Math.abs(dx) < DRAG_THRESHOLD) return
+    // Threshold crossed → promote to a real drag and capture from here on so we
+    // keep tracking even if the cursor leaves the strip.
+    isDragging.value = true
+    moved = true
+    strip.setPointerCapture(e.pointerId)
+  }
   strip.scrollLeft = startScroll - dx
 }
 
 const onPointerUp = () => {
-  if (!isDragging.value) return
-  isDragging.value = false
+  if (!pressing) return
+  pressing = false
   const strip = stripRef.value
-  if (strip && activePointer !== null) {
-    try {
-      strip.releasePointerCapture(activePointer)
-    } catch {
-      /* pointer already released */
+  if (isDragging.value) {
+    isDragging.value = false
+    if (strip && activePointer !== null) {
+      try {
+        strip.releasePointerCapture(activePointer)
+      } catch {
+        /* pointer already released */
+      }
     }
   }
   activePointer = null

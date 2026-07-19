@@ -49,7 +49,10 @@
                   <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player?.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
                 </div>
-                <NextFixtureBadge :fixture="player.next_fixture" />
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <NationalityBadge class="mt-0.5" :country="player.football_player?.country" />
+                  <NextFixtureBadge :fixture="player.next_fixture" />
+                </div>
               </div>
               <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} {{ $t('fantasy.lineup.pts') }}</span>
               <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
@@ -112,6 +115,7 @@ import { computed, ref } from "vue";
 import { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
 import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
+import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
 import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
