@@ -69,6 +69,12 @@
       "errorBody": "Revisa los permisos e inténtalo de nuevo.",
       "disabledTitle": "Notificaciones desactivadas",
       "disabledBody": "Ya no recibirás notificaciones en este dispositivo."
+    },
+    "version": {
+      "title": "Versión de la app",
+      "subtitle": "Información de la versión instalada",
+      "label": "Versión",
+      "releaseDate": "Actualizada el {date}"
     }
   },
   "profile": {

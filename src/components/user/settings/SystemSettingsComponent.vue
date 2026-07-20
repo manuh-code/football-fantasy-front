@@ -180,6 +180,30 @@
         </div>
       </div>
     </div>
+
+    <!-- App version -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $t('user.settings.version.title') }}</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('user.settings.version.subtitle') }}</p>
+      </div>
+
+      <div class="p-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-700/60">
+            <v-icon name="hi-solid-information-circle" class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">
+              {{ $t('user.settings.version.label') }} {{ appVersion.version }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ $t('user.settings.version.releaseDate', { date: formattedReleaseDate }) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -194,13 +218,20 @@ import { usePushNotifications } from '@/composables/usePushNotifications'
 import { useNotificationsStore } from '@/store/notifications'
 import { useOnboardingStore } from '@/store/onboarding'
 import { useToast } from '@/composables'
+import appVersion from '@/version.json'
 
 const themeStore = useThemeStore()
 const localeStore = useLocaleStore()
 const router = useRouter()
 const onboardingStore = useOnboardingStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const toast = useToast()
+
+const formattedReleaseDate = computed(() =>
+  new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(
+    new Date(`${appVersion.releaseDate}T00:00:00`),
+  ),
+)
 
 // Reinicia las guías y vuelve al Home, donde la visita guiada se mostrará de nuevo.
 async function replayTutorial() {

@@ -69,6 +69,12 @@
       "errorBody": "Check your permissions and try again.",
       "disabledTitle": "Notifications disabled",
       "disabledBody": "You'll no longer receive notifications on this device."
+    },
+    "version": {
+      "title": "App version",
+      "subtitle": "Information about the installed version",
+      "label": "Version",
+      "releaseDate": "Updated on {date}"
     }
   },
   "profile": {
