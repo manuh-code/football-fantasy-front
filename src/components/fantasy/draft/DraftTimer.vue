@@ -3,173 +3,146 @@
     <!-- Active turn -->
     <div
       v-if="turn"
-      class="overflow-hidden shadow-sm transition-all duration-300"
+      role="timer"
+      :aria-label="isMyTurn ? $t('fantasy.draft.timer.yourTurn') : $t('fantasy.draft.timer.userTurn', { name: turn.user?.firstname ?? $t('fantasy.draft.timer.unknown') })"
+      class="flex items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm transition-[padding,border-radius,gap,box-shadow] duration-300 ease-out"
       :class="[
-        bannerClasses,
-        compact ? 'rounded-xl' : 'rounded-2xl',
+        compact ? 'rounded-xl gap-2.5 px-3 py-2' : 'rounded-2xl gap-3 px-4 py-3',
+        c.card,
       ]"
     >
-      <div class="relative">
-        <!-- Full layout -->
-        <div
-          class="transition-opacity duration-150"
-          :class="compact ? 'opacity-0 pointer-events-none absolute inset-x-0 top-0' : 'opacity-100 relative'"
+      <!-- Avatar wrapped by the countdown ring — the clock is on THIS player -->
+      <div
+        class="relative shrink-0 transition-[width,height] duration-300 ease-out"
+        :class="compact ? 'w-9 h-9' : 'w-14 h-14'"
+      >
+        <svg
+          class="absolute inset-0 h-full w-full -rotate-90"
+          viewBox="0 0 36 36"
+          aria-hidden="true"
         >
-          <div class="px-4 py-3 flex items-center gap-3">
-            <div class="relative flex-shrink-0">
-              <div
-                class="w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/30"
-                :class="{ 'animate-pulse-soft': isMyTurn }"
-              >
-                <img
-                  v-if="turn.user?.avatar"
-                  :src="turn.user.avatar"
-                  :alt="turn.user?.firstname ?? ''"
-                  class="w-full h-full object-cover"
-                />
-                <div
-                  v-else
-                  class="w-full h-full flex items-center justify-center bg-white/20 text-sm font-bold text-white"
-                >
-                  {{ getInitials(turn.user) }}
-                </div>
-              </div>
-            </div>
+          <circle
+            cx="18"
+            cy="18"
+            r="16"
+            fill="none"
+            stroke-width="3"
+            stroke="currentColor"
+            class="text-gray-200 dark:text-gray-700"
+          />
+          <circle
+            cx="18"
+            cy="18"
+            r="16"
+            fill="none"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke="currentColor"
+            class="ring-progress"
+            :class="c.ring"
+            :style="{ strokeDasharray: RING_C, strokeDashoffset: ringDashoffset }"
+          />
+        </svg>
 
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-white leading-tight truncate">
-                {{ isMyTurn ? $t('fantasy.draft.timer.yourTurn') : $t('fantasy.draft.timer.userTurn', { name: turn.user?.firstname ?? $t('fantasy.draft.timer.unknown') }) }}
-              </p>
-              <p class="text-2xs text-white/70 mt-0.5">
-                {{ $t('fantasy.draft.timer.pickRound', { pick: turn.pick ?? '-', round: turn.round ?? '-' }) }}
-              </p>
-            </div>
-
-            <div class="flex-shrink-0 text-right">
-              <span
-                class="text-3xl font-black text-white tabular-nums leading-none tracking-tight"
-                :class="timerTextClass"
-              >
-                {{ displayTime }}
-              </span>
-              <p class="text-2xs text-white/50 font-medium mt-0.5 uppercase tracking-wider">
-                {{ expired ? $t('fantasy.draft.timer.expired') : $t('fantasy.draft.timer.sec') }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Progress bar -->
-          <div class="px-4 pb-2">
-            <div class="w-full h-1 rounded-full bg-white/20 overflow-hidden">
-              <div
-                class="h-full rounded-full transition-all duration-1000 ease-linear"
-                :class="progressBarClass"
-                :style="{ width: `${progress}%` }"
-              />
-            </div>
+        <div
+          class="absolute inset-[9%] rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700"
+          :class="{ 'ring-pulse': c.pulse }"
+        >
+          <img
+            v-if="turn.user?.avatar"
+            :src="turn.user.avatar"
+            :alt="turn.user?.firstname ?? ''"
+            class="w-full h-full object-cover"
+          />
+          <div
+            v-else
+            class="w-full h-full flex items-center justify-center font-bold text-gray-400 dark:text-gray-500"
+            :class="compact ? 'text-2xs' : 'text-sm'"
+          >
+            {{ getInitials(turn.user) }}
           </div>
         </div>
+      </div>
 
-        <!-- Compact layout -->
-        <div
-          class="transition-opacity duration-150"
-          :class="compact ? 'opacity-100 relative' : 'opacity-0 pointer-events-none absolute inset-x-0 top-0'"
+      <!-- Who + context -->
+      <div class="min-w-0 flex-1">
+        <p
+          class="font-bold text-gray-900 dark:text-white leading-tight truncate transition-[font-size] duration-300"
+          :class="compact ? 'text-xs' : 'text-sm'"
         >
-          <div class="px-3 py-1.5 flex items-center gap-2">
-            <div class="w-6 h-6 rounded-full overflow-hidden ring-1 ring-white/20 flex-shrink-0">
-              <img
-                v-if="turn.user?.avatar"
-                :src="turn.user.avatar"
-                :alt="turn.user?.firstname ?? ''"
-                class="w-full h-full object-cover"
-              />
-              <div
-                v-else
-                class="w-full h-full flex items-center justify-center bg-white/20 text-2xs font-bold text-white"
-              >
-                {{ getInitials(turn.user) }}
-              </div>
-            </div>
+          {{ isMyTurn ? $t('fantasy.draft.timer.yourTurn') : $t('fantasy.draft.timer.userTurn', { name: turn.user?.firstname ?? $t('fantasy.draft.timer.unknown') }) }}
+        </p>
+        <p
+          v-if="!compact"
+          class="text-2xs text-gray-500 dark:text-gray-400 mt-0.5 truncate"
+        >
+          {{ $t('fantasy.draft.timer.pickRound', { pick: turn.pick ?? '-', round: turn.round ?? '-' }) }}
+        </p>
+      </div>
 
-            <p class="text-xs font-semibold text-white truncate flex-1 min-w-0">
-              {{ isMyTurn ? $t('fantasy.draft.timer.yourTurn') : (turn.user?.firstname ?? $t('fantasy.draft.timer.unknown')) }}
-            </p>
-
-            <!-- Compact progress -->
-            <div class="w-12 h-1 rounded-full bg-white/20 overflow-hidden flex-shrink-0">
-              <div
-                class="h-full rounded-full transition-all duration-1000 ease-linear"
-                :class="progressBarClass"
-                :style="{ width: `${progress}%` }"
-              />
-            </div>
-
-            <span
-              class="text-sm font-black text-white tabular-nums leading-none flex-shrink-0"
-              :class="timerTextClass"
-            >
-              {{ displayTime }}
-            </span>
-          </div>
-        </div>
+      <!-- Countdown -->
+      <div class="shrink-0 text-right leading-none">
+        <span
+          class="font-black tabular-nums tracking-tight transition-[font-size,color] duration-300"
+          :class="[
+            compact ? 'text-lg' : 'text-3xl',
+            c.time,
+            (urgency === 'critical' || expired) ? 'animate-pulse' : '',
+          ]"
+        >
+          {{ displayTime }}
+        </span>
+        <p
+          v-if="!compact"
+          class="text-2xs font-medium mt-1 uppercase tracking-wider"
+          :class="expired ? 'text-red-500/80 dark:text-red-400/80' : 'text-gray-400 dark:text-gray-500'"
+        >
+          {{ expired ? $t('fantasy.draft.timer.expired') : $t('fantasy.draft.timer.sec') }}
+        </p>
       </div>
     </div>
 
     <!-- Waiting state -->
     <div
       v-else
-      class="overflow-hidden shadow-sm bg-gradient-to-r from-gray-500 to-gray-600 dark:from-gray-600 dark:to-gray-700 transition-all duration-300"
-      :class="compact ? 'rounded-xl' : 'rounded-2xl'"
+      class="flex items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm transition-[padding,border-radius,gap] duration-300 ease-out"
+      :class="compact ? 'rounded-xl gap-2.5 px-3 py-2' : 'rounded-2xl gap-3 px-4 py-3'"
     >
-      <div class="relative">
-        <!-- Full waiting -->
-        <div
-          class="transition-opacity duration-150"
-          :class="compact ? 'opacity-0 pointer-events-none absolute inset-x-0 top-0' : 'opacity-100 relative'"
+      <div
+        class="flex items-center justify-center shrink-0 rounded-full bg-gray-100 dark:bg-gray-700/70 text-gray-400 dark:text-gray-500 transition-[width,height] duration-300 ease-out"
+        :class="compact ? 'w-9 h-9' : 'w-14 h-14'"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="animate-pulse"
+          :class="compact ? 'w-4 h-4' : 'w-6 h-6'"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <div class="px-4 py-3 flex items-center gap-3">
-            <div class="w-11 h-11 rounded-full flex items-center justify-center bg-white/15">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white animate-pulse" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-white leading-tight">
-                {{ $t('fantasy.draft.timer.waiting') }}
-              </p>
-              <p class="text-2xs text-white/60 mt-0.5">
-                {{ $t('fantasy.draft.timer.waitingSub') }}
-              </p>
-            </div>
-            <div class="flex-shrink-0">
-              <span class="inline-flex gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style="animation-delay: 0ms" />
-                <span class="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style="animation-delay: 150ms" />
-                <span class="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style="animation-delay: 300ms" />
-              </span>
-            </div>
-          </div>
-        </div>
-        <!-- Compact waiting -->
-        <div
-          class="transition-opacity duration-150"
-          :class="compact ? 'opacity-100 relative' : 'opacity-0 pointer-events-none absolute inset-x-0 top-0'"
-        >
-          <div class="px-3 py-1.5 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/70 animate-pulse flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-            </svg>
-            <p class="text-xs font-semibold text-white/80 truncate">
-              {{ $t('fantasy.draft.timer.waiting') }}
-            </p>
-            <span class="inline-flex gap-0.5 flex-shrink-0">
-              <span class="w-1 h-1 rounded-full bg-white/40 animate-bounce" style="animation-delay: 0ms" />
-              <span class="w-1 h-1 rounded-full bg-white/40 animate-bounce" style="animation-delay: 150ms" />
-              <span class="w-1 h-1 rounded-full bg-white/40 animate-bounce" style="animation-delay: 300ms" />
-            </span>
-          </div>
-        </div>
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+        </svg>
       </div>
+
+      <div class="min-w-0 flex-1">
+        <p
+          class="font-bold text-gray-900 dark:text-white leading-tight truncate transition-[font-size] duration-300"
+          :class="compact ? 'text-xs' : 'text-sm'"
+        >
+          {{ $t('fantasy.draft.timer.waiting') }}
+        </p>
+        <p
+          v-if="!compact"
+          class="text-2xs text-gray-500 dark:text-gray-400 mt-0.5 truncate"
+        >
+          {{ $t('fantasy.draft.timer.waitingSub') }}
+        </p>
+      </div>
+
+      <span class="inline-flex gap-1 shrink-0">
+        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-500 animate-bounce" style="animation-delay: 0ms" />
+        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-500 animate-bounce" style="animation-delay: 150ms" />
+        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-500 animate-bounce" style="animation-delay: 300ms" />
+      </span>
     </div>
   </div>
 </template>
@@ -195,6 +168,9 @@ const secondsLeft = ref(0);
 const expired = ref(false);
 let intervalId: ReturnType<typeof setInterval> | null = null;
 
+// Circumference of the countdown ring (viewBox r=16). Progress drives the dash.
+const RING_C = 2 * Math.PI * 16;
+
 const isMyTurn = computed(() => {
   if (!props.turn?.user) return false;
   return userStore.getUserData?.uuid === props.turn.user.uuid;
@@ -204,6 +180,8 @@ const progress = computed(() => {
   if (!props.turn || !props.turn.duration_seconds || props.turn.duration_seconds <= 0) return 0;
   return Math.max(0, (secondsLeft.value / props.turn.duration_seconds) * 100);
 });
+
+const ringDashoffset = computed(() => RING_C * (1 - progress.value / 100));
 
 const urgency = computed<'normal' | 'warning' | 'critical'>(() => {
   if (expired.value) return 'critical';
@@ -219,38 +197,57 @@ const displayTime = computed(() => {
   return mins > 0 ? `${mins}:${String(secs).padStart(2, '0')}` : `${secs}`;
 });
 
-const bannerClasses = computed(() => {
-  if (expired.value) {
-    return 'bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700';
-  }
-  if (urgency.value === 'critical') {
-    return isMyTurn.value
-      ? 'bg-gradient-to-r from-red-500 to-orange-500 dark:from-red-600 dark:to-orange-600'
-      : 'bg-gradient-to-r from-red-400 to-orange-400 dark:from-red-500 dark:to-orange-500';
-  }
-  if (urgency.value === 'warning') {
-    return isMyTurn.value
-      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600'
-      : 'bg-gradient-to-r from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500';
-  }
-  return isMyTurn.value
-    ? 'bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600'
-    : 'bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-600 dark:to-indigo-600';
+// Single source of truth for the visual state → keeps the palette map tidy.
+type TimerState = 'mine' | 'other' | 'warning' | 'critical' | 'expired';
+
+const state = computed<TimerState>(() => {
+  if (expired.value) return 'expired';
+  if (urgency.value === 'critical') return 'critical';
+  if (urgency.value === 'warning') return 'warning';
+  return isMyTurn.value ? 'mine' : 'other';
 });
 
-const timerTextClass = computed(() => {
-  if (expired.value) return 'text-white/60';
-  if (urgency.value === 'critical') return 'text-red-100 animate-pulse';
-  if (urgency.value === 'warning') return 'text-yellow-100';
-  return 'text-white';
-});
+interface TimerPalette {
+  ring: string; // stroke color of the progress ring (via currentColor)
+  time: string; // color of the countdown number
+  card: string; // accent applied to the card (ring/border emphasis)
+  pulse: boolean; // soft-pulse the avatar (only when it's your turn)
+}
 
-const progressBarClass = computed(() => {
-  if (expired.value) return 'bg-white/30';
-  if (urgency.value === 'critical') return 'bg-red-300';
-  if (urgency.value === 'warning') return 'bg-yellow-300';
-  return 'bg-white';
-});
+const palette: Record<TimerState, TimerPalette> = {
+  mine: {
+    ring: 'text-emerald-500',
+    time: 'text-emerald-600 dark:text-emerald-400',
+    card: 'ring-1 ring-emerald-500/25',
+    pulse: true,
+  },
+  other: {
+    ring: 'text-blue-500 dark:text-blue-400',
+    time: 'text-gray-900 dark:text-white',
+    card: '',
+    pulse: false,
+  },
+  warning: {
+    ring: 'text-amber-500',
+    time: 'text-amber-600 dark:text-amber-400',
+    card: 'ring-1 ring-amber-500/25',
+    pulse: false,
+  },
+  critical: {
+    ring: 'text-red-500',
+    time: 'text-red-600 dark:text-red-400',
+    card: 'ring-1 ring-red-500/40',
+    pulse: false,
+  },
+  expired: {
+    ring: 'text-red-400',
+    time: 'text-red-500 dark:text-red-400',
+    card: 'ring-1 ring-red-500/25',
+    pulse: false,
+  },
+};
+
+const c = computed(() => palette[state.value]);
 
 function calculateSecondsLeft(): number {
   if (!props.turn?.turn_started_at || !props.turn.duration_seconds) return 0;
@@ -321,19 +318,32 @@ onUnmounted(() => {
   font-variant-numeric: tabular-nums;
 }
 
-@keyframes pulse-soft {
+/* Smooth countdown sweep + graceful color changes as urgency rises. */
+.ring-progress {
+  transition: stroke-dashoffset 1s linear, stroke 300ms ease;
+}
+
+@keyframes ring-pulse {
   0%, 100% {
     opacity: 1;
     transform: scale(1);
   }
   50% {
-    opacity: 0.85;
-    transform: scale(1.03);
+    opacity: 0.9;
+    transform: scale(1.04);
   }
 }
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
+.ring-pulse {
+  animation: ring-pulse 2s ease-in-out infinite;
 }
 
-/* Crossfade between full ↔ compact handled by CSS opacity transitions */
+@media (prefers-reduced-motion: reduce) {
+  .ring-progress,
+  .ring-pulse,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+    transition: none !important;
+  }
+}
 </style>
