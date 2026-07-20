@@ -49,6 +49,9 @@
       "rules": "Reglas"
     },
     "scoringRules": "Reglas de puntuación",
+    "generalStandings": "Posiciones generales",
+    "viewFullStandings": "Ver tabla",
+    "noStandingsYet": "Aún no hay posiciones registradas.",
     "members": "Miembros",
     "noMembers": "Aún no hay miembros.",
     "unknownMember": "Miembro desconocido",

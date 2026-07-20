@@ -6,6 +6,7 @@ import { getUserService } from '@/services/user/UserService'
 import { useFantasyRounds } from '@/composables/useFantasyRounds'
 import RoundSelector from '@/components/fantasy/rounds/RoundSelector.vue'
 import MatchupVersusTable from '@/components/fantasy/matchups/MatchupVersusTable.vue'
+import { BottomSheet } from '@/components/ui'
 import type { FantasyLeagueMatchupResponse } from '@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse'
 import type { FantasyFootballPlayerVersusResponse } from '@/interfaces/user/fantasy/FantasyFootballPlayerVersusResponse'
 
@@ -37,22 +38,29 @@ const matchups = ref<FantasyLeagueMatchupResponse[]>([])
 const isLoadingMatchups = ref(false)
 const error = ref<string | null>(null)
 
-// ── Collapsible lineups (one open at a time; loaded lazily and cached) ──
+// ── Lineups drawer (one matchup at a time; loaded lazily and cached) ──
 interface VersusState {
   data: FantasyFootballPlayerVersusResponse | null
   loading: boolean
   error: string | null
 }
 const EMPTY_STATE: VersusState = { data: null, loading: false, error: null }
-const expandedUuid = ref<string | null>(null)
+// activeMatchupUuid is kept (not cleared) while the drawer closes, so its
+// content doesn't flash empty mid slide-out — isDrawerOpen alone drives visibility.
+const activeMatchupUuid = ref<string | null>(null)
+const isDrawerOpen = ref(false)
 const versusCache = ref<Record<string, VersusState>>({})
+
+const activeMatchup = computed(
+  () => matchups.value.find((m) => m.uuid === activeMatchupUuid.value) ?? null,
+)
 
 function versusState(uuid: string): VersusState {
   return versusCache.value[uuid] ?? EMPTY_STATE
 }
 
-function isExpanded(matchup: FantasyLeagueMatchupResponse): boolean {
-  return expandedUuid.value === matchup.uuid
+function isActive(matchup: FantasyLeagueMatchupResponse): boolean {
+  return isDrawerOpen.value && activeMatchupUuid.value === matchup.uuid
 }
 
 async function loadMatchups() {
@@ -60,7 +68,7 @@ async function loadMatchups() {
 
   isLoadingMatchups.value = true
   error.value = null
-  expandedUuid.value = null
+  isDrawerOpen.value = false
   versusCache.value = {}
 
   try {
@@ -77,13 +85,14 @@ async function loadMatchups() {
   }
 }
 
-function toggle(matchup: FantasyLeagueMatchupResponse) {
-  if (expandedUuid.value === matchup.uuid) {
-    expandedUuid.value = null
-    return
-  }
-  expandedUuid.value = matchup.uuid
+function openDrawer(matchup: FantasyLeagueMatchupResponse) {
+  activeMatchupUuid.value = matchup.uuid
+  isDrawerOpen.value = true
   if (!versusCache.value[matchup.uuid]) loadVersus(matchup)
+}
+
+function closeDrawer() {
+  isDrawerOpen.value = false
 }
 
 async function loadVersus(matchup: FantasyLeagueMatchupResponse) {
@@ -264,21 +273,21 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Matchup list — each card is a collapsible "match ticket" -->
+      <!-- Matchup list — each card is a "match ticket" that opens the lineups drawer -->
       <div v-else-if="matchups.length > 0" class="space-y-3">
         <div
           v-for="matchup in matchups"
           :key="matchup.uuid"
           class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 overflow-hidden transition-shadow duration-200"
-          :class="isExpanded(matchup) ? 'shadow-md ring-1 ring-emerald-500/10' : 'shadow-sm'"
+          :class="isActive(matchup) ? 'shadow-md ring-1 ring-emerald-500/10' : 'shadow-sm'"
         >
-          <!-- ── Header (toggles the panel) ── -->
+          <!-- ── Header (opens the lineups drawer) ── -->
           <button
             type="button"
             class="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-inset"
-            :aria-expanded="isExpanded(matchup)"
-            :aria-controls="`lineups-${matchup.uuid}`"
-            @click="toggle(matchup)"
+            aria-haspopup="dialog"
+            :aria-expanded="isActive(matchup)"
+            @click="openDrawer(matchup)"
           >
             <!-- Status pill -->
             <div class="flex items-center justify-center pt-3 pb-0.5">
@@ -361,34 +370,14 @@ onMounted(async () => {
               class="flex items-center justify-center gap-1.5 px-4 py-2 border-t border-gray-100 dark:border-gray-700/60"
             >
               <span class="text-2xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
-                {{ isExpanded(matchup) ? $t('fantasy.matchups.hideLineups') : $t('fantasy.matchups.viewLineups') }}
+                {{ $t('fantasy.matchups.viewLineups') }}
               </span>
               <v-icon
-                name="hi-solid-chevron-down"
-                class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform duration-300"
-                :class="isExpanded(matchup) ? 'rotate-180' : ''"
+                name="hi-solid-chevron-right"
+                class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500"
               />
             </div>
           </button>
-
-          <!-- ── Collapsible lineups panel ── -->
-          <section
-            :id="`lineups-${matchup.uuid}`"
-            class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none"
-            :class="isExpanded(matchup) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
-          >
-            <div class="overflow-hidden">
-              <div class="border-t border-gray-100 dark:border-gray-700/60">
-                <MatchupVersusTable
-                  embedded
-                  :matchup="matchup"
-                  :versus-data="versusState(matchup.uuid).data"
-                  :is-loading="versusState(matchup.uuid).loading"
-                  :error="versusState(matchup.uuid).error"
-                />
-              </div>
-            </div>
-          </section>
         </div>
       </div>
 
@@ -411,5 +400,55 @@ onMounted(async () => {
       <h3 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('fantasy.matchups.noRounds') }}</h3>
       <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs">{{ $t('fantasy.matchups.noRoundsSub') }}</p>
     </div>
+
+    <!-- ── Lineups drawer — opened from any matchup card above ── -->
+    <BottomSheet :is-visible="isDrawerOpen" size="lg" @close="closeDrawer">
+      <template #header>
+        <div v-if="activeMatchup" class="flex items-center gap-3 w-full">
+          <!-- Home team -->
+          <div class="flex items-center gap-2 flex-1 min-w-0">
+            <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0 flex items-center justify-center">
+              <img v-if="activeMatchup.home.team.image_path" :src="activeMatchup.home.team.image_path" :alt="activeMatchup.home.team.team_name" class="w-full h-full object-cover" />
+              <span v-else class="text-2xs font-bold text-gray-500">{{ activeMatchup.home.team.team_name.substring(0, 2).toUpperCase() }}</span>
+            </div>
+            <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate">{{ activeMatchup.home.team.team_name }}</p>
+          </div>
+          <!-- Score + close -->
+          <div class="flex items-center gap-2 shrink-0">
+            <div class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gray-50 dark:bg-gray-700/60">
+              <span class="text-footnote font-extrabold tabular-nums leading-none" :class="isWinner(activeMatchup, 'home') ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'">{{ activeMatchup.home.score }}</span>
+              <span class="text-2xs text-gray-300 dark:text-gray-600">–</span>
+              <span class="text-footnote font-extrabold tabular-nums leading-none" :class="isWinner(activeMatchup, 'away') ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'">{{ activeMatchup.away.score }}</span>
+            </div>
+            <button
+              type="button"
+              class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
+              :aria-label="$t('common.actions.close')"
+              @click="closeDrawer"
+            >
+              <v-icon name="hi-solid-x" class="w-4 h-4" />
+            </button>
+          </div>
+          <!-- Away team -->
+          <div class="flex items-center gap-2 flex-1 min-w-0 justify-end">
+            <p class="text-footnote font-semibold text-gray-900 dark:text-white truncate text-right">{{ activeMatchup.away.team.team_name }}</p>
+            <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0 flex items-center justify-center">
+              <img v-if="activeMatchup.away.team.image_path" :src="activeMatchup.away.team.image_path" :alt="activeMatchup.away.team.team_name" class="w-full h-full object-cover" />
+              <span v-else class="text-2xs font-bold text-gray-500">{{ activeMatchup.away.team.team_name.substring(0, 2).toUpperCase() }}</span>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <MatchupVersusTable
+        v-if="activeMatchup"
+        embedded
+        :matchup="activeMatchup"
+        :versus-data="versusState(activeMatchup.uuid).data"
+        :is-loading="versusState(activeMatchup.uuid).loading"
+        :error="versusState(activeMatchup.uuid).error"
+        class="-mx-5"
+      />
+    </BottomSheet>
   </div>
 </template>

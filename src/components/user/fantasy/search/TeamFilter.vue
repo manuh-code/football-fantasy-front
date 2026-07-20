@@ -23,6 +23,7 @@ function onTeamChange(value: string | number | null) {
 
 <template>
   <SearchableSelectComponent
+    id="fantasy-search-team-filter"
     :model-value="selectedTeam"
     @update:model-value="onTeamChange"
     :options="teams"
@@ -41,3 +42,13 @@ function onTeamChange(value: string | number | null) {
     :disabled="disabled"
   />
 </template>
+
+<style scoped>
+/* Match the height/shape of the other filter controls (search input, participant
+   select) — the shared select's own default is shorter and less rounded, which
+   made this filter visibly out of line with its siblings. */
+:deep(#fantasy-search-team-filter) {
+  height: 2.75rem;
+  border-radius: 0.75rem;
+}
+</style>

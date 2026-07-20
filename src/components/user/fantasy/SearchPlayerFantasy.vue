@@ -281,11 +281,14 @@
                         >
                           {{ player.player.display_name }}
                         </p>
-                        <p
-                          class="text-2xs text-gray-400 dark:text-gray-500 truncate"
-                        >
-                          {{ player.player.common_name }}
-                        </p>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                          <p
+                            class="text-2xs text-gray-400 dark:text-gray-500 truncate"
+                          >
+                            {{ player.player.common_name }}
+                          </p>
+                          <NationalityBadge :country="player.player.country" />
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -421,7 +424,7 @@
                     {{ player.player.display_name }}
                   </p>
                   <div class="flex items-end justify-between gap-2 mt-1">
-                    <div class="flex items-center gap-1.5 min-w-0">
+                    <div class="flex flex-wrap items-center gap-1.5 min-w-0">
                       <span
                         class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-2xs font-bold shrink-0"
                         :class="
@@ -438,6 +441,7 @@
                       <span class="text-2xs text-gray-400 dark:text-gray-500 truncate">
                         {{ player.team.short_code }}
                       </span>
+                      <NationalityBadge :country="player.player.country" />
                     </div>
                     <!-- Right-aligned stats share the same x across rows for scanning -->
                     <div class="flex items-baseline gap-2.5 shrink-0 tabular-nums">
@@ -573,6 +577,7 @@ import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.
 import AvailabilityFilter from "@/components/user/fantasy/search/AvailabilityFilter.vue";
 import ParticipantFilter from "@/components/user/fantasy/search/ParticipantFilter.vue";
 import LineupDrawer from "@/components/fantasy/lineup/LineupDrawer.vue";
+import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 import type { LineupSlotSelection } from "@/components/fantasy/lineup/LineupDrawer.vue";
 

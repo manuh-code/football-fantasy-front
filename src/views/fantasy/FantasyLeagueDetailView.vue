@@ -37,6 +37,11 @@
             <FantasyLeagueMatchup :fantasy-league-uuid="uuid" />
           </div>
 
+          <!-- Trades Content -->
+          <div v-else-if="activeTab === 'trades'" key="trades">
+            <FantasyTradeCenter :fantasy-league-uuid="uuid" />
+          </div>
+
           <!-- Management Content -->
           <div v-else-if="activeTab === 'management'" key="management">
             <!-- Loading State -->
@@ -86,6 +91,7 @@ import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagemen
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
 import FantasyLeagueMatchup from '@/components/fantasy/matchups/FantasyLeagueMatchup.vue'
+import FantasyTradeCenter from '@/components/fantasy/trades/FantasyTradeCenter.vue'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 import { FantasyLeagueScoringRules } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
@@ -101,7 +107,7 @@ const league = ref<FantasyLeaguesResponse | null>(null)
 const isLoadingLeague = ref(false)
 
 // Tabs that require membership
-const memberTabs = new Set(['myteam', 'statistics', 'matchups', 'matches'])
+const memberTabs = new Set(['myteam', 'statistics', 'matchups', 'matches', 'trades'])
 // Tabs that require admin
 const adminTabs = new Set(['management'])
 

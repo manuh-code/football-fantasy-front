@@ -12,7 +12,12 @@
       <!-- Pool Group / Rules Component -->
       <div class="animate-page-enter">
         <PoolRulesComponent v-if="activeTab === 'rules'" />
-        <PoolGroupComponent v-else :pool-uuid="poolUuid" :active-tab="activeTab" />
+        <PoolGroupComponent
+          v-else
+          :pool-uuid="poolUuid"
+          :active-tab="activeTab"
+          @select-tab="onSelect"
+        />
       </div>
     </div>
 
