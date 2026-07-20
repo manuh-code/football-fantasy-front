@@ -222,34 +222,42 @@ function enterPresence() {
 
 // Rehidrata presencia tras cada (re)conexión: sin esto la lista queda congelada
 // después de un corte de red (p. ej. la app en segundo plano en móvil) y usuarios
-// que siguen en la sala dejan de marcarse en línea.
+// que siguen en la sala dejan de marcarse en línea. También re-sincroniza el turno,
+// que pudo avanzar por Ably mientras estábamos desconectados.
 function handleReconnect() {
   enterPresence();
   syncMembersFromPresence();
+  getTurnInfo();
+}
+
+// Al volver a primer plano (típico en móvil, con la conexión posiblemente aún viva)
+// el turno pudo avanzar sin que llegara el turn.started: re-sincronizamos la fuente
+// de verdad del backend y el snapshot de presencia.
+function handleVisibility() {
+  if (document.hidden) return;
+  getTurnInfo();
+  syncMembersFromPresence();
+}
+
+let presenceSyncTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// La presencia de Ably es POR CONEXIÓN, no por usuario: un mismo uuid puede tener
+// varias conexiones (varias pestañas o dispositivos con el mismo clientId). Por eso
+// nunca mutamos la lista por evento —un 'leave' de una conexión no significa que el
+// usuario se fue si le queda otra viva— sino que reconciliamos contra el snapshot
+// autoritativo presence.get(). Debounce para colapsar ráfagas de enter/leave.
+function scheduleMembersSync() {
+  if (presenceSyncTimeout) clearTimeout(presenceSyncTimeout);
+  presenceSyncTimeout = setTimeout(syncMembersFromPresence, 150);
 }
 
 async function subscribeToDraftRoom() {
-  // Presencia de OTROS usuarios que entran / actualizan / ya estaban presentes.
-  await channel.presence.subscribe(["enter", "update", "present"], (member) => {
-    const data = member.data as UserDataInterface;
-    if (!data?.uuid) return; // ignora entradas de presencia sin uuid
-    const index = membersDraftRoom.value.findIndex((u) => u.uuid === data.uuid);
-    if (index >= 0) {
-      membersDraftRoom.value[index] = data; // actualiza datos si ya existe
-    } else {
-      membersDraftRoom.value.push(data); // agrega nuevo usuario
-    }
-  });
-}
-
-async function leaveDraftRoom() {
-  await channel.presence.subscribe("leave", (member) => {
-    // Si alguien sale, lo removemos de la lista reactiva
-    const data = member.data as UserDataInterface;
-    membersDraftRoom.value = membersDraftRoom.value.filter(
-      (u) => u.uuid !== data?.uuid,
-    );
-  });
+  // Cualquier cambio de presencia (entrar/salir/actualizar/ya presente) dispara una
+  // reconciliación contra presence.get(), única forma correcta con multi-conexión.
+  await channel.presence.subscribe(
+    ["enter", "leave", "update", "present"],
+    scheduleMembersSync,
+  );
 }
 
 function syncMembersFromPresence() {
@@ -327,19 +335,20 @@ onMounted(async () => {
   await getTurnInfo();
   await fetchAutoPickStatus();
   await subscribeToDraftRoom();
-  await leaveDraftRoom();
   enterPresence();
   syncMembersFromPresence();
 
-  // Re-sincroniza presencia en cada (re)conexión para que la lista sobreviva
-  // los cortes de red en lugar de quedar obsoleta.
+  // Re-sincroniza presencia y turno en cada (re)conexión para que sobrevivan
+  // los cortes de red en lugar de quedar obsoletos.
   ably.connection.on("connected", handleReconnect);
   ably.connection.on("update", handleReconnect);
-
-  // Recover the last turn.started event from history (for late joiners)
+  document.addEventListener("visibilitychange", handleVisibility);
 
   channel.subscribe("turn.started", (message) => {
     const data = message.data as FantasyDraftTurnStarted;
+    // No retroceder el turno ante un turn.started viejo o reenviado por Ably:
+    // ignora eventos cuyo pick sea anterior al que ya mostramos.
+    if ((data.pick ?? 0) < (turnStarted.value?.pick ?? -1)) return;
     turnStarted.value = data;
   });
 
@@ -390,6 +399,11 @@ onUnmounted(() => {
     timerObserver.disconnect();
     timerObserver = null;
   }
+  if (presenceSyncTimeout) {
+    clearTimeout(presenceSyncTimeout);
+    presenceSyncTimeout = null;
+  }
+  document.removeEventListener("visibilitychange", handleVisibility);
   ably.connection.off("connected", handleReconnect);
   ably.connection.off("update", handleReconnect);
   if (channel) {
