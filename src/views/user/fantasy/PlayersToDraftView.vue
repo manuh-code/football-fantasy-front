@@ -85,11 +85,6 @@
       </template>
 
       <!-- Draft active: show draft UI -->
-      <!-- <PlayersToDraftComponent
-        :fantasy-league-uuid="fantasyLeagueUuid"
-        :draft-active="!leagueDetailStore.isDraftNotStarted"
-      /> -->
-
       <DraftRoom
         v-if="
           !leagueDetailStore.isDraftNotStarted &&

@@ -18,7 +18,6 @@ import { FantasyParticipantCountResponse } from "@/interfaces/fantasy/leagues/Fa
 import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
 import { FantasyDraftPlayerPicked } from "@/interfaces/fantasy/draft/FantasyDraftPlayerPicked";
 import { LineupPlayerRemovePayload } from "@/interfaces/fantasy/lineup/LineupPlayerRemovePayload";
-import type { DraftTurn } from "@/composables/useDraftChannel";
 import { FantasyStandingResponse } from "@/interfaces/fantasy/standing/FantasyStandingResponse";
 
 
@@ -220,20 +219,6 @@ export class FantasyLeagueService {
             return response.data;
         }
         throw new Error('Failed to fetch draft state');
-    }
-
-    /**
-     * Get the current active draft turn for a league.
-     * Returns the DraftTurn object with user_uuid, pick, round, pick_timer, turn_started_at, etc.
-     */
-    async getCurrentDraftTurn(fantasyLeagueUuid: string): Promise<DraftTurn | null> {
-        const response = await this.api.get<ApiResponse<DraftTurn | null>>(
-            `fantasy/leagues/draft/${fantasyLeagueUuid}/current-turn`
-        );
-        if (response.data.code === 200) {
-            return response.data.data;
-        }
-        throw new Error('Failed to fetch current draft turn');
     }
 
     async getTurnInfo(fantasyLeagueUuid: string): Promise<FantasyDraftTurnStarted> {
