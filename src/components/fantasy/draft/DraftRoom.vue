@@ -146,7 +146,6 @@ const props = defineProps<{
 }>();
 
 const userStore = useUserStore();
-const userData = userStore.getUserData;
 
 const membersDraftRoom = ref<UserDataInterface[]>([]);
 const turnStarted = ref<FantasyDraftTurnStarted | null>(null);
@@ -189,57 +188,93 @@ watch(isMyTurn, (newVal, oldVal) => {
   }
 });
 
-const { draftRoomChannel } = useAblyBroadcast();
+const { draftRoomChannel, ably } = useAblyBroadcast();
 const draftUuid = props.fantasyLeague.draft?.uuid || "";
 const channel = draftRoomChannel(draftUuid);
 
-async function subscribeToDraftRoom(channel: Types.RealtimeChannelCallbacks) {
-  // 1. Suscribirse a los eventos de presencia de OTROS usuarios
-  await channel.presence.subscribe(["enter", "update", "present"], (member) => {
-    // Si el usuario entra o actualiza, lo agregamos/actualizamos en la lista
-    const userData = member.data as UserDataInterface;
-    const index = membersDraftRoom.value.findIndex(
-      (u) => u.uuid === userData.uuid,
-    );
-    if (index >= 0) {
-      membersDraftRoom.value[index] = userData; // Actualiza datos si ya existe
-    } else {
-      membersDraftRoom.value.push(userData); // Agrega nuevo usuario
+// Payload mínimo de presencia: solo lo que DraftOrder realmente pinta.
+// Mandar el userData completo (favoriteFootballTeam, football_league, etc.)
+// arriesga superar el límite de tamaño de mensajes de presencia de Ably y que
+// el enter sea rechazado en silencio. Los campos pesados van en null.
+function presencePayload(): UserDataInterface {
+  const u = userStore.getUserData;
+  return {
+    uuid: u?.uuid ?? null,
+    firstname: u?.firstname ?? null,
+    lastname: u?.lastname ?? null,
+    avatar: u?.avatar ?? null,
+    email: null,
+    phone: null,
+    favoriteFootballTeam: null,
+    football_league: null,
+  };
+}
+
+// Anuncia mi presencia con callback de error: si el enter falla ya no es
+// fire-and-forget silencioso.
+function enterPresence() {
+  channel.presence.enter(presencePayload(), (err) => {
+    if (err) {
+      console.error("Error entering draft room presence:", err);
     }
   });
 }
 
-async function leaveDraftRoom(channel: Types.RealtimeChannelCallbacks) {
+// Rehidrata presencia tras cada (re)conexión: sin esto la lista queda congelada
+// después de un corte de red (p. ej. la app en segundo plano en móvil) y usuarios
+// que siguen en la sala dejan de marcarse en línea.
+function handleReconnect() {
+  enterPresence();
+  syncMembersFromPresence();
+}
+
+async function subscribeToDraftRoom() {
+  // Presencia de OTROS usuarios que entran / actualizan / ya estaban presentes.
+  await channel.presence.subscribe(["enter", "update", "present"], (member) => {
+    const data = member.data as UserDataInterface;
+    if (!data?.uuid) return; // ignora entradas de presencia sin uuid
+    const index = membersDraftRoom.value.findIndex((u) => u.uuid === data.uuid);
+    if (index >= 0) {
+      membersDraftRoom.value[index] = data; // actualiza datos si ya existe
+    } else {
+      membersDraftRoom.value.push(data); // agrega nuevo usuario
+    }
+  });
+}
+
+async function leaveDraftRoom() {
   await channel.presence.subscribe("leave", (member) => {
     // Si alguien sale, lo removemos de la lista reactiva
-    const userData = member.data as UserDataInterface;
+    const data = member.data as UserDataInterface;
     membersDraftRoom.value = membersDraftRoom.value.filter(
-      (u) => u.uuid !== userData.uuid,
+      (u) => u.uuid !== data?.uuid,
     );
   });
 }
 
-async function getMembersInDraftRoom(channel: Types.RealtimeChannelCallbacks) {
-  // Obtner usuarios ya registrados en presencia al montar el componente
-  await channel.presence.get((err, members) => {
+function syncMembersFromPresence() {
+  // Snapshot autoritativo: reconstruye la lista para que se caigan los que
+  // salieron mientras estábamos desconectados y se agreguen los que faltaban.
+  channel.presence.get((err, members) => {
     if (err) {
       console.error("Error obteniendo miembros en presencia:", err);
       return;
     }
 
-    members?.forEach((member: Types.PresenceMessage) => {
-      const userData = member.data as UserDataInterface;
-      if (userData?.uuid) {
-        const index = membersDraftRoom.value.findIndex(
-          (u) => u.uuid === userData.uuid,
-        );
-        if (index < 0) {
-          membersDraftRoom.value.push(userData);
-        } else {
-          membersDraftRoom.value[index] = userData; // Actualiza datos si ya existe
-        }
+    const next: UserDataInterface[] = [];
+    const add = (data?: UserDataInterface) => {
+      if (data?.uuid && !next.some((u) => u.uuid === data.uuid)) {
+        next.push(data);
       }
-    });
+    };
+
+    members?.forEach((member: Types.PresenceMessage) =>
+      add(member.data as UserDataInterface),
+    );
+    // Incluirme siempre: mi propio enter puede no venir aún en el snapshot.
+    add(presencePayload());
+
+    membersDraftRoom.value = next;
   });
 }
 
@@ -291,10 +326,15 @@ onMounted(async () => {
 
   await getTurnInfo();
   await fetchAutoPickStatus();
-  await subscribeToDraftRoom(channel!);
-  await leaveDraftRoom(channel!);
-  await getMembersInDraftRoom(channel!);
-  await channel.presence.enter({ ...userData });
+  await subscribeToDraftRoom();
+  await leaveDraftRoom();
+  enterPresence();
+  syncMembersFromPresence();
+
+  // Re-sincroniza presencia en cada (re)conexión para que la lista sobreviva
+  // los cortes de red en lugar de quedar obsoleta.
+  ably.connection.on("connected", handleReconnect);
+  ably.connection.on("update", handleReconnect);
 
   // Recover the last turn.started event from history (for late joiners)
 
@@ -350,6 +390,8 @@ onUnmounted(() => {
     timerObserver.disconnect();
     timerObserver = null;
   }
+  ably.connection.off("connected", handleReconnect);
+  ably.connection.off("update", handleReconnect);
   if (channel) {
     channel.unsubscribe("turn.started");
     channel.unsubscribe("turn.skipped");

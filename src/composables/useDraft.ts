@@ -7,8 +7,12 @@ import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/Fantas
 import type { DraftTurn, TurnChangedPayload, PlayerPickedPayload } from './useDraftChannel'
 
 export function useDraft(fantasyLeagueUuid: string, draftActive: boolean) {
-    const { draftFantasyLeagueChannel } = useAblyBroadcast()
-    const channel = draftFantasyLeagueChannel(fantasyLeagueUuid)
+    const { draftRoomChannel } = useAblyBroadcast()
+    // La presencia vive en el canal por-draft (draft-<draftUuid>), el mismo que
+    // usa DraftRoom.vue. Se resuelve de forma perezosa en init() una vez cargada
+    // la liga (y su draft.uuid), para que la presencia nunca se parta en dos
+    // canales distintos.
+    let channel: ReturnType<typeof draftRoomChannel> | null = null
     const userData = useUserStore().userData
     const leagueDetailStore = useFantasyLeagueDetailStore()
 
@@ -75,6 +79,7 @@ export function useDraft(fantasyLeagueUuid: string, draftActive: boolean) {
     // ── Presence management ─────────────────────────────────────
 
     function syncOnlineMembers() {
+        if (!channel) return
         channel.presence.get((err, members) => {
             if (err) {
                 console.error('Error getting presence:', err)
@@ -89,14 +94,22 @@ export function useDraft(fantasyLeagueUuid: string, draftActive: boolean) {
     }
 
     function enterPresence() {
+        if (!channel) return
+        // Payload mínimo y con la misma forma que DraftRoom.vue
+        // (uuid/firstname/lastname/avatar) para que el canal compartido sea
+        // consistente. Callback de error para no fallar en silencio.
         channel.presence.enter({
             uuid: userData?.uuid,
-            name: userData?.firstname,
+            firstname: userData?.firstname,
+            lastname: userData?.lastname,
             avatar: userData?.avatar,
+        }, (err) => {
+            if (err) console.error('[Draft] Error entering presence:', err)
         })
     }
 
     function setupPresenceListeners() {
+        if (!channel) return
         channel.presence.subscribe('enter', (member) => {
             const uuid = member.data?.uuid as string
             if (uuid && !onlineUserUuids.value.includes(uuid)) {
@@ -121,6 +134,7 @@ export function useDraft(fantasyLeagueUuid: string, draftActive: boolean) {
     function setupChannelListeners(callbacks?: {
         onPlayerPicked?: (payload: PlayerPickedPayload) => void
     }) {
+        if (!channel) return
         channel.subscribe('draft.activated', async () => {
             await loadLeague()
             if (!isDraftComplete.value) {
@@ -175,14 +189,23 @@ export function useDraft(fantasyLeagueUuid: string, draftActive: boolean) {
             skipFallbackTimeout = null
         }
         stopTimer()
-        channel.presence.leave()
-        channel.detach()
+        if (channel) {
+            channel.presence.leave()
+            channel.detach()
+        }
     }
 
     async function init(callbacks?: {
         onPlayerPicked?: (payload: PlayerPickedPayload) => void
     }) {
         await loadLeague()
+
+        const draftUuid = league.value?.draft?.uuid
+        if (!draftUuid) {
+            console.error('[Draft] Cannot init presence: missing draft uuid')
+            return
+        }
+        channel = draftRoomChannel(draftUuid)
 
         if (draftActive && !isDraftComplete.value) {
             await loadCurrentTurn()
