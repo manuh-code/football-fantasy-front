@@ -85,11 +85,15 @@
       </template>
 
       <!-- Draft active: show draft UI -->
+      <!-- :key fuerza una instancia nueva por liga: si no, Vue reutiliza el
+           componente al navegar entre drafts y la sala se queda pegada al draft
+           anterior (canal Ably, presencia y turno incluidos). -->
       <DraftRoom
         v-if="
           !leagueDetailStore.isDraftNotStarted &&
           leagueDetailStore.currentLeague
         "
+        :key="fantasyLeagueUuid"
         :fantasyLeague="leagueDetailStore.currentLeague"
       />
     </div>
@@ -98,7 +102,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { useToast } from "@/composables/useToast";
@@ -129,23 +133,31 @@ const membersProgress = computed(() => {
 let channel: ReturnType<typeof fantasyLeagueChannel> | null = null;
 let channelDraft: ReturnType<typeof draftRoomChannel> | null = null;
 
-onMounted(async () => {
-  if (!leagueDetailStore.currentLeague) {
-    isLoadingLeague.value = true;
-    try {
-      const league = await fantasyLeagueService.showFantasyLeague(
-        fantasyLeagueUuid.value,
-      );
-      leagueDetailStore.setCurrentLeague(league);
-    } catch (error) {
-      console.error("Error loading league:", error);
-    } finally {
-      isLoadingLeague.value = false;
-    }
+// Libera los canales de la liga/draft actualmente enlazados. Necesario tanto al
+// desmontar la vista como al navegar in-app de una liga a otra: Vue Router
+// reutiliza esta misma instancia de componente cuando solo cambia el :uuid de
+// la ruta (mismo componente de destino), así que sin esto la suscripción se
+// queda pegada a la liga anterior.
+function teardownChannels() {
+  channel?.unsubscribe("league.joined");
+  channelDraft?.unsubscribe("draft.activated");
+  channelDraft?.detach();
+  channel = null;
+  channelDraft = null;
+}
+
+async function setupForLeague(uuid: string) {
+  isLoadingLeague.value = true;
+  try {
+    const league = await fantasyLeagueService.showFantasyLeague(uuid);
+    leagueDetailStore.setCurrentLeague(league);
+  } catch (error) {
+    console.error("Error loading league:", error);
+  } finally {
+    isLoadingLeague.value = false;
   }
 
-  // Create channels after league data is available
-  channel = fantasyLeagueChannel(fantasyLeagueUuid.value);
+  channel = fantasyLeagueChannel(uuid);
   channel.subscribe("league.joined", (message) => {
     const user = message.data as UserDataInterface;
     if (!user?.uuid) return;
@@ -162,22 +174,35 @@ onMounted(async () => {
       );
       // Reload league from API so draft status updates and DraftRoom becomes visible
       try {
-        const updatedLeague = await fantasyLeagueService.showFantasyLeague(
-          fantasyLeagueUuid.value,
-        );
+        const updatedLeague = await fantasyLeagueService.showFantasyLeague(uuid);
         leagueDetailStore.setCurrentLeague(updatedLeague);
       } catch (error) {
         console.error("Error reloading league after draft activation:", error);
       }
     });
   }
+}
+
+onMounted(() => setupForLeague(fantasyLeagueUuid.value));
+
+// Vue Router reutiliza esta instancia al navegar entre /fantasy/league/A/draft
+// y /fantasy/league/B/draft (misma ruta/componente, distinto :uuid) — onMounted
+// NO se vuelve a disparar. Sin este guard, la sala se queda mostrando el draft
+// de la liga anterior (canal, presencia y turno incluidos) aunque la URL ya
+// apunte a la nueva liga.
+onBeforeRouteUpdate(async (to) => {
+  const newUuid = to.params.uuid as string;
+  if (!newUuid || newUuid === fantasyLeagueUuid.value) return;
+
+  teardownChannels();
+  // Vaciar el store antes de re-fetch: el :key en <DraftRoom> ya fuerza un
+  // remount, pero esto también apaga momentáneamente el v-if para que ningún
+  // dato de la liga anterior se pinte mientras carga la nueva.
+  leagueDetailStore.clearCurrentLeague();
+  await setupForLeague(newUuid);
 });
 
-onUnmounted(() => {
-  channel?.unsubscribe("league.joined");
-  channelDraft?.unsubscribe("draft.activated");
-  channelDraft?.detach();
-});
+onUnmounted(teardownChannels);
 
 const handleActivateDraft = async () => {
   try {
