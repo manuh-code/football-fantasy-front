@@ -153,49 +153,50 @@ function positionColor(developerName: string): string {
           <div
             v-for="idx in starterRows"
             :key="`starter-${idx}`"
-            class="flex items-center gap-3 px-4 py-2.5"
+            class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-2.5"
           >
             <!-- Home player -->
             <template v-if="homeStarters[idx]">
               <img
                 :src="homeStarters[idx].football_player.image_path || '/img/default-avatar.svg'"
                 :alt="homeStarters[idx].football_player.display_name"
-                class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
               />
               <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">
-                    {{ homeStarters[idx].football_player.display_name }}
-                  </p>
+                <p
+                  :title="homeStarters[idx].football_player.display_name"
+                  class="text-2xs sm:text-footnote font-medium text-gray-900 dark:text-white leading-tight line-clamp-2 break-words"
+                >
+                  {{ homeStarters[idx].football_player.display_name }}
+                </p>
+                <div class="flex flex-wrap items-center gap-1 mt-0.5">
                   <img
                     v-if="homeStarters[idx].team"
                     :src="homeStarters[idx].team.image_path"
                     :alt="homeStarters[idx].team.short_code"
                     class="w-3.5 h-3.5 object-contain shrink-0"
                   />
-                </div>
-                <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                   <NationalityBadge :country="homeStarters[idx].football_player.country" />
                 </div>
               </div>
             </template>
-            <div v-else class="w-8 h-8 shrink-0" />
+            <div v-else class="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
             <div v-if="!homeStarters[idx]" class="flex-1" />
 
             <!-- Duel: score · position rung · score -->
-            <div class="relative z-10 flex items-center gap-1.5 shrink-0">
+            <div class="relative z-10 flex items-center gap-0.5 sm:gap-1.5 shrink-0">
               <span
-                class="min-w-[30px] px-1.5 py-0.5 rounded-md text-xs tabular-nums text-center transition-colors"
+                class="min-w-[20px] sm:min-w-[30px] px-1 sm:px-1.5 py-0.5 rounded-md text-2xs sm:text-xs tabular-nums text-center transition-colors"
                 :class="scoreChipClass(starterHomeWins(idx))"
               >{{ homeStarters[idx]?.fantasy_points ?? 0 }}</span>
               <span
-                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0 ring-4 ring-white dark:ring-gray-800"
+                class="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-2xs font-bold shrink-0 ring-2 sm:ring-4 ring-white dark:ring-gray-800"
                 :class="positionColor(homeStarters[idx]?.position?.developer_name ?? awayStarters[idx]?.position?.developer_name ?? '')"
               >
                 {{ positionShort((homeStarters[idx] ?? awayStarters[idx])?.position?.developer_name) }}
               </span>
               <span
-                class="min-w-[30px] px-1.5 py-0.5 rounded-md text-xs tabular-nums text-center transition-colors"
+                class="min-w-[20px] sm:min-w-[30px] px-1 sm:px-1.5 py-0.5 rounded-md text-2xs sm:text-xs tabular-nums text-center transition-colors"
                 :class="scoreChipClass(starterAwayWins(idx))"
               >{{ awayStarters[idx]?.fantasy_points ?? 0 }}</span>
             </div>
@@ -203,29 +204,30 @@ function positionColor(developerName: string): string {
             <!-- Away player -->
             <template v-if="awayStarters[idx]">
               <div class="flex-1 min-w-0 text-right">
-                <div class="flex items-center gap-1.5 justify-end">
+                <p
+                  :title="awayStarters[idx].football_player.display_name"
+                  class="text-2xs sm:text-footnote font-medium text-gray-900 dark:text-white leading-tight line-clamp-2 break-words"
+                >
+                  {{ awayStarters[idx].football_player.display_name }}
+                </p>
+                <div class="flex flex-wrap items-center justify-end gap-1 mt-0.5">
+                  <NationalityBadge :country="awayStarters[idx].football_player.country" />
                   <img
                     v-if="awayStarters[idx].team"
                     :src="awayStarters[idx].team.image_path"
                     :alt="awayStarters[idx].team.short_code"
                     class="w-3.5 h-3.5 object-contain shrink-0"
                   />
-                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">
-                    {{ awayStarters[idx].football_player.display_name }}
-                  </p>
-                </div>
-                <div class="flex flex-wrap items-center gap-1.5 justify-end mt-0.5">
-                  <NationalityBadge :country="awayStarters[idx].football_player.country" />
                 </div>
               </div>
               <img
                 :src="awayStarters[idx].football_player.image_path || '/img/default-avatar.svg'"
                 :alt="awayStarters[idx].football_player.display_name"
-                class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
               />
             </template>
             <div v-else class="flex-1" />
-            <div v-if="!awayStarters[idx]" class="w-8 h-8 shrink-0" />
+            <div v-if="!awayStarters[idx]" class="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
           </div>
         </div>
       </div>
@@ -243,47 +245,48 @@ function positionColor(developerName: string): string {
         <div
           v-for="idx in benchRows"
           :key="`bench-${idx}`"
-          class="flex items-center gap-3 px-4 py-2.5 opacity-60"
+          class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-2.5 opacity-60"
         >
           <!-- Home bench -->
           <template v-if="homeBench[idx]">
             <img
               :src="homeBench[idx].football_player.image_path || '/img/default-avatar.svg'"
               :alt="homeBench[idx].football_player.display_name"
-              class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
             />
             <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">
-                  {{ homeBench[idx].football_player.display_name }}
-                </p>
+              <p
+                :title="homeBench[idx].football_player.display_name"
+                class="text-2xs sm:text-footnote font-medium text-gray-900 dark:text-white leading-tight line-clamp-2 break-words"
+              >
+                {{ homeBench[idx].football_player.display_name }}
+              </p>
+              <div class="flex flex-wrap items-center gap-1 mt-0.5">
                 <img
                   v-if="homeBench[idx].team"
                   :src="homeBench[idx].team.image_path"
                   :alt="homeBench[idx].team.short_code"
                   class="w-3.5 h-3.5 object-contain shrink-0"
                 />
-              </div>
-              <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                 <NationalityBadge :country="homeBench[idx].football_player.country" />
               </div>
             </div>
           </template>
-          <div v-else class="w-8 h-8 shrink-0" />
+          <div v-else class="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
           <div v-if="!homeBench[idx]" class="flex-1" />
 
           <!-- Points + position badge -->
-          <div class="flex items-center gap-1.5 shrink-0">
-            <span class="min-w-[30px] text-xs font-semibold tabular-nums text-center text-gray-400 dark:text-gray-500">
+          <div class="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+            <span class="min-w-[20px] sm:min-w-[30px] text-2xs sm:text-xs font-semibold tabular-nums text-center text-gray-400 dark:text-gray-500">
               {{ homeBench[idx]?.fantasy_points ?? '—' }}
             </span>
             <span
-              class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0"
+              class="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-2xs font-bold shrink-0"
               :class="positionColor(homeBench[idx]?.position?.developer_name ?? awayBench[idx]?.position?.developer_name ?? '')"
             >
               {{ positionShort((homeBench[idx] ?? awayBench[idx])?.position?.developer_name) }}
             </span>
-            <span class="min-w-[30px] text-xs font-semibold tabular-nums text-center text-gray-400 dark:text-gray-500">
+            <span class="min-w-[20px] sm:min-w-[30px] text-2xs sm:text-xs font-semibold tabular-nums text-center text-gray-400 dark:text-gray-500">
               {{ awayBench[idx]?.fantasy_points ?? '—' }}
             </span>
           </div>
@@ -291,29 +294,30 @@ function positionColor(developerName: string): string {
           <!-- Away bench -->
           <template v-if="awayBench[idx]">
             <div class="flex-1 min-w-0 text-right">
-              <div class="flex items-center gap-1.5 justify-end">
+              <p
+                :title="awayBench[idx].football_player.display_name"
+                class="text-2xs sm:text-footnote font-medium text-gray-900 dark:text-white leading-tight line-clamp-2 break-words"
+              >
+                {{ awayBench[idx].football_player.display_name }}
+              </p>
+              <div class="flex flex-wrap items-center justify-end gap-1 mt-0.5">
+                <NationalityBadge :country="awayBench[idx].football_player.country" />
                 <img
                   v-if="awayBench[idx].team"
                   :src="awayBench[idx].team.image_path"
                   :alt="awayBench[idx].team.short_code"
                   class="w-3.5 h-3.5 object-contain shrink-0"
                 />
-                <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">
-                  {{ awayBench[idx].football_player.display_name }}
-                </p>
-              </div>
-              <div class="flex flex-wrap items-center gap-1.5 justify-end mt-0.5">
-                <NationalityBadge :country="awayBench[idx].football_player.country" />
               </div>
             </div>
             <img
               :src="awayBench[idx].football_player.image_path || '/img/default-avatar.svg'"
               :alt="awayBench[idx].football_player.display_name"
-              class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
             />
           </template>
           <div v-else class="flex-1" />
-          <div v-if="!awayBench[idx]" class="w-8 h-8 shrink-0" />
+          <div v-if="!awayBench[idx]" class="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
         </div>
       </div>
 

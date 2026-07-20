@@ -196,6 +196,13 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    // The trades tab lives in fantasyLeagueDetail behind a ?tab= query param,
+    // but the backend's push-notification deep link points at this path
+    // segment (see SendTradeNotificationJob) — redirect it to the real route.
+    path: '/fantasy/league/:uuid/trades',
+    redirect: (to) => ({ name: 'fantasyLeagueDetail', params: { uuid: to.params.uuid }, query: { tab: 'trades' } }),
+  },
+  {
     path: '/fantasy/league/:uuid/team/create',
     name: 'fantasyTeamCreate',
     component: () => import(/* webpackChunkName: "fantasy-team-create" */ '@/views/fantasy/FantasyTeamUserView.vue'),

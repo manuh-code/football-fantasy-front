@@ -40,6 +40,7 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
         },
         { key: 'players', label: t('fantasy.detailTabs.players'), icon: 'hi-solid-user-add', accent: 'orange' },
         { key: 'matches', label: t('fantasy.detailTabs.matches'), icon: 'gi-crossed-swords', accent: 'red' },
+        { key: 'trades', label: t('fantasy.detailTabs.trades'), icon: 'hi-solid-switch-horizontal', accent: 'purple' },
       )
     }
 

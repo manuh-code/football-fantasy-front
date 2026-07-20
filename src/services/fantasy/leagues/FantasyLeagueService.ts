@@ -19,6 +19,8 @@ import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraft
 import { FantasyDraftPlayerPicked } from "@/interfaces/fantasy/draft/FantasyDraftPlayerPicked";
 import { LineupPlayerRemovePayload } from "@/interfaces/fantasy/lineup/LineupPlayerRemovePayload";
 import { FantasyStandingResponse } from "@/interfaces/fantasy/standing/FantasyStandingResponse";
+import { FantasyTradePayload } from "@/interfaces/fantasy/trade/FantasyTradePayload";
+import { FantasyTradeResponse } from "@/interfaces/fantasy/trade/FantasyTradeResponse";
 
 
 export class FantasyLeagueService {
@@ -276,6 +278,62 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch standings for league');
+    }
+
+    /**
+     * Propose a trade: offer own players in exchange for another manager's players.
+     */
+    async proposeTrade(payload: FantasyTradePayload): Promise<FantasyTradeResponse> {
+        const response = await this.api.post<ApiResponse<FantasyTradeResponse>>(`fantasy/leagues/trades`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to propose trade');
+    }
+
+    /**
+     * Accept a pending trade (receiver only) — executes the player swap.
+     */
+    async acceptTrade(tradeUuid: string): Promise<FantasyTradeResponse> {
+        const response = await this.api.post<ApiResponse<FantasyTradeResponse>>(`fantasy/leagues/trades/${tradeUuid}/accept`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to accept trade');
+    }
+
+    /**
+     * Reject a pending trade (receiver only).
+     */
+    async rejectTrade(tradeUuid: string): Promise<FantasyTradeResponse> {
+        const response = await this.api.post<ApiResponse<FantasyTradeResponse>>(`fantasy/leagues/trades/${tradeUuid}/reject`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to reject trade');
+    }
+
+    /**
+     * Cancel a pending trade (proposer only). Like accept/reject, the backend
+     * returns the full updated trade resource (not an empty body).
+     */
+    async cancelTrade(tradeUuid: string): Promise<FantasyTradeResponse> {
+        const response = await this.api.delete<ApiResponse<FantasyTradeResponse>>(`fantasy/leagues/trades/${tradeUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to cancel trade');
+    }
+
+    /**
+     * List the authenticated user's trades (sent + received) within a league.
+     */
+    async getTradesByLeague(fantasyLeagueUuid: string): Promise<FantasyTradeResponse[]> {
+        const response = await this.api.get<ApiResponse<FantasyTradeResponse[]>>(`fantasy/leagues/trades/${fantasyLeagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch trades');
     }
 }
 

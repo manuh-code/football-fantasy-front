@@ -54,7 +54,7 @@ function select(value: string) {
       type="button"
       @click="isOpen = true"
       :disabled="disabled"
-      class="w-full flex items-center justify-between gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2.5 text-base md:text-footnote text-gray-700 dark:text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 dark:focus:border-blue-500 active:bg-gray-50 dark:active:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+      class="w-full h-11 flex items-center justify-between gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 text-base md:text-footnote text-gray-700 dark:text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 dark:focus:border-blue-500 active:bg-gray-50 dark:active:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <span class="flex items-center gap-2.5 min-w-0">
         <template v-if="selectedParticipant">

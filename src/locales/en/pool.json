@@ -50,6 +50,9 @@
       "rules": "Rules"
     },
     "scoringRules": "Scoring rules",
+    "generalStandings": "Overall standings",
+    "viewFullStandings": "View table",
+    "noStandingsYet": "No standings recorded yet.",
     "members": "Members",
     "noMembers": "No members yet.",
     "unknownMember": "Unknown member",
