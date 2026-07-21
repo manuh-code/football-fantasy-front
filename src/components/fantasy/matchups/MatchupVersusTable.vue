@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { FantasyFootballPlayerVersusResponse } from '@/interfaces/user/fantasy/FantasyFootballPlayerVersusResponse'
 import type { FantasyLeagueMatchupResponse } from '@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse'
 import type { FantasyFootballPlayer } from '@/interfaces/user/fantasy/FantasyFootballPlayersResponse'
 import { usePositionShortCode } from '@/composables/usePositionShortCode'
 import NationalityBadge from '@/components/football/ui/NationalityBadge.vue'
+import MatchupPlayerVersusDrawer from '@/components/fantasy/matchups/MatchupPlayerVersusDrawer.vue'
 
 interface Props {
   matchup: FantasyLeagueMatchupResponse
@@ -13,12 +14,35 @@ interface Props {
   error: string | null
   /** Drop the card chrome + internal header so it can nest inside a collapsible. */
   embedded?: boolean
+  /** Fantasy league + round context — both required to open a per-player duel. */
+  leagueUuid?: string
+  roundUuid?: string | null
 }
 
-const props = withDefaults(defineProps<Props>(), { embedded: false })
+const props = withDefaults(defineProps<Props>(), { embedded: false, leagueUuid: '', roundUuid: null })
 const emit = defineEmits<{ close: [] }>()
 
 const positionShort = usePositionShortCode()
+
+// ── Player-vs-player duel drawer ──
+// A row pairs a home player against an away one; tapping it compares the two
+// head-to-head. Needs the league + round context, so it stays inert without them.
+const versusDrawerOpen = ref(false)
+const versusOne = ref<FantasyFootballPlayer | null>(null)
+const versusTwo = ref<FantasyFootballPlayer | null>(null)
+
+const canCompare = computed(() => !!props.leagueUuid && !!props.roundUuid)
+
+function pairReady(home?: FantasyFootballPlayer, away?: FantasyFootballPlayer): boolean {
+  return canCompare.value && !!home && !!away
+}
+
+function openVersus(home?: FantasyFootballPlayer, away?: FantasyFootballPlayer): void {
+  if (!pairReady(home, away)) return
+  versusOne.value = home ?? null
+  versusTwo.value = away ?? null
+  versusDrawerOpen.value = true
+}
 
 const positionOrder: Record<string, number> = { GOALKEEPER: 0, DEFENDER: 1, MIDFIELDER: 2, ATTACKER: 3, FLEX: 4 }
 
@@ -141,6 +165,10 @@ function positionColor(developerName: string): string {
       <div class="px-4 py-2.5 bg-gray-50/80 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700/60 flex items-center gap-2">
         <v-icon name="hi-solid-star" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
         <h3 class="text-2xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">{{ $t('fantasy.matchups.starters') }}</h3>
+        <span v-if="canCompare" class="ml-auto flex items-center gap-1 text-2xs text-gray-400 dark:text-gray-500 normal-case tracking-normal">
+          <v-icon name="md-comparearrows-round" class="w-3 h-3 shrink-0" />
+          {{ $t('fantasy.matchups.versus.tapHint') }}
+        </span>
       </div>
 
       <!-- Duel ladder: a center spine threads the position rungs together -->
@@ -153,7 +181,14 @@ function positionColor(developerName: string): string {
           <div
             v-for="idx in starterRows"
             :key="`starter-${idx}`"
-            class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-2.5"
+            class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-2.5 transition-colors"
+            :class="pairReady(homeStarters[idx], awayStarters[idx])
+              ? 'cursor-pointer hover:bg-emerald-50/60 dark:hover:bg-emerald-900/10 active:bg-emerald-100/60 dark:active:bg-emerald-900/20'
+              : ''"
+            :role="pairReady(homeStarters[idx], awayStarters[idx]) ? 'button' : undefined"
+            :tabindex="pairReady(homeStarters[idx], awayStarters[idx]) ? 0 : undefined"
+            @click="openVersus(homeStarters[idx], awayStarters[idx])"
+            @keydown.enter.space.prevent="openVersus(homeStarters[idx], awayStarters[idx])"
           >
             <!-- Home player -->
             <template v-if="homeStarters[idx]">
@@ -245,7 +280,14 @@ function positionColor(developerName: string): string {
         <div
           v-for="idx in benchRows"
           :key="`bench-${idx}`"
-          class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-2.5 opacity-60"
+          class="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-2.5 opacity-60 transition-colors"
+          :class="pairReady(homeBench[idx], awayBench[idx])
+            ? 'cursor-pointer hover:opacity-100 hover:bg-emerald-50/60 dark:hover:bg-emerald-900/10 active:bg-emerald-100/60 dark:active:bg-emerald-900/20'
+            : ''"
+          :role="pairReady(homeBench[idx], awayBench[idx]) ? 'button' : undefined"
+          :tabindex="pairReady(homeBench[idx], awayBench[idx]) ? 0 : undefined"
+          @click="openVersus(homeBench[idx], awayBench[idx])"
+          @keydown.enter.space.prevent="openVersus(homeBench[idx], awayBench[idx])"
         >
           <!-- Home bench -->
           <template v-if="homeBench[idx]">
@@ -322,5 +364,15 @@ function positionColor(developerName: string): string {
       </div>
 
     </template>
+
+    <!-- Head-to-head duel for the tapped row. BottomSheet teleports to <body>,
+         so nesting it here keeps a single root node (class inheritance intact). -->
+    <MatchupPlayerVersusDrawer
+      v-model="versusDrawerOpen"
+      :league-uuid="leagueUuid"
+      :round-uuid="roundUuid ?? ''"
+      :player-one="versusOne"
+      :player-two="versusTwo"
+    />
   </div>
 </template>

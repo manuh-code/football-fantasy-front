@@ -8,6 +8,7 @@ import { FootballPlayerStatisticResponse } from "@/interfaces/football/player/Fo
 import { FootballPlayerTopScorePayload } from "@/interfaces/football/player/FootballPlayerTopScorePayload";
 import { FootballPlayerTopScoreResponse } from "@/interfaces/football/player/FootballPlayerTopScoreResponse";
 import { FootballPlayerVersusResponse } from "@/interfaces/football/player/FootballPlayerVersusResponse";
+import { FantasyPlayerScoreVersusResponse } from "@/interfaces/fantasy/score/FantasyPlayerScoreVersusResponse";
 import { TeamOfTheWeekByRoundResponse } from "@/interfaces/football/teamOfTheWeek/TeamOfTheWeekByRoundResponse";
 import { AxiosError } from "axios";
 
@@ -53,6 +54,22 @@ export class FootballPlayerService {
         }
 
         throw new AxiosError('Failed to fetch football player versus data');
+    }
+
+    async getPlayerFantasyScoreVersus(
+        fantasyLeagueUuid: string,
+        roundUuid: string,
+        playerOneUuid: string,
+        playerTwoUuid: string,
+    ): Promise<ApiResponse<FantasyPlayerScoreVersusResponse>> {
+        const response = await this.api.get<ApiResponse<FantasyPlayerScoreVersusResponse>>(
+            `fantasy/leagues/statistics/${fantasyLeagueUuid}/round/${roundUuid}/versus/${playerOneUuid}/${playerTwoUuid}`,
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+
+        throw new AxiosError('Failed to fetch fantasy player score versus');
     }
 
     async getPlayerStatisticByStage(stageUuid: string, select: string = 'GOALS,ASSISTS,RATING,ACCURATE_PASSES,PENALTIES_SCORED,YELLOWCARDS,SAVES,INTERCEPTIONS,TACKLES_WON'): Promise<ApiResponse<FootballPlayerStatisticByStageResponse[]>> {

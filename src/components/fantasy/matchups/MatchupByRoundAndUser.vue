@@ -153,6 +153,8 @@ watch(
       :versus-data="versusData"
       :is-loading="isLoadingVersus"
       :error="versusError"
+      :league-uuid="leagueUuid"
+      :round-uuid="roundUuid"
       @close="closeLineupsDrawer"
     />
   </BottomSheet>

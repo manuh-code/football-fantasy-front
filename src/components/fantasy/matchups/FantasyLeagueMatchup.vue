@@ -447,6 +447,8 @@ onMounted(async () => {
         :versus-data="versusState(activeMatchup.uuid).data"
         :is-loading="versusState(activeMatchup.uuid).loading"
         :error="versusState(activeMatchup.uuid).error"
+        :league-uuid="leagueUuid"
+        :round-uuid="selectedRoundUuid"
         class="-mx-5"
       />
     </BottomSheet>

@@ -60,6 +60,14 @@ const sortedTrades = computed(() =>
   }),
 )
 
+// Trades awaiting my response — surfaced as a badge on the "received" filter.
+const pendingReceivedCount = computed(
+  () =>
+    trades.value.filter(
+      (tr) => tr.status === 'PENDING' && tr.receiver.uuid === currentUserUuid.value,
+    ).length,
+)
+
 async function loadTrades() {
   if (!props.fantasyLeagueUuid) return
   isLoading.value = true
@@ -133,7 +141,10 @@ async function handleCancel(tradeUuid: string) {
 const isProposeOpen = ref(false)
 
 function handleProposed(trade: FantasyTradeResponse) {
-  trades.value = [trade, ...trades.value]
+  // Upsert (not a naive prepend): the backend also broadcasts `trade.proposed`
+  // over Ably, and that event can land before this HTTP response resolves.
+  // Deduping by uuid keeps either arrival order from doubling the card.
+  upsertTrade(trade)
   isProposeOpen.value = false
 }
 
@@ -220,13 +231,20 @@ onUnmounted(unsubscribeFromTradeChannel)
           v-for="opt in (['all', 'received', 'sent'] as Scope[])"
           :key="opt"
           type="button"
-          class="shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all active:scale-95"
+          class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all active:scale-95"
           :class="scope === opt
             ? 'bg-purple-500 text-white shadow-sm shadow-purple-500/25'
             : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'"
           @click="scope = opt"
         >
           {{ $t(`fantasy.trades.filter${opt.charAt(0).toUpperCase()}${opt.slice(1)}`) }}
+          <span
+            v-if="opt === 'received' && pendingReceivedCount > 0"
+            class="inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 rounded-full text-[10px] font-bold tabular-nums leading-none"
+            :class="scope === opt ? 'bg-white/25 text-white' : 'bg-purple-500 text-white'"
+          >
+            {{ pendingReceivedCount }}
+          </span>
         </button>
       </div>
       <button
