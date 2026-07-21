@@ -10,16 +10,15 @@ export interface PlayerFantasyScoreFixtureRef {
 }
 
 /**
- * One stat line of the breakdown: the equation `value × points_per_unit = points`.
- * Stats without a scoring rule for the player's position are listed with
- * `has_rule: false`, `points_per_unit: null` and `points: 0` for transparency.
+ * One stat line of the persisted breakdown: the equation
+ * `value × points_per_unit = points`. Every entry here already had a scoring
+ * rule applied when the score was calculated, so there's no "no rule" case.
  */
 export interface PlayerFantasyScoreStat {
     type: TypeResponse;
     value: number;
-    points_per_unit: number | null;
+    points_per_unit: number;
     points: number;
-    has_rule: boolean;
 }
 
 export interface PlayerFantasyScoreFixture {
@@ -37,9 +36,7 @@ export interface PlayerFantasyScoreDetailResponse {
     fantasy_league: PlayerFantasyScoreLeagueRef;
     round: FantasyRoundResponse;
     player: FootballPlayerResponse;
-    /** Auto-consistent sum of the breakdown below. */
+    /** The round's total — identical to the lineup/matchup's fantasy_points. */
     total_points: number;
-    /** Official value (== the lineup's fantasy_points). */
-    stored_total_points: number;
     fixtures: PlayerFantasyScoreFixture[];
 }
