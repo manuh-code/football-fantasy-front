@@ -284,6 +284,24 @@
     "selectSwap": "Select a player to swap",
     "pts": "pts"
   },
+  "playerScore": {
+    "title": "Points breakdown",
+    "roundLabel": "Round {name}",
+    "roundCompleted": "Completed",
+    "roundOngoing": "In progress",
+    "official": "Official",
+    "breakdown": "Breakdown",
+    "reconcileNote": "The official total is your lineup's stored points. The breakdown sums the recorded stats and may differ.",
+    "statColumn": "Stat",
+    "pointsColumn": "Points",
+    "noRule": "No rule",
+    "subtotal": "Subtotal",
+    "noData": "No stats",
+    "noDataBody": "This player didn't record any stats this round.",
+    "loadError": "Couldn't load the points breakdown.",
+    "retry": "Retry",
+    "pts": "pts"
+  },
   "management": {
     "loadingRules": "Loading scoring rules...",
     "loadingError": "Loading error",

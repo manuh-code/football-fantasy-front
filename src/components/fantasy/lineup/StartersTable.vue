@@ -36,7 +36,6 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
               :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
               @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player.uuid, $event)"
               @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player.uuid, $event)"
@@ -47,10 +46,11 @@
                 {{ positionShort(player.position.developer_name) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <div class="flex-1 min-w-0">
+              <div class="flex-1 min-w-0" :class="canViewScore ? 'cursor-pointer' : ''" @click="openScoreDrawer(player)">
                 <div class="flex items-center gap-1.5">
                   <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                  <v-icon v-if="canViewScore" name="hi-solid-chevron-right" class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0" />
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
                   <NationalityBadge class="mt-0.5" :country="player.football_player.country" />
@@ -114,7 +114,6 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
               :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
               @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player.uuid, $event)"
               @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player.uuid, $event)"
@@ -125,10 +124,11 @@
                 {{ positionShort(player.position.developer_name) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <div class="flex-1 min-w-0">
+              <div class="flex-1 min-w-0" :class="canViewScore ? 'cursor-pointer' : ''" @click="openScoreDrawer(player)">
                 <div class="flex items-center gap-1.5">
                   <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                  <v-icon v-if="canViewScore" name="hi-solid-chevron-right" class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0" />
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
                   <NationalityBadge class="mt-0.5" :country="player.football_player.country" />
@@ -192,7 +192,6 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
               :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
               @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player.uuid, $event)"
               @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player.uuid, $event)"
@@ -203,10 +202,11 @@
                 {{ positionShort(player.position.developer_name) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <div class="flex-1 min-w-0">
+              <div class="flex-1 min-w-0" :class="canViewScore ? 'cursor-pointer' : ''" @click="openScoreDrawer(player)">
                 <div class="flex items-center gap-1.5">
                   <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                  <v-icon v-if="canViewScore" name="hi-solid-chevron-right" class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0" />
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
                   <NationalityBadge class="mt-0.5" :country="player.football_player.country" />
@@ -270,7 +270,6 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
               :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
               @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player.uuid, $event)"
               @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player.uuid, $event)"
@@ -281,10 +280,11 @@
                 {{ positionShort(player.position.developer_name) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <div class="flex-1 min-w-0">
+              <div class="flex-1 min-w-0" :class="canViewScore ? 'cursor-pointer' : ''" @click="openScoreDrawer(player)">
                 <div class="flex items-center gap-1.5">
                   <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                  <v-icon v-if="canViewScore" name="hi-solid-chevron-right" class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0" />
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
                   <NationalityBadge class="mt-0.5" :country="player.football_player.country" />
@@ -348,7 +348,6 @@
             </button>
             <div
               class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :class="{ 'opacity-50 pointer-events-none': player.in_play }"
               :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player.uuid)}px)`, transition: getSwipeTransition(player.football_player.uuid) } : {}"
               @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player.uuid, $event)"
               @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player.uuid, $event)"
@@ -359,10 +358,11 @@
                 {{ positionShort(player.position.developer_name) }}
               </span>
               <img :src="player.football_player.image_path || '/img/default-avatar.svg'" :alt="player.football_player.display_name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <div class="flex-1 min-w-0">
+              <div class="flex-1 min-w-0" :class="canViewScore ? 'cursor-pointer' : ''" @click="openScoreDrawer(player)">
                 <div class="flex items-center gap-1.5">
                   <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player.display_name }}</p>
                   <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
+                  <v-icon v-if="canViewScore" name="hi-solid-chevron-right" class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0" />
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
                   <NationalityBadge class="mt-0.5" :country="player.football_player.country" />
@@ -421,6 +421,14 @@
     :fantasy-round-uuid="fantasyRoundUuid"
     @lineup-updated="emit('lineupUpdated')"
   />
+
+  <!-- Player Score Detail Drawer -->
+  <PlayerFantasyScoreDrawer
+    v-model="scoreDrawerOpen"
+    :league-uuid="leagueUuid"
+    :round-uuid="fantasyRoundUuid ?? ''"
+    :player="scorePlayer"
+  />
 </template>
 
 <script setup lang="ts">
@@ -430,6 +438,7 @@ import { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/Fan
 import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
 import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
 import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
+import PlayerFantasyScoreDrawer from "@/components/fantasy/lineup/PlayerFantasyScoreDrawer.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
 import { usePositionShortCode } from "@/composables/usePositionShortCode";
@@ -474,6 +483,25 @@ const swapTargetPlayer = ref<FantasyFootballPlayer | null>(null);
 const swapSlotPosition = ref('');
 const swapSlotIsStarter = ref(true);
 const swapSlotIsFlex = ref(false);
+
+// ==================== Player score drawer ====================
+const scoreDrawerOpen = ref(false);
+const scorePlayer = ref<FantasyFootballPlayer | null>(null);
+
+// Score detail only needs a round context and stays out of swap/draft mode.
+// Locked (in_play) players are intentionally included — viewing their stats is
+// the one action they keep, even though editing (swap/remove) stays disabled.
+const canViewScore = computed(
+  () => !!props.fantasyRoundUuid && !props.addingPlayerPosition,
+);
+
+function openScoreDrawer(player: FantasyFootballPlayer) {
+  if (!canViewScore.value) return;
+  // Don't hijack a swipe that just revealed the delete action.
+  if (swipeStates.value[player.football_player.uuid]?.open) return;
+  scorePlayer.value = player;
+  scoreDrawerOpen.value = true;
+}
 
 function openSwapDrawer(
   position: string,

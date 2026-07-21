@@ -284,6 +284,24 @@
     "selectSwap": "Selecciona un jugador para cambiar",
     "pts": "pts"
   },
+  "playerScore": {
+    "title": "Detalle de puntos",
+    "roundLabel": "Jornada {name}",
+    "roundCompleted": "Finalizada",
+    "roundOngoing": "En curso",
+    "official": "Oficial",
+    "breakdown": "Desglose",
+    "reconcileNote": "El total oficial son los puntos guardados de tu alineación. El desglose suma las estadísticas registradas y puede diferir.",
+    "statColumn": "Estadística",
+    "pointsColumn": "Puntos",
+    "noRule": "Sin regla",
+    "subtotal": "Subtotal",
+    "noData": "Sin estadísticas",
+    "noDataBody": "Este jugador no registró estadísticas en esta jornada.",
+    "loadError": "No se pudo cargar el detalle de puntos.",
+    "retry": "Reintentar",
+    "pts": "pts"
+  },
   "management": {
     "loadingRules": "Cargando reglas de puntuación...",
     "loadingError": "Error de carga",
