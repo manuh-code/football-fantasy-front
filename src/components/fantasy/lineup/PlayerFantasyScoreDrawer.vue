@@ -27,18 +27,12 @@ const error = ref<string | null>(null);
 const detail = ref<PlayerFantasyScoreDetailResponse | null>(null);
 
 // Header identity comes from the lineup player immediately (no wait); the big
-// number falls back to the lineup's fantasy_points until the official total lands.
+// number falls back to the lineup's fantasy_points until the fetch lands —
+// total_points is now the single source of truth (== the lineup/matchup total).
 const playerName = computed(() => props.player?.football_player?.display_name ?? "");
 const playerImage = computed(() => props.player?.football_player?.image_path || "/img/default-avatar.svg");
 const positionDev = computed(() => props.player?.position?.developer_name ?? "");
-const officialPoints = computed(() => detail.value?.stored_total_points ?? props.player?.fantasy_points ?? 0);
-
-// Surface the backend caveat honestly: the breakdown may not fully reconcile
-// with the stored/official total, so only nudge it when the two actually differ.
-const breakdownTotal = computed(() => detail.value?.total_points ?? 0);
-const hasReconcileGap = computed(
-  () => !!detail.value && Math.abs(breakdownTotal.value - officialPoints.value) > 0.001,
-);
+const totalPoints = computed(() => detail.value?.total_points ?? props.player?.fantasy_points ?? 0);
 
 const roundName = computed(() => detail.value?.round?.round?.name ?? "");
 const isRoundCompleted = computed(() => detail.value?.round?.is_completed ?? false);
@@ -114,7 +108,7 @@ watch(
 
 <template>
   <BottomSheet :is-visible="modelValue" size="lg" @close="close">
-    <!-- Header: player identity + the official points (the number that counts) -->
+    <!-- Header: player identity + the round's total points -->
     <template #header>
       <div v-if="player" class="flex items-center gap-3 w-full">
         <img
@@ -143,10 +137,10 @@ watch(
             <NationalityBadge :country="player.football_player?.country" />
           </div>
         </div>
-        <!-- Official points -->
+        <!-- Total points -->
         <div class="text-right shrink-0">
           <p class="text-2xl font-black tabular-nums leading-none text-amber-600 dark:text-amber-400">
-            {{ fmt(officialPoints) }}
+            {{ fmt(totalPoints) }}
           </p>
           <p class="text-2xs text-gray-400 dark:text-gray-500 mt-0.5 uppercase tracking-wide">
             {{ $t('fantasy.playerScore.pts') }}
@@ -216,29 +210,6 @@ watch(
         </span>
       </div>
 
-      <!-- Reconciliation note — only when the breakdown doesn't match the official total -->
-      <div
-        v-if="hasReconcileGap"
-        class="flex items-start gap-2.5 px-3.5 py-2.5 mb-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-900/30"
-      >
-        <v-icon name="hi-solid-information-circle" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-        <div class="min-w-0">
-          <p class="text-xs text-amber-800 dark:text-amber-300 leading-snug">
-            {{ $t('fantasy.playerScore.reconcileNote') }}
-          </p>
-          <div class="flex items-center gap-3 mt-1.5 text-2xs font-semibold">
-            <span class="text-gray-500 dark:text-gray-400">
-              {{ $t('fantasy.playerScore.official') }}
-              <span class="tabular-nums text-gray-900 dark:text-white">{{ fmt(officialPoints) }}</span>
-            </span>
-            <span class="text-gray-500 dark:text-gray-400">
-              {{ $t('fantasy.playerScore.breakdown') }}
-              <span class="tabular-nums text-gray-900 dark:text-white">{{ fmt(breakdownTotal) }}</span>
-            </span>
-          </div>
-        </div>
-      </div>
-
       <!-- Empty state -->
       <div v-if="isEmpty" class="py-10 text-center">
         <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-3">
@@ -283,7 +254,6 @@ watch(
               v-for="(stat, s) in fx.stats"
               :key="stat.type?.uuid ?? s"
               class="flex items-center justify-between gap-3 px-4 py-2.5"
-              :class="{ 'opacity-55': !stat.has_rule }"
             >
               <p class="text-footnote text-gray-700 dark:text-gray-300 truncate">
                 {{ stat.type?.name }}
@@ -291,16 +261,9 @@ watch(
               <div class="flex items-center gap-2 shrink-0">
                 <!-- The equation — the signature: every point traces to a stat -->
                 <span class="text-2xs tabular-nums text-gray-400 dark:text-gray-500">
-                  <template v-if="stat.has_rule && stat.points_per_unit !== null">
-                    {{ fmt(stat.value) }}
-                    <span class="text-gray-300 dark:text-gray-600">×</span>
-                    {{ fmt(stat.points_per_unit) }}
-                  </template>
-                  <template v-else>
-                    {{ fmt(stat.value) }}
-                    <span class="text-gray-300 dark:text-gray-600">·</span>
-                    {{ $t('fantasy.playerScore.noRule') }}
-                  </template>
+                  {{ fmt(stat.value) }}
+                  <span class="text-gray-300 dark:text-gray-600">×</span>
+                  {{ fmt(stat.points_per_unit) }}
                 </span>
                 <span
                   class="min-w-[2.75rem] text-right text-footnote font-bold tabular-nums"
