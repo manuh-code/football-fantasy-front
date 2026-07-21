@@ -21,6 +21,7 @@ import { LineupPlayerRemovePayload } from "@/interfaces/fantasy/lineup/LineupPla
 import { FantasyStandingResponse } from "@/interfaces/fantasy/standing/FantasyStandingResponse";
 import { FantasyTradePayload } from "@/interfaces/fantasy/trade/FantasyTradePayload";
 import { FantasyTradeResponse } from "@/interfaces/fantasy/trade/FantasyTradeResponse";
+import { PlayerFantasyScoreDetailResponse } from "@/interfaces/fantasy/score/PlayerFantasyScoreDetailResponse";
 
 
 export class FantasyLeagueService {
@@ -278,6 +279,24 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch standings for league');
+    }
+
+    /**
+     * Per-round, stat-by-stat fantasy score breakdown for a single player, scoped
+     * to a league's scoring system. Powers the player-score detail drawer.
+     */
+    async getPlayerFantasyScore(
+        fantasyLeagueUuid: string,
+        roundUuid: string,
+        playerUuid: string,
+    ): Promise<PlayerFantasyScoreDetailResponse> {
+        const response = await this.api.get<ApiResponse<PlayerFantasyScoreDetailResponse>>(
+            `fantasy/leagues/statistics/${fantasyLeagueUuid}/round/${roundUuid}/player/${playerUuid}`,
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch player fantasy score');
     }
 
     /**
