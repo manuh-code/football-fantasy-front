@@ -70,6 +70,7 @@ import {
   HiSolidShieldExclamation,
   HiSolidUserCircle,
   HiSolidAcademicCap,
+  HiSolidBan,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -288,6 +289,7 @@ export const iconList = [
   BiTrophy,
   BiChatLeftDotsFill,
   BiStarFill,
+  HiSolidBan,
 ]
 
 // Icon name mapping for easier usage
