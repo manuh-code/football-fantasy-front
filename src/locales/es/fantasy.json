@@ -276,7 +276,24 @@
     "statusCompleted": "Finalizado",
     "statusCancelled": "Cancelado",
     "viewLineups": "Ver alineaciones",
-    "roundFallback": "Jornada"
+    "roundFallback": "Jornada",
+    "versus": {
+      "title": "Duelo de jugadores",
+      "leads": "lidera",
+      "tie": "Empate",
+      "total": "Total",
+      "pts": "pts",
+      "pointsProfile": "Perfil de puntos",
+      "pointsProfileHint": "Cada eje se normaliza al máximo entre ambos",
+      "breakdown": "Desglose por estadística",
+      "fixtures": "Partidos disputados",
+      "noStats": "Sin estadísticas comparables en esta jornada.",
+      "noData": "Sin datos para comparar",
+      "noDataBody": "Ninguno de los dos jugadores registró estadísticas en esta jornada.",
+      "loadError": "No se pudo cargar la comparación.",
+      "retry": "Reintentar",
+      "tapHint": "Toca un duelo para comparar"
+    }
   },
   "lineup": {
     "starters": "Titulares",
@@ -418,6 +435,12 @@
     "statusCancelled": "Cancelado",
     "offers": "Ofrece",
     "requests": "A cambio de",
+    "youGive": "Entregas",
+    "youGet": "Recibes",
+    "getFromManager": "Recibes de {name}",
+    "yourOffer": "Tu propuesta",
+    "nothingSelected": "Sin seleccionar",
+    "removePlayer": "Quitar",
     "accept": "Aceptar",
     "reject": "Rechazar",
     "cancel": "Cancelar",

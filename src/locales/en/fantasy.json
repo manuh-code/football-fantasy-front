@@ -276,7 +276,24 @@
     "statusCompleted": "Completed",
     "statusCancelled": "Cancelled",
     "viewLineups": "View lineups",
-    "roundFallback": "Round"
+    "roundFallback": "Round",
+    "versus": {
+      "title": "Player duel",
+      "leads": "leads",
+      "tie": "Tie",
+      "total": "Total",
+      "pts": "pts",
+      "pointsProfile": "Points profile",
+      "pointsProfileHint": "Each axis normalized to the higher of the two",
+      "breakdown": "Stat breakdown",
+      "fixtures": "Fixtures played",
+      "noStats": "No comparable stats in this round.",
+      "noData": "Nothing to compare",
+      "noDataBody": "Neither player recorded stats in this round.",
+      "loadError": "Couldn't load the comparison.",
+      "retry": "Retry",
+      "tapHint": "Tap a duel to compare"
+    }
   },
   "lineup": {
     "starters": "Starters",
@@ -418,6 +435,12 @@
     "statusCancelled": "Cancelled",
     "offers": "Offers",
     "requests": "In exchange for",
+    "youGive": "You give",
+    "youGet": "You get",
+    "getFromManager": "You get from {name}",
+    "yourOffer": "Your offer",
+    "nothingSelected": "None selected",
+    "removePlayer": "Remove",
     "accept": "Accept",
     "reject": "Reject",
     "cancel": "Cancel",

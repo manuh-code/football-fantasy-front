@@ -23,6 +23,18 @@ const isProposer = computed(() => props.trade.proposer.uuid === props.currentUse
 const isReceiver = computed(() => props.trade.receiver.uuid === props.currentUserUuid)
 const isPending = computed(() => props.trade.status === 'PENDING')
 
+// Read the swap from the viewer's own side so nobody has to mentally invert it:
+// the receiver gives what the proposer requested, and gets what was offered.
+const isParty = computed(() => isProposer.value || isReceiver.value)
+const givePlayers = computed(() =>
+  isReceiver.value ? props.trade.requested_players : props.trade.offered_players,
+)
+const getPlayers = computed(() =>
+  isReceiver.value ? props.trade.offered_players : props.trade.requested_players,
+)
+const giveLabel = computed(() => (isParty.value ? t('fantasy.trades.youGive') : t('fantasy.trades.offers')))
+const getLabel = computed(() => (isParty.value ? t('fantasy.trades.youGet') : t('fantasy.trades.requests')))
+
 type ConfirmAction = 'accept' | 'reject' | 'cancel'
 const confirming = ref<ConfirmAction | null>(null)
 
@@ -101,33 +113,59 @@ function confirmAction() {
       </span>
     </div>
 
-    <!-- Offered vs requested players -->
-    <div class="px-4 pb-3 grid grid-cols-2 gap-3">
+    <!-- The swap, from the viewer's own perspective: what leaves ↔ what arrives -->
+    <div class="px-4 pb-3 grid grid-cols-[1fr_auto_1fr] gap-2 items-start">
+      <!-- Give (leaves my roster) -->
       <div class="min-w-0">
-        <p class="text-2xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
-          {{ $t('fantasy.trades.offers') }}
-        </p>
-        <ul class="space-y-1">
-          <li
-            v-for="p in trade.offered_players"
-            :key="p.uuid"
-            class="text-footnote text-gray-700 dark:text-gray-300 truncate"
-          >
-            {{ p.display_name }}
+        <div class="flex items-center gap-1 mb-1.5">
+          <v-icon
+            name="hi-solid-arrow-up"
+            class="w-3 h-3 shrink-0"
+            :class="isParty ? 'text-rose-500 dark:text-rose-400' : 'text-gray-400 dark:text-gray-500'"
+          />
+          <p class="text-2xs font-bold uppercase tracking-wide" :class="isParty ? 'text-rose-500 dark:text-rose-400' : 'text-gray-400 dark:text-gray-500'">
+            {{ giveLabel }}
+          </p>
+        </div>
+        <ul class="space-y-1.5">
+          <li v-for="p in givePlayers" :key="p.uuid" class="flex items-center gap-1.5 min-w-0">
+            <img
+              :src="p.image_path || '/img/default-avatar.svg'"
+              :alt="p.display_name"
+              class="w-5 h-5 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+            />
+            <span class="text-footnote text-gray-700 dark:text-gray-300 truncate">{{ p.display_name }}</span>
           </li>
         </ul>
       </div>
+
+      <!-- Swap glyph -->
+      <div class="flex items-center justify-center pt-5">
+        <span class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700/60 flex items-center justify-center shrink-0">
+          <v-icon name="hi-solid-switch-horizontal" class="w-3 h-3 text-gray-400 dark:text-gray-500" />
+        </span>
+      </div>
+
+      <!-- Get (arrives to my roster) -->
       <div class="min-w-0">
-        <p class="text-2xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5">
-          {{ $t('fantasy.trades.requests') }}
-        </p>
-        <ul class="space-y-1">
-          <li
-            v-for="p in trade.requested_players"
-            :key="p.uuid"
-            class="text-footnote text-gray-700 dark:text-gray-300 truncate"
-          >
-            {{ p.display_name }}
+        <div class="flex items-center gap-1 mb-1.5">
+          <v-icon
+            name="hi-solid-arrow-down"
+            class="w-3 h-3 shrink-0"
+            :class="isParty ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'"
+          />
+          <p class="text-2xs font-bold uppercase tracking-wide" :class="isParty ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'">
+            {{ getLabel }}
+          </p>
+        </div>
+        <ul class="space-y-1.5">
+          <li v-for="p in getPlayers" :key="p.uuid" class="flex items-center gap-1.5 min-w-0">
+            <img
+              :src="p.image_path || '/img/default-avatar.svg'"
+              :alt="p.display_name"
+              class="w-5 h-5 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0"
+            />
+            <span class="text-footnote text-gray-700 dark:text-gray-300 truncate">{{ p.display_name }}</span>
           </li>
         </ul>
       </div>

@@ -108,6 +108,22 @@ const selectedReceiver = computed(
   () => props.participants.find((p) => p.uuid === receiverUuid.value) ?? null,
 )
 
+// Selected uuids resolved back to player objects — powers the removable chips
+// and the live footer recap, so the swap can be read back before it's sent.
+const offeredPlayers = computed(() =>
+  myRoster.value.filter((p) => offeredUuids.value.includes(p.player.uuid)),
+)
+const requestedPlayers = computed(() =>
+  theirRoster.value.filter((p) => requestedUuids.value.includes(p.player.uuid)),
+)
+
+function removeOffered(playerUuid: string) {
+  offeredUuids.value = offeredUuids.value.filter((uuid) => uuid !== playerUuid)
+}
+function removeRequested(playerUuid: string) {
+  requestedUuids.value = requestedUuids.value.filter((uuid) => uuid !== playerUuid)
+}
+
 function participantName(member: UserDataInterface): string {
   const full = [member.firstname, member.lastname].filter(Boolean).join(' ').trim()
   return full || member.email || t('fantasy.trades.unknownManager')
@@ -203,39 +219,85 @@ async function submit() {
       </div>
 
       <template v-if="receiverUuid">
-        <!-- Step 2: offered players (own roster) -->
+        <!-- You give (own roster) -->
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <p class="text-2xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">
-              {{ $t('fantasy.trades.offeredStep') }}
-            </p>
-            <span v-if="offeredUuids.length" class="text-2xs font-semibold text-blue-600 dark:text-blue-400">
-              {{ offeredUuids.length }}
+          <div class="flex items-center gap-1.5 mb-2">
+            <span class="w-5 h-5 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center shrink-0">
+              <v-icon name="hi-solid-arrow-up" class="w-3 h-3 text-rose-500 dark:text-rose-400" />
             </span>
+            <p class="text-2xs font-bold uppercase tracking-wide text-rose-500 dark:text-rose-400 flex-1">
+              {{ $t('fantasy.trades.youGive') }}
+            </p>
+            <span v-if="offeredPlayers.length" class="text-2xs font-bold text-rose-500 dark:text-rose-400 tabular-nums">
+              {{ offeredPlayers.length }}
+            </span>
+          </div>
+          <!-- Selected chips: an at-a-glance recap that doubles as one-tap removal -->
+          <div v-if="offeredPlayers.length" class="flex flex-wrap gap-1.5 mb-2">
+            <button
+              v-for="p in offeredPlayers"
+              :key="p.player.uuid"
+              type="button"
+              :aria-label="`${$t('fantasy.trades.removePlayer')} ${p.player.display_name}`"
+              class="group inline-flex items-center gap-1 pl-1 pr-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-900/20 border border-rose-200/70 dark:border-rose-800/40 active:scale-95 transition-transform"
+              @click="removeOffered(p.player.uuid)"
+            >
+              <img :src="p.player.image_path || '/img/default-avatar.svg'" :alt="p.player.display_name" class="w-4 h-4 rounded-full object-cover shrink-0" />
+              <span class="text-2xs font-medium text-rose-700 dark:text-rose-300 max-w-[7rem] truncate">{{ p.player.display_name }}</span>
+              <v-icon name="hi-solid-x" class="w-2.5 h-2.5 text-rose-400 group-hover:text-rose-600 dark:group-hover:text-rose-200" />
+            </button>
           </div>
           <FantasyTradePlayerChecklist
             v-model="offeredUuids"
             :players="myRoster"
             :loading="myRosterLoading"
             :empty-text="$t('fantasy.trades.myRosterEmpty')"
+            accent="rose"
           />
         </div>
 
-        <!-- Step 3: requested players (their roster) -->
+        <!-- Swap divider — reinforces that this is a two-sided exchange -->
+        <div class="flex items-center gap-2" aria-hidden="true">
+          <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
+          <span class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
+          </span>
+          <div class="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
+        </div>
+
+        <!-- You get (their roster) -->
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <p class="text-2xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">
-              {{ $t('fantasy.trades.requestedStep') }}
-            </p>
-            <span v-if="requestedUuids.length" class="text-2xs font-semibold text-blue-600 dark:text-blue-400">
-              {{ requestedUuids.length }}
+          <div class="flex items-center gap-1.5 mb-2">
+            <span class="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+              <v-icon name="hi-solid-arrow-down" class="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
             </span>
+            <p class="text-2xs font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400 flex-1 truncate">
+              {{ selectedReceiver ? $t('fantasy.trades.getFromManager', { name: participantName(selectedReceiver) }) : $t('fantasy.trades.youGet') }}
+            </p>
+            <span v-if="requestedPlayers.length" class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+              {{ requestedPlayers.length }}
+            </span>
+          </div>
+          <div v-if="requestedPlayers.length" class="flex flex-wrap gap-1.5 mb-2">
+            <button
+              v-for="p in requestedPlayers"
+              :key="p.player.uuid"
+              type="button"
+              :aria-label="`${$t('fantasy.trades.removePlayer')} ${p.player.display_name}`"
+              class="group inline-flex items-center gap-1 pl-1 pr-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/70 dark:border-emerald-800/40 active:scale-95 transition-transform"
+              @click="removeRequested(p.player.uuid)"
+            >
+              <img :src="p.player.image_path || '/img/default-avatar.svg'" :alt="p.player.display_name" class="w-4 h-4 rounded-full object-cover shrink-0" />
+              <span class="text-2xs font-medium text-emerald-700 dark:text-emerald-300 max-w-[7rem] truncate">{{ p.player.display_name }}</span>
+              <v-icon name="hi-solid-x" class="w-2.5 h-2.5 text-emerald-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-200" />
+            </button>
           </div>
           <FantasyTradePlayerChecklist
             v-model="requestedUuids"
             :players="theirRoster"
             :loading="theirRosterLoading"
             :empty-text="$t('fantasy.trades.theirRosterEmpty')"
+            accent="emerald"
           />
         </div>
 
@@ -259,6 +321,18 @@ async function submit() {
     </div>
 
     <template #footer>
+      <!-- Live recap of the swap being built -->
+      <div v-if="receiverUuid" class="flex items-center justify-center gap-2.5 mb-2.5 text-2xs font-bold">
+        <span class="inline-flex items-center gap-1 tabular-nums text-rose-500 dark:text-rose-400">
+          <v-icon name="hi-solid-arrow-up" class="w-3 h-3" />
+          {{ $t('fantasy.trades.youGive') }} {{ offeredUuids.length }}
+        </span>
+        <v-icon name="hi-solid-switch-horizontal" class="w-3 h-3 text-gray-300 dark:text-gray-600" />
+        <span class="inline-flex items-center gap-1 tabular-nums text-emerald-600 dark:text-emerald-400">
+          <v-icon name="hi-solid-arrow-down" class="w-3 h-3" />
+          {{ $t('fantasy.trades.youGet') }} {{ requestedUuids.length }}
+        </span>
+      </div>
       <button
         type="button"
         :disabled="!canSubmit"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { usePositionShortCode } from '@/composables/usePositionShortCode'
 import type { FantasyPlayerDraftResponse } from '@/interfaces/fantasy/draft/FantasyPlayerDraftResponse'
 
@@ -7,12 +8,23 @@ interface Props {
   modelValue: string[]
   loading: boolean
   emptyText: string
+  /** Selection accent — matches the give/get side this list belongs to. */
+  accent?: 'blue' | 'rose' | 'emerald'
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { accent: 'blue' })
 const emit = defineEmits<{ 'update:modelValue': [value: string[]] }>()
 
 const positionShort = usePositionShortCode()
+
+const accentClasses = computed(() => {
+  const map = {
+    blue: { row: 'bg-blue-50 dark:bg-blue-900/20', box: 'bg-blue-500 border-blue-500' },
+    rose: { row: 'bg-rose-50 dark:bg-rose-900/20', box: 'bg-rose-500 border-rose-500' },
+    emerald: { row: 'bg-emerald-50 dark:bg-emerald-900/20', box: 'bg-emerald-500 border-emerald-500' },
+  }
+  return map[props.accent]
+})
 
 function isSelected(playerUuid: string): boolean {
   return props.modelValue.includes(playerUuid)
@@ -64,7 +76,7 @@ function positionColorClass(developerName: string): string {
         v-for="p in players"
         :key="p.player.uuid"
         class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl cursor-pointer transition-colors"
-        :class="isSelected(p.player.uuid) ? 'bg-blue-50 dark:bg-blue-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'"
+        :class="isSelected(p.player.uuid) ? accentClasses.row : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'"
       >
         <input
           type="checkbox"
@@ -74,7 +86,7 @@ function positionColorClass(developerName: string): string {
         />
         <span
           class="w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-colors"
-          :class="isSelected(p.player.uuid) ? 'bg-blue-500 border-blue-500' : 'border-gray-300 dark:border-gray-600'"
+          :class="isSelected(p.player.uuid) ? accentClasses.box : 'border-gray-300 dark:border-gray-600'"
         >
           <v-icon v-if="isSelected(p.player.uuid)" name="hi-solid-check" class="w-3.5 h-3.5 text-white" />
         </span>
