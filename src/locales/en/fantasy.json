@@ -469,6 +469,7 @@
     "selectReceiverFirst": "Pick a manager to see their players.",
     "myRosterEmpty": "You don't have players on your roster.",
     "theirRosterEmpty": "This manager has no players on their roster.",
+    "rosterLoadError": "Couldn't load the roster. Please try again.",
     "messageLabel": "Message (optional)",
     "messagePlaceholder": "E.g. I'll give you my two forwards for your midfielders",
     "submit": "Send proposal",

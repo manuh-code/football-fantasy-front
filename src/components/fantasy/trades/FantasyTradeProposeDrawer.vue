@@ -35,8 +35,10 @@ const submitting = ref(false)
 
 const myRoster = ref<FantasyPlayerDraftResponse[]>([])
 const myRosterLoading = ref(false)
+const myRosterError = ref(false)
 const theirRoster = ref<FantasyPlayerDraftResponse[]>([])
 const theirRosterLoading = ref(false)
+const theirRosterError = ref(false)
 
 async function loadRoster(userUuid: string): Promise<FantasyPlayerDraftResponse[]> {
   // Never hit the endpoint with a falsy uuid — the backend rejects an empty
@@ -56,11 +58,16 @@ async function loadRoster(userUuid: string): Promise<FantasyPlayerDraftResponse[
 async function loadMyRoster() {
   if (!props.currentUserUuid) return
   myRosterLoading.value = true
+  myRosterError.value = false
   try {
     myRoster.value = await loadRoster(props.currentUserUuid)
   } catch (e) {
+    // Distinct from a genuinely empty roster: the request itself failed
+    // (silenced globally, see loadRoster) — surface it as a retryable error
+    // instead of silently rendering the same "no players" empty state.
     console.error('Error loading own roster for trade:', e)
     myRoster.value = []
+    myRosterError.value = true
   } finally {
     myRosterLoading.value = false
   }
@@ -68,11 +75,13 @@ async function loadMyRoster() {
 
 async function loadTheirRoster(userUuid: string) {
   theirRosterLoading.value = true
+  theirRosterError.value = false
   try {
     theirRoster.value = await loadRoster(userUuid)
   } catch (e) {
     console.error('Error loading receiver roster for trade:', e)
     theirRoster.value = []
+    theirRosterError.value = true
   } finally {
     theirRosterLoading.value = false
   }
@@ -93,6 +102,7 @@ function resetForm() {
   requestedUuids.value = []
   message.value = ''
   theirRoster.value = []
+  theirRosterError.value = false
 }
 
 watch(
@@ -272,8 +282,10 @@ async function submit() {
             v-model="offeredUuids"
             :players="myRoster"
             :loading="myRosterLoading"
+            :error="myRosterError"
             :empty-text="$t('fantasy.trades.myRosterEmpty')"
             accent="rose"
+            @retry="loadMyRoster"
           />
         </div>
 
@@ -317,8 +329,10 @@ async function submit() {
             v-model="requestedUuids"
             :players="theirRoster"
             :loading="theirRosterLoading"
+            :error="theirRosterError"
             :empty-text="$t('fantasy.trades.theirRosterEmpty')"
             accent="emerald"
+            @retry="() => receiverUuid && loadTheirRoster(receiverUuid)"
           />
         </div>
 

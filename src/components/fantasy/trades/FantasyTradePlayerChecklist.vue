@@ -7,13 +7,15 @@ interface Props {
   players: FantasyPlayerDraftResponse[]
   modelValue: string[]
   loading: boolean
+  /** True when the roster fetch itself failed — distinct from a genuinely empty roster. */
+  error?: boolean
   emptyText: string
   /** Selection accent — matches the give/get side this list belongs to. */
   accent?: 'blue' | 'rose' | 'emerald'
 }
 
-const props = withDefaults(defineProps<Props>(), { accent: 'blue' })
-const emit = defineEmits<{ 'update:modelValue': [value: string[]] }>()
+const props = withDefaults(defineProps<Props>(), { accent: 'blue', error: false })
+const emit = defineEmits<{ 'update:modelValue': [value: string[]]; retry: [] }>()
 
 const positionShort = usePositionShortCode()
 
@@ -63,6 +65,20 @@ function positionColorClass(developerName: string): string {
         </div>
         <div class="w-6 h-4 rounded bg-gray-100 dark:bg-gray-700/60 shrink-0" />
       </div>
+    </div>
+
+    <!-- Fetch failed: distinct from a genuinely empty roster, with a retry -->
+    <div v-else-if="error" class="text-center py-4">
+      <p class="text-footnote text-red-500 dark:text-red-400 mb-2">
+        {{ $t('fantasy.trades.rosterLoadError') }}
+      </p>
+      <button
+        type="button"
+        class="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-2xs font-semibold active:bg-gray-200 dark:active:bg-gray-600 transition-colors"
+        @click="emit('retry')"
+      >
+        {{ $t('common.actions.retry') }}
+      </button>
     </div>
 
     <!-- Empty -->
