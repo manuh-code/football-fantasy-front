@@ -7,6 +7,7 @@ import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import { iconList } from './icons'
 import { i18n, setI18nLocale } from './i18n'
 import { useLocaleStore } from './store/locale'
+import { initOnDeviceConsole } from './debug/onDeviceConsole'
 
 
 // Import global styles
@@ -16,6 +17,10 @@ import { createPinia } from 'pinia';
 
 
 
+
+// Opt-in on-device console (see debug/onDeviceConsole.ts) — needs to run
+// before anything else logs so early errors aren't missed.
+void initOnDeviceConsole();
 
 const app = createApp(App);
 const pinia = createPinia();
