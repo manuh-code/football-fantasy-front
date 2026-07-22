@@ -1,0 +1,472 @@
+<template>
+  <BottomSheet :is-visible="isOpen" size="xl" @close="emit('close')">
+    <!-- Header: member identity -->
+    <template #header>
+      <div class="flex items-center gap-3 w-full">
+        <img
+          v-if="member?.avatar"
+          :src="member.avatar"
+          :alt="memberName"
+          class="w-11 h-11 rounded-full object-cover shrink-0 ring-1 ring-gray-100 dark:ring-gray-700"
+        />
+        <div
+          v-else
+          class="w-11 h-11 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shrink-0"
+        >
+          <span class="text-sm font-semibold text-white">{{ memberInitials }}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-base font-bold text-gray-900 dark:text-white truncate">{{ memberName }}</p>
+          <p class="text-2xs text-gray-400 dark:text-gray-500">{{ $t('pool.memberPredictions.subtitle') }}</p>
+        </div>
+      </div>
+    </template>
+
+    <div class="space-y-4">
+      <!-- Rounds loading -->
+      <div v-if="loadingRounds" class="flex items-center justify-center py-10">
+        <v-icon name="pr-spinner" class="w-6 h-6 text-gray-300 dark:text-gray-600" animation="spin" />
+      </div>
+
+      <!-- Rounds error -->
+      <div
+        v-else-if="roundsError"
+        class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl p-6 text-center"
+      >
+        <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+        <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ roundsError }}</p>
+        <button
+          @click="loadRounds"
+          class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
+        >
+          {{ $t('common.actions.retry') }}
+        </button>
+      </div>
+
+      <!-- No rounds -->
+      <div
+        v-else-if="rounds.length === 0"
+        class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl py-12 text-center"
+      >
+        <v-icon name="hi-solid-calendar" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
+        <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">
+          {{ $t('pool.memberPredictions.noRounds') }}
+        </h3>
+        <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('pool.memberPredictions.noRoundsBody') }}</p>
+      </div>
+
+      <template v-else>
+        <RoundCarousel :rounds="rounds" v-model="selectedIndex" />
+
+        <transition name="fade-slide" mode="out-in">
+          <!-- Fixtures loading -->
+          <div v-if="loadingFixtures" key="loading" class="space-y-3">
+            <div
+              v-for="n in 3"
+              :key="`mp-skeleton-${n}`"
+              class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl p-4 animate-pulse"
+            >
+              <div class="h-2.5 w-20 rounded-full bg-gray-200 dark:bg-gray-700 mx-auto mb-4" />
+              <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                <div class="flex flex-col items-center gap-2">
+                  <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700" />
+                  <div class="h-2.5 w-14 rounded-full bg-gray-200 dark:bg-gray-700" />
+                </div>
+                <div class="h-8 w-16 rounded-lg bg-gray-200 dark:bg-gray-700" />
+                <div class="flex flex-col items-center gap-2">
+                  <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700" />
+                  <div class="h-2.5 w-14 rounded-full bg-gray-200 dark:bg-gray-700" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fixtures error -->
+          <div
+            v-else-if="fixturesError"
+            key="error"
+            class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl p-6 text-center"
+          >
+            <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+            <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ fixturesError }}</p>
+            <button
+              @click="loadFixtures"
+              class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
+            >
+              {{ $t('common.actions.retry') }}
+            </button>
+          </div>
+
+          <!-- No fixtures -->
+          <div
+            v-else-if="fixtures.length === 0"
+            key="empty"
+            class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl py-12 text-center"
+          >
+            <v-icon name="gi-soccer-ball" class="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-3" />
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">
+              {{ $t('pool.memberPredictions.noFixtures') }}
+            </h3>
+            <p class="text-footnote text-gray-400 dark:text-gray-500">{{ $t('pool.memberPredictions.noFixturesBody') }}</p>
+          </div>
+
+          <!-- Fixtures + this member's predictions -->
+          <div v-else :key="selectedRound?.uuid || 'fixtures'" class="space-y-3">
+            <div
+              v-for="fixture in fixtures"
+              :key="fixture.uuid"
+              class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl p-4"
+            >
+              <!-- Kickoff + status -->
+              <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="text-2xs text-gray-400 dark:text-gray-500">{{ formatKickoff(fixture.starting_at) }}</span>
+                <span
+                  class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-2xs font-semibold tabular-nums"
+                  :class="stateBadgeClass(fixture)"
+                >
+                  <span v-if="isLive(fixture)" class="relative flex h-1.5 w-1.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+                  </span>
+                  {{ stateLabel(fixture) }}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3">
+                <!-- Home team -->
+                <div class="flex flex-col items-center gap-1.5 text-center min-w-0">
+                  <img
+                    :src="homeTeam(fixture)?.image_path || '/img/default-avatar.svg'"
+                    :alt="homeTeam(fixture)?.name || $t('pool.prediction.home')"
+                    class="w-10 h-10 object-contain"
+                    @error="onLogoError"
+                  />
+                  <span class="text-xs font-medium text-gray-700 dark:text-gray-200 leading-tight line-clamp-2">
+                    {{ homeTeam(fixture)?.name || $t('pool.prediction.home') }}
+                  </span>
+                </div>
+
+                <!-- Center: sealed pick (not started) or reveal (started/finished) -->
+                <div class="flex flex-col items-center justify-center">
+                  <template v-if="isPredictable(fixture)">
+                    <div class="sealed-pick">
+                      <v-icon name="hi-solid-lock-closed" class="w-4 h-4" />
+                    </div>
+                    <span class="text-2xs text-gray-400 dark:text-gray-500 mt-2 text-center max-w-[6.5rem] leading-tight">
+                      {{ $t('pool.memberPredictions.locked') }}
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span class="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
+                      {{ goalsFor(fixture, 'home') }} <span class="text-gray-300 dark:text-gray-600">-</span> {{ goalsFor(fixture, 'away') }}
+                    </span>
+                    <span
+                      v-if="fixture.prediction"
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-2xs font-semibold mt-2 whitespace-nowrap"
+                      :class="predictionBadgeClass(fixture)"
+                    >
+                      <v-icon :name="predictionIcon(fixture)" class="w-2.5 h-2.5 shrink-0" />
+                      {{ fixture.prediction.home_score }}-{{ fixture.prediction.away_score }}
+                    </span>
+                    <span
+                      v-else
+                      class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-medium mt-2 border border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 whitespace-nowrap"
+                    >
+                      {{ $t('pool.memberPredictions.noPrediction') }}
+                    </span>
+                  </template>
+                </div>
+
+                <!-- Away team -->
+                <div class="flex flex-col items-center gap-1.5 text-center min-w-0">
+                  <img
+                    :src="awayTeam(fixture)?.image_path || '/img/default-avatar.svg'"
+                    :alt="awayTeam(fixture)?.name || $t('pool.prediction.away')"
+                    class="w-10 h-10 object-contain"
+                    @error="onLogoError"
+                  />
+                  <span class="text-xs font-medium text-gray-700 dark:text-gray-200 leading-tight line-clamp-2">
+                    {{ awayTeam(fixture)?.name || $t('pool.prediction.away') }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </template>
+    </div>
+  </BottomSheet>
+</template>
+
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { catalogService } from "@/services/catalog/CatalogService";
+import { poolService } from "@/services/pool/poolService";
+import BottomSheet from "@/components/ui/BottomSheet.vue";
+import RoundCarousel from "@/components/ui/RoundCarousel.vue";
+import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
+import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
+import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
+import type { UserDataInterface } from "@/interfaces/user/userInterface";
+
+const props = defineProps<{
+  isOpen: boolean;
+  poolGroupUuid: string;
+  stageUuid?: string | null;
+  member: UserDataInterface | null;
+}>();
+
+const emit = defineEmits<{ close: [] }>();
+
+const { t, locale } = useI18n();
+
+// Rounds (cached per stage across opens, since this component instance stays
+// mounted — only the BottomSheet's own content unmounts when closed).
+const rounds = ref<FootballRoundResponse[]>([]);
+const loadingRounds = ref(false);
+const roundsError = ref("");
+const selectedIndex = ref(0);
+const selectedRound = computed(() => rounds.value[selectedIndex.value] || null);
+
+// Fixtures of the selected round, with this member's prediction embedded.
+const fixtures = ref<FootballFixtureResponse[]>([]);
+const loadingFixtures = ref(false);
+const fixturesError = ref("");
+
+const memberName = computed(() => {
+  const full = [props.member?.firstname, props.member?.lastname].filter(Boolean).join(" ").trim();
+  return full || props.member?.email || t("pool.group.unknownMember");
+});
+
+const memberInitials = computed(() => {
+  const first = props.member?.firstname?.[0] || "";
+  const last = props.member?.lastname?.[0] || "";
+  const initials = (first + last).toUpperCase();
+  return initials || props.member?.email?.[0]?.toUpperCase() || "?";
+});
+
+// --- Team / score helpers ---
+const homeTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
+  fixture.participants?.find((p) => p.meta?.location === "home") || fixture.participants?.[0];
+
+const awayTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
+  fixture.participants?.find((p) => p.meta?.location === "away") || fixture.participants?.[1];
+
+// A fixture with no scores yet hasn't kicked off — the pick stays sealed.
+const isPredictable = (fixture: FootballFixtureResponse): boolean =>
+  !Array.isArray(fixture.scores) || fixture.scores.length === 0;
+
+const goalsFor = (fixture: FootballFixtureResponse, location: "home" | "away"): number => {
+  const team = location === "home" ? homeTeam(fixture) : awayTeam(fixture);
+  const current = team?.current_score?.score;
+  if (typeof current === "number") return current;
+  const score = fixture.scores?.find((s) => s.score?.participant === location);
+  return typeof score?.score?.goals === "number" ? score.score.goals : 0;
+};
+
+// --- Fixture state badge ---
+const stateNameOf = (fixture: FootballFixtureResponse): string => fixture.state?.name?.toLowerCase() ?? "";
+const stateCodeOf = (fixture: FootballFixtureResponse): string => fixture.state?.state?.toUpperCase() ?? "";
+
+const isLive = (fixture: FootballFixtureResponse): boolean => {
+  if (fixture.is_inplay != null) return fixture.is_inplay;
+  const name = stateNameOf(fixture);
+  if (!name) return false;
+  return name.includes("live") || name.includes("in play") || name.includes("ht") || name.includes("half time");
+};
+
+const isHalfTime = (fixture: FootballFixtureResponse): boolean =>
+  stateNameOf(fixture).includes("half time") || stateCodeOf(fixture) === "HT";
+
+const isFinished = (fixture: FootballFixtureResponse): boolean =>
+  stateCodeOf(fixture).includes("FT") || stateNameOf(fixture).includes("finished");
+
+const stateLabel = (fixture: FootballFixtureResponse): string => {
+  if (isPredictable(fixture)) return t("pool.prediction.open");
+  if (!fixture.state) return t("pool.prediction.played");
+  if (isLive(fixture)) return isHalfTime(fixture) ? t("pool.prediction.badge.halfTime") : t("pool.prediction.badge.live");
+  if (isFinished(fixture)) return t("pool.prediction.badge.fullTime");
+  if (stateNameOf(fixture).includes("postponed")) return t("pool.prediction.badge.postponed");
+  if (stateNameOf(fixture).includes("cancelled")) return t("pool.prediction.badge.cancelled");
+  return fixture.state.name || t("pool.prediction.played");
+};
+
+const stateBadgeClass = (fixture: FootballFixtureResponse): string => {
+  if (isPredictable(fixture)) return "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
+  if (isLive(fixture)) return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
+  if (isFinished(fixture)) return "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
+  return "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500";
+};
+
+// --- Prediction vs. result comparison ---
+type PredictionOutcome = "exact" | "correct" | "miss";
+
+const predictionOutcome = (fixture: FootballFixtureResponse): PredictionOutcome | null => {
+  const prediction = fixture.prediction;
+  if (!prediction) return null;
+  const actualHome = goalsFor(fixture, "home");
+  const actualAway = goalsFor(fixture, "away");
+  if (prediction.home_score === actualHome && prediction.away_score === actualAway) return "exact";
+  const actualDiff = Math.sign(actualHome - actualAway);
+  const predictedDiff = Math.sign(prediction.home_score - prediction.away_score);
+  return actualDiff === predictedDiff ? "correct" : "miss";
+};
+
+const predictionBadgeClass = (fixture: FootballFixtureResponse): string => {
+  switch (predictionOutcome(fixture)) {
+    case "exact":
+      return "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
+    case "correct":
+      return "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400";
+    default:
+      return "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500";
+  }
+};
+
+const predictionIcon = (fixture: FootballFixtureResponse): string => {
+  switch (predictionOutcome(fixture)) {
+    case "exact":
+      return "hi-solid-check-circle";
+    case "correct":
+      return "hi-solid-check";
+    default:
+      return "hi-solid-x-circle";
+  }
+};
+
+// --- Formatting ---
+const formatKickoff = (value?: string): string => {
+  if (!value) return "";
+  const date = new Date(value.includes("T") ? value : value.replace(" ", "T"));
+  if (isNaN(date.getTime())) return value;
+  return date.toLocaleString(locale.value, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+};
+
+const onLogoError = (e: Event) => {
+  (e.target as HTMLImageElement).src = "/img/default-avatar.svg";
+};
+
+// --- Data loading ---
+const loadRounds = async () => {
+  if (!props.stageUuid) return;
+
+  loadingRounds.value = true;
+  roundsError.value = "";
+  try {
+    rounds.value = await catalogService.getRoundsByStage(props.stageUuid);
+    const currentIdx = rounds.value.findIndex((r) => r.is_current);
+    selectedIndex.value = currentIdx !== -1 ? currentIdx : 0;
+  } catch (e) {
+    console.error("Error loading rounds:", e);
+    roundsError.value = t("pool.memberPredictions.roundsError");
+  } finally {
+    loadingRounds.value = false;
+  }
+};
+
+const loadFixtures = async () => {
+  const round = selectedRound.value;
+  const memberUuid = props.member?.uuid;
+  if (!round || !memberUuid || !props.poolGroupUuid) {
+    fixtures.value = [];
+    return;
+  }
+
+  loadingFixtures.value = true;
+  fixturesError.value = "";
+  try {
+    fixtures.value = await poolService.getPoolFixturePredictionByUser(props.poolGroupUuid, round.uuid, memberUuid);
+  } catch (e) {
+    console.error("Error loading member predictions:", e);
+    fixturesError.value = t("pool.memberPredictions.loadError");
+  } finally {
+    loadingFixtures.value = false;
+  }
+};
+
+// Rounds/fixtures are (re)loaded lazily, only while the sheet is open.
+watch(
+  () => props.isOpen,
+  (open) => {
+    if (!open) return;
+    if (rounds.value.length === 0) loadRounds();
+    else loadFixtures();
+  }
+);
+watch(
+  () => props.stageUuid,
+  () => {
+    rounds.value = [];
+    if (props.isOpen) loadRounds();
+  }
+);
+watch(selectedRound, () => {
+  if (props.isOpen) loadFixtures();
+});
+watch(
+  () => props.member?.uuid,
+  () => {
+    if (props.isOpen) loadFixtures();
+  }
+);
+</script>
+
+<style scoped>
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Signature: a sealed pick — the member's score stays hidden until kickoff,
+   evoking a locked envelope rather than a plain empty state. */
+.sealed-pick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 1.5px dashed rgb(203 213 225); /* slate-300 */
+  color: rgb(148 163 184); /* slate-400 */
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.06),
+    rgba(148, 163, 184, 0.06) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+.dark .sealed-pick {
+  border-color: rgb(71 85 105); /* slate-600 */
+  color: rgb(100 116 139); /* slate-500 */
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+</style>

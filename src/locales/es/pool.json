@@ -55,6 +55,7 @@
     "members": "Miembros",
     "noMembers": "Aún no hay miembros.",
     "unknownMember": "Miembro desconocido",
+    "viewPredictions": "Ver predicciones",
     "stage": "Etapa",
     "dates": "Fechas",
     "participants": "Participantes",
@@ -142,5 +143,16 @@
   "rounds": {
     "previous": "Ronda anterior",
     "next": "Ronda siguiente"
+  },
+  "memberPredictions": {
+    "subtitle": "Sus predicciones",
+    "noRounds": "Sin rondas",
+    "noRoundsBody": "Aún no hay rondas disponibles para esta etapa.",
+    "roundsError": "No se pudieron cargar las rondas. Inténtalo de nuevo más tarde.",
+    "loadError": "No se pudieron cargar las predicciones. Inténtalo de nuevo más tarde.",
+    "noFixtures": "Sin partidos",
+    "noFixturesBody": "No hay partidos en esta ronda.",
+    "locked": "Se revela al iniciar",
+    "noPrediction": "Sin predicción"
   }
 }

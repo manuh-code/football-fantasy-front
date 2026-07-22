@@ -82,6 +82,15 @@ export class PoolService {
         throw new Error('Failed to fetch pool fixtures');
     }
 
+    async getPoolFixturePredictionByUser(poolGroupUuid: string, roundUuid: string, userUuid: string): Promise<FootballFixtureResponse[]> {
+        const response = await this.api.get<ApiResponse<FootballFixtureResponse[]>>(`/pool/fixtures/prediction/${poolGroupUuid}/round/${roundUuid}/user/${userUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to fetch pool fixture predictions by user');
+    }
+
     async getPoolStandingsByRound(poolGroupUuid: string, roundUuid: string): Promise<PoolStandingResponse[]> {
         const response = await this.api.get<ApiResponse<PoolStandingResponse[]>>(`/pool/standings/${poolGroupUuid}/round/${roundUuid}`);
         if (response.data.code === 200) {

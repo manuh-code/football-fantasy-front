@@ -160,8 +160,10 @@
         @update:selected-position="handleFilterChange"
       />
 
-      <!-- Availability Filters -->
+      <!-- Availability Filters — in draft mode only undrafted players can ever
+           be picked, so switching to "taken"/"all" makes no sense; hide it. -->
       <AvailabilityFilter
+        v-if="props.mode !== 'draft'"
         :selected-availability="selectedAvailability"
         :disabled="props.disabled"
         @update:selected-availability="onAvailabilityChange"
@@ -1034,9 +1036,12 @@ function buildPayloadFilters(): FantasyPlayerDraftPayload["filters"] {
     filters.player_name = playerName.value;
   }
 
-  // availability always sent — its default ("available") is a real filter value
-  if (selectedAvailability.value) {
-    filters.availability = selectedAvailability.value;
+  // availability always sent — its default ("available") is a real filter value.
+  // Draft mode is hard-locked to "available" regardless of selectedAvailability:
+  // only undrafted players can ever be picked while drafting.
+  const availability = props.mode === "draft" ? "available" : selectedAvailability.value;
+  if (availability) {
+    filters.availability = availability;
   }
 
   if (selectedUser.value !== "ALL") {
