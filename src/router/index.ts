@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
+import { useUserStore } from '@/store/user/useUserStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 
 // For anonymous visitors (and search/AdSense crawlers) we auto-select the first
@@ -408,6 +409,26 @@ router.beforeEach(async (to, from, next) => {
       name: "login",
       query: { redirect: to.fullPath },
     });
+  }
+
+  // `userStore.userData` is persisted separately from the auth token and is
+  // only ever populated by login()/loginWithGoogle() — nothing re-fetches it
+  // on a resumed session. If it's ever missing while the token is valid (e.g.
+  // a partial localStorage write survives on an iOS PWA that gets killed
+  // mid-write while backgrounded), every feature that derives the current
+  // user's uuid from it — like the fantasy trade drawer's own-roster fetch —
+  // silently operates on a null/stale uuid with no visible error. Self-heal it
+  // here so a valid session always has its user data before proceeding.
+  if (needAuth && isAuthenticated) {
+    const userStore = useUserStore();
+    if (!userStore.getUserData) {
+      try {
+        await userStore.setUserDataFromApi();
+      } catch {
+        // Don't block navigation over this — worst case, uuid-dependent
+        // features degrade until the next successful fetch.
+      }
+    }
   }
 
   // An already-authenticated user hitting login/register is sent into the app.

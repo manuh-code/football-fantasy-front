@@ -139,11 +139,7 @@ export default defineConfig({
         // propio scope (/firebase-cloud-messaging-push-scope). Excluirlo hace que
         // navigator.serviceWorker.register() siempre resuelva contra el archivo
         // estático y lo desacopla del ciclo de vida del SW de la PWA.
-        // eruda (on-device debug console, src/debug/onDeviceConsole.ts) is an
-        // opt-in diagnostic tool loaded via dynamic import only when a debug
-        // flag is set — it must NOT be precached for every install, or all
-        // users pay its ~490KB chunk on first load for a feature they never use.
-        globIgnores: ['firebase-messaging-sw.js', '**/eruda-*.js'],
+        globIgnores: ['firebase-messaging-sw.js'],
         // Al activarse un SW nuevo, borra los precaches de versiones anteriores.
         cleanupOutdatedCaches: true
       }

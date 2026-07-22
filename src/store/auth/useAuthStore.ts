@@ -37,7 +37,11 @@ export const useAuthStore = defineStore("auth", {
       const response = await getLoginService().login(payload);
       const { claimTokensForUser } = usePushNotifications();
       this.setToken(response.token);
-      userStore.setUserDataFromApi();
+      // Awaited: callers (and the router's post-login redirect) must be able
+      // to rely on userData being populated as soon as login() resolves —
+      // fire-and-forget left a window where a uuid-dependent feature could
+      // read a stale/null currentUserUuid right after logging in.
+      await userStore.setUserDataFromApi();
       await claimTokensForUser();
       return response;
     },
@@ -56,7 +60,7 @@ export const useAuthStore = defineStore("auth", {
       const response = await getLoginService().loginWithGoogle(queryParams);
       const { claimTokensForUser } = usePushNotifications();
       this.setToken(response.token);
-      userStore.setUserDataFromApi();
+      await userStore.setUserDataFromApi();
       await claimTokensForUser();
     },
 
