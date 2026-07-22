@@ -39,11 +39,18 @@ const theirRoster = ref<FantasyPlayerDraftResponse[]>([])
 const theirRosterLoading = ref(false)
 
 async function loadRoster(userUuid: string): Promise<FantasyPlayerDraftResponse[]> {
-  return fantasyLeagueService.getPlayersToDraft(props.fantasyLeagueUuid, {
-    page: 1,
-    per_page: ROSTER_PAGE_SIZE,
-    filters: { user_uuid: userUuid, availability: 'taken' },
-  })
+  // Never hit the endpoint with a falsy uuid — the backend rejects an empty
+  // `filters.user_uuid` with a 422 ("selected value is invalid").
+  if (!userUuid) return []
+  return fantasyLeagueService.getPlayersToDraft(
+    props.fantasyLeagueUuid,
+    {
+      page: 1,
+      per_page: ROSTER_PAGE_SIZE,
+      filters: { user_uuid: userUuid, availability: 'taken' },
+    },
+    { silent: true },
+  )
 }
 
 async function loadMyRoster() {
@@ -72,7 +79,9 @@ async function loadTheirRoster(userUuid: string) {
 }
 
 function selectReceiver(uuid: string) {
-  if (receiverUuid.value === uuid) return
+  // Guard against an empty uuid (participant with no uuid) and against picking
+  // yourself — both would produce an invalid trade / roster request.
+  if (!uuid || uuid === props.currentUserUuid || receiverUuid.value === uuid) return
   receiverUuid.value = uuid
   requestedUuids.value = []
   loadTheirRoster(uuid)
@@ -91,6 +100,18 @@ watch(
   (open) => {
     if (open) {
       resetForm()
+      loadMyRoster()
+    }
+  },
+)
+
+// If the drawer was opened before the current user's uuid resolved (userData
+// still loading), `loadMyRoster` bailed out — retry once it's available so the
+// "you give" roster isn't left empty.
+watch(
+  () => props.currentUserUuid,
+  (uuid) => {
+    if (uuid && props.isOpen && myRoster.value.length === 0) {
       loadMyRoster()
     }
   },

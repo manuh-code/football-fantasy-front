@@ -323,7 +323,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useToast } from "@/composables/useToast";
 import { survivorService } from "@/services/survivor/SurvivorServive";
@@ -737,7 +737,9 @@ const load = async (silent = false) => {
   if (!silent) isLoading.value = true;
   error.value = "";
   try {
-    picks.value = await survivorService.getMyPicksBySurvivorUuid(props.survivorUuid);
+    // HTTP-silent: on a not-found/stale survivor uuid we show the in-component
+    // error card (with retry) instead of the global "resource not found" toast.
+    picks.value = await survivorService.getMyPicksBySurvivorUuid(props.survivorUuid, true);
   } catch (e) {
     console.error("Error loading survivor picks:", e);
     if (!silent) error.value = t("survivor.mypicks.loadError");
@@ -746,7 +748,10 @@ const load = async (silent = false) => {
   }
 };
 
-onMounted(load);
+// React to the survivor uuid: fires on mount and again if the user navigates
+// straight from one survivor to another (the parent view instance is reused,
+// so this component isn't remounted and onMounted alone would keep stale picks).
+watch(() => props.survivorUuid, () => load(), { immediate: true });
 </script>
 
 <style scoped>
