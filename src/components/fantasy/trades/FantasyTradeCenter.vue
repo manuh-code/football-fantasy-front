@@ -215,6 +215,13 @@ watch(() => props.fantasyLeagueUuid, () => {
 })
 
 onMounted(() => {
+  // The receiver picker excludes the current user by uuid, so a missing
+  // `userData` (e.g. persisted token but user not yet refetched) would leave
+  // `currentUserUuid` null and show the logged-in user as a trade target.
+  // Ensure it's loaded before the picker matters.
+  if (!userStore.getUserData) {
+    userStore.setUserDataFromApi().catch(() => {})
+  }
   loadTrades()
   subscribeToTradeChannel()
 })

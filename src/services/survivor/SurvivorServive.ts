@@ -1,3 +1,4 @@
+import type { AxiosRequestConfig } from "axios";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
@@ -39,8 +40,14 @@ export class SurvivorService {
         throw new Error('Failed to fetch picks by survivor UUID');
     }
 
-    async getMyPicksBySurvivorUuid(survivorUuid: string): Promise<SurvivorUserPickResponse[]> {
-        const response = await this.api.get<ApiResponse<SurvivorUserPickResponse[]>>(`survivor/${survivorUuid}/my/picks`);
+    async getMyPicksBySurvivorUuid(survivorUuid: string, silent = false): Promise<SurvivorUserPickResponse[]> {
+        // `silent` suppresses the global error toast so a not-found/stale
+        // survivor uuid is handled by the component's own error+retry UI
+        // instead of a confusing "resource not found" toast.
+        const config = silent
+            ? ({ _silent: true } as AxiosRequestConfig & { _silent?: boolean })
+            : undefined;
+        const response = await this.api.get<ApiResponse<SurvivorUserPickResponse[]>>(`survivor/${survivorUuid}/my/picks`, config);
         if (response.data.code === 200) {
             return response.data.data;
         }

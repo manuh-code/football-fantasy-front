@@ -76,8 +76,18 @@ export class FantasyLeagueService {
         throw new Error('Failed to fetch fantasy rounds');
     }
 
-    async getPlayersToDraft(leagueUuid: string, payload: FantasyPlayerDraftPayload): Promise<FantasyPlayerDraftResponse[]> {
-        const response = await this.api.post<ApiResponse<FantasyPlayerDraftResponse[]>>(`fantasy/leagues/draft/players/${leagueUuid}`, payload);
+    async getPlayersToDraft(
+        leagueUuid: string,
+        payload: FantasyPlayerDraftPayload,
+        options?: { silent?: boolean },
+    ): Promise<FantasyPlayerDraftResponse[]> {
+        // Background roster loads (e.g. the trade drawer) pass `silent` so a
+        // failed fetch surfaces in-component instead of firing the global error
+        // toast — a stale/invalid participant uuid shouldn't scare the user.
+        const config = options?.silent
+            ? ({ _silent: true } as AxiosRequestConfig & { _silent?: boolean })
+            : undefined;
+        const response = await this.api.post<ApiResponse<FantasyPlayerDraftResponse[]>>(`fantasy/leagues/draft/players/${leagueUuid}`, payload, config);
         if (response.data.code === 200) {
             return response.data.data;
         }
