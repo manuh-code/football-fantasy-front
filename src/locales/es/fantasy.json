@@ -469,6 +469,7 @@
     "selectReceiverFirst": "Selecciona un manager para ver sus jugadores.",
     "myRosterEmpty": "No tienes jugadores en tu plantilla.",
     "theirRosterEmpty": "Este manager no tiene jugadores en su plantilla.",
+    "rosterLoadError": "No se pudo cargar la plantilla. Intenta de nuevo.",
     "messageLabel": "Mensaje (opcional)",
     "messagePlaceholder": "Ej. Te doy mis dos delanteros por tus mediocampistas",
     "submit": "Enviar propuesta",
