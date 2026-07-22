@@ -27,6 +27,7 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
       { key: 'myLeagues', label: t('fantasy.detailTabs.myLeagues'), icon: 'hi-solid-collection' },
       { key: 'overview', label: t('fantasy.detailTabs.overview'), icon: 'hi-solid-information-circle', accent: 'blue' },
       { key: 'standings', label: t('fantasy.detailTabs.standings'), icon: 'bi-trophy-fill', accent: 'amber' },
+      { key: 'rules', label: t('fantasy.detailTabs.rules'), icon: 'hi-solid-clipboard-list', accent: 'sky' },
     ]
 
     if (canAccessMemberTabs.value) {
