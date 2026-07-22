@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
-import { useUserStore } from '@/store/user/useUserStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 
 // For anonymous visitors (and search/AdSense crawlers) we auto-select the first
@@ -420,6 +419,12 @@ router.beforeEach(async (to, from, next) => {
   // silently operates on a null/stale uuid with no visible error. Self-heal it
   // here so a valid session always has its user data before proceeding.
   if (needAuth && isAuthenticated) {
+    // Lazy import: useUserStore → UserService's eager `export default
+    // getUserService()` calls useApiFantasy() → imports the router at module
+    // evaluation time, the same startup-crashing circular dependency
+    // CatalogService works around above. Deferring the import until the
+    // guard actually runs (well after boot) avoids it.
+    const { useUserStore } = await import('@/store/user/useUserStore')
     const userStore = useUserStore();
     if (!userStore.getUserData) {
       try {

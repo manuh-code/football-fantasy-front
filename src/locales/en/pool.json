@@ -56,6 +56,7 @@
     "members": "Members",
     "noMembers": "No members yet.",
     "unknownMember": "Unknown member",
+    "viewPredictions": "View predictions",
     "stage": "Stage",
     "dates": "Dates",
     "participants": "Participants",
@@ -143,5 +144,16 @@
   "rounds": {
     "previous": "Previous round",
     "next": "Next round"
+  },
+  "memberPredictions": {
+    "subtitle": "Their picks",
+    "noRounds": "No Rounds",
+    "noRoundsBody": "There are no rounds available for this stage yet.",
+    "roundsError": "Failed to load rounds. Please try again later.",
+    "loadError": "Failed to load predictions. Please try again later.",
+    "noFixtures": "No Fixtures",
+    "noFixturesBody": "There are no matches in this round.",
+    "locked": "Revealed at kickoff",
+    "noPrediction": "No prediction"
   }
 }

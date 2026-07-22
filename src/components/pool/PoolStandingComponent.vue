@@ -86,10 +86,13 @@
 
         <!-- Rows -->
         <div class="divide-y divide-gray-50 dark:divide-gray-700/40">
-          <div
+          <button
             v-for="row in rankedStandings"
             :key="row.user.uuid || row.rank"
-            class="flex items-center gap-3 px-4 py-3"
+            type="button"
+            @click="openMemberPredictions(row.user)"
+            :disabled="!stageUuid"
+            class="w-full flex items-center gap-3 px-4 py-3 text-left active:bg-gray-50 dark:active:bg-gray-700/30 transition-colors disabled:active:bg-transparent"
             :class="row.rank === 1 ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''"
           >
             <!-- Rank -->
@@ -129,7 +132,13 @@
               <span class="text-callout font-bold text-gray-900 dark:text-white tabular-nums">{{ row.points }}</span>
               <span class="block text-2xs text-gray-400 dark:text-gray-500 leading-none">{{ $t('pool.standing.pts') }}</span>
             </div>
-          </div>
+
+            <v-icon
+              v-if="stageUuid"
+              name="hi-solid-chevron-right"
+              class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+            />
+          </button>
         </div>
       </div>
     </transition>
@@ -138,6 +147,15 @@
     <AdUnit
       v-if="!loadingStandings && !standingsError && rankedStandings.length > 0"
       :ad-slot="AD_SLOTS.poolStandings"
+    />
+
+    <!-- Member predictions drawer (opened by tapping a standings row) -->
+    <PoolMemberPredictionsSheet
+      :is-open="memberPredictionsOpen"
+      :pool-group-uuid="poolGroupUuid"
+      :stage-uuid="stageUuid"
+      :member="selectedMember"
+      @close="memberPredictionsOpen = false"
     />
   </div>
 </template>
@@ -149,6 +167,7 @@ import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
 import RoundCarousel from "@/components/ui/RoundCarousel.vue";
 import AdUnit from "@/components/ads/AdUnit.vue";
+import PoolMemberPredictionsSheet from "@/components/pool/PoolMemberPredictionsSheet.vue";
 import { AD_SLOTS } from "@/config/ads";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { PoolStandingResponse } from "@/interfaces/pool/PoolStandingResponse";
@@ -203,6 +222,17 @@ const rankedStandings = computed(() => {
 const scopeKey = computed(() =>
   mode.value === "round" ? `round:${selectedRound.value?.uuid ?? ""}` : "overall"
 );
+
+// Member predictions drawer — drill into a standings row's picks per round.
+// Requires a stage (predictions are stage-scoped).
+const memberPredictionsOpen = ref(false);
+const selectedMember = ref<UserDataInterface | null>(null);
+
+const openMemberPredictions = (user: UserDataInterface) => {
+  if (!props.stageUuid) return;
+  selectedMember.value = user;
+  memberPredictionsOpen.value = true;
+};
 
 // --- Display helpers ---
 const rankClasses = (rank: number): string => {

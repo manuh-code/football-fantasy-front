@@ -196,10 +196,13 @@
           </h2>
 
           <div v-if="members.length > 0" class="space-y-1">
-            <div
+            <button
               v-for="(member, index) in members"
               :key="member.uuid || index"
-              class="flex items-center gap-3 py-2"
+              type="button"
+              @click="openMemberPredictions(member)"
+              :disabled="!pool?.stage"
+              class="w-full flex items-center gap-3 py-2 -mx-1 px-1 rounded-xl text-left active:bg-gray-50 dark:active:bg-gray-700/30 transition-colors disabled:active:bg-transparent"
             >
               <img
                 v-if="member.avatar"
@@ -228,7 +231,12 @@
                   {{ member.email }}
                 </p>
               </div>
-            </div>
+              <v-icon
+                v-if="pool?.stage"
+                name="hi-solid-chevron-right"
+                class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+              />
+            </button>
           </div>
 
           <p v-else class="text-footnote text-gray-400 dark:text-gray-500 py-2">
@@ -270,6 +278,16 @@
         :stage-uuid="pool.stage?.uuid"
       />
     </template>
+
+    <!-- Member predictions drawer (opened by tapping a member above) -->
+    <PoolMemberPredictionsSheet
+      v-if="pool"
+      :is-open="memberPredictionsOpen"
+      :pool-group-uuid="pool.uuid"
+      :stage-uuid="pool.stage?.uuid"
+      :member="selectedMember"
+      @close="memberPredictionsOpen = false"
+    />
   </div>
 </template>
 
@@ -282,6 +300,7 @@ import PoolGroupSkeleton from "@/components/pool/PoolGroupSkeleton.vue";
 import PoolPredictionComponent from "@/components/pool/PoolPredictionComponent.vue";
 import PoolStandingComponent from "@/components/pool/PoolStandingComponent.vue";
 import PoolStandingsPreview from "@/components/pool/PoolStandingsPreview.vue";
+import PoolMemberPredictionsSheet from "@/components/pool/PoolMemberPredictionsSheet.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
@@ -335,6 +354,17 @@ const members = computed<UserDataInterface[]>(
   () => pool.value?.memberships || [],
 );
 const memberCount = computed(() => members.value.length);
+
+// Member predictions drawer — lets you drill into any membership's picks
+// per round. Requires a stage (predictions are stage-scoped).
+const memberPredictionsOpen = ref(false);
+const selectedMember = ref<UserDataInterface | null>(null);
+
+const openMemberPredictions = (member: UserDataInterface) => {
+  if (!pool.value?.stage) return;
+  selectedMember.value = member;
+  memberPredictionsOpen.value = true;
+};
 
 // Badge shown for the pool's stage based on its lifecycle. Upcoming stages show
 // no badge (the "Upcoming" label was intentionally removed).
