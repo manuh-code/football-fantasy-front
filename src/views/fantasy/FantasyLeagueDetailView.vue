@@ -22,6 +22,29 @@
             <FantasyStandings :fantasy-league-uuid="uuid" />
           </div>
 
+          <!-- Scoring Rules Content — read-only, visible to everyone -->
+          <div v-else-if="activeTab === 'rules'" key="rules">
+            <!-- Loading State -->
+            <div v-if="isLoadingLeague" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
+              <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto" animation="spin" />
+              <p class="text-footnote text-gray-400 dark:text-gray-500 mt-3">{{ $t('fantasy.rules.loading') }}</p>
+            </div>
+
+            <!-- No Scoring Data -->
+            <div v-else-if="!scoringData" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center px-6">
+              <div class="w-14 h-14 bg-amber-50 dark:bg-amber-900/20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                <v-icon name="hi-solid-exclamation" class="w-7 h-7 text-amber-400" />
+              </div>
+              <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('fantasy.rules.emptyTitle') }}</h3>
+              <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto">
+                {{ $t('fantasy.rules.emptyBody') }}
+              </p>
+            </div>
+
+            <!-- Scoring Rules Component -->
+            <FantasyScoringRules v-else :scoring-data="scoringData" />
+          </div>
+
           <!-- My Team Content -->
           <div v-else-if="activeTab === 'myteam'" key="myteam">
             <MyFantasyTeamComponent :fantasy-league-uuid="uuid" />
@@ -87,6 +110,7 @@ import TopTabsBar from '@/components/ui/TopTabsBar.vue'
 import { useFantasyLeagueTabs } from '@/composables/useFantasyLeagueTabs'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyStandings from '@/components/fantasy/standings/FantasyStandings.vue'
+import FantasyScoringRules from '@/components/fantasy/rules/FantasyScoringRules.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
