@@ -9,12 +9,15 @@ interface Props {
   loading: boolean
   /** True when the roster fetch itself failed — distinct from a genuinely empty roster. */
   error?: boolean
+  /** Status code/message of the failed request — shown on-screen since devices
+   *  like an iOS PWA have no accessible console to inspect it otherwise. */
+  errorDetail?: string
   emptyText: string
   /** Selection accent — matches the give/get side this list belongs to. */
   accent?: 'blue' | 'rose' | 'emerald'
 }
 
-const props = withDefaults(defineProps<Props>(), { accent: 'blue', error: false })
+const props = withDefaults(defineProps<Props>(), { accent: 'blue', error: false, errorDetail: '' })
 const emit = defineEmits<{ 'update:modelValue': [value: string[]]; retry: [] }>()
 
 const positionShort = usePositionShortCode()
@@ -69,8 +72,11 @@ function positionColorClass(developerName: string): string {
 
     <!-- Fetch failed: distinct from a genuinely empty roster, with a retry -->
     <div v-else-if="error" class="text-center py-4">
-      <p class="text-footnote text-red-500 dark:text-red-400 mb-2">
+      <p class="text-footnote text-red-500 dark:text-red-400 mb-1">
         {{ $t('fantasy.trades.rosterLoadError') }}
+      </p>
+      <p v-if="errorDetail" class="text-2xs font-mono text-gray-400 dark:text-gray-500 mb-2">
+        {{ errorDetail }}
       </p>
       <button
         type="button"

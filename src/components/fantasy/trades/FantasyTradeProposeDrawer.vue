@@ -5,6 +5,7 @@ import { BottomSheet } from '@/components/ui'
 import FantasyTradePlayerChecklist from '@/components/fantasy/trades/FantasyTradePlayerChecklist.vue'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import { useToast } from '@/composables/useToast'
+import type { ApiError } from '@/composables/useApiFantasy'
 import type { FantasyPlayerDraftResponse } from '@/interfaces/fantasy/draft/FantasyPlayerDraftResponse'
 import type { FantasyTradeResponse } from '@/interfaces/fantasy/trade/FantasyTradeResponse'
 import type { UserDataInterface } from '@/interfaces/user/userInterface'
@@ -36,9 +37,21 @@ const submitting = ref(false)
 const myRoster = ref<FantasyPlayerDraftResponse[]>([])
 const myRosterLoading = ref(false)
 const myRosterError = ref(false)
+const myRosterErrorDetail = ref('')
 const theirRoster = ref<FantasyPlayerDraftResponse[]>([])
 const theirRosterLoading = ref(false)
 const theirRosterError = ref(false)
+const theirRosterErrorDetail = ref('')
+
+// Renders the failed request's status/message directly in the UI — devices
+// like an iOS PWA have no accessible console, so this is the only way to see
+// *why* the roster fetch failed without a remote-debugging setup.
+function describeError(e: unknown): string {
+  const apiError = e as ApiError
+  const status = apiError?.status
+  if (status) return `${status} ${apiError.statusText || ''}`.trim()
+  return apiError?.message || 'Unknown error'
+}
 
 async function loadRoster(userUuid: string): Promise<FantasyPlayerDraftResponse[]> {
   // Never hit the endpoint with a falsy uuid — the backend rejects an empty
@@ -68,6 +81,7 @@ async function loadMyRoster() {
     console.error('Error loading own roster for trade:', e)
     myRoster.value = []
     myRosterError.value = true
+    myRosterErrorDetail.value = describeError(e)
   } finally {
     myRosterLoading.value = false
   }
@@ -82,6 +96,7 @@ async function loadTheirRoster(userUuid: string) {
     console.error('Error loading receiver roster for trade:', e)
     theirRoster.value = []
     theirRosterError.value = true
+    theirRosterErrorDetail.value = describeError(e)
   } finally {
     theirRosterLoading.value = false
   }
@@ -283,6 +298,7 @@ async function submit() {
             :players="myRoster"
             :loading="myRosterLoading"
             :error="myRosterError"
+            :error-detail="myRosterErrorDetail"
             :empty-text="$t('fantasy.trades.myRosterEmpty')"
             accent="rose"
             @retry="loadMyRoster"
@@ -330,6 +346,7 @@ async function submit() {
             :players="theirRoster"
             :loading="theirRosterLoading"
             :error="theirRosterError"
+            :error-detail="theirRosterErrorDetail"
             :empty-text="$t('fantasy.trades.theirRosterEmpty')"
             accent="emerald"
             @retry="() => receiverUuid && loadTheirRoster(receiverUuid)"
