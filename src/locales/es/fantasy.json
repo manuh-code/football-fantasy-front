@@ -165,7 +165,10 @@
     "drawer": {
       "myTeam": "Mi equipo",
       "swipeUp": "Desliza para ver",
-      "swipeDown": "Desliza para minimizar"
+      "swipeDown": "Desliza para minimizar",
+      "playersCount": "{count} jugadores",
+      "updated": "Actualizado",
+      "resizeHint": "Arrastra para ajustar el ancho"
     },
     "picked": {
       "teamFallback": "Equipo"
@@ -182,7 +185,23 @@
       "board": "Tablero del draft",
       "boards": "Tableros",
       "leagueDetail": "Detalle de la liga",
-      "league": "Liga"
+      "league": "Liga",
+      "wishlist": "Deseos",
+      "close": "Cerrar"
+    },
+    "wishlist": {
+      "title": "Lista de deseos",
+      "subtitle": "{count} jugadores guardados",
+      "empty": "Aún no tienes deseos",
+      "emptyBody": "Marca jugadores con la estrella mientras buscas para tenerlos a la mano y draftearlos más rápido cuando sea tu turno.",
+      "clear": "Vaciar",
+      "clearAria": "Vaciar la lista de deseos",
+      "draft": "Draftear",
+      "draftAria": "Draftear a {name}",
+      "removeAria": "Quitar a {name} de la lista de deseos",
+      "waitTurn": "Espera tu turno para poder draftear desde aquí.",
+      "addedToast": "Agregado a tus deseos",
+      "removedToast": "Quitado de tus deseos"
     }
   },
   "detail": {
@@ -300,7 +319,23 @@
     "starters": "Titulares",
     "bench": "Banca",
     "selectSwap": "Selecciona un jugador para cambiar",
-    "pts": "pts"
+    "pts": "pts",
+    "vs": "vs",
+    "addGoalkeeper": "Agregar portero",
+    "addDefender": "Agregar defensa",
+    "addMidfielder": "Agregar mediocampista",
+    "addForward": "Agregar delantero",
+    "addFlex": "Agregar jugador flex",
+    "addBench": "Agregar suplente",
+    "placeHere": "Colocar aquí",
+    "placeHereFlex": "Colocar aquí (Flex)",
+    "placeOnBench": "Colocar en banca",
+    "swapAction": "Cambiar jugador",
+    "removeAction": "Quitar jugador",
+    "playerRemovedTitle": "Jugador eliminado",
+    "playerRemovedMsg": "{name} fue eliminado de tu alineación.",
+    "removeErrorTitle": "Error",
+    "removeErrorMsg": "No se pudo eliminar a {name}. Inténtalo de nuevo."
   },
   "playerScore": {
     "title": "Detalle de puntos",
@@ -448,7 +483,7 @@
     "noLeagueTitle": "Sin liga fantasy seleccionada",
     "noLeagueBody": "Selecciona una liga fantasy para ver los jugadores disponibles.",
     "waitingTurnTitle": "Esperando tu turno...",
-    "waitingTurnBody": "Podrás elegir un jugador cuando sea tu turno.",
+    "waitingTurnBody": "Puedes explorar y buscar jugadores; podrás elegir uno cuando sea tu turno.",
     "filterAll": "Todos",
     "colPlayer": "Jugador",
     "colTeam": "Equipo",
@@ -476,7 +511,9 @@
     "participantsAll": "Todos los participantes",
     "participantsTitle": "Filtrar por participante",
     "participantsEmpty": "No hay participantes",
-    "participantFallbackName": "Participante"
+    "participantFallbackName": "Participante",
+    "wishlistAddAria": "Agregar a {name} a tu lista de deseos",
+    "wishlistRemoveAria": "Quitar a {name} de tu lista de deseos"
   },
   "trades": {
     "proposeButton": "Proponer trade",

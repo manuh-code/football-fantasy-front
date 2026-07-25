@@ -13,84 +13,35 @@
     <!-- Bench List -->
     <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
       <template v-if="formation?.bench && formation.bench > 0">
-        <div
+        <LineupPlayerRow
           v-for="player in benchPlayers"
           v-show="!addingPlayerPosition || isSwappable(player)"
-          :key="player.football_player?.uuid ?? player.position?.code"
-          :data-player-uuid="player.football_player?.uuid"
-          :class="[{ 'player-highlight': isHighlighted(player.football_player?.uuid) }, player.in_play ? 'in-play-locked' : '', isSwappable(player) && !player.in_play ? 'swap-highlight cursor-pointer' : '']"
-          @click="!player.in_play && isSwappable(player) && $emit('swapPlayer', player.football_player?.uuid ?? '', 'BENCH')"
-        >
-          <div class="relative overflow-hidden">
-            <button
-              v-if="!addingPlayerPosition && !player.in_play && !disableRemove"
-              class="absolute inset-y-0 right-0 w-[68px] bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50"
-              :disabled="removingPlayer === player.football_player?.uuid"
-              @click="removePlayer(player.football_player?.uuid ?? '', player.football_player?.display_name || 'Player')"
-            >
-              <v-icon v-if="removingPlayer === player.football_player?.uuid" name="pr-spinner" class="w-4 h-4 text-white" animation="spin" />
-              <v-icon v-else name="hi-solid-trash" class="w-4 h-4 text-white" />
-            </button>
-            <div
-              class="relative flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 swipe-row"
-              :style="!addingPlayerPosition && !player.in_play && !disableRemove ? { transform: `translateX(${getSwipeOffset(player.football_player?.uuid ?? '')}px)`, transition: getSwipeTransition(player.football_player?.uuid ?? '') } : {}"
-              @touchstart="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player?.uuid ?? '', $event)"
-              @touchmove="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeMove(player.football_player?.uuid ?? '', $event)"
-              @touchend="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeEnd(player.football_player?.uuid ?? '')"
-              @mousedown="!addingPlayerPosition && !player.in_play && !disableRemove && onSwipeStart(player.football_player?.uuid ?? '', $event)"
-            >
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-2xs font-bold shrink-0">
-                {{ positionShort(player.position.developer_name) }}
-              </span>
-              <img :src="player.football_player?.image_path || '/img/default-avatar.svg'" :alt="player.football_player?.display_name || 'Player'" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 shrink-0" />
-              <div class="flex-1 min-w-0" :class="canViewScore ? 'cursor-pointer' : ''" @click="openScoreDrawer(player)">
-                <div class="flex items-center gap-1.5">
-                  <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ player.football_player?.display_name }}</p>
-                  <img v-if="player.team" :src="player.team.image_path" :alt="player.team.short_code" class="w-3.5 h-3.5 object-contain shrink-0" />
-                  <v-icon v-if="canViewScore" name="hi-solid-chevron-right" class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0" />
-                </div>
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <NationalityBadge class="mt-0.5" :country="player.football_player?.country" />
-                  <NextFixtureBadge :fixture="player.next_fixture" />
-                </div>
-              </div>
-              <span class="text-xs font-bold text-amber-600 dark:text-amber-400 tabular-nums shrink-0">{{ player.fantasy_points ?? 0 }} {{ $t('fantasy.lineup.pts') }}</span>
-              <div v-if="isSwappable(player)" class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 swap-icon-pulse">
-                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              </div>
-              <button
-                v-if="!addingPlayerPosition && !player.in_play && fantasyRoundUuid"
-                class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all"
-                @click.stop="openSwapDrawer(player)"
-              >
-                <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
-              </button>
-            </div>
-          </div>
-        </div>
+          :key="player.football_player.uuid"
+          :player="player"
+          variant="bench"
+          :adding-player-position="addingPlayerPosition"
+          :can-view-score="canViewScore"
+          :fantasy-round-uuid="fantasyRoundUuid"
+          :highlighted="isHighlighted(player.football_player.uuid)"
+          :swappable="isSwappable(player)"
+          :removing="removingPlayer === player.football_player.uuid"
+          :disable-remove="disableRemove"
+          @select="$emit('swapPlayer', player.football_player.uuid, 'BENCH')"
+          @remove="removePlayer(player.football_player.uuid, player.football_player.display_name)"
+          @open-swap="openSwapDrawer(player)"
+          @open-score="openScoreDrawer(player)"
+        />
 
         <!-- Empty bench slots -->
-        <div
-          v-for="slot in emptyBenchSlots"
-          :key="`empty-${slot}`"
-          @click="$emit('draftByPosition', 'BENCH')"
-          class="flex items-center gap-3 px-4 py-2.5 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors"
-          :class="{ 'bg-gray-50 dark:bg-gray-700/30': addingPlayerPosition != null }"
-        >
-          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-2xs font-bold shrink-0" :class="addingPlayerPosition != null ? 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-60'">BN</span>
-          <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="addingPlayerPosition != null ? 'bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-400 dark:border-emerald-500' : 'bg-gray-100 dark:bg-gray-700 border border-dashed border-gray-300 dark:border-gray-600'">
-            <v-icon v-if="addingPlayerPosition != null" name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
-            <v-icon v-else name="hi-solid-plus" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-          </div>
-          <p class="text-xs" :class="addingPlayerPosition != null ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'">{{ addingPlayerPosition != null ? 'Place on bench' : 'Add bench player' }}</p>
-          <button
-            v-if="!addingPlayerPosition && fantasyRoundUuid"
-            class="ml-auto w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all"
-            @click.stop="openSwapDrawer(null)"
-          >
-            <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
-          </button>
-        </div>
+        <LineupEmptySlot
+          v-for="slot in emptyBenchSlots" :key="`empty-${slot}`"
+          variant="bench"
+          :active="addingPlayerPosition != null"
+          :label="addingPlayerPosition != null ? $t('fantasy.lineup.placeOnBench') : $t('fantasy.lineup.addBench')"
+          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
+          @add="$emit('draftByPosition', 'BENCH')"
+          @open-swap="openSwapDrawer(null)"
+        />
       </template>
     </div>
   </div>
@@ -120,18 +71,18 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyLeagueFormationResponse } from "@/interfaces/fantasy/leagues/FantasyLeagueFormationResponse";
-import NextFixtureBadge from "@/components/fantasy/lineup/NextFixtureBadge.vue";
-import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
+import LineupPlayerRow from "@/components/fantasy/lineup/LineupPlayerRow.vue";
+import LineupEmptySlot from "@/components/fantasy/lineup/LineupEmptySlot.vue";
 import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
 import PlayerFantasyScoreDrawer from "@/components/fantasy/lineup/PlayerFantasyScoreDrawer.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
-import { usePositionShortCode } from "@/composables/usePositionShortCode";
 
 const { addToast } = useToast();
-const positionShort = usePositionShortCode();
+const { t } = useI18n();
 
 interface Props {
   /** All players (the component filters bench internally) */
@@ -182,9 +133,6 @@ const canViewScore = computed(
 
 function openScoreDrawer(player: FantasyFootballPlayer) {
   if (!canViewScore.value) return;
-  const uuid = player.football_player?.uuid ?? '';
-  // Don't hijack a swipe that just revealed the delete action.
-  if (swipeStates.value[uuid]?.open) return;
   scorePlayer.value = player;
   scoreDrawerOpen.value = true;
 }
@@ -208,20 +156,15 @@ async function removePlayer(playerUuid: string, playerName: string) {
     });
     addToast({
       type: 'success',
-      title: 'Player removed',
-      message: `${playerName} has been removed from your lineup.`,
+      title: t('fantasy.lineup.playerRemovedTitle'),
+      message: t('fantasy.lineup.playerRemovedMsg', { name: playerName }),
     });
-    const state = swipeStates.value[playerUuid];
-    if (state) {
-      state.open = false;
-      state.offsetX = 0;
-    }
     emit('playerRemoved', playerUuid);
   } catch {
     addToast({
       type: 'error',
-      title: 'Error',
-      message: `Could not remove ${playerName}. Please try again.`,
+      title: t('fantasy.lineup.removeErrorTitle'),
+      message: t('fantasy.lineup.removeErrorMsg', { name: playerName }),
     });
   } finally {
     removingPlayer.value = null;
@@ -247,137 +190,4 @@ function isSwappable(player: FantasyFootballPlayer): boolean {
 function isHighlighted(playerUuid: string): boolean {
   return props.highlightedPlayerUuid === playerUuid;
 }
-
-// Swipe-to-delete
-const swipeStates = ref<
-  Record<string, { startX: number; startY: number; offsetX: number; swiping: boolean; open: boolean }>
->({});
-const SWIPE_THRESHOLD = -60;
-const SWIPE_ACTION_WIDTH = 76;
-
-function getSwipeOffset(uuid: string): number {
-  const state = swipeStates.value[uuid];
-  if (!state) return 0;
-  if (state.swiping) return Math.min(0, Math.max(-SWIPE_ACTION_WIDTH, state.offsetX));
-  return state.open ? -SWIPE_ACTION_WIDTH : 0;
-}
-
-function getSwipeTransition(uuid: string): string {
-  const state = swipeStates.value[uuid];
-  if (state?.swiping) return "none";
-  return "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-}
-
-function onSwipeStart(uuid: string, e: TouchEvent | MouseEvent) {
-  for (const id in swipeStates.value) {
-    if (id !== uuid && swipeStates.value[id]?.open) {
-      swipeStates.value[id].open = false;
-      swipeStates.value[id].offsetX = 0;
-    }
-  }
-  const point = "touches" in e ? e.touches[0] : e;
-  const wasOpen = swipeStates.value[uuid]?.open || false;
-  swipeStates.value[uuid] = {
-    startX: point.clientX + (wasOpen ? SWIPE_ACTION_WIDTH : 0),
-    startY: point.clientY,
-    offsetX: wasOpen ? -SWIPE_ACTION_WIDTH : 0,
-    swiping: false,
-    open: wasOpen,
-  };
-  if (!("touches" in e)) {
-    const onMouseMove = (ev: MouseEvent) => onSwipeMove(uuid, ev);
-    const onMouseUp = () => {
-      onSwipeEnd(uuid);
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-  }
-}
-
-function onSwipeMove(uuid: string, e: TouchEvent | MouseEvent) {
-  const state = swipeStates.value[uuid];
-  if (!state) return;
-  const point = "touches" in e ? e.touches[0] : e;
-  const deltaX = point.clientX - state.startX;
-  const deltaY = Math.abs(point.clientY - state.startY);
-  if (!state.swiping) {
-    if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > deltaY) {
-      state.swiping = true;
-    } else {
-      return;
-    }
-  }
-  if (!("touches" in e)) e.preventDefault();
-  state.offsetX = Math.min(0, Math.max(-SWIPE_ACTION_WIDTH, deltaX));
-}
-
-function onSwipeEnd(uuid: string) {
-  const state = swipeStates.value[uuid];
-  if (!state) return;
-  if (!state.swiping) {
-    if (state.open) {
-      state.open = false;
-      state.offsetX = 0;
-    }
-    return;
-  }
-  state.swiping = false;
-  if (state.offsetX < SWIPE_THRESHOLD) {
-    state.open = true;
-    state.offsetX = -SWIPE_ACTION_WIDTH;
-  } else {
-    state.open = false;
-    state.offsetX = 0;
-  }
-}
 </script>
-
-<style scoped>
-.swipe-row {
-  touch-action: pan-y;
-  will-change: transform;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: grab;
-}
-.swipe-row:active {
-  cursor: grabbing;
-}
-
-@keyframes player-highlight {
-  0% { background-color: rgba(59, 130, 246, 0.25); box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.5); }
-  50% { background-color: rgba(59, 130, 246, 0.1); box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.25); }
-  100% { background-color: transparent; box-shadow: none; }
-}
-.player-highlight {
-  animation: player-highlight 2.5s ease-out forwards;
-  border-radius: 0.5rem;
-}
-
-.swap-highlight {
-  background-color: rgba(251, 191, 36, 0.08);
-  border-left: 3px solid rgba(251, 191, 36, 0.6);
-}
-.dark .swap-highlight {
-  background-color: rgba(251, 191, 36, 0.05);
-  border-left-color: rgba(251, 191, 36, 0.4);
-}
-
-@keyframes swap-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.15); opacity: 0.7; }
-}
-.swap-icon-pulse {
-  animation: swap-pulse 1.8s ease-in-out infinite;
-}
-
-.in-play-locked {
-  position: relative;
-  background-color: rgba(156, 163, 175, 0.06);
-}
-.dark .in-play-locked {
-  background-color: rgba(156, 163, 175, 0.04);
-}
-</style>

@@ -99,40 +99,33 @@
     <div
       v-else-if="initialLoadComplete"
       class="space-y-4 relative"
-      :class="{ 'max-h-[70vh] overflow-hidden': props.disabled }"
     >
-      <!-- Disabled Overlay (waiting for turn) -->
+      <!-- Waiting-for-turn banner — non-blocking: search stays usable, only
+           adding a player is disabled until it's the user's turn. -->
       <div
         v-if="props.disabled"
-        class="absolute inset-0 z-20 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm rounded-2xl"
+        class="flex items-center gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl"
       >
-        <div class="sticky top-0 h-[70vh] flex items-center justify-center">
-          <div
-            class="flex flex-col items-center gap-4 px-8 py-7 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200/80 dark:border-gray-700/80 mx-4 max-w-sm w-full"
-          >
-            <div
-              class="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center"
-            >
-              <v-icon
-                name="hi-solid-clock"
-                class="w-7 h-7 text-amber-500 dark:text-amber-400 animate-pulse"
-              />
-            </div>
-            <div class="text-center space-y-1">
-              <p class="text-base font-bold text-gray-800 dark:text-gray-100">
-                {{ $t('fantasy.search.waitingTurnTitle') }}
-              </p>
-              <p class="text-footnote text-gray-400 dark:text-gray-500">
-                {{ $t('fantasy.search.waitingTurnBody') }}
-              </p>
-            </div>
-          </div>
+        <div
+          class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0"
+        >
+          <v-icon
+            name="hi-solid-clock"
+            class="w-5 h-5 text-amber-500 dark:text-amber-400 animate-pulse"
+          />
+        </div>
+        <div class="min-w-0">
+          <p class="text-footnote font-semibold text-amber-800 dark:text-amber-200">
+            {{ $t('fantasy.search.waitingTurnTitle') }}
+          </p>
+          <p class="text-xs text-amber-600/80 dark:text-amber-300/70">
+            {{ $t('fantasy.search.waitingTurnBody') }}
+          </p>
         </div>
       </div>
 
       <!-- Player Name Search -->
       <PlayerNameFilter
-        :disabled="props.disabled"
         @search="onPlayerNameSearch"
       />
 
@@ -140,7 +133,6 @@
       <TeamFilter
         :teams="teams"
         :selected-team="selectedTeam"
-        :disabled="props.disabled"
         @update:selected-team="onTeamFilterChange"
       />
 
@@ -148,7 +140,6 @@
       <ParticipantFilter
         :participants="participants"
         :selected-user="selectedUser"
-        :disabled="props.disabled"
         @update:selected-user="onParticipantChange"
       />
 
@@ -156,7 +147,6 @@
       <PositionFilter
         :filters="positionFilters"
         :selected-position="selectedPosition"
-        :disabled="props.disabled"
         @update:selected-position="handleFilterChange"
       />
 
@@ -165,7 +155,6 @@
       <AvailabilityFilter
         v-if="props.mode !== 'draft'"
         :selected-availability="selectedAvailability"
-        :disabled="props.disabled"
         @update:selected-availability="onAvailabilityChange"
       />
 
@@ -350,42 +339,60 @@
                     </span>
                   </td>
 
-                  <!-- Select Button — row end, consistent with mobile -->
-                  <td class="px-3 py-2.5 text-center">
-                    <button
-                      v-if="player.is_available"
-                      @click="handleAddPlayer(player)"
-                      :disabled="
-                        props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
-                      "
-                      :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                      :class="[
-                        isAddingPlayer(player.player.uuid)
-                          ? 'opacity-50 cursor-not-allowed'
-                          : '',
-                      ]"
-                    >
-                      <v-icon
-                        v-if="!isAddingPlayer(player.player.uuid)"
-                        name="hi-solid-plus"
-                        class="w-4 h-4"
-                      />
-                      <v-icon
+                  <!-- Actions — row end, consistent with mobile -->
+                  <td class="px-3 py-2.5">
+                    <div class="flex items-center justify-center gap-1.5">
+                      <!-- Wishlist star (draft only) -->
+                      <button
+                        v-if="props.mode === 'draft'"
+                        @click="toggleWishlist(player)"
+                        :aria-pressed="isWishlisted(player.player.uuid)"
+                        :aria-label="isWishlisted(player.player.uuid)
+                          ? $t('fantasy.search.wishlistRemoveAria', { name: player.player.display_name })
+                          : $t('fantasy.search.wishlistAddAria', { name: player.player.display_name })"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-xl transition-all active:scale-90 cursor-pointer"
+                        :class="isWishlisted(player.player.uuid)
+                          ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-500 dark:text-amber-400'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 active:text-amber-500'"
+                      >
+                        <v-icon :name="isWishlisted(player.player.uuid) ? 'bi-star-fill' : 'bi-star'" class="w-4 h-4" />
+                      </button>
+
+                      <button
+                        v-if="player.is_available"
+                        @click="handleAddPlayer(player)"
+                        :disabled="
+                          props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
+                        "
+                        :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
+                        :class="[
+                          isAddingPlayer(player.player.uuid)
+                            ? 'opacity-50 cursor-not-allowed'
+                            : '',
+                        ]"
+                      >
+                        <v-icon
+                          v-if="!isAddingPlayer(player.player.uuid)"
+                          name="hi-solid-plus"
+                          class="w-4 h-4"
+                        />
+                        <v-icon
+                          v-else
+                          name="pr-spinner"
+                          class="w-3.5 h-3.5"
+                          animation="spin"
+                        />
+                      </button>
+                      <button
                         v-else
-                        name="pr-spinner"
-                        class="w-3.5 h-3.5"
-                        animation="spin"
-                      />
-                    </button>
-                    <button
-                      v-else
-                      disabled
-                      :aria-label="$t('fantasy.search.tradeAria', { name: player.player.display_name })"
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                    >
-                      <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4" />
-                    </button>
+                        disabled
+                        :aria-label="$t('fantasy.search.tradeAria', { name: player.player.display_name })"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                      >
+                        <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </TransitionGroup>
@@ -459,36 +466,54 @@
                   </div>
                 </div>
 
-                <!-- Select Button — row end, thumb-reachable -->
-                <button
-                  v-if="player.is_available"
-                  @click="handleAddPlayer(player)"
-                  :disabled="
-                    props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
-                  "
-                  :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
-                  class="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                >
-                  <v-icon
-                    v-if="!isAddingPlayer(player.player.uuid)"
-                    name="hi-solid-plus"
-                    class="w-4 h-4"
-                  />
-                  <v-icon
+                <!-- Actions — row end, thumb-reachable -->
+                <div class="shrink-0 flex items-center gap-1.5">
+                  <!-- Wishlist star (draft only) -->
+                  <button
+                    v-if="props.mode === 'draft'"
+                    @click="toggleWishlist(player)"
+                    :aria-pressed="isWishlisted(player.player.uuid)"
+                    :aria-label="isWishlisted(player.player.uuid)
+                      ? $t('fantasy.search.wishlistRemoveAria', { name: player.player.display_name })
+                      : $t('fantasy.search.wishlistAddAria', { name: player.player.display_name })"
+                    class="flex items-center justify-center w-9 h-9 rounded-xl transition-all active:scale-90 cursor-pointer"
+                    :class="isWishlisted(player.player.uuid)
+                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-500 dark:text-amber-400'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 active:text-amber-500'"
+                  >
+                    <v-icon :name="isWishlisted(player.player.uuid) ? 'bi-star-fill' : 'bi-star'" class="w-4 h-4" />
+                  </button>
+
+                  <button
+                    v-if="player.is_available"
+                    @click="handleAddPlayer(player)"
+                    :disabled="
+                      props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
+                    "
+                    :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
+                    class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
+                  >
+                    <v-icon
+                      v-if="!isAddingPlayer(player.player.uuid)"
+                      name="hi-solid-plus"
+                      class="w-4 h-4"
+                    />
+                    <v-icon
+                      v-else
+                      name="pr-spinner"
+                      class="w-3.5 h-3.5"
+                      animation="spin"
+                    />
+                  </button>
+                  <button
                     v-else
-                    name="pr-spinner"
-                    class="w-3.5 h-3.5"
-                    animation="spin"
-                  />
-                </button>
-                <button
-                  v-else
-                  disabled
-                  :aria-label="$t('fantasy.search.tradeAria', { name: player.player.display_name })"
-                  class="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                >
-                  <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4" />
-                </button>
+                    disabled
+                    :aria-label="$t('fantasy.search.tradeAria', { name: player.player.display_name })"
+                    class="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  >
+                    <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </TransitionGroup>
@@ -580,6 +605,7 @@ import AvailabilityFilter from "@/components/user/fantasy/search/AvailabilityFil
 import ParticipantFilter from "@/components/user/fantasy/search/ParticipantFilter.vue";
 import LineupDrawer from "@/components/fantasy/lineup/LineupDrawer.vue";
 import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
+import { useDraftWishlistStore } from "@/store/fantasy/useDraftWishlistStore";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 import type { LineupSlotSelection } from "@/components/fantasy/lineup/LineupDrawer.vue";
 
@@ -612,6 +638,7 @@ const route = useRoute();
 const toast = useToast();
 const { t } = useI18n();
 const positionShort = usePositionShortCode();
+const wishlistStore = useDraftWishlistStore();
 
 // State
 const players = ref<FantasyPlayerDraftResponse[]>([]);
@@ -791,6 +818,23 @@ function getPositionRailClass(position: string): string {
 
 function isAddingPlayer(playerUuid: string): boolean {
   return addingPlayers.value.has(playerUuid);
+}
+
+/** Draft-only pre-draft wishlist ("lista de deseos") — client-side, no API. */
+function isWishlisted(playerUuid: string): boolean {
+  return !!leagueUuid.value && wishlistStore.has(leagueUuid.value, playerUuid);
+}
+
+function toggleWishlist(player: FantasyPlayerDraftResponse) {
+  if (!leagueUuid.value) return;
+  const added = wishlistStore.toggle(leagueUuid.value, player);
+  toast.success(
+    added
+      ? t("fantasy.draft.wishlist.addedToast")
+      : t("fantasy.draft.wishlist.removedToast"),
+    player.player.display_name,
+    { duration: 1500 },
+  );
 }
 
 async function loadLeague() {

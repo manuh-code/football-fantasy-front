@@ -165,7 +165,10 @@
     "drawer": {
       "myTeam": "My Team",
       "swipeUp": "Swipe up to view",
-      "swipeDown": "Swipe down to minimize"
+      "swipeDown": "Swipe down to minimize",
+      "playersCount": "{count} players",
+      "updated": "Updated",
+      "resizeHint": "Drag to resize"
     },
     "picked": {
       "teamFallback": "Team"
@@ -182,7 +185,23 @@
       "board": "Draft Board",
       "boards": "Boards",
       "leagueDetail": "League Detail",
-      "league": "League"
+      "league": "League",
+      "wishlist": "Wishlist",
+      "close": "Close"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "subtitle": "{count} players saved",
+      "empty": "No wishlisted players yet",
+      "emptyBody": "Tap the star while searching to save players here and draft them faster when it is your turn.",
+      "clear": "Clear",
+      "clearAria": "Clear the wishlist",
+      "draft": "Draft",
+      "draftAria": "Draft {name}",
+      "removeAria": "Remove {name} from the wishlist",
+      "waitTurn": "Wait for your turn to draft from here.",
+      "addedToast": "Added to your wishlist",
+      "removedToast": "Removed from your wishlist"
     }
   },
   "detail": {
@@ -300,7 +319,23 @@
     "starters": "Starters",
     "bench": "Bench",
     "selectSwap": "Select a player to swap",
-    "pts": "pts"
+    "pts": "pts",
+    "vs": "vs",
+    "addGoalkeeper": "Add goalkeeper",
+    "addDefender": "Add defender",
+    "addMidfielder": "Add midfielder",
+    "addForward": "Add forward",
+    "addFlex": "Add flex player",
+    "addBench": "Add bench player",
+    "placeHere": "Place here",
+    "placeHereFlex": "Place here (Flex)",
+    "placeOnBench": "Place on bench",
+    "swapAction": "Swap player",
+    "removeAction": "Remove player",
+    "playerRemovedTitle": "Player removed",
+    "playerRemovedMsg": "{name} has been removed from your lineup.",
+    "removeErrorTitle": "Error",
+    "removeErrorMsg": "Could not remove {name}. Please try again."
   },
   "playerScore": {
     "title": "Points breakdown",
@@ -448,7 +483,7 @@
     "noLeagueTitle": "No fantasy league selected",
     "noLeagueBody": "Select a fantasy league to view the available players.",
     "waitingTurnTitle": "Waiting for your turn...",
-    "waitingTurnBody": "You can pick a player when it's your turn.",
+    "waitingTurnBody": "You can browse and search players; you'll be able to pick one when it's your turn.",
     "filterAll": "All",
     "colPlayer": "Player",
     "colTeam": "Team",
@@ -476,7 +511,9 @@
     "participantsAll": "All participants",
     "participantsTitle": "Filter by participant",
     "participantsEmpty": "No participants",
-    "participantFallbackName": "Participant"
+    "participantFallbackName": "Participant",
+    "wishlistAddAria": "Add {name} to your wishlist",
+    "wishlistRemoveAria": "Remove {name} from your wishlist"
   },
   "trades": {
     "proposeButton": "Propose trade",

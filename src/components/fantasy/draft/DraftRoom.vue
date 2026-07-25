@@ -10,7 +10,7 @@
     <template v-else>
       <div ref="timerSentinelRef" class="h-0" />
       <div
-        class="sticky top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-40 space-y-1.5"
+        class="draft-sticky sticky top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-40 space-y-1.5"
       >
         <DraftTimer
           :turn="turnStarted"
@@ -18,9 +18,10 @@
           @expired="onTurnExpired"
         />
 
-        <!-- Auto Pick toggle -->
+        <!-- Auto Pick toggle — opaque (no backdrop-blur): a blurred layer over
+             the scrolling content behind a sticky bar ghosts/flickers on scroll. -->
         <div
-          class="flex items-center justify-between bg-white dark:bg-gray-800/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-gray-100 dark:border-gray-700/40 shadow-sm"
+          class="flex items-center justify-between bg-white dark:bg-gray-800 rounded-xl px-3 py-2 border border-gray-100 dark:border-gray-700/40 shadow-sm"
         >
           <div class="flex items-center gap-2">
             <v-icon name="ri-robot-line" class="w-4 h-4 text-amber-500 dark:text-amber-400" />
@@ -113,6 +114,7 @@
       ref="menuDraftRef"
       :leftOffset="drawerWidth"
       :fantasyLeagueUuid="fantasyLeague.uuid"
+      :isMyTurn="isMyTurn"
     />
   </div>
 </template>
@@ -131,6 +133,7 @@ import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraft
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { useUserStore } from "@/store";
+import { useDraftWishlistStore } from "@/store/fantasy/useDraftWishlistStore";
 import { Types } from "ably";
 import { onMounted, onUnmounted, ref, computed, watch } from "vue";
 
@@ -146,6 +149,7 @@ const props = defineProps<{
 }>();
 
 const userStore = useUserStore();
+const draftWishlistStore = useDraftWishlistStore();
 
 const membersDraftRoom = ref<UserDataInterface[]>([]);
 const turnStarted = ref<FantasyDraftTurnStarted | null>(null);
@@ -163,6 +167,11 @@ const menuDraftRef = ref<InstanceType<typeof MenuDraft> | null>(null);
 const isDraftCompleted = computed(
   () => turnStarted.value?.status === "COMPLETED",
 );
+
+// If we land on an already-finished draft (e.g. reload), the wishlist is stale.
+watch(isDraftCompleted, (completed) => {
+  if (completed) draftWishlistStore.clear(props.fantasyLeague.uuid);
+});
 
 const isMyTurn = computed(() => {
   if (!turnStarted.value?.user) return false;
@@ -367,6 +376,10 @@ onMounted(async () => {
       },
     );
     searchPlayerRef.value?.removePlayerByUuid(playerSelected.player?.uuid);
+    // A picked player is no longer draftable — drop it from the wishlist too.
+    if (playerSelected.player?.uuid) {
+      draftWishlistStore.remove(props.fantasyLeague.uuid, playerSelected.player.uuid);
+    }
     drawerRefreshKey.value++;
     const newPick: FantasyDraftPlayerPicked = {
       pick: playerSelected.pick,
@@ -378,6 +391,8 @@ onMounted(async () => {
   });
 
   channel.subscribe("draft.finished", () => {
+    // The pre-draft wishlist only lives for the duration of the draft.
+    draftWishlistStore.clear(props.fantasyLeague.uuid);
     if (turnStarted.value) {
       turnStarted.value = { ...turnStarted.value, status: 'COMPLETED' };
     } else {
@@ -478,5 +493,18 @@ onUnmounted(() => {
       0 0 20px rgba(52, 211, 153, 0.35),
       0 0 40px rgba(52, 211, 153, 0.15);
   }
+}
+
+/* Keep the sticky draft header on its own compositor layer so it composites as
+   one stable texture over the scrolling content below. Without this, the
+   browser re-syncs the sticky bar's paint with the scroll offset frame by
+   frame, which makes the countdown and the content behind it flicker/ghost.
+   Applied to the sticky element itself (not an ancestor), so stickiness is
+   preserved. */
+.draft-sticky {
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 </style>
