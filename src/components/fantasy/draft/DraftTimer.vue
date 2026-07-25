@@ -5,7 +5,7 @@
       v-if="turn"
       role="timer"
       :aria-label="isMyTurn ? $t('fantasy.draft.timer.yourTurn') : $t('fantasy.draft.timer.userTurn', { name: turn.user?.firstname ?? $t('fantasy.draft.timer.unknown') })"
-      class="flex items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm transition-[padding,border-radius,gap,box-shadow] duration-300 ease-out"
+      class="timer-surface flex items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm transition-[padding,border-radius,gap,box-shadow] duration-300 ease-out"
       :class="[
         compact ? 'rounded-xl gap-2.5 px-3 py-2' : 'rounded-2xl gap-3 px-4 py-3',
         c.card,
@@ -13,7 +13,7 @@
     >
       <!-- Avatar wrapped by the countdown ring — the clock is on THIS player -->
       <div
-        class="relative shrink-0 transition-[width,height] duration-300 ease-out"
+        class="ring-wrap relative shrink-0 transition-[width,height] duration-300 ease-out"
         :class="compact ? 'w-9 h-9' : 'w-14 h-14'"
       >
         <svg
@@ -83,7 +83,7 @@
       <!-- Countdown -->
       <div class="shrink-0 text-right leading-none">
         <span
-          class="font-black tabular-nums tracking-tight transition-[font-size,color] duration-300"
+          class="count-surface inline-block font-black tabular-nums tracking-tight transition-[font-size,color] duration-300"
           :class="[
             compact ? 'text-lg' : 'text-3xl',
             c.time,
@@ -93,11 +93,10 @@
           {{ displayTime }}
         </span>
         <p
-          v-if="!compact"
-          class="text-2xs font-medium mt-1 uppercase tracking-wider"
-          :class="expired ? 'text-red-500/80 dark:text-red-400/80' : 'text-gray-400 dark:text-gray-500'"
+          v-if="!compact && expired"
+          class="text-2xs font-medium mt-1 uppercase tracking-wider text-red-500/80 dark:text-red-400/80"
         >
-          {{ expired ? $t('fantasy.draft.timer.expired') : $t('fantasy.draft.timer.sec') }}
+          {{ $t('fantasy.draft.timer.expired') }}
         </p>
       </div>
     </div>
@@ -105,7 +104,7 @@
     <!-- Waiting state -->
     <div
       v-else
-      class="flex items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm transition-[padding,border-radius,gap] duration-300 ease-out"
+      class="timer-surface flex items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm transition-[padding,border-radius,gap] duration-300 ease-out"
       :class="compact ? 'rounded-xl gap-2.5 px-3 py-2' : 'rounded-2xl gap-3 px-4 py-3'"
     >
       <div
@@ -316,6 +315,44 @@ onUnmounted(() => {
 <style scoped>
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* The timer lives inside a `position: sticky` container. Its ring animates
+   every frame (stroke-dashoffset) and the countdown number repaints once a
+   second, so while the sticky layer is composited during scroll the browser
+   re-syncs paint and scroll out of step — which reads as the seconds
+   flickering on both mobile and desktop. Promoting the card to its own GPU
+   layer keeps those repaints inside a stable texture, and pinning
+   text-size-adjust stops mobile browsers from re-measuring the text mid-scroll. */
+.timer-surface {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* The ring's stroke-dashoffset animates every frame (its 1s transition is
+   re-armed every second, so it's essentially always tweening). Give it its OWN
+   compositor layer, separate from the card/sticky-bar layer: that keeps the
+   per-frame repaint isolated to this small box, so the bar's texture stays
+   static and the countdown/content behind it no longer flicker during scroll.
+   `contain: paint` clips the repaint region; the avatar pulse's 1.04 scale
+   stays within these bounds, so nothing gets clipped. */
+.ring-wrap {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  contain: paint;
+}
+
+/* Same idea for the countdown number: in the last seconds it runs animate-pulse
+   (an opacity animation). On its own layer that opacity composites on the GPU
+   instead of repainting the card every frame. */
+.count-surface {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Smooth countdown sweep + graceful color changes as urgency rises. */

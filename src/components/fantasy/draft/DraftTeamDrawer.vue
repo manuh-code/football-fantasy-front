@@ -21,23 +21,36 @@
         <div class="flex-1 flex flex-col overflow-hidden min-w-0">
           <!-- Header -->
           <div
-            class="flex items-center justify-between px-3 py-2.5 border-b border-gray-100 dark:border-gray-700/60 bg-white dark:bg-gray-900 shrink-0"
+            class="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-gray-100 dark:border-gray-700/60 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shrink-0"
           >
             <div class="flex items-center gap-2 min-w-0">
-              <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-              <h2
-                v-if="desktopState !== 'peek'"
-                class="text-footnote font-semibold text-gray-900 dark:text-white truncate"
+              <span
+                class="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shrink-0"
               >
-                {{ $t('fantasy.draft.drawer.myTeam') }}
-              </h2>
+                <v-icon name="ri-team-line" class="w-4 h-4" />
+              </span>
+              <div v-if="desktopState !== 'peek'" class="min-w-0">
+                <h2 class="text-footnote font-bold text-gray-900 dark:text-white truncate leading-tight">
+                  {{ $t('fantasy.draft.drawer.myTeam') }}
+                </h2>
+                <p class="text-2xs text-gray-500 dark:text-gray-400 leading-tight">
+                  {{ $t('fantasy.draft.drawer.playersCount', { count: players.length }) }}
+                </p>
+              </div>
             </div>
 
-            <!-- State badge -->
-            <span
-              v-if="refreshKey > 0 && desktopState !== 'peek'"
-              class="w-2 h-2 bg-amber-400 rounded-full animate-pulse shrink-0"
-            />
+            <!-- Updated badge -->
+            <Transition name="badge-pop">
+              <span
+                v-if="refreshKey > 0 && desktopState !== 'peek'"
+                class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 shrink-0"
+              >
+                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 leading-none">
+                  {{ $t('fantasy.draft.drawer.updated') }}
+                </span>
+              </span>
+            </Transition>
           </div>
 
           <!-- Loading state -->
@@ -79,15 +92,14 @@
 
         <!-- Drag handle (right edge) -->
         <div
-          class="w-5 flex items-center justify-center cursor-col-resize shrink-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-l border-gray-100 dark:border-gray-700/60 select-none"
+          class="group/handle w-5 flex items-center justify-center cursor-col-resize shrink-0 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors border-l border-gray-100 dark:border-gray-700/60 select-none"
+          :title="$t('fantasy.draft.drawer.resizeHint')"
           @mousedown.prevent="onDesktopDragStart"
           @click="toggleDesktop"
         >
-          <div class="flex flex-col gap-1">
-            <div class="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-500" />
-            <div class="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-500" />
-            <div class="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-500" />
-          </div>
+          <div
+            class="w-1 h-8 rounded-full bg-gray-300 dark:bg-gray-600 group-hover/handle:bg-emerald-400 dark:group-hover/handle:bg-emerald-500 transition-colors"
+          />
         </div>
       </div>
     </template>
@@ -106,7 +118,7 @@
       <!-- Bottom Sheet (offset above MenuDraft) -->
       <div
         ref="mobileSheetRef"
-        class="fixed inset-x-0 bottom-[52px] z-50 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col mobile-sheet"
+        class="fixed inset-x-0 bottom-[52px] z-50 bg-white dark:bg-gray-900 rounded-t-3xl shadow-[0_-6px_32px_rgba(0,0,0,0.16)] dark:shadow-[0_-6px_32px_rgba(0,0,0,0.5)] ring-1 ring-black/5 dark:ring-white/10 flex flex-col mobile-sheet"
         :style="mobileSheetStyle"
         @touchstart.passive="onMobileTouchStart"
         @touchmove.passive="onMobileTouchMove"
@@ -122,17 +134,28 @@
 
         <!-- Peek Header (always visible) -->
         <div
-          class="flex items-center justify-between px-4 py-2 shrink-0 touch-none"
+          class="flex items-center justify-between gap-2 px-4 py-2 shrink-0 touch-none"
           @click="toggleMobile"
         >
-          <div class="flex items-center gap-2">
-            <v-icon name="ri-team-line" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-            <div>
-              <h3
-                class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight"
-              >
-                {{ $t('fantasy.draft.drawer.myTeam') }}
-              </h3>
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span
+              class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shrink-0"
+            >
+              <v-icon name="ri-team-line" class="w-4 h-4" />
+            </span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h3
+                  class="text-footnote font-bold text-gray-900 dark:text-white leading-tight truncate"
+                >
+                  {{ $t('fantasy.draft.drawer.myTeam') }}
+                </h3>
+                <span
+                  class="shrink-0 px-1.5 py-px rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 tabular-nums"
+                >
+                  {{ players.length }}
+                </span>
+              </div>
               <p
                 class="text-2xs text-gray-500 dark:text-gray-400 leading-tight"
               >
@@ -145,20 +168,31 @@
             </div>
           </div>
 
-          <!-- Chevron indicator -->
-          <div class="flex items-center gap-1.5">
-            <span
-              v-if="refreshKey > 0"
-              class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-pulse"
-            />
-            <v-icon
-              :name="
-                mobileState === 'peek'
-                  ? 'hi-solid-chevron-up'
-                  : 'hi-solid-chevron-down'
-              "
-              class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform duration-200"
-            />
+          <!-- Chevron indicator + updated badge -->
+          <div class="flex items-center gap-1.5 shrink-0">
+            <Transition name="badge-pop">
+              <span
+                v-if="refreshKey > 0"
+                class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30"
+              >
+                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 leading-none">
+                  {{ $t('fantasy.draft.drawer.updated') }}
+                </span>
+              </span>
+            </Transition>
+            <div
+              class="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800"
+            >
+              <v-icon
+                :name="
+                  mobileState === 'peek'
+                    ? 'hi-solid-chevron-up'
+                    : 'hi-solid-chevron-down'
+                "
+                class="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200"
+              />
+            </div>
           </div>
         </div>
 
@@ -725,5 +759,25 @@ watch(
   backface-visibility: hidden;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+}
+
+/* "Updated" badge pop */
+.badge-pop-enter-active {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+.badge-pop-leave-active {
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+.badge-pop-enter-from,
+.badge-pop-leave-to {
+  transform: scale(0.6);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-pop-enter-active,
+  .badge-pop-leave-active {
+    transition: opacity 0.15s ease;
+  }
 }
 </style>
