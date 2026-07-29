@@ -51,12 +51,12 @@
             :src="slot.entry.user.avatar"
             :alt="memberName(slot.entry.user)"
             class="rounded-full object-cover ring-2"
-            :class="[slot.isCenter ? 'w-16 h-16 ring-amber-400' : 'w-12 h-12 ring-gray-100 dark:ring-gray-700']"
+            :class="avatarRingClass(slot)"
           />
           <div
             v-else
             class="rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center ring-2"
-            :class="[slot.isCenter ? 'w-16 h-16 ring-amber-400' : 'w-12 h-12 ring-gray-100 dark:ring-gray-700']"
+            :class="avatarRingClass(slot)"
           >
             <span class="font-semibold text-white" :class="slot.isCenter ? 'text-sm' : 'text-xs'">
               {{ memberInitials(slot.entry.user) }}
@@ -69,7 +69,10 @@
             {{ slot.entry.rank }}
           </span>
         </div>
-        <p class="text-2xs font-semibold text-gray-900 dark:text-white text-center truncate w-full">
+        <p
+          class="text-2xs font-semibold text-center truncate w-full"
+          :class="isCurrentUser(slot.entry.user) ? 'text-sky-600 dark:text-sky-400' : 'text-gray-900 dark:text-white'"
+        >
           {{ memberName(slot.entry.user) }}
         </p>
         <p class="text-2xs font-bold text-amber-600 dark:text-amber-400 tabular-nums">
@@ -84,6 +87,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { poolService } from "@/services/pool/poolService";
+import { useUserStore } from "@/store/user/useUserStore";
 import type { PoolStandingResponse } from "@/interfaces/pool/PoolStandingResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
@@ -91,6 +95,7 @@ const props = defineProps<{ poolGroupUuid: string }>();
 const emit = defineEmits<{ "view-full": [] }>();
 
 const { t } = useI18n();
+const userStore = useUserStore();
 
 const loading = ref(false);
 const standings = ref<PoolStandingResponse[]>([]);
@@ -135,6 +140,18 @@ const memberInitials = (member: UserDataInterface): string => {
   const last = member.lastname?.[0] || "";
   const initials = (first + last).toUpperCase();
   return initials || member.email?.[0]?.toUpperCase() || "?";
+};
+
+// So the viewer can spot themselves in the podium at a glance, same as the
+// full Standings tab.
+const isCurrentUser = (user: UserDataInterface): boolean =>
+  !!user.uuid && user.uuid === userStore.getUserData?.uuid;
+
+const avatarRingClass = (slot: { entry: RankedEntry; isCenter: boolean }): string => {
+  const size = slot.isCenter ? "w-16 h-16" : "w-12 h-12";
+  if (isCurrentUser(slot.entry.user)) return `${size} ring-sky-400`;
+  if (slot.isCenter) return `${size} ring-amber-400`;
+  return `${size} ring-gray-100 dark:ring-gray-700`;
 };
 
 const rankBadgeClasses = (rank: number): string => {
