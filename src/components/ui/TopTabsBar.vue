@@ -94,19 +94,49 @@ const updateIndicator = (): void => {
   indicatorRect.value = measure(activeItem.value?.key ?? null);
 };
 
+// Only scroll as far as needed to bring the active tab fully into view, flush
+// against whichever edge it was clipped by. Dead-centering it unconditionally
+// (the previous approach) scrolled past tab 0 even when it already fit on
+// screen — reading as truncated/broken text instead of "more to scroll".
 const scrollActiveIntoView = (behavior: ScrollBehavior): void => {
   const container = scrollContainerRef.value;
   const activeButton = buttonRefs.get(props.activeKey);
   if (!container || !activeButton) return;
 
   const containerWidth = container.clientWidth;
-  const targetScrollLeft = activeButton.offsetLeft - containerWidth / 2 + activeButton.offsetWidth / 2;
-  const maxScrollLeft = container.scrollWidth - containerWidth;
+  const visibleLeft = container.scrollLeft;
+  const visibleRight = visibleLeft + containerWidth;
+  const buttonLeft = activeButton.offsetLeft;
+  const buttonRight = buttonLeft + activeButton.offsetWidth;
 
-  container.scrollTo({
-    left: Math.max(0, Math.min(targetScrollLeft, maxScrollLeft)),
-    behavior,
-  });
+  let target: number;
+  if (buttonLeft < visibleLeft) {
+    target = Math.max(0, buttonLeft - 8);
+  } else if (buttonRight > visibleRight) {
+    target = buttonRight - containerWidth + 8;
+  } else {
+    return; // Already fully visible — leave the scroll position untouched.
+  }
+
+  const maxScrollLeft = container.scrollWidth - containerWidth;
+  container.scrollTo({ left: Math.max(0, Math.min(target, maxScrollLeft)), behavior });
+};
+
+// Edge fade hint: shows a soft gradient over whichever side still has tabs
+// scrolled out of view, so an overflowing bar reads as "swipe for more"
+// instead of looking clipped/broken.
+const canScrollLeft = ref(false);
+const canScrollRight = ref(false);
+const updateEdges = (): void => {
+  const container = scrollContainerRef.value;
+  if (!container) return;
+  canScrollLeft.value = container.scrollLeft > 2;
+  canScrollRight.value = container.scrollLeft < container.scrollWidth - container.clientWidth - 2;
+};
+
+const onResize = (): void => {
+  updateIndicator();
+  updateEdges();
 };
 
 // Jump instantly on first render, then animate on subsequent tab changes.
@@ -114,10 +144,11 @@ onMounted(() => {
   nextTick(() => {
     scrollActiveIntoView("auto");
     updateIndicator();
+    updateEdges();
   });
-  window.addEventListener("resize", updateIndicator);
+  window.addEventListener("resize", onResize);
 });
-onUnmounted(() => window.removeEventListener("resize", updateIndicator));
+onUnmounted(() => window.removeEventListener("resize", onResize));
 
 watch(
   () => [props.activeKey, props.items] as const,
@@ -125,6 +156,7 @@ watch(
     nextTick(() => {
       scrollActiveIntoView("smooth");
       updateIndicator();
+      updateEdges();
     }),
   { flush: "post" },
 );
@@ -137,42 +169,60 @@ watch(
     :aria-label="ariaLabel"
     class="tabs-sticky sticky z-40 pointer-events-none flex justify-center mb-4"
   >
-    <div
-      ref="scrollContainerRef"
-      class="tabs-scroll relative pointer-events-auto flex items-center gap-1 p-1 rounded-full max-w-full overflow-x-auto overscroll-x-contain bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/30"
-    >
-      <!-- Active indicator: the one moving shape, measured from its real button
-           box so it always matches exactly. Sits behind the buttons (z-10). -->
-      <span
-        v-if="indicatorRect"
-        class="tab-indicator absolute top-0 left-0 rounded-full pointer-events-none"
-        :class="indicatorColorClass"
-        :style="{
-          transform: `translate(${indicatorRect.left}px, ${indicatorRect.top}px)`,
-          width: indicatorRect.width + 'px',
-          height: indicatorRect.height + 'px',
-        }"
-      />
-
-      <button
-        v-for="item in items"
-        :key="item.key"
-        :ref="(el) => setButtonRef(item.key, el as Element | null)"
-        type="button"
-        :aria-label="item.label"
-        :aria-current="isActive(item) ? 'page' : undefined"
-        :disabled="item.disabled"
-        @click="onClick(item)"
-        class="relative z-10 flex items-center gap-1.5 shrink-0 px-3.5 py-2 rounded-full text-xs whitespace-nowrap transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
-        :class="tabClasses(item)"
+    <!-- Wrapper matches the pill's own box (not the scrolling content inside it)
+         so the edge-fade overlays below stay pinned to its visual edges instead
+         of scrolling away with the tabs. -->
+    <div class="relative max-w-full">
+      <div
+        ref="scrollContainerRef"
+        class="tabs-scroll relative pointer-events-auto flex items-center gap-1 p-1 rounded-full max-w-full overflow-x-auto overscroll-x-contain bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/30"
+        @scroll="updateEdges"
       >
-        <v-icon
-          :name="item.icon"
-          class="w-4 h-4 shrink-0 transition-transform duration-200 ease-out"
-          :class="isActive(item) ? 'scale-110' : ''"
+        <!-- Active indicator: the one moving shape, measured from its real button
+             box so it always matches exactly. Sits behind the buttons (z-10). -->
+        <span
+          v-if="indicatorRect"
+          class="tab-indicator absolute top-0 left-0 rounded-full pointer-events-none"
+          :class="indicatorColorClass"
+          :style="{
+            transform: `translate(${indicatorRect.left}px, ${indicatorRect.top}px)`,
+            width: indicatorRect.width + 'px',
+            height: indicatorRect.height + 'px',
+          }"
         />
-        <span>{{ item.label }}</span>
-      </button>
+
+        <button
+          v-for="item in items"
+          :key="item.key"
+          :ref="(el) => setButtonRef(item.key, el as Element | null)"
+          type="button"
+          :aria-label="item.label"
+          :aria-current="isActive(item) ? 'page' : undefined"
+          :disabled="item.disabled"
+          @click="onClick(item)"
+          class="relative z-10 flex items-center gap-1.5 shrink-0 px-3.5 py-2 rounded-full text-xs whitespace-nowrap transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
+          :class="tabClasses(item)"
+        >
+          <v-icon
+            :name="item.icon"
+            class="w-4 h-4 shrink-0 transition-transform duration-200 ease-out"
+            :class="isActive(item) ? 'scale-110' : ''"
+          />
+          <span>{{ item.label }}</span>
+        </button>
+      </div>
+
+      <!-- Edge fades hinting there are more tabs to scroll to. -->
+      <div
+        class="tab-edge-fade left-0 rounded-l-full bg-gradient-to-r from-white/95 dark:from-gray-900/90"
+        :class="canScrollLeft ? 'opacity-100' : 'opacity-0'"
+        aria-hidden="true"
+      />
+      <div
+        class="tab-edge-fade right-0 rounded-r-full bg-gradient-to-l from-white/95 dark:from-gray-900/90"
+        :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
+        aria-hidden="true"
+      />
     </div>
   </nav>
 </template>
@@ -195,6 +245,19 @@ watch(
 }
 .tabs-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* Soft edge fade over the scrollable tab strip (see canScrollLeft/Right).
+   z-20 sits above the buttons (z-10) but pointer-events-none so taps pass
+   through to whichever tab is partially covered. */
+.tab-edge-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.75rem;
+  z-index: 20;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 /* Same settle as BottomNavBar's indicator: a touch of overshoot on the slide,

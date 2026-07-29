@@ -113,6 +113,7 @@
     "roundsError": "Failed to load rounds. Please try again later.",
     "fixturesError": "Failed to load fixtures. Please try again later.",
     "open": "Open",
+    "closesIn": "Closes in {time}",
     "played": "Played",
     "home": "Home",
     "away": "Away",

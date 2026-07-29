@@ -112,6 +112,7 @@
     "roundsError": "No se pudieron cargar las rondas. Inténtalo de nuevo más tarde.",
     "fixturesError": "No se pudieron cargar los partidos. Inténtalo de nuevo más tarde.",
     "open": "Abierto",
+    "closesIn": "Cierra en {time}",
     "played": "Jugado",
     "home": "Local",
     "away": "Visitante",

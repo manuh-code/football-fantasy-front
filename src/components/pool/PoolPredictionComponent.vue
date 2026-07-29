@@ -102,6 +102,13 @@
               >
                 {{ $t('pool.prediction.open') }}
               </span>
+              <!-- Deadline urgency: only shown once kickoff is close (see closingSoonLabel). -->
+              <span
+                v-if="isPredictable(fixture) && closingSoonLabel(fixture)"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400"
+              >
+                {{ closingSoonLabel(fixture) }}
+              </span>
               <span
                 v-else
                 class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-2xs font-semibold tabular-nums"
@@ -141,7 +148,7 @@
                         :aria-label="$t('pool.prediction.increaseScore', { team: homeTeam(fixture)?.name || $t('pool.prediction.home') })"
                         class="stepper-btn"
                       >
-                        <v-icon name="hi-solid-plus" class="w-4 h-4" />
+                        <v-icon name="hi-solid-plus" class="w-5 h-5" />
                       </button>
                       <span
                         class="w-9 text-center text-2xl font-bold tabular-nums select-none touch-manipulation"
@@ -156,11 +163,11 @@
                         :aria-label="$t('pool.prediction.decreaseScore', { team: homeTeam(fixture)?.name || $t('pool.prediction.home') })"
                         class="stepper-btn"
                       >
-                        <v-icon name="hi-solid-minus" class="w-4 h-4" />
+                        <v-icon name="hi-solid-minus" class="w-5 h-5" />
                       </button>
                     </div>
 
-                    <span class="text-gray-300 dark:text-gray-600 font-bold text-xl mt-9">:</span>
+                    <span class="text-gray-300 dark:text-gray-600 font-bold text-xl mt-12">:</span>
 
                     <!-- Away stepper -->
                     <div class="flex flex-col items-center gap-1.5">
@@ -170,7 +177,7 @@
                         :aria-label="$t('pool.prediction.increaseScore', { team: awayTeam(fixture)?.name || $t('pool.prediction.away') })"
                         class="stepper-btn"
                       >
-                        <v-icon name="hi-solid-plus" class="w-4 h-4" />
+                        <v-icon name="hi-solid-plus" class="w-5 h-5" />
                       </button>
                       <span
                         class="w-9 text-center text-2xl font-bold tabular-nums select-none touch-manipulation"
@@ -185,7 +192,7 @@
                         :aria-label="$t('pool.prediction.decreaseScore', { team: awayTeam(fixture)?.name || $t('pool.prediction.away') })"
                         class="stepper-btn"
                       >
-                        <v-icon name="hi-solid-minus" class="w-4 h-4" />
+                        <v-icon name="hi-solid-minus" class="w-5 h-5" />
                       </button>
                     </div>
                   </div>
@@ -421,6 +428,27 @@ const stateBadgeClass = (fixture: FootballFixtureResponse): string => {
   return "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500";
 };
 
+// --- Prediction deadline countdown ---
+// Only surfaced once kickoff is close enough to matter; far-off open fixtures
+// just show the plain "Abierto" badge (see below) to avoid clutter.
+const CLOSING_SOON_THRESHOLD_MS = 24 * 60 * 60 * 1000;
+
+const closingSoonLabel = (fixture: FootballFixtureResponse): string | null => {
+  if (!isPredictable(fixture) || !fixture.starting_at) return null;
+  const kickoff = new Date(
+    fixture.starting_at.includes("T") ? fixture.starting_at : fixture.starting_at.replace(" ", "T"),
+  ).getTime();
+  if (isNaN(kickoff)) return null;
+  const remainingMs = kickoff - clockTick.value;
+  if (remainingMs <= 0 || remainingMs > CLOSING_SOON_THRESHOLD_MS) return null;
+
+  const totalMinutes = Math.max(1, Math.round(remainingMs / 60000));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const time = hours > 0 ? (minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`) : `${minutes}m`;
+  return t("pool.prediction.closesIn", { time });
+};
+
 // --- Prediction vs. result comparison (shown once a fixture is no longer predictable) ---
 type PredictionOutcome = "exact" | "correct" | "miss";
 
@@ -547,14 +575,15 @@ onBeforeUnmount(() => {
   transform: translateY(-8px);
 }
 
-/* Minimalist score stepper buttons. */
+/* Minimalist score stepper buttons. Sized to the 44px minimum tap target
+   (Apple HIG / Material) since this is the primary control on the screen. */
 .stepper-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.625rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
   color: rgb(107 114 128); /* gray-500 */
   background: rgb(243 244 246); /* gray-100 */
   transition: all 0.15s ease;
