@@ -1,5 +1,19 @@
 <template>
-  <div class="flex items-center gap-1.5">
+  <!-- Skeleton (rounds not loaded yet) -->
+  <div v-if="loading" class="flex items-center gap-1.5" aria-hidden="true">
+    <div class="shrink-0 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse" />
+    <div class="flex-1 flex gap-2 px-1 py-1 overflow-hidden">
+      <div
+        v-for="(w, n) in SKELETON_WIDTHS"
+        :key="`round-skeleton-${n}`"
+        class="shrink-0 h-9 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse"
+        :class="w"
+      />
+    </div>
+    <div class="shrink-0 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse" />
+  </div>
+
+  <div v-else class="flex items-center gap-1.5">
     <!-- Prev -->
     <button
       type="button"
@@ -74,9 +88,15 @@ const props = withDefaults(
     /** Accent for the selected pill — lets callers match their own screen's
      *  theme color (e.g. amber on Standings) instead of a fixed green. */
     accent?: BottomNavAccent;
+    /** Shows placeholder pills instead of rounds while the caller is still
+     *  fetching them (replaces a generic spinner with the carousel's own shape). */
+    loading?: boolean;
   }>(),
-  { accent: "emerald" },
+  { accent: "emerald", loading: false },
 );
+
+// Static widths (not computed) so Tailwind keeps these classes during purge.
+const SKELETON_WIDTHS = ["w-20", "w-16", "w-24", "w-16"];
 
 const emit = defineEmits<{ "update:modelValue": [index: number] }>();
 

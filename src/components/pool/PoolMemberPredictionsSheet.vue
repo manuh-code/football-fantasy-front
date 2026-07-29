@@ -24,9 +24,7 @@
 
     <div class="space-y-4">
       <!-- Rounds loading -->
-      <div v-if="loadingRounds" class="flex items-center justify-center py-10">
-        <v-icon name="pr-spinner" class="w-6 h-6 text-gray-300 dark:text-gray-600" animation="spin" />
-      </div>
+      <RoundCarousel v-if="loadingRounds" :rounds="[]" :model-value="0" loading />
 
       <!-- Rounds error -->
       <div

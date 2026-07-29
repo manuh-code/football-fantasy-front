@@ -3,8 +3,11 @@
     <!-- Round filter: Overall toggle + rounds carousel -->
     <template v-if="stageUuid">
       <!-- Rounds loading -->
-      <div v-if="loadingRounds" class="flex items-center justify-center py-3">
-        <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600" animation="spin" />
+      <div v-if="loadingRounds" class="flex items-center gap-2">
+        <div class="shrink-0 h-9 w-20 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse" />
+        <div class="flex-1 min-w-0">
+          <RoundCarousel :rounds="[]" :model-value="0" loading />
+        </div>
       </div>
 
       <!-- Overall + rounds (only when there are rounds to filter by) -->
