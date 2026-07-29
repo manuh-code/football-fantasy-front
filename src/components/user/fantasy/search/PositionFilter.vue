@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+
 interface PositionFilterOption {
   code: string
   name: string
@@ -14,18 +16,43 @@ interface Props {
   disabled?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 })
 
 const emit = defineEmits<{
   'update:selectedPosition': [value: string]
 }>()
+
+// Edge fade hint: the pill row overflows on narrow phones with no visual cue
+// that it scrolls — same pattern as TopTabsBar.vue.
+const scrollContainerRef = ref<HTMLElement | null>(null)
+const canScrollLeft = ref(false)
+const canScrollRight = ref(false)
+
+const updateEdges = (): void => {
+  const el = scrollContainerRef.value
+  if (!el) return
+  canScrollLeft.value = el.scrollLeft > 2
+  canScrollRight.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 2
+}
+
+onMounted(() => {
+  nextTick(updateEdges)
+  window.addEventListener('resize', updateEdges)
+})
+onUnmounted(() => window.removeEventListener('resize', updateEdges))
+
+watch(() => props.filters, () => nextTick(updateEdges))
 </script>
 
 <template>
-  <div class="px-1">
-    <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
+  <div class="px-1 relative">
+    <div
+      ref="scrollContainerRef"
+      class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1"
+      @scroll="updateEdges"
+    >
       <button
         v-for="filter in filters"
         :key="filter.code"
@@ -50,6 +77,18 @@ const emit = defineEmits<{
         {{ filter.name }}
       </button>
     </div>
+
+    <!-- Edge fades hinting there are more pills to scroll to. -->
+    <div
+      class="filter-edge-fade left-0 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent"
+      :class="canScrollLeft ? 'opacity-100' : 'opacity-0'"
+      aria-hidden="true"
+    />
+    <div
+      class="filter-edge-fade right-0 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent"
+      :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
+      aria-hidden="true"
+    />
   </div>
 </template>
 
@@ -60,5 +99,14 @@ const emit = defineEmits<{
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.filter-edge-fade {
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 1.25rem;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 </style>
