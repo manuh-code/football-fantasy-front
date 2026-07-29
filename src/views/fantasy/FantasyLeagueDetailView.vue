@@ -96,6 +96,13 @@
       </div>
     </div>
 
+    <!-- Soft fade behind the floating nav so content scrolling under it fades
+         out instead of being hard-clipped by the pill. -->
+    <div
+      class="fixed inset-x-0 bottom-0 h-24 z-[90] pointer-events-none bg-gradient-to-t from-gray-50 dark:from-gray-950 to-transparent"
+      aria-hidden="true"
+    />
+
     <!-- Fixed bottom navigation; Play stays selected here and returns to the
          Gaming screen — see HomeMenu. -->
     <HomeMenu />

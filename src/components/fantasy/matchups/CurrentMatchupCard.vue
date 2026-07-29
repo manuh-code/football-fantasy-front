@@ -58,22 +58,26 @@
           @click="emit('view-lineups')"
         >
           <div class="flex items-center gap-2">
-            <span
-              class="text-2xl font-black tabular-nums"
-              :class="matchup.winner === matchup.home.team.uuid
-                ? 'text-gray-900 dark:text-white'
-                : 'text-gray-400 dark:text-gray-500'"
-            >
-              {{ matchup.home.score }}
+            <!-- Each score carries an emerald underline when it's the one ahead,
+                 so the leader reads at a glance even before a winner is decided. -->
+            <span class="flex flex-col items-center gap-0.5">
+              <span class="text-2xl font-black tabular-nums leading-none" :class="scoreClass('home')">
+                {{ matchup.home.score }}
+              </span>
+              <span
+                class="h-0.5 w-5 rounded-full transition-colors"
+                :class="leadingSide === 'home' ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-transparent'"
+              />
             </span>
-            <span class="text-2xs font-medium text-gray-300 dark:text-gray-600 uppercase">vs</span>
-            <span
-              class="text-2xl font-black tabular-nums"
-              :class="matchup.winner === matchup.away.team.uuid
-                ? 'text-gray-900 dark:text-white'
-                : 'text-gray-400 dark:text-gray-500'"
-            >
-              {{ matchup.away.score }}
+            <span class="text-2xs font-medium text-gray-300 dark:text-gray-600 uppercase -mt-1">vs</span>
+            <span class="flex flex-col items-center gap-0.5">
+              <span class="text-2xl font-black tabular-nums leading-none" :class="scoreClass('away')">
+                {{ matchup.away.score }}
+              </span>
+              <span
+                class="h-0.5 w-5 rounded-full transition-colors"
+                :class="leadingSide === 'away' ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-transparent'"
+              />
             </span>
           </div>
           <span class="flex items-center gap-0.5 text-2xs font-medium text-gray-400 dark:text-gray-500 transition-colors group-hover:text-emerald-500 dark:group-hover:text-emerald-400">
@@ -118,6 +122,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import type { FantasyLeagueMatchupResponse } from "@/interfaces/fantasy/matchups/FantasyLeagueMatchupResponse";
 import type { FantasyTeamData } from "@/interfaces/fantasy/team/FantasyUserTeamResponse";
 
@@ -139,6 +144,33 @@ const emit = defineEmits<{
   "team-select": [team: FantasyTeamData];
   "view-lineups": [];
 }>();
+
+/**
+ * Which side is ahead. Prefer the decided `winner`; while a round is still live
+ * (no winner yet) fall back to whoever currently has the higher score, so the
+ * card highlights a leader instead of dimming both sides. `null` = tie / no data.
+ */
+const leadingSide = computed<"home" | "away" | null>(() => {
+  const m = props.matchup;
+  if (!m) return null;
+  if (m.winner) {
+    if (m.winner === m.home.team.uuid) return "home";
+    if (m.winner === m.away.team.uuid) return "away";
+    return null;
+  }
+  const home = Number(m.home.score) || 0;
+  const away = Number(m.away.score) || 0;
+  if (home === away) return null;
+  return home > away ? "home" : "away";
+});
+
+/** Trailing side is dimmed; leader and ties stay at full strength. */
+function scoreClass(side: "home" | "away"): string {
+  if (leadingSide.value === null || leadingSide.value === side) {
+    return "text-gray-900 dark:text-white";
+  }
+  return "text-gray-400 dark:text-gray-500";
+}
 
 function selectTeam(team: FantasyTeamData) {
   emit("team-select", team);

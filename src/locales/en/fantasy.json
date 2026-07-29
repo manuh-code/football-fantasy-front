@@ -469,7 +469,11 @@
     "noLeagueBody": "Select a fantasy league to view your team.",
     "noRoundsTitle": "No rounds available",
     "noRoundsBody": "There are no rounds configured for this fantasy league yet.",
-    "matchupFallback": "Matchup"
+    "matchupFallback": "Matchup",
+    "comingSoonBadge": "Soon",
+    "tradesComingSoonTitle": "Trades",
+    "tradesComingSoonBody": "Team trades will be available soon.",
+    "pageTitle": "My Fantasy Team - Football Fantasy"
   },
   "search": {
     "playerPlaceholder": "Search player...",

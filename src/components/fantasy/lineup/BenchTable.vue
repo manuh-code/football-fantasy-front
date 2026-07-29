@@ -22,6 +22,7 @@
           :adding-player-position="addingPlayerPosition"
           :can-view-score="canViewScore"
           :fantasy-round-uuid="fantasyRoundUuid"
+          :reference-score="referenceScore"
           :highlighted="isHighlighted(player.football_player.uuid)"
           :swappable="isSwappable(player)"
           :removing="removingPlayer === player.football_player.uuid"
@@ -99,6 +100,8 @@ interface Props {
   fantasyRoundUuid?: string;
   /** Disables the swipe-to-delete action (e.g. while in draft mode) */
   disableRemove?: boolean;
+  /** Round top score across the team — drives each row's relative points color. */
+  referenceScore?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -106,6 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
   addingPlayerPosition: null,
   fantasyRoundUuid: '',
   disableRemove: false,
+  referenceScore: 0,
 });
 
 const emit = defineEmits<{
