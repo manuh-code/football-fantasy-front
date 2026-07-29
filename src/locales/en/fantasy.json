@@ -335,7 +335,25 @@
     "playerRemovedTitle": "Player removed",
     "playerRemovedMsg": "{name} has been removed from your lineup.",
     "removeErrorTitle": "Error",
-    "removeErrorMsg": "Could not remove {name}. Please try again."
+    "removeErrorMsg": "Could not remove {name}. Please try again.",
+    "swapHeader": "Swap — {position}",
+    "swipeUpToView": "Swipe up to view",
+    "currentPlayer": "Current player",
+    "availablePlayers": "Available players",
+    "noAvailablePlayers": "No available players",
+    "noSwapCandidatesBody": "No players available for this position to swap with.",
+    "roleStarter": "Starter",
+    "roleFlex": "Flex",
+    "roleBench": "Bench",
+    "swapSuccessTitle": "Lineup updated",
+    "swapSuccessMsg": "{name} has been moved successfully.",
+    "swapErrorTitle": "Error",
+    "swapErrorMsg": "Could not update lineup. Please try again.",
+    "swapUndoneTitle": "Swap undone",
+    "undo": "Undo",
+    "swapInAria": "Swap in {name}",
+    "expand": "Expand",
+    "collapse": "Collapse"
   },
   "playerScore": {
     "title": "Points breakdown",
@@ -593,6 +611,14 @@
     "notifyRejectedBody": "{name} rejected your trade proposal.",
     "notifyCancelledTitle": "Trade cancelled",
     "notifyCancelledBody": "{name} cancelled their trade proposal."
+  },
+  "positions": {
+    "goalkeeper": "Goalkeeper",
+    "defender": "Defender",
+    "midfielder": "Midfielder",
+    "attacker": "Forward",
+    "flex": "Flex",
+    "bench": "Bench"
   },
   "positionsShort": {
     "goalkeeper": "GK",
