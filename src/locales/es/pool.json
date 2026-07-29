@@ -137,6 +137,7 @@
     "pts": "pts",
     "loadError": "No se pudieron cargar las posiciones. Inténtalo de nuevo más tarde.",
     "overall": "General",
+    "you": "Tú",
     "roundLabel": "Jornada {name}",
     "playerCount": "{count} jugador | {count} jugadores",
     "unknownPlayer": "Jugador desconocido"

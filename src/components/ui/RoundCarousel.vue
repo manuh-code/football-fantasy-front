@@ -6,7 +6,8 @@
       @click="goTo(modelValue - 1)"
       :disabled="modelValue === 0"
       :aria-label="$t('football.rounds.previous')"
-      class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 active:text-emerald-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+      class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+      :class="ACCENT_ACTIVE_TEXT[accent]"
     >
       <v-icon name="hi-solid-chevron-left" class="w-5 h-5" />
     </button>
@@ -29,9 +30,7 @@
         @click="onRoundClick(i)"
         :class="[
           'snap-center shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all active:scale-95',
-          i === modelValue
-            ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300',
+          i === modelValue ? ACCENT_ACTIVE_BG[accent] : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300',
         ]"
       >
         {{ $t('football.rounds.rounds') }} {{ round.name }}
@@ -54,7 +53,8 @@
       @click="goTo(modelValue + 1)"
       :disabled="modelValue === rounds.length - 1"
       :aria-label="$t('football.rounds.next')"
-      class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 active:text-emerald-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+      class="shrink-0 p-1.5 rounded-full text-gray-400 dark:text-gray-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+      :class="ACCENT_ACTIVE_TEXT[accent]"
     >
       <v-icon name="hi-solid-chevron-right" class="w-5 h-5" />
     </button>
@@ -64,14 +64,42 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from "vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
+import type { BottomNavAccent } from "@/components/ui/BottomNavBar.vue";
 
-const props = defineProps<{
-  rounds: FootballRoundResponse[];
-  /** Index of the selected round (v-model). */
-  modelValue: number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    rounds: FootballRoundResponse[];
+    /** Index of the selected round (v-model). */
+    modelValue: number;
+    /** Accent for the selected pill — lets callers match their own screen's
+     *  theme color (e.g. amber on Standings) instead of a fixed green. */
+    accent?: BottomNavAccent;
+  }>(),
+  { accent: "emerald" },
+);
 
 const emit = defineEmits<{ "update:modelValue": [index: number] }>();
+
+// Static maps so Tailwind keeps these classes during purge (same convention as
+// BottomNavBar/TopTabsBar).
+const ACCENT_ACTIVE_BG: Record<BottomNavAccent, string> = {
+  blue: "bg-blue-500 text-white shadow-md shadow-blue-500/25",
+  emerald: "bg-emerald-500 text-white shadow-md shadow-emerald-500/25",
+  orange: "bg-orange-500 text-white shadow-md shadow-orange-500/25",
+  red: "bg-red-500 text-white shadow-md shadow-red-500/25",
+  purple: "bg-purple-500 text-white shadow-md shadow-purple-500/25",
+  sky: "bg-sky-500 text-white shadow-md shadow-sky-500/25",
+  amber: "bg-amber-500 text-white shadow-md shadow-amber-500/25",
+};
+const ACCENT_ACTIVE_TEXT: Record<BottomNavAccent, string> = {
+  blue: "active:text-blue-500",
+  emerald: "active:text-emerald-500",
+  orange: "active:text-orange-500",
+  red: "active:text-red-500",
+  purple: "active:text-purple-500",
+  sky: "active:text-sky-500",
+  amber: "active:text-amber-500",
+};
 
 const stripRef = ref<HTMLElement | null>(null);
 
