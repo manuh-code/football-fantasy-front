@@ -54,7 +54,7 @@
             </div>
             <p
               v-if="pool.description"
-              class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-1"
+              class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-1 line-clamp-2"
             >
               {{ pool.description }}
             </p>
@@ -101,18 +101,29 @@
               {{ formatDate(pool.stage.ending_at) }}
             </span>
           </div>
-          <div class="flex items-center justify-between gap-3 px-4 py-3.5">
-            <span
-              class="flex items-center gap-2 text-footnote text-gray-500 dark:text-gray-400"
+          <div class="px-4 py-3.5">
+            <div class="flex items-center justify-between gap-3">
+              <span
+                class="flex items-center gap-2 text-footnote text-gray-500 dark:text-gray-400"
+              >
+                <v-icon name="hi-solid-users" class="w-4 h-4 shrink-0" />
+                {{ $t("pool.group.participants") }}
+              </span>
+              <span
+                class="text-footnote font-medium text-gray-900 dark:text-white text-right"
+              >
+                {{ memberCount }} / {{ pool.max_participants }}
+              </span>
+            </div>
+            <div
+              class="mt-2 h-1.5 w-full rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden"
             >
-              <v-icon name="hi-solid-users" class="w-4 h-4 shrink-0" />
-              {{ $t("pool.group.participants") }}
-            </span>
-            <span
-              class="text-footnote font-medium text-gray-900 dark:text-white text-right"
-            >
-              {{ memberCount }} / {{ pool.max_participants }}
-            </span>
+              <div
+                class="h-full rounded-full transition-all"
+                :class="isPoolFull ? 'bg-amber-400' : 'bg-emerald-500'"
+                :style="{ width: participantsFillPercent + '%' }"
+              />
+            </div>
           </div>
         </div>
 
@@ -121,6 +132,19 @@
           v-if="pool.access_code"
           class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-4"
         >
+          <!-- Pool full — inviting more people would be pointless, so the
+               copy/share CTA is replaced with a plain status notice. -->
+          <div
+            v-if="isPoolFull"
+            class="flex items-center gap-2 text-gray-400 dark:text-gray-500"
+          >
+            <v-icon name="hi-solid-lock-closed" class="w-4 h-4 shrink-0" />
+            <p class="text-footnote font-medium">
+              {{ $t("pool.group.poolFull") }}
+            </p>
+          </div>
+
+          <template v-else>
           <p
             class="text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1.5"
           >
@@ -176,6 +200,7 @@
               }}</span>
             </button>
           </div>
+          </template>
         </div>
 
         <!-- General standings shortcut — quick glance at the podium; tapping
@@ -348,6 +373,18 @@ const members = computed<UserDataInterface[]>(
   () => pool.value?.memberships || [],
 );
 const memberCount = computed(() => members.value.length);
+
+// Capacity — drives both the progress bar and the "pool full" state that
+// replaces the invite CTA once there's no room left to join.
+const participantsFillPercent = computed(() => {
+  const max = pool.value?.max_participants || 0;
+  if (max <= 0) return 0;
+  return Math.min(100, Math.round((memberCount.value / max) * 100));
+});
+const isPoolFull = computed(() => {
+  const max = pool.value?.max_participants || 0;
+  return max > 0 && memberCount.value >= max;
+});
 
 // Member predictions drawer — lets you drill into any membership's picks
 // per round. Requires a stage (predictions are stage-scoped).
