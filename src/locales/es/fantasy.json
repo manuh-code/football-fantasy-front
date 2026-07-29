@@ -513,7 +513,17 @@
     "participantsEmpty": "No hay participantes",
     "participantFallbackName": "Participante",
     "wishlistAddAria": "Agregar a {name} a tu lista de deseos",
-    "wishlistRemoveAria": "Quitar a {name} de tu lista de deseos"
+    "wishlistRemoveAria": "Quitar a {name} de tu lista de deseos",
+    "filtersButton": "Filtros",
+    "filtersButtonAria": "Abrir filtros",
+    "filtersTitle": "Filtros",
+    "filtersSubtitle": "Afina la lista de jugadores",
+    "sectionAvailability": "Disponibilidad",
+    "sectionTeam": "Equipo",
+    "sectionParticipant": "Participante",
+    "applyFilters": "Ver resultados",
+    "clearFilters": "Limpiar",
+    "noTeamsFound": "No hay equipos"
   },
   "trades": {
     "proposeButton": "Proponer trade",

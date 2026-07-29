@@ -124,41 +124,94 @@
         </div>
       </div>
 
-      <!-- Player Name Search -->
-      <PlayerNameFilter
-        @search="onPlayerNameSearch"
-      />
-
-      <!-- Availability Filters — the most decisive filter (especially while
-           drafting), promoted right under search instead of trailing after
-           Team/Participant/Position. In draft mode only undrafted players can
-           ever be picked, so switching to "taken"/"all" makes no sense; hide it. -->
-      <AvailabilityFilter
-        v-if="props.mode !== 'draft'"
-        :selected-availability="selectedAvailability"
-        @update:selected-availability="onAvailabilityChange"
-      />
-
-      <!-- Team + Participant Filters — paired in one row so the filter stack
-           takes one less row before the player list starts. -->
-      <div class="grid grid-cols-2 gap-2">
-        <TeamFilter
-          :teams="teams"
-          :selected-team="selectedTeam"
-          @update:selected-team="onTeamFilterChange"
-        />
-        <ParticipantFilter
-          :participants="participants"
-          :selected-user="selectedUser"
-          @update:selected-user="onParticipantChange"
-        />
+      <!-- Filter toolbar — the search owns the row; a single "Filtros" button
+           opens a sheet with the secondary filters (availability, team,
+           participant), so the chrome stays at ~2 rows before the list. -->
+      <div class="flex items-stretch gap-2">
+        <div class="flex-1 min-w-0">
+          <PlayerNameFilter @search="onPlayerNameSearch" />
+        </div>
+        <button
+          type="button"
+          @click="showFiltersSheet = true"
+          :aria-label="$t('fantasy.search.filtersButtonAria')"
+          class="relative shrink-0 h-11 px-3.5 flex items-center gap-1.5 rounded-xl border text-footnote font-semibold transition-colors active:scale-[0.97]"
+          :class="
+            activeFilterCount > 0
+              ? 'border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+          "
+        >
+          <v-icon name="hi-solid-adjustments" class="w-4 h-4" />
+          <span>{{ $t('fantasy.search.filtersButton') }}</span>
+          <span
+            v-if="activeFilterCount > 0"
+            class="min-w-[1.125rem] h-[1.125rem] px-1 inline-flex items-center justify-center rounded-full bg-blue-500 dark:bg-blue-600 text-white text-2xs font-bold"
+          >
+            {{ activeFilterCount }}
+          </span>
+        </button>
       </div>
 
-      <!-- Position Filters -->
+      <!-- Position filter — the primary fantasy lens, kept inline for one-tap
+           access instead of being buried inside the sheet. -->
       <PositionFilter
         :filters="positionFilters"
         :selected-position="selectedPosition"
         @update:selected-position="handleFilterChange"
+      />
+
+      <!-- Active filter chips — surface what the sheet has applied so its state
+           is never hidden; tapping a chip removes that one filter. -->
+      <div
+        v-if="activeFilterChips.length > 0"
+        class="flex flex-wrap items-center gap-1.5 px-1"
+      >
+        <button
+          v-for="chip in activeFilterChips"
+          :key="chip.key"
+          type="button"
+          @click="chip.clear()"
+          class="inline-flex items-center gap-1.5 h-8 pl-2 pr-2.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-2xs font-semibold text-gray-700 dark:text-gray-200 active:scale-[0.96] transition-transform"
+        >
+          <img
+            v-if="chip.image"
+            :src="chip.image"
+            :alt="chip.label"
+            class="w-4 h-4 rounded-full object-cover shrink-0"
+          />
+          <v-icon
+            v-else-if="chip.icon"
+            :name="chip.icon"
+            class="w-3.5 h-3.5 shrink-0"
+            :class="chip.iconColor"
+          />
+          <span class="max-w-[7.5rem] truncate">{{ chip.label }}</span>
+          <v-icon name="hi-solid-x" class="w-3 h-3 text-gray-400 dark:text-gray-500 shrink-0" />
+        </button>
+        <button
+          type="button"
+          @click="clearSheetFilters"
+          class="h-8 px-2 text-2xs font-semibold text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300"
+        >
+          {{ $t('fantasy.search.clearFilters') }}
+        </button>
+      </div>
+
+      <!-- Secondary filters live in a bottom sheet to keep the chrome minimal. -->
+      <PlayerFiltersSheet
+        :is-visible="showFiltersSheet"
+        :teams="teams"
+        :participants="participants"
+        :selected-availability="selectedAvailability"
+        :selected-team="selectedTeam"
+        :selected-user="selectedUser"
+        :show-availability="props.mode !== 'draft'"
+        @close="showFiltersSheet = false"
+        @update:selected-availability="onAvailabilityChange"
+        @update:selected-team="onTeamFilterChange"
+        @update:selected-user="onParticipantChange"
+        @clear="clearSheetFilters"
       />
 
       <!-- Show players if available -->
@@ -602,10 +655,8 @@ import { useToast } from "@/composables/useToast";
 import { useI18n } from "vue-i18n";
 import { usePositionShortCode } from "@/composables/usePositionShortCode";
 import PositionFilter from "@/components/user/fantasy/search/PositionFilter.vue";
-import TeamFilter from "@/components/user/fantasy/search/TeamFilter.vue";
 import PlayerNameFilter from "@/components/user/fantasy/search/PlayerNameFilter.vue";
-import AvailabilityFilter from "@/components/user/fantasy/search/AvailabilityFilter.vue";
-import ParticipantFilter from "@/components/user/fantasy/search/ParticipantFilter.vue";
+import PlayerFiltersSheet from "@/components/user/fantasy/search/PlayerFiltersSheet.vue";
 import LineupDrawer from "@/components/fantasy/lineup/LineupDrawer.vue";
 import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
 import { useDraftWishlistStore } from "@/store/fantasy/useDraftWishlistStore";
@@ -693,6 +744,89 @@ const hasActiveFilters = computed(
     selectedAvailability.value !== "available" ||
     selectedUser.value !== "ALL",
 );
+
+// ── Filter sheet (secondary filters: availability, team, participant) ──
+const showFiltersSheet = ref(false);
+
+/** Composed participant name (UserDataInterface has no display_name). */
+function participantDisplayName(p: UserDataInterface): string {
+  const full = [p.firstname, p.lastname].filter(Boolean).join(" ").trim();
+  return full || p.email || t("fantasy.search.participantFallbackName");
+}
+
+/** How many sheet-owned filters are active — drives the button badge. */
+const activeFilterCount = computed(() => {
+  let n = 0;
+  if (props.mode !== "draft" && selectedAvailability.value !== "available") n++;
+  if (selectedTeam.value !== "ALL") n++;
+  if (selectedUser.value !== "ALL") n++;
+  return n;
+});
+
+interface FilterChip {
+  key: string;
+  label: string;
+  icon?: string;
+  iconColor?: string;
+  image?: string;
+  clear: () => void;
+}
+
+/** Removable chips mirroring the sheet's active filters, so nothing is hidden. */
+const activeFilterChips = computed<FilterChip[]>(() => {
+  const chips: FilterChip[] = [];
+
+  if (props.mode !== "draft" && selectedAvailability.value !== "available") {
+    const isTaken = selectedAvailability.value === "taken";
+    chips.push({
+      key: "availability",
+      label: isTaken
+        ? t("fantasy.search.availabilityTaken")
+        : t("fantasy.search.availabilityAll"),
+      icon: isTaken ? "hi-solid-lock-closed" : "hi-solid-view-grid",
+      iconColor: isTaken
+        ? "text-rose-500 dark:text-rose-400"
+        : "text-gray-500 dark:text-gray-400",
+      clear: () => onAvailabilityChange("available"),
+    });
+  }
+
+  if (selectedTeam.value !== "ALL") {
+    const team = teams.value.find((tm) => tm.uuid === selectedTeam.value);
+    if (team) {
+      chips.push({
+        key: "team",
+        label: team.short_code || team.name,
+        image: team.image_path || "/img/default-team.svg",
+        clear: () => onTeamFilterChange("ALL"),
+      });
+    }
+  }
+
+  if (selectedUser.value !== "ALL") {
+    const participant = participants.value.find(
+      (p) => p.uuid === selectedUser.value,
+    );
+    if (participant) {
+      chips.push({
+        key: "participant",
+        label: participantDisplayName(participant),
+        image: participant.avatar || "/img/default-avatar.svg",
+        clear: () => onParticipantChange("ALL"),
+      });
+    }
+  }
+
+  return chips;
+});
+
+/** Reset every sheet-owned filter to its default in a single reload. */
+function clearSheetFilters() {
+  selectedAvailability.value = "available";
+  selectedTeam.value = "ALL";
+  selectedUser.value = "ALL";
+  loadPlayers(false);
+}
 
 const positionFilters = computed(() => {
   const filters: Array<{
