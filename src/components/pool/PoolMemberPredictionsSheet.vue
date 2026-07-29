@@ -203,6 +203,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
+import { useUserStore } from "@/store/user/useUserStore";
 import BottomSheet from "@/components/ui/BottomSheet.vue";
 import RoundCarousel from "@/components/ui/RoundCarousel.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
@@ -220,6 +221,13 @@ const props = defineProps<{
 const emit = defineEmits<{ close: [] }>();
 
 const { t, locale } = useI18n();
+const userStore = useUserStore();
+
+// Own predictions are visible anytime; another member's predictions stay
+// sealed until their fixture kicks off (mirrors the backend's visibility rule).
+const isOwnMember = computed(
+  () => !!props.member?.uuid && props.member.uuid === userStore.getUserData?.uuid
+);
 
 // Rounds (cached per stage across opens, since this component instance stays
 // mounted — only the BottomSheet's own content unmounts when closed).
@@ -253,9 +261,14 @@ const homeTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | unde
 const awayTeam = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === "away") || fixture.participants?.[1];
 
-// A fixture with no scores yet hasn't kicked off — the pick stays sealed.
-const isPredictable = (fixture: FootballFixtureResponse): boolean =>
+// A fixture with no scores yet hasn't kicked off.
+const notStarted = (fixture: FootballFixtureResponse): boolean =>
   !Array.isArray(fixture.scores) || fixture.scores.length === 0;
+
+// Another member's pick stays sealed until kickoff; the viewer's own pick is
+// never sealed (mirrors the backend's visibility rule).
+const isPredictable = (fixture: FootballFixtureResponse): boolean =>
+  !isOwnMember.value && notStarted(fixture);
 
 const goalsFor = (fixture: FootballFixtureResponse, location: "home" | "away"): number => {
   const team = location === "home" ? homeTeam(fixture) : awayTeam(fixture);
@@ -283,7 +296,7 @@ const isFinished = (fixture: FootballFixtureResponse): boolean =>
   stateCodeOf(fixture).includes("FT") || stateNameOf(fixture).includes("finished");
 
 const stateLabel = (fixture: FootballFixtureResponse): string => {
-  if (isPredictable(fixture)) return t("pool.prediction.open");
+  if (notStarted(fixture)) return t("pool.prediction.open");
   if (!fixture.state) return t("pool.prediction.played");
   if (isLive(fixture)) return isHalfTime(fixture) ? t("pool.prediction.badge.halfTime") : t("pool.prediction.badge.live");
   if (isFinished(fixture)) return t("pool.prediction.badge.fullTime");
@@ -293,7 +306,7 @@ const stateLabel = (fixture: FootballFixtureResponse): string => {
 };
 
 const stateBadgeClass = (fixture: FootballFixtureResponse): string => {
-  if (isPredictable(fixture)) return "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
+  if (notStarted(fixture)) return "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
   if (isLive(fixture)) return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
   if (isFinished(fixture)) return "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
   return "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500";
