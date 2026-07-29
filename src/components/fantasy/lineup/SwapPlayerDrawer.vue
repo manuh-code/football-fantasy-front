@@ -22,7 +22,7 @@
               <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
               <div v-if="desktopState !== 'peek'" class="min-w-0">
                 <h2 class="text-footnote font-semibold text-gray-900 dark:text-white truncate">
-                  Swap — {{ positionLabel }}
+                  {{ $t('fantasy.lineup.swapHeader', { position: positionLabel }) }}
                 </h2>
                 <p class="text-2xs text-gray-500 dark:text-gray-400 truncate">{{ $t('fantasy.lineup.selectSwap') }}</p>
               </div>
@@ -30,6 +30,7 @@
             <button
               v-if="desktopState !== 'peek'"
               @click.stop="close"
+              :aria-label="$t('common.actions.close')"
               class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform shrink-0"
             >
               <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
@@ -45,6 +46,7 @@
               :target-player="targetPlayer"
               :candidates="candidatePlayers"
               :is-loading="isUpdating"
+              :swapping-uuid="swappingUuid"
               @select="handleSwap"
             />
           </div>
@@ -97,25 +99,31 @@
             <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
             <div class="min-w-0">
               <h3 class="text-footnote font-semibold text-gray-900 dark:text-white leading-tight truncate">
-                Swap — {{ positionLabel }}
+                {{ $t('fantasy.lineup.swapHeader', { position: positionLabel }) }}
               </h3>
               <p class="text-2xs text-gray-500 dark:text-gray-400 leading-tight">
-                {{ mobileState === 'peek' ? 'Swipe up to view' : 'Select a player to swap' }}
+                {{ mobileState === 'peek' ? $t('fantasy.lineup.swipeUpToView') : $t('fantasy.lineup.selectSwap') }}
               </p>
             </div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
             <button
               @click.stop="close"
+              :aria-label="$t('common.actions.close')"
               class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform"
             >
               <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
             </button>
-            <v-icon
-              :name="mobileState === 'peek' ? 'hi-solid-chevron-up' : 'hi-solid-chevron-down'"
-              class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform duration-200"
+            <button
               @click="toggleMobile"
-            />
+              :aria-label="mobileState === 'peek' ? $t('fantasy.lineup.expand') : $t('fantasy.lineup.collapse')"
+              class="w-7 h-7 flex items-center justify-center rounded-full active:scale-90 transition-transform"
+            >
+              <v-icon
+                :name="mobileState === 'peek' ? 'hi-solid-chevron-up' : 'hi-solid-chevron-down'"
+                class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform duration-200"
+              />
+            </button>
           </div>
         </div>
 
@@ -129,6 +137,7 @@
             :target-player="targetPlayer"
             :candidates="candidatePlayers"
             :is-loading="isUpdating"
+            :swapping-uuid="swappingUuid"
             @select="handleSwap"
           />
         </div>
@@ -139,6 +148,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { useBreakpoints } from "@/composables/useMediaQuery";
 import { getUserService } from "@/services/user/UserService";
 import { useToast } from "@/composables/useToast";
@@ -224,21 +234,23 @@ const emit = defineEmits<{
 
 const { isMobile } = useBreakpoints();
 const { addToast } = useToast();
+const { t } = useI18n();
 
 // ==================== Candidate players ====================
 /**
- * Position label for the drawer header
+ * Localized position label for the drawer header.
  */
 const positionLabel = computed(() => {
-  const labels: Record<string, string> = {
-    GOALKEEPER: "Goalkeeper",
-    DEFENDER: "Defender",
-    MIDFIELDER: "Midfielder",
-    ATTACKER: "Forward",
-    FLEX: "Flex",
-    BENCH: "Bench",
+  const keys: Record<string, string> = {
+    GOALKEEPER: "goalkeeper",
+    DEFENDER: "defender",
+    MIDFIELDER: "midfielder",
+    ATTACKER: "attacker",
+    FLEX: "flex",
+    BENCH: "bench",
   };
-  return labels[props.slotPosition] ?? props.slotPosition;
+  const key = keys[props.slotPosition];
+  return key ? t(`fantasy.positions.${key}`) : props.slotPosition;
 });
 
 /**
@@ -275,15 +287,32 @@ const candidatePlayers = computed<FantasyFootballPlayer[]>(() => {
 });
 
 // ==================== Swap action ====================
+type LineupEntry = { football_player_uuid: string; is_starter: boolean; is_flex: boolean };
+
 const isUpdating = ref(false);
+/** UUID of the candidate whose swap is in flight — only that row spins. */
+const swappingUuid = ref<string | null>(null);
+
+/** Flatten the current lineup into the update payload shape. */
+function snapshotLineup(): LineupEntry[] {
+  return props.players.map((p) => ({
+    football_player_uuid: p.football_player.uuid,
+    is_starter: p.is_starter,
+    is_flex: p.is_flex,
+  }));
+}
 
 async function handleSwap(candidate: FantasyFootballPlayer) {
   if (isUpdating.value) return;
   isUpdating.value = true;
+  swappingUuid.value = candidate.football_player.uuid;
+
+  // Snapshot before mutating so the change can be reverted from the toast.
+  const previousLineup = snapshotLineup();
 
   try {
     // Build updated lineup: swap flags between targetPlayer and candidate
-    const lineup = props.players.map((p) => {
+    const lineup: LineupEntry[] = props.players.map((p) => {
       // The candidate takes the slot's role
       if (p.football_player.uuid === candidate.football_player.uuid) {
         return {
@@ -315,8 +344,10 @@ async function handleSwap(candidate: FantasyFootballPlayer) {
 
     addToast({
       type: "success",
-      title: "Lineup updated",
-      message: `${candidate.football_player.display_name} has been moved successfully.`,
+      title: t("fantasy.lineup.swapSuccessTitle"),
+      message: t("fantasy.lineup.swapSuccessMsg", { name: candidate.football_player.display_name }),
+      duration: 6000,
+      actions: [{ label: t("fantasy.lineup.undo"), action: () => undoSwap(previousLineup) }],
     });
 
     emit("lineup-updated");
@@ -324,11 +355,30 @@ async function handleSwap(candidate: FantasyFootballPlayer) {
   } catch {
     addToast({
       type: "error",
-      title: "Error",
-      message: "Could not update lineup. Please try again.",
+      title: t("fantasy.lineup.swapErrorTitle"),
+      message: t("fantasy.lineup.swapErrorMsg"),
     });
   } finally {
     isUpdating.value = false;
+    swappingUuid.value = null;
+  }
+}
+
+/** Revert to the pre-swap lineup (from the success toast's Undo action). */
+async function undoSwap(previousLineup: LineupEntry[]) {
+  try {
+    await getUserService().updatePlayerLineup(props.leagueUuid, {
+      fantasy_round_uuid: props.fantasyRoundUuid,
+      lineup: previousLineup,
+    });
+    addToast({ type: "success", title: t("fantasy.lineup.swapUndoneTitle") });
+    emit("lineup-updated");
+  } catch {
+    addToast({
+      type: "error",
+      title: t("fantasy.lineup.swapErrorTitle"),
+      message: t("fantasy.lineup.swapErrorMsg"),
+    });
   }
 }
 
