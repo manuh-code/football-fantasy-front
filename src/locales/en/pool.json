@@ -138,6 +138,7 @@
     "pts": "pts",
     "loadError": "Failed to load standings. Please try again later.",
     "overall": "Overall",
+    "you": "You",
     "roundLabel": "Round {name}",
     "playerCount": "{count} player | {count} players",
     "unknownPlayer": "Unknown player"

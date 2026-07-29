@@ -22,7 +22,7 @@
           {{ $t('pool.standing.overall') }}
         </button>
         <div class="flex-1 min-w-0">
-          <RoundCarousel :rounds="rounds" v-model="carouselIndex" />
+          <RoundCarousel :rounds="rounds" v-model="carouselIndex" accent="amber" />
         </div>
       </div>
     </template>
@@ -93,7 +93,7 @@
             @click="openMemberPredictions(row.user)"
             :disabled="!stageUuid"
             class="w-full flex items-center gap-3 px-4 py-3 text-left active:bg-gray-50 dark:active:bg-gray-700/30 transition-colors disabled:active:bg-transparent"
-            :class="row.rank === 1 ? 'bg-amber-50/50 dark:bg-amber-900/10' : ''"
+            :class="rowHighlightClass(row)"
           >
             <!-- Rank -->
             <div
@@ -117,13 +117,16 @@
               <span class="text-xs font-semibold text-white">{{ memberInitials(row.user) }}</span>
             </div>
 
-            <!-- Name -->
+            <!-- Name (email intentionally not shown — this list is visible to every pool member) -->
             <div class="flex-1 min-w-0">
-              <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">
-                {{ memberName(row.user) }}
-              </p>
-              <p v-if="row.user.email" class="text-xs text-gray-400 dark:text-gray-500 truncate">
-                {{ row.user.email }}
+              <p class="flex items-center gap-1.5 text-footnote font-medium text-gray-900 dark:text-white">
+                <span class="truncate">{{ memberName(row.user) }}</span>
+                <span
+                  v-if="isCurrentUser(row.user)"
+                  class="shrink-0 px-1.5 py-0.5 rounded-full text-2xs font-bold bg-sky-100 dark:bg-sky-800/50 text-sky-600 dark:text-sky-300"
+                >
+                  {{ $t('pool.standing.you') }}
+                </span>
               </p>
             </div>
 
@@ -165,6 +168,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { poolService } from "@/services/pool/poolService";
+import { useUserStore } from "@/store/user/useUserStore";
 import RoundCarousel from "@/components/ui/RoundCarousel.vue";
 import AdUnit from "@/components/ads/AdUnit.vue";
 import PoolMemberPredictionsSheet from "@/components/pool/PoolMemberPredictionsSheet.vue";
@@ -176,6 +180,7 @@ import type { UserDataInterface } from "@/interfaces/user/userInterface";
 const props = defineProps<{ poolGroupUuid: string; stageUuid?: string }>();
 
 const { t } = useI18n();
+const userStore = useUserStore();
 
 // Rounds (only loaded when a stage is available, to power the round filter).
 const rounds = ref<FootballRoundResponse[]>([]);
@@ -240,6 +245,21 @@ const rankClasses = (rank: number): string => {
   if (rank === 2) return "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300";
   if (rank === 3) return "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400";
   return "text-gray-400 dark:text-gray-500";
+};
+
+// So the viewer can find themselves at a glance instead of scanning every row.
+const isCurrentUser = (user: UserDataInterface): boolean =>
+  !!user.uuid && user.uuid === userStore.getUserData?.uuid;
+
+// "You" takes priority over the 1st-place tint — knowing which row is yours
+// matters more than the passive gold highlight, and the rank circle already
+// carries the gold styling on its own.
+const rowHighlightClass = (row: { user: UserDataInterface; rank: number }): string => {
+  if (isCurrentUser(row.user)) {
+    return "bg-sky-50/70 dark:bg-sky-900/15 ring-1 ring-inset ring-sky-200/60 dark:ring-sky-800/40";
+  }
+  if (row.rank === 1) return "bg-amber-50/50 dark:bg-amber-900/10";
+  return "";
 };
 
 const memberName = (member: UserDataInterface): string => {
