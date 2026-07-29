@@ -55,9 +55,9 @@
           </div>
         </div>
 
-        <span class="inline-flex items-baseline gap-0.5 shrink-0 px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/25 ring-1 ring-amber-200/70 dark:ring-amber-800/40">
-          <span class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums leading-none">{{ player.fantasy_points ?? 0 }}</span>
-          <span class="text-2xs font-semibold text-amber-500/80 dark:text-amber-400/70 leading-none">{{ $t('fantasy.lineup.pts') }}</span>
+        <span class="inline-flex items-baseline gap-0.5 shrink-0 px-2 py-1 rounded-lg" :class="pointsStyle.pill">
+          <span class="text-sm font-black tabular-nums leading-none" :class="pointsStyle.num">{{ player.fantasy_points ?? 0 }}</span>
+          <span class="text-2xs font-semibold leading-none" :class="pointsStyle.unit">{{ $t('fantasy.lineup.pts') }}</span>
         </span>
 
         <!-- Swap target hint while a draft-by-position is in progress -->
@@ -112,6 +112,8 @@ interface Props {
   removing?: boolean;
   /** Disables swipe-to-delete (e.g. draft mode). */
   disableRemove?: boolean;
+  /** Round top score across the team — colors the points pill relative to it. */
+  referenceScore?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -122,6 +124,7 @@ const props = withDefaults(defineProps<Props>(), {
   swappable: false,
   removing: false,
   disableRemove: false,
+  referenceScore: 0,
 });
 
 const emit = defineEmits<{
@@ -146,6 +149,44 @@ const showSwapButton = computed(
 const badgeClass = computed(() => POSITION_BADGE[props.variant]);
 const swapButtonClass = computed(() => SWAP_BUTTON[props.variant]);
 const swapIconClass = computed(() => SWAP_ICON[props.variant]);
+
+/**
+ * Points-pill color, relative to the team's top score this round:
+ * emerald = standout (near the top), amber = solid, slate = quiet game,
+ * muted gray = didn't score / didn't play. Falls back to amber when no team
+ * reference is provided (so other callers keep the original look).
+ */
+const pointsStyle = computed(() => {
+  const pts = Number(props.player.fantasy_points ?? 0);
+  if (pts <= 0) {
+    return {
+      pill: "bg-gray-100 dark:bg-gray-700/40 ring-1 ring-gray-200/70 dark:ring-gray-600/40",
+      num: "text-gray-400 dark:text-gray-500",
+      unit: "text-gray-400/80 dark:text-gray-500/70",
+    };
+  }
+  const ref = Number(props.referenceScore ?? 0);
+  const ratio = ref > 0 ? pts / ref : 0.5;
+  if (ratio >= 0.85) {
+    return {
+      pill: "bg-emerald-50 dark:bg-emerald-900/25 ring-1 ring-emerald-200/70 dark:ring-emerald-800/40",
+      num: "text-emerald-600 dark:text-emerald-400",
+      unit: "text-emerald-500/80 dark:text-emerald-400/70",
+    };
+  }
+  if (ratio >= 0.45) {
+    return {
+      pill: "bg-amber-50 dark:bg-amber-900/25 ring-1 ring-amber-200/70 dark:ring-amber-800/40",
+      num: "text-amber-600 dark:text-amber-400",
+      unit: "text-amber-500/80 dark:text-amber-400/70",
+    };
+  }
+  return {
+    pill: "bg-slate-100 dark:bg-slate-700/40 ring-1 ring-slate-200/80 dark:ring-slate-600/40",
+    num: "text-slate-500 dark:text-slate-300",
+    unit: "text-slate-400 dark:text-slate-400/70",
+  };
+});
 
 function onInfoClick() {
   if (!props.canViewScore) return;

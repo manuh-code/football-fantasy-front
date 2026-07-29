@@ -22,8 +22,8 @@
 
       <!-- Quick actions skeleton -->
       <div class="flex gap-2">
-        <div class="flex-1 h-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
-        <div class="flex-1 h-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
+        <div class="flex-1 h-11 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
+        <div class="w-32 h-11 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
       </div>
 
       <!-- Team skeleton -->
@@ -74,18 +74,22 @@
 
     <!-- Round Selector -->
     <div v-else-if="rounds.length > 0" class="mb-4 space-y-3">
-      <!-- Round Navigation -->
-      <RoundSelector
-        :rounds="rounds"
-        :selected-round-uuid="selectedRoundUuid"
-        :is-loading-rounds="isLoadingRounds"
-        :is-loading-content="isLoading"
-        :can-select-previous="canSelectPrevious"
-        :can-select-next="canSelectNext"
-        @update:selected-round-uuid="selectedRoundUuid = $event"
-        @select-previous="selectPreviousRound"
-        @select-next="selectNextRound"
-      />
+      <!-- Round Navigation — sticky so the jornada context stays visible while
+           scrolling the long lineup. The offset matches the fixed global header
+           (see .main-content-safe in App.vue). -->
+      <div class="round-sticky bg-gray-50 dark:bg-gray-950 py-1.5">
+        <RoundSelector
+          :rounds="rounds"
+          :selected-round-uuid="selectedRoundUuid"
+          :is-loading-rounds="isLoadingRounds"
+          :is-loading-content="isLoading"
+          :can-select-previous="canSelectPrevious"
+          :can-select-next="canSelectNext"
+          @update:selected-round-uuid="selectedRoundUuid = $event"
+          @select-previous="selectPreviousRound"
+          @select-next="selectNextRound"
+        />
+      </div>
 
       <!-- Matchup by Round -->
       <MatchupByRoundAndUser
@@ -94,22 +98,27 @@
         :round-name="selectedRound?.round?.name ?? $t('fantasy.myTeam.matchupFallback')"
       />
 
-      <!-- Quick Actions -->
+      <!-- Quick Actions — "Add players" is the primary CTA (filled emerald),
+           while Trades is a visible "coming soon" affordance instead of a dead
+           disabled button: tapping it explains it's on the way. -->
       <div class="flex gap-2">
         <button
           @click="goToSearchPlayers()"
-          class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 active:scale-[0.97] transition-all"
+          class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-500 dark:bg-emerald-600 text-white shadow-sm shadow-emerald-500/20 active:scale-[0.97] transition-all"
         >
-          <v-icon name="hi-solid-user-add" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.myTeam.addPlayers') }}</span>
+          <v-icon name="hi-solid-user-add" class="w-4 h-4" />
+          <span class="text-footnote font-semibold">{{ $t('fantasy.myTeam.addPlayers') }}</span>
         </button>
 
         <button
-          disabled
-          class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 opacity-40 cursor-not-allowed"
+          @click="onTradesComingSoon"
+          class="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 active:scale-[0.97] transition-all"
         >
-          <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-blue-500 dark:text-blue-400" />
-          <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.myTeam.trades') }}</span>
+          <v-icon name="hi-solid-switch-horizontal" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+          <span class="text-footnote font-semibold text-gray-500 dark:text-gray-400">{{ $t('fantasy.myTeam.trades') }}</span>
+          <span class="text-[0.625rem] leading-none font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+            {{ $t('fantasy.myTeam.comingSoonBadge') }}
+          </span>
         </button>
       </div>
 
@@ -153,7 +162,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useUserStore } from "@/store/user/useUserStore";
+import { useToast } from "@/composables/useToast";
 import { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
@@ -174,6 +185,8 @@ const props = defineProps<Props>();
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
+const { t } = useI18n();
+const toast = useToast();
 
 // Computed
 const leagueUuid = computed(() => props.fantasyLeagueUuid);
@@ -259,6 +272,18 @@ function navigateToSearch(query?: Record<string, string>) {
 
 function goToSearchPlayers() {
   navigateToSearch();
+}
+
+/**
+ * Trades aren't shipped yet. Instead of a dead disabled button, tell the user
+ * it's coming so the affordance reads as "not yet" rather than "broken".
+ */
+function onTradesComingSoon() {
+  toast.info(
+    t("fantasy.myTeam.tradesComingSoonTitle"),
+    t("fantasy.myTeam.tradesComingSoonBody"),
+    { duration: 2500 },
+  );
 }
 
 function handleDraftPlayerByPosition(position: string) {
@@ -356,6 +381,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* Sticky round selector — the `top` mirrors .main-content-safe in App.vue so it
+   parks right under the fixed global header instead of tucking behind it. */
+.round-sticky {
+  position: sticky;
+  top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  z-index: 30;
+}
+@media (min-width: 640px) {
+  .round-sticky {
+    top: calc(4rem + env(safe-area-inset-top, 0px));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;

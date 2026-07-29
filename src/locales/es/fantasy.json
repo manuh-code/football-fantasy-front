@@ -469,7 +469,11 @@
     "noLeagueBody": "Selecciona una liga Fantasy para ver tu equipo.",
     "noRoundsTitle": "No hay rondas disponibles",
     "noRoundsBody": "Aún no hay rondas configuradas para esta liga Fantasy.",
-    "matchupFallback": "Enfrentamiento"
+    "matchupFallback": "Enfrentamiento",
+    "comingSoonBadge": "Pronto",
+    "tradesComingSoonTitle": "Cambios",
+    "tradesComingSoonBody": "Los cambios entre equipos estarán disponibles pronto.",
+    "pageTitle": "Mi Equipo Fantasy - Football Fantasy"
   },
   "search": {
     "playerPlaceholder": "Buscar jugador...",
