@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface Props {
@@ -52,11 +52,36 @@ const options = computed<AvailabilityOption[]>(() => [
       'text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20',
   },
 ])
+
+// Edge fade hint: the pill row overflows on narrow phones with no visual cue
+// that it scrolls — same pattern as TopTabsBar.vue.
+const scrollContainerRef = ref<HTMLElement | null>(null)
+const canScrollLeft = ref(false)
+const canScrollRight = ref(false)
+
+const updateEdges = (): void => {
+  const el = scrollContainerRef.value
+  if (!el) return
+  canScrollLeft.value = el.scrollLeft > 2
+  canScrollRight.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 2
+}
+
+onMounted(() => {
+  nextTick(updateEdges)
+  window.addEventListener('resize', updateEdges)
+})
+onUnmounted(() => window.removeEventListener('resize', updateEdges))
+
+watch(options, () => nextTick(updateEdges))
 </script>
 
 <template>
-  <div class="px-1">
-    <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
+  <div class="px-1 relative">
+    <div
+      ref="scrollContainerRef"
+      class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1"
+      @scroll="updateEdges"
+    >
       <button
         v-for="option in options"
         :key="option.code"
@@ -79,6 +104,18 @@ const options = computed<AvailabilityOption[]>(() => [
         {{ option.name }}
       </button>
     </div>
+
+    <!-- Edge fades hinting there are more pills to scroll to. -->
+    <div
+      class="filter-edge-fade left-0 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent"
+      :class="canScrollLeft ? 'opacity-100' : 'opacity-0'"
+      aria-hidden="true"
+    />
+    <div
+      class="filter-edge-fade right-0 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent"
+      :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
+      aria-hidden="true"
+    />
   </div>
 </template>
 
@@ -89,5 +126,14 @@ const options = computed<AvailabilityOption[]>(() => [
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.filter-edge-fade {
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 1.25rem;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 </style>

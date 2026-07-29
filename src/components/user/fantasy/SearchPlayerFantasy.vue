@@ -129,33 +129,36 @@
         @search="onPlayerNameSearch"
       />
 
-      <!-- Team Filter -->
-      <TeamFilter
-        :teams="teams"
-        :selected-team="selectedTeam"
-        @update:selected-team="onTeamFilterChange"
+      <!-- Availability Filters — the most decisive filter (especially while
+           drafting), promoted right under search instead of trailing after
+           Team/Participant/Position. In draft mode only undrafted players can
+           ever be picked, so switching to "taken"/"all" makes no sense; hide it. -->
+      <AvailabilityFilter
+        v-if="props.mode !== 'draft'"
+        :selected-availability="selectedAvailability"
+        @update:selected-availability="onAvailabilityChange"
       />
 
-      <!-- Participant Filter -->
-      <ParticipantFilter
-        :participants="participants"
-        :selected-user="selectedUser"
-        @update:selected-user="onParticipantChange"
-      />
+      <!-- Team + Participant Filters — paired in one row so the filter stack
+           takes one less row before the player list starts. -->
+      <div class="grid grid-cols-2 gap-2">
+        <TeamFilter
+          :teams="teams"
+          :selected-team="selectedTeam"
+          @update:selected-team="onTeamFilterChange"
+        />
+        <ParticipantFilter
+          :participants="participants"
+          :selected-user="selectedUser"
+          @update:selected-user="onParticipantChange"
+        />
+      </div>
 
       <!-- Position Filters -->
       <PositionFilter
         :filters="positionFilters"
         :selected-position="selectedPosition"
         @update:selected-position="handleFilterChange"
-      />
-
-      <!-- Availability Filters — in draft mode only undrafted players can ever
-           be picked, so switching to "taken"/"all" makes no sense; hide it. -->
-      <AvailabilityFilter
-        v-if="props.mode !== 'draft'"
-        :selected-availability="selectedAvailability"
-        @update:selected-availability="onAvailabilityChange"
       />
 
       <!-- Show players if available -->
