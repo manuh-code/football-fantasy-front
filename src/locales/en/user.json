@@ -10,6 +10,10 @@
         "title": "Change Password",
         "subtitle": "Update your account password"
       },
+      "paymentMethods": {
+        "title": "Payment methods",
+        "subtitle": "Manage your saved cards"
+      },
       "systemSettings": {
         "title": "System Settings",
         "subtitle": "Theme, language, and preferences"

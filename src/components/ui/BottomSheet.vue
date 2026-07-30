@@ -22,8 +22,11 @@
           sizeClass,
         ]"
         :style="sheetStyle"
-        role="alertdialog"
+        :role="role"
         aria-modal="true"
+        :aria-labelledby="title ? titleId : undefined"
+        :aria-label="!title ? ariaLabel || undefined : undefined"
+        tabindex="-1"
       >
         <!-- Draggable region: only the handle + header dismiss on swipe/drag,
              so a form's own scroll/interaction in the content below is never
@@ -55,7 +58,7 @@
                     <v-icon :name="icon" :class="['w-4.5 h-4.5', iconColorClass]" />
                   </div>
                   <div>
-                    <h2 class="text-base font-bold text-gray-900 dark:text-white">{{ title }}</h2>
+                    <h2 :id="titleId" class="text-base font-bold text-gray-900 dark:text-white">{{ title }}</h2>
                     <p v-if="subtitle" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ subtitle }}</p>
                   </div>
                 </div>
@@ -90,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, nextTick, useId, onMounted, onUnmounted } from 'vue'
 
 interface Props {
   isVisible: boolean
@@ -101,6 +104,16 @@ interface Props {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'auto'
   dismissible?: boolean
   persistent?: boolean
+  // `alertdialog` is right for a confirmation, but a sheet that holds a form
+  // should announce as a plain dialog so its fields are read normally.
+  role?: 'dialog' | 'alertdialog'
+  // Names the sheet when it carries no visible title (a sheet whose own content
+  // is the heading, for instance).
+  ariaLabel?: string
+  // Moves focus into the sheet on open so keyboard and screen-reader users land
+  // inside it. Opt-in: sheets that open under a still-focused trigger elsewhere
+  // in the app should keep their current behaviour.
+  autofocus?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -111,7 +124,14 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   dismissible: true,
   persistent: false,
+  role: 'alertdialog',
+  ariaLabel: '',
+  autofocus: false,
 })
+
+// Ties the sheet to its heading for assistive tech; ids are document-global, so
+// each instance mints its own.
+const titleId = useId()
 
 const emit = defineEmits<{
   close: []
@@ -242,20 +262,32 @@ function onBackdropClick() {
 // (or staying at bottom after the virtual keyboard closes) when overflow
 // is toggled. We save scrollY before locking and restore it on unlock.
 let lockedScrollY = 0
+let previouslyFocused: HTMLElement | null = null
 
-watch(() => props.isVisible, (visible) => {
+watch(() => props.isVisible, async (visible) => {
   if (visible) {
     lockedScrollY = window.scrollY || document.documentElement.scrollTop
     document.body.style.overflow = 'hidden'
     document.body.style.position = 'fixed'
     document.body.style.top = `-${lockedScrollY}px`
     document.body.style.width = '100%'
+
+    if (props.autofocus) {
+      previouslyFocused = document.activeElement as HTMLElement | null
+      await nextTick()
+      // preventScroll keeps the sheet from being yanked around while it is still
+      // sliding in.
+      sheetRef.value?.focus({ preventScroll: true })
+    }
   } else {
     document.body.style.overflow = ''
     document.body.style.position = ''
     document.body.style.top = ''
     document.body.style.width = ''
     window.scrollTo({ top: lockedScrollY, behavior: 'instant' })
+
+    previouslyFocused?.focus({ preventScroll: true })
+    previouslyFocused = null
   }
 })
 

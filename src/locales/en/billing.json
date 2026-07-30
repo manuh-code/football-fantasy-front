@@ -1,0 +1,63 @@
+{
+  "paymentMethods": {
+    "title": "Payment methods",
+    "subtitle": "Manage the cards saved in your account",
+    "secureNote": "Your payment details are handled directly by Stripe. Your card never touches our servers.",
+    "add": "Add payment method",
+    "loadError": "We couldn't load your payment methods.",
+    "defaultBadge": "Default",
+    "makeDefault": "Make default",
+    "expires": "Expires {date}",
+    "expiringSoon": "expiring soon",
+    "expired": "Card expired",
+    "walletLabel": "via {wallet}",
+    "empty": {
+      "title": "No payment methods yet",
+      "subtitle": "Add a card to use it for your next payments in the app."
+    },
+    "sheet": {
+      "title": "New payment method",
+      "subtitle": "Stored securely for your next payments",
+      "trust": "Stripe encrypts and stores your card. We only ever see the brand and the last 4 digits.",
+      "preparing": "Preparing the secure form",
+      "makeDefault": "Use as my default method",
+      "makeDefaultHint": "It'll be charged for your next payments in the app.",
+      "submit": "Save payment method",
+      "submitting": "Saving...",
+      "loadError": "We couldn't open the payment form.",
+      "loadErrorHint": "Check your connection and try again.",
+      "genericError": "The payment method could not be saved. Please try again.",
+      "success": {
+        "title": "Card saved",
+        "ready": "Ready for your next payments.",
+        "default": "It's now your default method.",
+        "done": "Done"
+      }
+    },
+    "saved": {
+      "title": "Payment method saved",
+      "message": "You can now use it for your next payments."
+    },
+    "defaultUpdated": {
+      "title": "Default method updated",
+      "message": "{label} will be used for your next charges."
+    },
+    "deleted": {
+      "title": "Payment method removed",
+      "message": "{label} is no longer linked to your account."
+    },
+    "deleteConfirm": {
+      "title": "Remove this payment method?",
+      "subtitle": "{label} will be unlinked from your account.",
+      "loading": "Removing..."
+    },
+    "callback": {
+      "verifying": "Confirming your payment method...",
+      "wait": "Please don't close this window.",
+      "failed": {
+        "title": "Verification not completed",
+        "message": "Your bank didn't authorize the card. Please try again."
+      }
+    }
+  }
+}

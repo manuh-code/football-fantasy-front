@@ -1,0 +1,63 @@
+{
+  "paymentMethods": {
+    "title": "Métodos de pago",
+    "subtitle": "Administra las tarjetas guardadas en tu cuenta",
+    "secureNote": "Tus datos de pago se procesan directamente con Stripe. La tarjeta nunca pasa por nuestros servidores.",
+    "add": "Agregar método de pago",
+    "loadError": "No pudimos cargar tus métodos de pago.",
+    "defaultBadge": "Principal",
+    "makeDefault": "Hacer principal",
+    "expires": "Vence {date}",
+    "expiringSoon": "vence pronto",
+    "expired": "Tarjeta vencida",
+    "walletLabel": "vía {wallet}",
+    "empty": {
+      "title": "Aún no tienes métodos de pago",
+      "subtitle": "Agrega una tarjeta para tus próximos pagos dentro de la app."
+    },
+    "sheet": {
+      "title": "Nuevo método de pago",
+      "subtitle": "Se guarda de forma segura para tus próximos pagos",
+      "trust": "Stripe cifra y guarda tu tarjeta. Nosotros solo vemos la marca y los últimos 4 dígitos.",
+      "preparing": "Preparando el formulario seguro",
+      "makeDefault": "Usar como método principal",
+      "makeDefaultHint": "Se usará para tus próximos cargos dentro de la app.",
+      "submit": "Guardar método de pago",
+      "submitting": "Guardando...",
+      "loadError": "No pudimos abrir el formulario de pago.",
+      "loadErrorHint": "Revisa tu conexión e inténtalo de nuevo.",
+      "genericError": "No se pudo guardar el método de pago. Inténtalo de nuevo.",
+      "success": {
+        "title": "Tarjeta guardada",
+        "ready": "Lista para tus próximos pagos.",
+        "default": "Ahora es tu método principal.",
+        "done": "Listo"
+      }
+    },
+    "saved": {
+      "title": "Método de pago guardado",
+      "message": "Ya puedes usarlo en tus próximos pagos."
+    },
+    "defaultUpdated": {
+      "title": "Método principal actualizado",
+      "message": "{label} se usará para tus próximos cargos."
+    },
+    "deleted": {
+      "title": "Método de pago eliminado",
+      "message": "{label} ya no está vinculada a tu cuenta."
+    },
+    "deleteConfirm": {
+      "title": "¿Eliminar este método de pago?",
+      "subtitle": "{label} se desvinculará de tu cuenta.",
+      "loading": "Eliminando..."
+    },
+    "callback": {
+      "verifying": "Confirmando tu método de pago...",
+      "wait": "No cierres esta ventana.",
+      "failed": {
+        "title": "Verificación no completada",
+        "message": "Tu banco no autorizó la tarjeta. Inténtalo de nuevo."
+      }
+    }
+  }
+}

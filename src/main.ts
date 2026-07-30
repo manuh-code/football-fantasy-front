@@ -7,6 +7,8 @@ import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import { iconList } from './icons'
 import { i18n, setI18nLocale } from './i18n'
 import { useLocaleStore } from './store/locale'
+import { useAuthStore } from './store/auth/useAuthStore'
+import { preloadStripe } from './composables/useStripePaymentElement'
 
 
 // Import global styles
@@ -52,3 +54,16 @@ function hideSplash() {
 }
 // Wait for the app's first paint before starting the fade-out.
 requestAnimationFrame(() => requestAnimationFrame(hideSplash))
+
+// Stripe.js is fetched once the app goes idle so opening the "add card" form
+// never waits on the script. Signed-in sessions only: anonymous visitors can't
+// reach billing, and Stripe.js drops its own cookies on every page it loads on.
+function preloadStripeWhenIdle() {
+  if (!useAuthStore().token) return
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => preloadStripe(), { timeout: 3000 })
+    return
+  }
+  setTimeout(preloadStripe, 2000)
+}
+preloadStripeWhenIdle()

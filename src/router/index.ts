@@ -152,6 +152,28 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/payment/methods',
+    name: 'payment-methods',
+    component: () => import(/* webpackChunkName: "payment-methods" */ '@/views/user/billing/PaymentMethodsView.vue'),
+    meta: {
+      title: 'Payment Methods - Football Fantasy',
+      description: 'Manage the cards saved in your Football Fantasy account',
+      requiresAuth: true
+    }
+  },
+  {
+    // Stripe's `return_url` after an off-site authentication step (3DS). It
+    // registers the confirmed SetupIntent and bounces to the list.
+    path: '/payment/methods/callback',
+    name: 'payment-methods-callback',
+    component: () => import(/* webpackChunkName: "payment-methods-callback" */ '@/views/user/billing/PaymentMethodCallbackView.vue'),
+    meta: {
+      title: 'Payment Methods - Football Fantasy',
+      description: 'Confirming your payment method',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/change/password',
     name: 'change-password',
     // Route level code-splitting for better performance

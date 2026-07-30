@@ -71,6 +71,8 @@ import {
   HiSolidUserCircle,
   HiSolidAcademicCap,
   HiSolidBan,
+  HiSolidCreditCard,
+  HiSolidBadgeCheck,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -290,6 +292,8 @@ export const iconList = [
   BiChatLeftDotsFill,
   BiStarFill,
   HiSolidBan,
+  HiSolidCreditCard,
+  HiSolidBadgeCheck,
 ]
 
 // Icon name mapping for easier usage
