@@ -48,6 +48,21 @@ export function preloadStripe(): void {
     void getStripe(configuredPublishableKey).catch(() => {})
 }
 
+/**
+ * The shared Stripe instance, for flows that need Stripe.js without an Element
+ * of their own — confirming a 3DS challenge on a subscription, for one.
+ *
+ * Resolves null when no build-time publishable key is configured; those flows
+ * have no SetupIntent response to fall back on for the key.
+ */
+export function loadConfiguredStripe(): Promise<Stripe | null> {
+    if (!configuredPublishableKey) {
+        return Promise.resolve(null)
+    }
+
+    return getStripe(configuredPublishableKey)
+}
+
 function buildAppearance(isDark: boolean): Appearance {
     return {
         theme: isDark ? 'night' : 'stripe',

@@ -61,6 +61,21 @@
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
 
+      <!-- Premium -->
+      <button
+        @click="navigateTo('subscription')"
+        class="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 border-b border-gray-100 dark:border-gray-700"
+      >
+        <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center flex-shrink-0">
+          <v-icon name="hi-solid-sparkles" class="w-5 h-5 text-white" />
+        </div>
+        <div class="flex-1 text-left min-w-0">
+          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $t('user.settings.menu.subscription.title') }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.subscription.subtitle') }}</p>
+        </div>
+        <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+      </button>
+
       <!-- Payment Methods -->
       <button
         @click="navigateTo('payment-methods')"

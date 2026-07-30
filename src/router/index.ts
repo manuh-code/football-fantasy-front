@@ -152,6 +152,16 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/premium',
+    name: 'subscription',
+    component: () => import(/* webpackChunkName: "subscription" */ '@/views/user/billing/SubscriptionView.vue'),
+    meta: {
+      title: 'Premium - Football Fantasy',
+      description: 'Subscribe to Football Fantasy Premium',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/payment/methods',
     name: 'payment-methods',
     component: () => import(/* webpackChunkName: "payment-methods" */ '@/views/user/billing/PaymentMethodsView.vue'),

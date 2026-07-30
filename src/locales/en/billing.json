@@ -1,4 +1,110 @@
 {
+  "subscription": {
+    "badge": "Premium",
+    "headline": "Play both tournaments in full",
+    "subheadline": "Unlimited leagues, deep stats and the draft tools, all year round.",
+    "selectorLabel": "Choose your plan",
+    "perMonth": "/ month",
+    "billedMonthly": "Renews every month.",
+    "billedAnnually": "{amount} once a year.",
+    "includes": "Includes",
+    "cancelAnytime": "Cancel anytime. You keep Premium until the end of the period you paid for.",
+    "loadError": "We couldn't load the plans.",
+    "features": [
+      "Unlimited fantasy leagues",
+      "Custom scoring systems",
+      "Advanced player and team stats",
+      "Unlimited pools and survivor games",
+      "Team-to-team trade tools",
+      "Full history of past seasons",
+      "No ads"
+    ],
+    "tournaments": {
+      "apertura": "Apertura",
+      "clausura": "Clausura",
+      "note": "One payment covers both Liga MX tournaments."
+    },
+    "plans": {
+      "monthly": {
+        "name": "Monthly"
+      },
+      "annual": {
+        "name": "Annual"
+      }
+    },
+    "cta": {
+      "default": "Subscribe",
+      "subscribe": "Subscribe · {amount}"
+    },
+    "confirm": {
+      "title": "Confirm your subscription",
+      "subtitle": "Check the charge before you continue",
+      "submit": "Pay {amount}",
+      "submitting": "Processing...",
+      "chargedTo": "Will be charged to this card",
+      "noCard": "No payment method",
+      "renewsMonthly": "Then renews automatically at {amount} every month.",
+      "renewsAnnually": "Then renews automatically at {amount} every year.",
+      "terms": "By continuing you authorize recurring charges until you cancel. You can cancel anytime from this screen.",
+      "genericError": "The subscription could not be activated. Please try again.",
+      "notActivated": "Your bank didn't complete the authorization. Try another card.",
+      "success": {
+        "title": "You're Premium!",
+        "detail": "Your subscription is active. Enjoy every feature with no limits.",
+        "done": "Get started"
+      },
+      "useAnotherCard": "Use another card"
+    },
+    "manage": {
+      "title": "Premium active",
+      "renewsOn": "Renews on",
+      "amount": "Price",
+      "perMonth": "{amount} per month",
+      "perYear": "{amount} per year",
+      "status": {
+        "active": "Active",
+        "canceled": "Canceled",
+        "pastDue": "Payment due"
+      },
+      "pastDue": {
+        "title": "We couldn't charge your subscription",
+        "detail": "Your bank declined the last charge. Update your card to keep Premium.",
+        "action": "Update payment method"
+      },
+      "canceled": {
+        "title": "Premium ends on {date}",
+        "detail": "You won't be charged again. Resume before that date and nothing changes.",
+        "resume": "Resume subscription",
+        "done": {
+          "title": "Subscription resumed",
+          "message": "Your Premium will renew as usual."
+        }
+      },
+      "switch": {
+        "toAnnual": "Switch to annual",
+        "toMonthly": "Switch to monthly",
+        "toAnnualDetail": "Pay {amount} once a year and save {percent}% against the monthly plan.",
+        "toMonthlyDetail": "Pay {amount} every month instead of the annual charge.",
+        "action": "Switch · {amount}",
+        "proration": "You'll be credited for the time already paid; only the difference is charged.",
+        "done": {
+          "title": "Plan updated",
+          "message": "Your subscription is on the new plan."
+        }
+      },
+      "cancel": {
+        "action": "Cancel subscription",
+        "title": "Cancel Premium?",
+        "subtitle": "You keep every feature until {date}. You won't be charged again.",
+        "keep": "Keep Premium",
+        "confirm": "Yes, cancel",
+        "done": {
+          "title": "Subscription canceled",
+          "message": "You keep Premium until the end of the period you already paid for."
+        }
+      }
+    }
+  },
   "paymentMethods": {
     "title": "Payment methods",
     "subtitle": "Manage the cards saved in your account",
