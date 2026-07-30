@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import subscriptionService from '@/services/user/billing/SubscriptionService'
+import { rememberPublishableKey } from '@/composables/useStripePaymentElement'
 import type { SubscriptionPlanResponse } from '@/interfaces/user/billing/SubscriptionPlanResponse'
 import type {
   SubscriptionResponse,
@@ -45,6 +46,9 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     isPremium.value = state.is_premium
     subscription.value = state.subscription
     isStateLoaded.value = true
+    // Keeps 3DS on the account that actually issued the payment intent, even
+    // when this session never went through the add-card flow.
+    rememberPublishableKey(state.publishable_key)
   }
 
   async function fetchPlans(force = false): Promise<void> {
