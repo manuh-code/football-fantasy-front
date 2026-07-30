@@ -22,6 +22,9 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_MESSAGING_SENDER_ID: string
   readonly VITE_FIREBASE_APP_ID: string
   readonly VITE_FIREBASE_VAPID_KEY: string
+  // Stripe publishable key. Optional: without it the app asks the API for the key
+  // and loses only the ability to load Stripe.js before the form is opened.
+  readonly VITE_STRIPE_KEY?: string
 }
 
 interface ImportMeta {

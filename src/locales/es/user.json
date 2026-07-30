@@ -10,6 +10,14 @@
         "title": "Cambiar contraseña",
         "subtitle": "Actualiza la contraseña de tu cuenta"
       },
+      "subscription": {
+        "title": "Premium",
+        "subtitle": "Tu suscripción y planes disponibles"
+      },
+      "paymentMethods": {
+        "title": "Métodos de pago",
+        "subtitle": "Administra tus tarjetas guardadas"
+      },
       "systemSettings": {
         "title": "Configuración",
         "subtitle": "Tema, idioma y preferencias"

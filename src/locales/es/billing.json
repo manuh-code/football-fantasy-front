@@ -1,0 +1,169 @@
+{
+  "subscription": {
+    "badge": "Premium",
+    "headline": "Juega los dos torneos completos",
+    "subheadline": "Ligas sin límite, estadísticas a fondo y las herramientas de draft, todo el año.",
+    "selectorLabel": "Elige tu plan",
+    "perMonth": "/ mes",
+    "billedMonthly": "Se renueva cada mes.",
+    "billedAnnually": "{amount} una sola vez al año.",
+    "includes": "Incluye",
+    "cancelAnytime": "Cancela cuando quieras. Conservas Premium hasta el final del periodo pagado.",
+    "loadError": "No pudimos cargar los planes.",
+    "features": [
+      "Ligas de fantasy ilimitadas",
+      "Sistemas de puntuación personalizados",
+      "Estadísticas avanzadas de jugadores y equipos",
+      "Quinielas y survivor sin límite",
+      "Herramienta de cambios entre equipos",
+      "Historial completo de temporadas anteriores",
+      "Sin anuncios"
+    ],
+    "tournaments": {
+      "apertura": "Apertura",
+      "clausura": "Clausura",
+      "note": "Un solo pago te cubre los dos torneos de la Liga MX."
+    },
+    "plans": {
+      "monthly": {
+        "name": "Mensual"
+      },
+      "annual": {
+        "name": "Anual"
+      }
+    },
+    "cta": {
+      "default": "Suscribirme",
+      "subscribe": "Suscribirme · {amount}"
+    },
+    "confirm": {
+      "title": "Confirma tu suscripción",
+      "subtitle": "Revisa el cargo antes de continuar",
+      "submit": "Pagar {amount}",
+      "submitting": "Procesando...",
+      "chargedTo": "Se cargará a esta tarjeta",
+      "noCard": "Sin método de pago",
+      "renewsMonthly": "Después se renueva automáticamente por {amount} cada mes.",
+      "renewsAnnually": "Después se renueva automáticamente por {amount} cada año.",
+      "terms": "Al continuar autorizas cargos recurrentes hasta que canceles. Puedes cancelar en cualquier momento desde esta pantalla.",
+      "genericError": "No se pudo activar la suscripción. Inténtalo de nuevo.",
+      "notActivated": "Tu banco no completó la autorización. Intenta con otra tarjeta.",
+      "success": {
+        "title": "¡Ya eres Premium!",
+        "detail": "Tu suscripción está activa. Disfruta todas las funciones sin límite.",
+        "done": "Empezar"
+      },
+      "useAnotherCard": "Usar otra tarjeta"
+    },
+    "manage": {
+      "title": "Premium activo",
+      "renewsOn": "Se renueva el",
+      "amount": "Costo",
+      "perMonth": "{amount} al mes",
+      "perYear": "{amount} al año",
+      "status": {
+        "active": "Activa",
+        "canceled": "Cancelada",
+        "pastDue": "Pago pendiente"
+      },
+      "pastDue": {
+        "title": "No pudimos cobrar tu suscripción",
+        "detail": "Tu banco rechazó el último cargo. Actualiza tu tarjeta para no perder Premium.",
+        "action": "Actualizar método de pago"
+      },
+      "canceled": {
+        "title": "Premium termina el {date}",
+        "detail": "No se harán más cargos. Puedes reactivar antes de esa fecha y todo sigue igual.",
+        "resume": "Reactivar suscripción",
+        "done": {
+          "title": "Suscripción reactivada",
+          "message": "Tu Premium se renovará normalmente."
+        }
+      },
+      "switch": {
+        "toAnnual": "Cambiar a anual",
+        "toMonthly": "Cambiar a mensual",
+        "toAnnualDetail": "Paga {amount} una vez al año y ahorra {percent}% frente al plan mensual.",
+        "toMonthlyDetail": "Paga {amount} cada mes en lugar del cargo anual.",
+        "action": "Cambiar · {amount}",
+        "proration": "Se te acreditará el tiempo que ya pagaste; solo se cobra la diferencia.",
+        "done": {
+          "title": "Plan actualizado",
+          "message": "Tu suscripción ya está en el nuevo plan."
+        }
+      },
+      "cancel": {
+        "action": "Cancelar suscripción",
+        "title": "¿Cancelar Premium?",
+        "subtitle": "Conservas todas las funciones hasta el {date}. No se harán más cargos.",
+        "keep": "Conservar Premium",
+        "confirm": "Sí, cancelar",
+        "done": {
+          "title": "Suscripción cancelada",
+          "message": "Conservas Premium hasta el final del periodo que ya pagaste."
+        }
+      }
+    }
+  },
+  "paymentMethods": {
+    "title": "Métodos de pago",
+    "subtitle": "Administra las tarjetas guardadas en tu cuenta",
+    "secureNote": "Tus datos de pago se procesan directamente con Stripe. La tarjeta nunca pasa por nuestros servidores.",
+    "add": "Agregar método de pago",
+    "loadError": "No pudimos cargar tus métodos de pago.",
+    "defaultBadge": "Principal",
+    "makeDefault": "Hacer principal",
+    "expires": "Vence {date}",
+    "expiringSoon": "vence pronto",
+    "expired": "Tarjeta vencida",
+    "walletLabel": "vía {wallet}",
+    "empty": {
+      "title": "Aún no tienes métodos de pago",
+      "subtitle": "Agrega una tarjeta para tus próximos pagos dentro de la app."
+    },
+    "sheet": {
+      "title": "Nuevo método de pago",
+      "subtitle": "Se guarda de forma segura para tus próximos pagos",
+      "trust": "Stripe cifra y guarda tu tarjeta. Nosotros solo vemos la marca y los últimos 4 dígitos.",
+      "preparing": "Preparando el formulario seguro",
+      "makeDefault": "Usar como método principal",
+      "makeDefaultHint": "Se usará para tus próximos cargos dentro de la app.",
+      "submit": "Guardar método de pago",
+      "submitting": "Guardando...",
+      "loadError": "No pudimos abrir el formulario de pago.",
+      "loadErrorHint": "Revisa tu conexión e inténtalo de nuevo.",
+      "genericError": "No se pudo guardar el método de pago. Inténtalo de nuevo.",
+      "success": {
+        "title": "Tarjeta guardada",
+        "ready": "Lista para tus próximos pagos.",
+        "default": "Ahora es tu método principal.",
+        "done": "Listo"
+      }
+    },
+    "saved": {
+      "title": "Método de pago guardado",
+      "message": "Ya puedes usarlo en tus próximos pagos."
+    },
+    "defaultUpdated": {
+      "title": "Método principal actualizado",
+      "message": "{label} se usará para tus próximos cargos."
+    },
+    "deleted": {
+      "title": "Método de pago eliminado",
+      "message": "{label} ya no está vinculada a tu cuenta."
+    },
+    "deleteConfirm": {
+      "title": "¿Eliminar este método de pago?",
+      "subtitle": "{label} se desvinculará de tu cuenta.",
+      "loading": "Eliminando..."
+    },
+    "callback": {
+      "verifying": "Confirmando tu método de pago...",
+      "wait": "No cierres esta ventana.",
+      "failed": {
+        "title": "Verificación no completada",
+        "message": "Tu banco no autorizó la tarjeta. Inténtalo de nuevo."
+      }
+    }
+  }
+}
