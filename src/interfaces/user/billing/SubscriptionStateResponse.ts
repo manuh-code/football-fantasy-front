@@ -27,6 +27,10 @@ export interface SubscriptionResponse {
 export interface SubscriptionStateResponse {
     is_premium: boolean;
     subscription: SubscriptionResponse | null;
+    // Publishable key of the Stripe account and mode that owns these
+    // subscriptions. Needed to run a 3DS challenge with a Stripe.js instance
+    // that can actually see the payment intent.
+    publishable_key?: string;
     // Present only when the bank asked for 3DS: the browser has to confirm the
     // payment intent before the subscription becomes active.
     requires_action?: boolean;

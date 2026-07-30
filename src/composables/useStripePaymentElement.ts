@@ -48,19 +48,56 @@ export function preloadStripe(): void {
     void getStripe(configuredPublishableKey).catch(() => {})
 }
 
+// The publishable key the API reported, which always belongs to the account and
+// mode whose secret key created the intents we are confirming.
+let serverPublishableKey: string | null = null
+let warnedAboutKeyMismatch = false
+
+/**
+ * Records the publishable key the API reports. The server is the authority here:
+ * it created the SetupIntent (or the subscription) with its own secret key, so
+ * only its account can see them.
+ *
+ * A build-time `VITE_STRIPE_KEY` that disagrees is stale or points at another
+ * account — the case Stripe reports as "The client_secret provided does not
+ * match any associated SetupIntent on this account".
+ */
+export function rememberPublishableKey(key: string | null | undefined): void {
+    if (!key) {
+        return
+    }
+
+    if (configuredPublishableKey && key !== configuredPublishableKey && !warnedAboutKeyMismatch) {
+        warnedAboutKeyMismatch = true
+        console.warn(
+            '[stripe] VITE_STRIPE_KEY does not match the publishable key the API reports. ' +
+                'They must come from the same Stripe account and the same mode. ' +
+                'Using the key from the API.',
+        )
+    }
+
+    serverPublishableKey = key
+}
+
+/** The key to load Stripe.js with: the API's when known, the build-time one otherwise. */
+function activePublishableKey(): string | null {
+    return serverPublishableKey ?? configuredPublishableKey ?? null
+}
+
 /**
  * The shared Stripe instance, for flows that need Stripe.js without an Element
  * of their own — confirming a 3DS challenge on a subscription, for one.
  *
- * Resolves null when no build-time publishable key is configured; those flows
- * have no SetupIntent response to fall back on for the key.
+ * Resolves null when no publishable key is known from either source.
  */
 export function loadConfiguredStripe(): Promise<Stripe | null> {
-    if (!configuredPublishableKey) {
+    const key = activePublishableKey()
+
+    if (!key) {
         return Promise.resolve(null)
     }
 
-    return getStripe(configuredPublishableKey)
+    return getStripe(key)
 }
 
 function buildAppearance(isDark: boolean): Appearance {
@@ -143,7 +180,15 @@ export function useStripePaymentElement() {
 
             const { client_secret, publishable_key } = await paymentMethodService.createSetupIntent()
 
-            const stripeInstance = await (stripeLoad ?? getStripe(publishable_key))
+            rememberPublishableKey(publishable_key)
+
+            // The preloaded instance is only reusable when it was built with the
+            // same key the API just reported. Loading a mismatched key's Stripe.js
+            // would produce an Element that cannot see this SetupIntent at all.
+            const stripeInstance = await (publishable_key && publishable_key !== configuredPublishableKey
+                ? getStripe(publishable_key)
+                : (stripeLoad ?? getStripe(publishable_key)))
+
             if (!stripeInstance) {
                 return false
             }
