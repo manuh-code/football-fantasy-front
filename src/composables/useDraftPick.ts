@@ -16,7 +16,14 @@ import type { FantasyAddPlayerPayload } from '@/interfaces/fantasy/draft/Fantasy
  * draft room already listens to, so every pick (mine or a rival's) updates the
  * UI through a single path.
  */
-export function useDraftPick(getLeagueUuid: () => string | undefined) {
+export function useDraftPick(
+  getLeagueUuid: () => string | undefined,
+  /**
+   * Cómo se ejecuta el pick. Por defecto llama al endpoint del draft real; el
+   * mock draft pasa el suyo, que además desencadena la ráfaga de bots.
+   */
+  pickHandler?: (player: FantasyPlayerDraftResponse) => Promise<void>,
+) {
   const toast = useToast()
   const { t } = useI18n()
 
@@ -42,7 +49,11 @@ export function useDraftPick(getLeagueUuid: () => string | undefined) {
         is_starter: null,
       }
 
-      await fantasyLeagueService.pickerPlayer(payload)
+      if (pickHandler) {
+        await pickHandler(player)
+      } else {
+        await fantasyLeagueService.pickerPlayer(payload)
+      }
 
       toast.success(
         t('fantasy.search.pickedTitle'),

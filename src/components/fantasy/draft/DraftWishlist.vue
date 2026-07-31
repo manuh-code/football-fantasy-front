@@ -160,13 +160,21 @@ const props = withDefaults(
     fantasyLeagueUuid: string
     /** Only when it's the user's turn can a wishlisted player be drafted. */
     isMyTurn?: boolean
+    /**
+     * Cómo fichar desde la lista. El draft real usa el endpoint por defecto;
+     * el mock draft inyecta el suyo para poder encadenar los picks de los bots.
+     */
+    pickHandler?: (player: FantasyPlayerDraftResponse) => Promise<void>
   }>(),
-  { isMyTurn: false },
+  { isMyTurn: false, pickHandler: undefined },
 )
 
 const positionShort = usePositionShortCode()
 const wishlistStore = useDraftWishlistStore()
-const { pickPlayer, isPicking } = useDraftPick(() => props.fantasyLeagueUuid)
+const { pickPlayer, isPicking } = useDraftPick(
+  () => props.fantasyLeagueUuid,
+  props.pickHandler,
+)
 
 const players = computed(() => wishlistStore.items(props.fantasyLeagueUuid))
 

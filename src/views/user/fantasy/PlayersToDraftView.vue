@@ -82,6 +82,29 @@
             {{ $t('fantasy.draft.activation.notAvailableBody') }}
           </p>
         </div>
+
+        <!-- Mientras el draft real no arranca, se puede ensayar con su misma
+             configuración (puntuación, formación y participantes). -->
+        <div
+          class="mt-2.5 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 px-5 py-5 flex items-center gap-4"
+        >
+          <v-icon name="ri-robot-line" class="w-8 h-8 text-emerald-500 shrink-0" />
+          <div class="min-w-0 flex-1 text-left">
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+              {{ $t('fantasy.mockDraft.leagueCta.title') }}
+            </h3>
+            <p class="text-2xs text-gray-500 dark:text-gray-400">
+              {{ $t('fantasy.mockDraft.leagueCta.body') }}
+            </p>
+          </div>
+          <ButtonComponent
+            variant="outline"
+            size="sm"
+            class="shrink-0"
+            :text="$t('fantasy.mockDraft.leagueCta.cta')"
+            @click="goToMockDraft"
+          />
+        </div>
       </template>
 
       <!-- Draft active: show draft UI -->
@@ -102,7 +125,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRoute, onBeforeRouteUpdate } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { useToast } from "@/composables/useToast";
@@ -113,6 +136,7 @@ import DraftRoom from "@/components/fantasy/draft/DraftRoom.vue";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
 const route = useRoute();
+const router = useRouter();
 const { t } = useI18n();
 const toast = useToast();
 const leagueDetailStore = useFantasyLeagueDetailStore();
@@ -203,6 +227,11 @@ onBeforeRouteUpdate(async (to) => {
 });
 
 onUnmounted(teardownChannels);
+
+/** Abre el setup del mock draft con esta liga ya elegida como preset. */
+const goToMockDraft = () => {
+  router.push({ name: "mockDraftSetup", query: { league: fantasyLeagueUuid.value } });
+};
 
 const handleActivateDraft = async () => {
   try {

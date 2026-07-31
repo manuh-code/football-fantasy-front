@@ -3,8 +3,17 @@
     class="pt-2 space-y-2.5 transition-[margin-left] duration-300"
     :style="{ marginLeft: `${drawerWidth}px` }"
   >
-    <!-- Draft Completed -->
-    <DraftCompleted v-if="isDraftCompleted" />
+    <!-- Draft Completed: felicitación + boleta del draft -->
+    <template v-if="isDraftCompleted">
+      <DraftCompleted />
+      <DraftResultsCard v-if="draftResults" :results="draftResults" class="mt-2.5" />
+      <div
+        v-else-if="resultsError"
+        class="mt-2.5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 px-4 py-5 text-center text-2xs text-gray-500 dark:text-gray-400"
+      >
+        {{ $t('fantasy.draft.results.loadError') }}
+      </div>
+    </template>
 
     <!-- Active draft -->
     <template v-else>
@@ -12,8 +21,14 @@
       <div
         class="draft-sticky sticky top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] z-40 space-y-1.5"
       >
-        <DraftTimer
-          :turn="turnStarted"
+        <DraftTimerCard
+          :contender="contenderOnTheClock"
+          :pick="turnStarted?.pick ?? null"
+          :round="turnStarted?.round ?? null"
+          :total-rounds="totalRounds"
+          :is-my-turn="isMyTurn"
+          :duration-seconds="turnStarted?.duration_seconds ?? null"
+          :ends-at="turnEndsAt"
           :compact="isTimerCompact"
           @expired="onTurnExpired"
         />
@@ -49,12 +64,15 @@
         </div>
       </div>
 
-      <DraftOrder
-        v-if="fantasyLeague"
-        :fantasyLeague="fantasyLeague"
-        :membersInDraftRoom="membersDraftRoom"
-        :activeRound="turnStarted?.round ?? undefined"
-        :currentTurnUserUuid="turnStarted?.user?.uuid ?? undefined"
+      <DraftBoardStrip
+        v-if="contenders.length"
+        :contenders="contenders"
+        :picks="boardPicks"
+        :rounds="totalRounds"
+        :total-picks="totalPicks"
+        :current-pick="turnStarted?.pick ?? null"
+        :online-count="membersDraftRoom.length"
+        show-live-dot
       />
 
       <!-- My Turn indicator bar -->
@@ -111,25 +129,36 @@
     />
 
     <MenuDraft
-      ref="menuDraftRef"
       :leftOffset="drawerWidth"
       :fantasyLeagueUuid="fantasyLeague.uuid"
       :isMyTurn="isMyTurn"
+      :contenders="contenders"
+      :picks="boardPicks"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
 import DraftCompleted from "@/components/fantasy/draft/DraftCompleted.vue";
-import DraftOrder from "@/components/fantasy/draft/DraftOrder.vue";
+import DraftBoardStrip from "@/components/fantasy/draft/shared/DraftBoardStrip.vue";
+import DraftResultsCard from "@/components/fantasy/draft/shared/DraftResultsCard.vue";
 import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
-import DraftTimer from "@/components/fantasy/draft/DraftTimer.vue";
+import DraftTimerCard from "@/components/fantasy/draft/shared/DraftTimerCard.vue";
 import MenuDraft from "@/components/fantasy/draft/MenuDraft.vue";
 import SearchPlayerFantasy from "@/components/user/fantasy/SearchPlayerFantasy.vue";
 import { useAblyBroadcast } from "@/composables/broadcast/useAblyBroadcast";
 import { useToast } from "@/composables/useToast";
 import { useI18n } from "vue-i18n";
 import { FantasyDraftTurnStarted } from "@/interfaces/fantasy/draft/FantasyDraftTurnStarted";
+import type { DraftResults } from "@/interfaces/fantasy/draft/DraftResults";
+import {
+  initialsFrom,
+  normalizePositionCode,
+} from "@/components/fantasy/draft/shared/draftShared";
+import type {
+  DraftBoardPick,
+  DraftContender,
+} from "@/components/fantasy/draft/shared/draftShared";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { useUserStore } from "@/store";
@@ -162,8 +191,6 @@ const drawerWidth = ref(0);
 const isAutoPick = ref(false);
 const isTogglingAutoPick = ref(false);
 
-const menuDraftRef = ref<InstanceType<typeof MenuDraft> | null>(null);
-
 const isDraftCompleted = computed(
   () => turnStarted.value?.status === "COMPLETED",
 );
@@ -176,6 +203,123 @@ watch(isDraftCompleted, (completed) => {
 const isMyTurn = computed(() => {
   if (!turnStarted.value?.user) return false;
   return userStore.getUserData?.uuid === turnStarted.value.user.uuid;
+});
+
+// ── Adaptación a los componentes compartidos de la sala ───────────────────
+// El board y el card del turno se comparten con el mock draft, así que hablan
+// de "participantes" y "picks" en abstracto: aquí se traducen los usuarios de
+// la liga y los picks del draft a esas formas.
+
+const picks = ref<FantasyDraftPlayerPicked[]>([]);
+const draftResults = ref<DraftResults | null>(null);
+const resultsError = ref(false);
+
+const onlineUuids = computed(
+  () => new Set(membersDraftRoom.value.map((member) => member.uuid).filter(Boolean)),
+);
+
+/**
+ * Participantes en el orden del draft. Se derivan de los picks de la primera
+ * ronda (que es el orden real), y mientras no haya ninguno se cae a la lista de
+ * la liga para que el board no aparezca vacío al arrancar.
+ */
+const contenders = computed<DraftContender[]>(() => {
+  const firstRound = picks.value
+    .filter((pick) => pick.round === 1 && pick.user)
+    .sort((a, b) => a.pick - b.pick)
+    .map((pick) => pick.user as UserDataInterface);
+
+  const source = firstRound.length ? firstRound : (props.fantasyLeague.participants ?? []);
+
+  return source.map((user) => ({
+    key: user.uuid ?? "",
+    name: [user.firstname, user.lastname].filter(Boolean).join(" ").trim() || t("fantasy.draft.order.userFallback"),
+    initials: initialsFrom(user.firstname, user.lastname),
+    avatar: user.avatar ?? null,
+    isMe: user.uuid === userStore.getUserData?.uuid,
+    isOnline: !!user.uuid && onlineUuids.value.has(user.uuid),
+  }));
+});
+
+const boardPicks = computed<DraftBoardPick[]>(() =>
+  picks.value
+    // El endpoint devuelve también los huecos del orden (picks todavía sin
+    // jugador); para el board esos son casillas libres, no fichajes.
+    .filter((pick) => pick.player)
+    .map((pick) => ({
+      pick: pick.pick,
+      round: pick.round,
+      pickInRound: contenders.value.length
+        ? ((pick.pick - 1) % contenders.value.length) + 1
+        : pick.pick,
+      contenderKey: pick.user?.uuid ?? "",
+      player: pick.player,
+      positionCode: normalizePositionCode(pick.player?.position?.developer_name),
+      autoPicked: false,
+    })),
+);
+
+/**
+ * Rondas del draft = plazas totales de la formación (se ficha una por ronda).
+ * Si aún no hay picks para deducirlo, la formación de la liga es la fuente.
+ */
+const totalRounds = computed(() => {
+  const roundsFromPicks = picks.value.length
+    ? Math.max(...picks.value.map((pick) => pick.round))
+    : 0;
+
+  const formation = props.fantasyLeague.formation;
+  const slots = formation
+    ? (formation.goalkeeper?.starter ?? 0) +
+      (formation.defender?.starter ?? 0) +
+      (formation.midfielder?.starter ?? 0) +
+      (formation.attacker?.starter ?? 0) +
+      (formation.flex ?? 0) +
+      (formation.bench ?? 0)
+    : 0;
+
+  return Math.max(roundsFromPicks, slots, 1);
+});
+
+const totalPicks = computed(() => totalRounds.value * Math.max(1, contenders.value.length));
+
+const contenderOnTheClock = computed(
+  () => contenders.value.find((c) => c.key === turnStarted.value?.user?.uuid) ?? null,
+);
+
+/**
+ * Momento en que expira el turno actual. En el draft real la referencia es del
+ * servidor (`turn_started_at`, epoch en segundos con decimales): hay rivales
+ * humanos esperando, así que el reloj no se puede reiniciar en el cliente.
+ */
+const turnEndsAt = computed(() => {
+  const startedAt = turnStarted.value?.turn_started_at;
+  const duration = turnStarted.value?.duration_seconds;
+  if (!startedAt || !duration) return null;
+  return Number(startedAt) * 1000 + Number(duration) * 1000;
+});
+
+async function loadPicks() {
+  try {
+    picks.value = await fantasyLeagueService.getDraftPlayerPicked(props.fantasyLeague.uuid);
+  } catch (error) {
+    console.error("Error loading draft picks:", error);
+  }
+}
+
+/** La boleta solo tiene sentido con el draft terminado. */
+async function loadResults() {
+  resultsError.value = false;
+  try {
+    draftResults.value = await fantasyLeagueService.getDraftResults(props.fantasyLeague.uuid);
+  } catch (error) {
+    console.error("Error loading draft results:", error);
+    resultsError.value = true;
+  }
+}
+
+watch(isDraftCompleted, (completed) => {
+  if (completed && !draftResults.value) loadResults();
 });
 
 const showMyTurnFlash = ref(false);
@@ -201,7 +345,7 @@ const { draftRoomChannel, ably } = useAblyBroadcast();
 const draftUuid = props.fantasyLeague.draft?.uuid || "";
 const channel = draftRoomChannel(draftUuid);
 
-// Payload mínimo de presencia: solo lo que DraftOrder realmente pinta.
+// Payload mínimo de presencia: solo lo que el board de la sala realmente pinta.
 // Mandar el userData completo (favoriteFootballTeam, football_league, etc.)
 // arriesga superar el límite de tamaño de mensajes de presencia de Ably y que
 // el enter sea rechazado en silencio. Los campos pesados van en null.
@@ -237,6 +381,8 @@ function handleReconnect() {
   enterPresence();
   syncMembersFromPresence();
   getTurnInfo();
+  // El board pudo avanzar mientras estábamos desconectados.
+  loadPicks();
 }
 
 // Al volver a primer plano (típico en móvil, con la conexión posiblemente aún viva)
@@ -246,6 +392,7 @@ function handleVisibility() {
   if (document.hidden) return;
   getTurnInfo();
   syncMembersFromPresence();
+  loadPicks();
 }
 
 let presenceSyncTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -342,6 +489,7 @@ onMounted(async () => {
   }
 
   await getTurnInfo();
+  await loadPicks();
   await fetchAutoPickStatus();
   await subscribeToDraftRoom();
   enterPresence();
@@ -387,7 +535,11 @@ onMounted(async () => {
       player: playerSelected.player,
       user: playerSelected.user,
     };
-    menuDraftRef.value?.addPick(newPick);
+    // El board de la sala y el del panel comparten esta lista, así que el pick
+    // que llega por Ably actualiza los dos de una vez.
+    if (!picks.value.some((p) => p.pick === newPick.pick)) {
+      picks.value.push(newPick);
+    }
   });
 
   channel.subscribe("draft.finished", () => {

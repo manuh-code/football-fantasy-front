@@ -256,6 +256,26 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/fantasy/mock-draft',
+    name: 'mockDraftSetup',
+    component: () => import(/* webpackChunkName: "mock-draft-setup" */ '@/views/user/fantasy/MockDraftSetupView.vue'),
+    meta: {
+      title: 'Mock Draft - Football Fantasy',
+      description: 'Ensaya tu draft fantasy contra bots: prueba estrategias, descubre el valor de cada jugador y ve qué se queda disponible en cada ronda.',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/fantasy/mock-draft/:uuid',
+    name: 'mockDraftRoom',
+    component: () => import(/* webpackChunkName: "mock-draft-room" */ '@/views/user/fantasy/MockDraftRoomView.vue'),
+    meta: {
+      title: 'Mock Draft - Football Fantasy',
+      description: 'Sala de mock draft: practica tus selecciones contra equipos automáticos.',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/fantasy/league/:uuid/search-players',
     name: 'searchPlayerFantasy',
     component: () => import(/* webpackChunkName: "search-player-fantasy" */ '@/views/user/fantasy/SearchPlayerFantasyView.vue'),

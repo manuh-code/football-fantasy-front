@@ -82,6 +82,9 @@ import {
   HiSolidDesktopComputer,
   HiSolidSwitchHorizontal,
   RiTeamLine,
+  RiRobotLine,
+  RiTimerFlashLine,
+  HiSolidDotsHorizontal,
 } from 'oh-vue-icons/icons'
 
 // Search and filter icons
@@ -284,6 +287,9 @@ export const iconList = [
   GiSoccerBall,
   GiCrossedSwords,
   RiTeamLine,
+  RiRobotLine,
+  RiTimerFlashLine,
+  HiSolidDotsHorizontal,
   HiSolidFingerPrint,
   HiX,
   HiSolidLocationMarker,

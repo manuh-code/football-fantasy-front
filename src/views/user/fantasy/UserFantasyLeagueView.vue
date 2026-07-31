@@ -50,6 +50,18 @@
                 <v-icon name="hi-solid-user-add" class="w-5 h-5 text-white" />
               </div>
             </button>
+
+            <!-- Practicar: no necesita liga, así que también sirve de entrada
+                 para quien todavía no se ha unido a ninguna. -->
+            <button
+              @click="openMockDraft"
+              class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
+            >
+              <span class="text-sm font-semibold">{{ $t('fantasy.userLeagues.mockDraft') }}</span>
+              <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <v-icon name="ri-robot-line" class="w-5 h-5 text-white" />
+              </div>
+            </button>
           </div>
         </transition>
       </div>
@@ -125,6 +137,11 @@ const openJoin = () => {
   isFabMenuOpen.value = false
   joinInitialCode.value = '' // FAB flow starts from an empty form.
   isJoinOpen.value = true
+}
+
+const openMockDraft = () => {
+  isFabMenuOpen.value = false
+  router.push({ name: 'mockDraftSetup' })
 }
 
 // Modal callbacks
