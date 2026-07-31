@@ -76,7 +76,7 @@
 
     <!-- No League Selected -->
     <div
-      v-else-if="!leagueUuid"
+      v-else-if="!contextUuid"
       class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 p-5"
     >
       <div class="flex items-center gap-3">
@@ -660,6 +660,8 @@ import PlayerFiltersSheet from "@/components/user/fantasy/search/PlayerFiltersSh
 import LineupDrawer from "@/components/fantasy/lineup/LineupDrawer.vue";
 import NationalityBadge from "@/components/football/ui/NationalityBadge.vue";
 import { useDraftWishlistStore } from "@/store/fantasy/useDraftWishlistStore";
+import { mockDraftService } from "@/services/fantasy/mockDraft/MockDraftService";
+import type { SearchFormation } from "@/components/user/fantasy/searchFormation";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 import type { LineupSlotSelection } from "@/components/fantasy/lineup/LineupDrawer.vue";
 
@@ -670,6 +672,19 @@ interface Props {
   positionUuid?: string | null;
   isFlex?: boolean | null;
   isStarter?: boolean | null;
+  /**
+   * Uuid de un mock draft. Cuando viene, esta lista deja de hablar con la liga
+   * y consume el pool del mock: es la misma búsqueda (filtros, scroll infinito,
+   * wishlist, tarjetas) sirviendo a los dos drafts en vez de duplicarla.
+   */
+  mockDraftUuid?: string | null;
+  /**
+   * Formación del mock para los filtros por posición. En el draft real sale de
+   * la liga; el mock no tiene liga, así que la inyecta la sala.
+   */
+  mockFormation?: SearchFormation | null;
+  /** Temporada del mock, para poder filtrar por equipo igual que en la liga. */
+  mockSeasonUuid?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -678,12 +693,29 @@ const props = withDefaults(defineProps<Props>(), {
   positionUuid: null,
   isFlex: null,
   isStarter: null,
+  mockDraftUuid: null,
+  mockFormation: null,
+  mockSeasonUuid: null,
 });
 
 const emit = defineEmits<{
   /** Emitted after a player is successfully added */
   "player-added": [player: FantasyPlayerDraftResponse];
+  /**
+   * En modo mock el pick lo ejecuta la sala (necesita la ráfaga de bots que
+   * devuelve la respuesta), así que aquí solo se anuncia la intención.
+   */
+  "mock-pick": [player: FantasyPlayerDraftResponse];
 }>();
+
+/** Es un mock draft: cambia el origen de los datos y quién ejecuta el pick. */
+const isMockSource = computed(() => !!props.mockDraftUuid);
+
+/**
+ * Clave con la que se agrupan los datos de esta lista (fetch y wishlist): el
+ * uuid de la liga, o el del mock cuando se está practicando.
+ */
+const contextUuid = computed(() => props.mockDraftUuid ?? props.fantasyLeagueUuid);
 
 // Router
 const route = useRoute();
@@ -721,6 +753,14 @@ let observer: IntersectionObserver | null = null;
 
 // Computed
 const leagueUuid = computed(() => props.fantasyLeagueUuid);
+
+/**
+ * Formación que alimenta los filtros por posición: la de la liga, o la que
+ * inyecta la sala del mock.
+ */
+const searchFormation = computed<SearchFormation | null>(() =>
+  isMockSource.value ? props.mockFormation : (league.value?.formation as SearchFormation | null),
+);
 
 /** League participants, sourced from the already-loaded league detail */
 const participants = computed<UserDataInterface[]>(
@@ -853,8 +893,10 @@ const positionFilters = computed(() => {
     },
   ];
 
-  if (league.value?.formation) {
-    if (league.value.formation.goalkeeper?.starter > 0) {
+  const formation = searchFormation.value;
+
+  if (formation) {
+    if ((formation.goalkeeper?.starter ?? 0) > 0) {
       filters.push({
         code: "GOALKEEPER",
         name: t("fantasy.positionsShort.goalkeeper"),
@@ -866,10 +908,10 @@ const positionFilters = computed(() => {
           "bg-blue-600 dark:bg-blue-500 shadow-blue-500/30 shadow-md",
         slotsTextActive: "text-blue-500 dark:text-blue-400",
         barColor: "bg-blue-600 dark:bg-blue-400",
-        slots: league.value.formation.goalkeeper.starter,
+        slots: formation.goalkeeper?.starter,
       });
     }
-    if (league.value.formation.defender?.starter > 0) {
+    if ((formation.defender?.starter ?? 0) > 0) {
       filters.push({
         code: "DEFENDER",
         name: t("fantasy.positionsShort.defender"),
@@ -881,10 +923,10 @@ const positionFilters = computed(() => {
           "bg-emerald-600 dark:bg-emerald-500 shadow-emerald-500/30 shadow-md",
         slotsTextActive: "text-emerald-500 dark:text-emerald-400",
         barColor: "bg-emerald-600 dark:bg-emerald-400",
-        slots: league.value.formation.defender.starter,
+        slots: formation.defender?.starter,
       });
     }
-    if (league.value.formation.midfielder?.starter > 0) {
+    if ((formation.midfielder?.starter ?? 0) > 0) {
       filters.push({
         code: "MIDFIELDER",
         name: t("fantasy.positionsShort.midfielder"),
@@ -896,10 +938,10 @@ const positionFilters = computed(() => {
           "bg-amber-600 dark:bg-amber-500 shadow-amber-500/30 shadow-md",
         slotsTextActive: "text-amber-500 dark:text-amber-400",
         barColor: "bg-amber-600 dark:bg-amber-400",
-        slots: league.value.formation.midfielder.starter,
+        slots: formation.midfielder?.starter,
       });
     }
-    if (league.value.formation.attacker?.starter > 0) {
+    if ((formation.attacker?.starter ?? 0) > 0) {
       filters.push({
         code: "ATTACKER",
         name: t("fantasy.positionsShort.attacker"),
@@ -911,7 +953,7 @@ const positionFilters = computed(() => {
           "bg-rose-600 dark:bg-rose-500 shadow-rose-500/30 shadow-md",
         slotsTextActive: "text-rose-500 dark:text-rose-400",
         barColor: "bg-rose-600 dark:bg-rose-400",
-        slots: league.value.formation.attacker.starter,
+        slots: formation.attacker?.starter,
       });
     }
   }
@@ -959,12 +1001,12 @@ function isAddingPlayer(playerUuid: string): boolean {
 
 /** Draft-only pre-draft wishlist ("lista de deseos") — client-side, no API. */
 function isWishlisted(playerUuid: string): boolean {
-  return !!leagueUuid.value && wishlistStore.has(leagueUuid.value, playerUuid);
+  return !!contextUuid.value && wishlistStore.has(contextUuid.value, playerUuid);
 }
 
 function toggleWishlist(player: FantasyPlayerDraftResponse) {
-  if (!leagueUuid.value) return;
-  const added = wishlistStore.toggle(leagueUuid.value, player);
+  if (!contextUuid.value) return;
+  const added = wishlistStore.toggle(contextUuid.value, player);
   toast.success(
     added
       ? t("fantasy.draft.wishlist.addedToast")
@@ -975,7 +1017,8 @@ function toggleWishlist(player: FantasyPlayerDraftResponse) {
 }
 
 async function loadLeague() {
-  if (!leagueUuid.value) return;
+  // El mock no cuelga de ninguna liga: su configuración llega por props.
+  if (isMockSource.value || !leagueUuid.value) return;
   try {
     league.value = await fantasyLeagueService.showFantasyLeague(
       leagueUuid.value,
@@ -986,11 +1029,13 @@ async function loadLeague() {
 }
 
 async function loadTeams() {
-  if (!league.value?.current_football_season_uuid) return;
+  const seasonUuid = isMockSource.value
+    ? props.mockSeasonUuid
+    : league.value?.current_football_season_uuid;
+
+  if (!seasonUuid) return;
   try {
-    teams.value = await catalogService.getTeamsBySeasonUuid(
-      league.value.current_football_season_uuid,
-    );
+    teams.value = await catalogService.getTeamsBySeasonUuid(seasonUuid);
   } catch (err: unknown) {
     console.error("Error loading teams:", err);
   }
@@ -1025,8 +1070,16 @@ function handleFilterChange(position: string) {
  * Add or pick a player depending on the current mode.
  */
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
-  if (props.disabled || !canAddPlayer.value || !leagueUuid.value || isAddingPlayer(player.player.uuid))
+  if (props.disabled || !canAddPlayer.value || !contextUuid.value || isAddingPlayer(player.player.uuid))
     return;
+
+  // En el mock el pick dispara además la ráfaga de bots, que llega en la misma
+  // respuesta; por eso lo ejecuta la sala y aquí solo se retira de la lista.
+  if (isMockSource.value) {
+    removePlayerFromList(player);
+    emit("mock-pick", player);
+    return;
+  }
 
   if (props.mode === 'add' && player.in_play) return;
 
@@ -1157,7 +1210,7 @@ function removePlayerFromList(player: FantasyPlayerDraftResponse) {
 }
 
 async function loadPlayers(append = false) {
-  if (!leagueUuid.value) return;
+  if (!contextUuid.value) return;
 
   if (append) {
     if (isLoadingMore.value || !hasMoreData.value) return;
@@ -1176,10 +1229,11 @@ async function loadPlayers(append = false) {
       filters: buildPayloadFilters(),
     };
 
-    const response = await fantasyLeagueService.getPlayersToDraft(
-      leagueUuid.value,
-      payload,
-    );
+    // El pool del mock y el de la liga devuelven exactamente la misma forma
+    // (StatisticsPlayerFantasyScoreResource), así que solo cambia el endpoint.
+    const response = isMockSource.value
+      ? await mockDraftService.getPlayers(props.mockDraftUuid as string, payload)
+      : await fantasyLeagueService.getPlayersToDraft(leagueUuid.value as string, payload);
 
     players.value = append ? [...players.value, ...response] : response;
     handlePaginationResult(response.length, append);
@@ -1196,12 +1250,12 @@ async function loadPlayers(append = false) {
 function buildPayloadFilters(): FantasyPlayerDraftPayload["filters"] {
   const filters: Record<string, string> = {};
 
-  if (selectedPosition.value !== "ALL" && league.value?.formation) {
+  if (selectedPosition.value !== "ALL" && searchFormation.value) {
     const positionMap: Record<string, string | undefined> = {
-      GOALKEEPER: league.value.formation.goalkeeper?.uuid,
-      DEFENDER: league.value.formation.defender?.uuid,
-      MIDFIELDER: league.value.formation.midfielder?.uuid,
-      ATTACKER: league.value.formation.attacker?.uuid,
+      GOALKEEPER: searchFormation.value.goalkeeper?.uuid,
+      DEFENDER: searchFormation.value.defender?.uuid,
+      MIDFIELDER: searchFormation.value.midfielder?.uuid,
+      ATTACKER: searchFormation.value.attacker?.uuid,
     };
     const positionUuid = positionMap[selectedPosition.value];
     if (positionUuid) {
@@ -1276,8 +1330,8 @@ function setupIntersectionObserver() {
   observer.observe(observerTarget.value);
 }
 
-// Watch league uuid changes
-watch(leagueUuid, async (newVal) => {
+// Recarga completa al cambiar de liga o de mock draft.
+watch(contextUuid, async (newVal) => {
   if (newVal) {
     await loadLeague();
     await loadTeams();
@@ -1327,14 +1381,31 @@ onUnmounted(() => {
 
 /** Remove a player from the list by UUID (called from parent via ref) */
 function removePlayerByUuid(playerUuid: string) {
+  removePlayersByUuids([playerUuid]);
+}
+
+/**
+ * Retira varios jugadores de la lista de una sola vez.
+ *
+ * Tiene que ser UNA actualización, no una por jugador: la TransitionGroup
+ * cambia de `name` según `animateRemoval`, así que varias mutaciones seguidas
+ * en el mismo tick reinician la animación y dejan filas huérfanas en el DOM
+ * (con `player-row-leave-from` puesto para siempre). El mock draft ficha en
+ * ráfaga —tu pick más todos los bots hasta tu siguiente turno—, así que esta es
+ * su vía normal de limpieza.
+ */
+function removePlayersByUuids(playerUuids: string[]) {
+  if (playerUuids.length === 0) return;
+
+  const removing = new Set(playerUuids);
   animateRemoval.value = true;
-  players.value = players.value.filter((p) => p.player.uuid !== playerUuid);
+  players.value = players.value.filter((p) => !removing.has(p.player.uuid));
   setTimeout(() => {
     animateRemoval.value = false;
   }, 500);
 }
 
-defineExpose({ removePlayerByUuid });
+defineExpose({ removePlayerByUuid, removePlayersByUuids });
 </script>
 
 <style scoped>

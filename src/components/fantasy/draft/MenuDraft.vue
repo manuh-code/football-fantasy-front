@@ -52,10 +52,10 @@
 
         <!-- Panel body -->
         <div class="flex-1 overflow-y-auto overscroll-contain px-2.5 py-3">
-          <DraftPlayerPicked
+          <DraftPicksTable
             v-if="activeTab === 'boards'"
-            ref="draftPickedRef"
-            :fantasyLeagueUuid="fantasyLeagueUuid"
+            :contenders="contenders"
+            :picks="picks"
           />
           <div v-else-if="activeTab === 'wishlist'" class="max-w-xl mx-auto w-full">
             <DraftWishlist
@@ -157,11 +157,11 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import DraftPlayerPicked from '@/components/fantasy/draft/DraftPlayerPicked.vue'
+import DraftPicksTable from '@/components/fantasy/draft/shared/DraftPicksTable.vue'
 import DraftWishlist from '@/components/fantasy/draft/DraftWishlist.vue'
 import { useDraftWishlistStore } from '@/store/fantasy/useDraftWishlistStore'
 import { useKeyboardInset } from '@/composables/useKeyboardInset'
-import type { FantasyDraftPlayerPicked } from '@/interfaces/fantasy/draft/FantasyDraftPlayerPicked'
+import type { DraftBoardPick, DraftContender } from '@/components/fantasy/draft/shared/draftShared'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -170,14 +170,22 @@ const props = withDefaults(defineProps<{
   leftOffset?: number
   fantasyLeagueUuid: string
   isMyTurn?: boolean
+  /**
+   * Board del draft, ya normalizado por la sala. Antes este panel se lo pedía a
+   * la API por su cuenta, lo que duplicaba la carga que la sala ya hacía para
+   * su propia tira de picks y podía dejar los dos boards desincronizados.
+   */
+  contenders?: DraftContender[]
+  picks?: DraftBoardPick[]
 }>(), {
   leftOffset: 0,
   isMyTurn: false,
+  contenders: () => [],
+  picks: () => [],
 })
 
 type PanelTab = 'boards' | 'wishlist'
 const activeTab = ref<PanelTab | null>(null)
-const draftPickedRef = ref<InstanceType<typeof DraftPlayerPicked> | null>(null)
 
 const wishlistStore = useDraftWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count(props.fantasyLeagueUuid))
@@ -208,15 +216,7 @@ function closePanel() {
   activeTab.value = null
 }
 
-function refresh() {
-  draftPickedRef.value?.refresh()
-}
 
-function addPick(pick: FantasyDraftPlayerPicked) {
-  draftPickedRef.value?.addPick(pick)
-}
-
-defineExpose({ refresh, addPick })
 </script>
 
 <style scoped>

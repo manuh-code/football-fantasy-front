@@ -114,7 +114,8 @@
     "fabQuickActions": "Acciones rápidas",
     "fabClose": "Cerrar menú",
     "createLeague": "Crear liga",
-    "joinLeague": "Unirse a liga"
+    "joinLeague": "Unirse a liga",
+    "mockDraft": "Mock draft"
   },
   "showTeam": {
     "couldNotLoad": "No se pudo cargar el equipo",
@@ -176,7 +177,13 @@
     "board": {
       "failedLoad": "No se pudo cargar el tablero del draft",
       "noPicks": "Aún no hay selecciones",
-      "noPicksSub": "El tablero se actualizará a medida que se elijan jugadores."
+      "noPicksSub": "El tablero se actualizará a medida que se elijan jugadores.",
+      "title": "Board del draft",
+      "progress": "{picks} de {total} picks",
+      "snake": "orden serpiente",
+      "onTheClock": "En el reloj",
+      "prevRound": "Ronda anterior",
+      "nextRound": "Ronda siguiente"
     },
     "menu": {
       "nav": "Navegación del draft",
@@ -202,6 +209,108 @@
       "waitTurn": "Espera tu turno para poder draftear desde aquí.",
       "addedToast": "Agregado a tus deseos",
       "removedToast": "Quitado de tus deseos"
+    },
+    "results": {
+      "gradeLabel": "Nota de tu draft",
+      "finishedPosition": "Terminaste {position}º de {total}",
+      "vsAverage": "{points} pts frente a {average} de media de la sala",
+      "disclaimer": "La nota compara los puntos de tu once titular con la media de la sala, usando los puntos de la temporada de referencia: mide cómo drafteaste, no cómo irá tu temporada.",
+      "bestPick": "Tu mejor pick",
+      "bestPickDetail": "Pick {pick} · Ronda {round} · {points} pts",
+      "rankingTitle": "Clasificación de la sala",
+      "tab": "Boleta",
+      "loadError": "No se pudo cargar la boleta del draft."
+    }
+  },
+  "mockDraft": {
+    "intro": {
+      "title": "Mock Draft",
+      "body": "Un draft de práctica contra equipos automáticos. Ensaya estrategias, aprende el valor real de cada jugador y descubre quién suele quedar disponible en cada ronda — sin arriesgar nada."
+    },
+    "setup": {
+      "title": "Configura tu mock draft",
+      "subtitle": "Ajusta la sala y empieza a practicar. Puedes crear todos los que quieras.",
+      "preset": "Ensayar el draft de una liga",
+      "presetNone": "Sin liga (configuración libre)",
+      "presetHint": "Se usarán la puntuación, la formación y el número de participantes de esa liga.",
+      "teams": "Equipos en la sala",
+      "slot": "Tu posición en el orden",
+      "slotRandom": "Al azar",
+      "timer": "Tiempo por pick",
+      "timerNone": "Sin límite",
+      "difficulty": "Nivel de los bots",
+      "snake": "Orden serpiente",
+      "snakeHint": "El orden se invierte en cada ronda par, como en el draft real.",
+      "start": "Empezar mock draft",
+      "creating": "Creando sala..."
+    },
+    "difficulty": {
+      "easy": "Fácil",
+      "normal": "Normal",
+      "expert": "Experto"
+    },
+    "difficultyHint": {
+      "easy": "Los bots miran bastante abajo en el ranking: se les escapan jugadores buenos.",
+      "normal": "Los bots eligen entre los mejores disponibles, con algo de margen para sorprenderte.",
+      "expert": "Los bots casi siempre se llevan al mejor disponible. Las gangas escasean."
+    },
+    "recent": {
+      "title": "Mocks recientes",
+      "ttlNotice": "Los mock drafts son temporales y se borran solos pasados unos días.",
+      "freeMock": "Mock draft libre",
+      "detail": "{teams} equipos · {difficulty} · {picks}/{total} picks",
+      "delete": "Eliminar mock draft",
+      "deleted": "Mock draft eliminado"
+    },
+    "room": {
+      "practiceMode": "Modo práctica",
+      "autoPick": "Elegir por mí",
+      "simulate": "Simular hasta el final",
+      "botPicked": "{name} ha fichado",
+      "timeUp": "Se acabó el tiempo",
+      "timeUpBody": "Elegimos por ti según tu lista de deseos.",
+      "exit": "Salir"
+    },
+    "timer": {
+      "yourTurn": "¡Es tu turno!",
+      "botTurn": "Turno de {name}",
+      "pickRound": "Pick {pick} · Ronda {round} de {rounds}",
+      "noLimit": "Sin límite de tiempo"
+    },
+    "board": {
+      "title": "Board del draft",
+      "subtitle": "{picks} de {total} picks",
+      "snake": "orden serpiente",
+      "onTheClock": "En el reloj",
+      "prevRound": "Ronda anterior",
+      "nextRound": "Ronda siguiente"
+    },
+    "pool": {
+      "waitingTurn": "Espera tu turno para fichar.",
+      "wishlist": "Añadir a la lista de deseos"
+    },
+    "myTeam": {
+      "title": "Tu equipo",
+      "filled": "{filled} de {total} plazas",
+      "empty": "Todavía no has fichado a nadie.",
+      "starters": "Titulares",
+      "flex": "Flex",
+      "bench": "Banca",
+      "auto": "automático",
+      "tab": "Equipo"
+    },
+    "expired": {
+      "title": "Este mock draft ya no está",
+      "body": "Los mock drafts son temporales: se guardan unos días y luego se borran solos. Crea uno nuevo para seguir practicando.",
+      "cta": "Crear un mock draft"
+    },
+    "leagueCta": {
+      "title": "Ensaya este draft",
+      "body": "Practica con la misma puntuación, formación y número de participantes de esta liga.",
+      "cta": "Mock draft"
+    },
+    "results": {
+      "newMock": "Otro mock draft"
     }
   },
   "detail": {

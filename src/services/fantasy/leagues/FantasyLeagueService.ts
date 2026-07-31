@@ -22,6 +22,7 @@ import { FantasyStandingResponse } from "@/interfaces/fantasy/standing/FantasySt
 import { FantasyTradePayload } from "@/interfaces/fantasy/trade/FantasyTradePayload";
 import { FantasyTradeResponse } from "@/interfaces/fantasy/trade/FantasyTradeResponse";
 import { PlayerFantasyScoreDetailResponse } from "@/interfaces/fantasy/score/PlayerFantasyScoreDetailResponse";
+import { DraftResults } from "@/interfaces/fantasy/draft/DraftResults";
 
 
 export class FantasyLeagueService {
@@ -252,6 +253,20 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch picked players');
+    }
+
+    /**
+     * Boleta del draft: nota, posición en la sala y mejor pick. Mismo payload
+     * que la del mock draft, así que la pinta el mismo componente.
+     */
+    async getDraftResults(fantasyLeagueUuid: string): Promise<DraftResults> {
+        const response = await this.api.get<ApiResponse<DraftResults>>(
+            `fantasy/leagues/draft/${fantasyLeagueUuid}/results`
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch draft results');
     }
 
     async lineupPlayerRemove(payload: LineupPlayerRemovePayload): Promise<ApiResponse<null>> {
