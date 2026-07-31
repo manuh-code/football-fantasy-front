@@ -30,7 +30,7 @@
       >
         <NoResults
           :title="$t('football.standings.noStandings')"
-          description="No standings available for this stage."
+          :description="$t('football.standings.emptyDescription')"
           icon="bi-trophy-fill"
         />
       </div>
@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import footballLeagueService from "@/services/football/league/FootballLeagueService";
 import NoResults from "@/components/ui/NoResults.vue";
 import AdUnit from "@/components/ads/AdUnit.vue";
@@ -69,6 +70,8 @@ const props = defineProps<{
   stageUuid: string;
   seasonUuid: string;
 }>();
+
+const { t } = useI18n();
 
 const standings = ref<FootballLeagueStandingsResponse[]>([]);
 const loading = ref(false);
@@ -101,7 +104,7 @@ const fetchStandings = async () => {
     if (Array.isArray(res)) standings.value = res;
     else standings.value = [];
   } catch (e) {
-    error.value = "Error loading standings.";
+    error.value = t("football.standings.loadError");
     console.error("Error loading standings:", e);
   } finally {
     loading.value = false;

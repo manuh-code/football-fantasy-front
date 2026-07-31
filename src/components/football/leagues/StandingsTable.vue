@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
 
@@ -9,6 +11,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   "team-selected": [teamUuid: string];
 }>();
+
+const { t } = useI18n();
 
 const onTeamSelect = (row: FootballLeagueStandingsResponse) => {
   if (row.team?.uuid) emit("team-selected", row.team.uuid);
@@ -78,141 +82,219 @@ const formatGD = (val: string | number | undefined) => {
   if (n > 0) return `+${n}`;
   return String(n);
 };
+
+// ── Zone legend ──
+// Only surface the zones that actually exist for this league size, mirroring
+// the thresholds in positionZoneColor() so the colors stop being a mystery.
+const legendZones = computed(() => {
+  const zones: { color: string; label: string }[] = [];
+  const n = props.standings.length;
+  if (n === 0) return zones;
+  zones.push({ color: "bg-emerald-500", label: t("football.standings.zoneQualification") });
+  if (n >= 5) zones.push({ color: "bg-amber-400", label: t("football.standings.zonePlayoff") });
+  if (n >= 18) zones.push({ color: "bg-red-500", label: t("football.standings.zoneRelegation") });
+  return zones;
+});
+
+// ── Horizontal scroll hint ──
+// On mobile the GF/GA/GD/Form columns sit off-screen between L and the pinned
+// Pts column, with no signal they exist. A right-edge fade (just left of the
+// sticky Pts) tells the user there's more to swipe to.
+const scrollWrapper = ref<HTMLElement | null>(null);
+const canScrollRight = ref(false);
+
+function updateScrollHints() {
+  const el = scrollWrapper.value;
+  if (!el) return;
+  canScrollRight.value = Math.ceil(el.scrollLeft + el.clientWidth) < el.scrollWidth - 1;
+}
+
+onMounted(() => {
+  nextTick(updateScrollHints);
+  window.addEventListener("resize", updateScrollHints);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateScrollHints);
+});
+
+watch(
+  () => props.standings,
+  () => nextTick(updateScrollHints),
+);
 </script>
 
 <template>
-  <div class="standings-table-wrapper overflow-x-auto">
-    <table class="w-full min-w-[600px]">
-      <!-- Header row -->
-      <thead>
-        <tr class="border-b border-gray-100 dark:border-gray-700/60">
-          <th class="standings-th standings-sticky-left left-0 z-10 w-8 text-center bg-white dark:bg-gray-800">#</th>
-          <th class="standings-th standings-sticky-left left-8 z-10 text-left pl-2 bg-white dark:bg-gray-800">{{ $t('football.standings.team') }}</th>
-          <th class="standings-th w-8 text-center">{{ $t('football.standings.mp') }}</th>
-          <th class="standings-th w-8 text-center">{{ $t('football.standings.w') }}</th>
-          <th class="standings-th w-8 text-center">{{ $t('football.standings.d') }}</th>
-          <th class="standings-th w-8 text-center">{{ $t('football.standings.l') }}</th>
-          <th class="standings-th w-9 text-center">{{ $t('football.standings.gf') }}</th>
-          <th class="standings-th w-9 text-center">{{ $t('football.standings.ga') }}</th>
-          <th class="standings-th w-9 text-center">{{ $t('football.standings.gd') }}</th>
-          <th class="standings-th w-24 text-center">{{ $t('football.standings.form') }}</th>
-          <th class="standings-th standings-sticky-right right-0 z-10 w-12 text-center bg-white dark:bg-gray-800">{{ $t('football.standings.pts') }}</th>
-        </tr>
-      </thead>
+  <div class="standings">
+    <div class="relative">
+      <div
+        ref="scrollWrapper"
+        class="standings-table-wrapper overflow-x-auto overflow-y-auto max-h-[70vh]"
+        @scroll="updateScrollHints"
+      >
+        <table class="w-full min-w-[600px]">
+          <!-- Header row (sticky so labels stay while scrolling long tables) -->
+          <thead>
+            <tr>
+              <th class="standings-th standings-sticky-left left-0 z-30 w-8 text-center">#</th>
+              <th class="standings-th standings-sticky-left left-8 z-30 text-left pl-2">{{ $t('football.standings.team') }}</th>
+              <th class="standings-th w-8 text-center">{{ $t('football.standings.mp') }}</th>
+              <th class="standings-th w-8 text-center">{{ $t('football.standings.w') }}</th>
+              <th class="standings-th w-8 text-center">{{ $t('football.standings.d') }}</th>
+              <th class="standings-th w-8 text-center">{{ $t('football.standings.l') }}</th>
+              <th class="standings-th w-9 text-center">{{ $t('football.standings.gf') }}</th>
+              <th class="standings-th w-9 text-center">{{ $t('football.standings.ga') }}</th>
+              <th class="standings-th w-9 text-center">{{ $t('football.standings.gd') }}</th>
+              <th class="standings-th w-24 text-center">{{ $t('football.standings.form') }}</th>
+              <th class="standings-th standings-sticky-right right-0 z-30 w-12 text-center">{{ $t('football.standings.pts') }}</th>
+            </tr>
+          </thead>
 
-      <!-- Body -->
-      <tbody>
-        <tr
-          v-for="(row, idx) in standings"
-          :key="row.team?.uuid || idx"
-          @click="onTeamSelect(row)"
-          class="standings-row group cursor-pointer"
-          :class="{
-            'border-b border-gray-50 dark:border-gray-700/30': idx < standings.length - 1,
-          }"
-        >
-          <!-- Position with zone indicator -->
-          <td class="py-2.5 px-1 text-center relative standings-sticky-left left-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
-            <div
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
-              :class="positionZoneColor(row.position)"
-            />
-            <span
-              class="text-xs tabular-nums"
-              :class="row.position === 1
-                ? 'font-extrabold text-emerald-600 dark:text-emerald-400'
-                : 'font-semibold text-gray-500 dark:text-gray-400'"
+          <!-- Body -->
+          <tbody>
+            <tr
+              v-for="(row, idx) in standings"
+              :key="row.team?.uuid || idx"
+              @click="onTeamSelect(row)"
+              @keydown.enter="onTeamSelect(row)"
+              @keydown.space.prevent="onTeamSelect(row)"
+              class="standings-row group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500"
+              tabindex="0"
+              :aria-label="$t('football.standings.openTeamAria', { team: row.team?.name })"
+              :class="{
+                'border-b border-gray-50 dark:border-gray-700/30': idx < standings.length - 1,
+              }"
             >
-              {{ row.position }}
-            </span>
-          </td>
-
-          <!-- Team -->
-          <td class="py-2 pl-2 pr-1 standings-sticky-left left-8 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
-            <div class="flex items-center gap-2 min-w-0">
-              <TeamLogo :team="row.team" size="sm" variant="square" />
-              <span class="text-xs font-medium text-gray-900 dark:text-white truncate">
-                {{ row.team?.name }}
-              </span>
-            </div>
-          </td>
-
-          <!-- MP -->
-          <td class="standings-cell">
-            {{ getStat(row.statistics, "overall-matches-played") }}
-          </td>
-
-          <!-- W -->
-          <td class="standings-cell font-semibold text-emerald-600 dark:text-emerald-400">
-            {{ getStat(row.statistics, "overall-won") }}
-          </td>
-
-          <!-- D -->
-          <td class="standings-cell">
-            {{ getStat(row.statistics, "overall-draw") }}
-          </td>
-
-          <!-- L -->
-          <td class="standings-cell font-semibold text-red-500 dark:text-red-400">
-            {{ getStat(row.statistics, "overall-lost") }}
-          </td>
-
-          <!-- GF -->
-          <td class="standings-cell">
-            {{ getStat(row.statistics, "overall-goals-for") }}
-          </td>
-
-          <!-- GA -->
-          <td class="standings-cell">
-            {{ getStat(row.statistics, "overall-goals-against") }}
-          </td>
-
-          <!-- GD -->
-          <td class="py-2.5 px-1 text-center">
-            <span
-              class="text-2xs tabular-nums font-semibold"
-              :class="gdColor(getStat(row.statistics, 'goal-difference'))"
-            >
-              {{ formatGD(getStat(row.statistics, 'goal-difference')) }}
-            </span>
-          </td>
-
-          <!-- Form -->
-          <td class="py-2.5 px-1 text-center">
-            <div class="flex items-center justify-center gap-[3px]">
-              <template v-for="(f, i) in lastFive(row.form)" :key="i">
+              <!-- Position with zone indicator -->
+              <td class="py-3 px-1 text-center relative standings-sticky-left left-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 group-active:bg-gray-50 dark:group-active:bg-gray-700/30 transition-colors">
                 <div
-                  :class="[
-                    formColor(f.form),
-                    'w-[18px] h-[18px] rounded-[4px] flex items-center justify-center text-white text-2xs font-bold leading-none',
-                  ]"
+                  class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                  :class="positionZoneColor(row.position)"
+                />
+                <span
+                  class="text-xs tabular-nums"
+                  :class="row.position === 1
+                    ? 'font-extrabold text-emerald-600 dark:text-emerald-400'
+                    : 'font-semibold text-gray-500 dark:text-gray-400'"
                 >
-                  {{ f.form }}
-                </div>
-              </template>
-            </div>
-          </td>
+                  {{ row.position }}
+                </span>
+              </td>
 
-          <!-- Points -->
-          <td class="py-2.5 px-1 text-center standings-sticky-right right-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 transition-colors">
-            <span
-              class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md text-footnote font-bold tabular-nums ring-1"
-              :class="row.position === 1
-                ? 'bg-emerald-500 text-white ring-transparent'
-                : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 ring-transparent'"
-            >
-              {{ getStat(row.statistics, "overall-points") }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+              <!-- Team -->
+              <td class="py-3 pl-2 pr-1 standings-sticky-left left-8 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 group-active:bg-gray-50 dark:group-active:bg-gray-700/30 transition-colors">
+                <div class="flex items-center gap-2 min-w-0">
+                  <TeamLogo :team="row.team" size="sm" variant="square" />
+                  <span class="text-xs font-medium text-gray-900 dark:text-white truncate">
+                    {{ row.team?.name }}
+                  </span>
+                  <v-icon
+                    name="hi-solid-chevron-right"
+                    class="w-3 h-3 text-gray-300 dark:text-gray-600 shrink-0 ml-auto opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
+                  />
+                </div>
+              </td>
+
+              <!-- MP -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-matches-played") }}
+              </td>
+
+              <!-- W -->
+              <td class="standings-cell font-semibold text-emerald-600 dark:text-emerald-400">
+                {{ getStat(row.statistics, "overall-won") }}
+              </td>
+
+              <!-- D -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-draw") }}
+              </td>
+
+              <!-- L -->
+              <td class="standings-cell font-semibold text-red-500 dark:text-red-400">
+                {{ getStat(row.statistics, "overall-lost") }}
+              </td>
+
+              <!-- GF -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-goals-for") }}
+              </td>
+
+              <!-- GA -->
+              <td class="standings-cell">
+                {{ getStat(row.statistics, "overall-goals-against") }}
+              </td>
+
+              <!-- GD -->
+              <td class="py-3 px-1 text-center">
+                <span
+                  class="text-2xs tabular-nums font-semibold"
+                  :class="gdColor(getStat(row.statistics, 'goal-difference'))"
+                >
+                  {{ formatGD(getStat(row.statistics, 'goal-difference')) }}
+                </span>
+              </td>
+
+              <!-- Form -->
+              <td class="py-3 px-1 text-center">
+                <div class="flex items-center justify-center gap-[3px]">
+                  <template v-for="(f, i) in lastFive(row.form)" :key="i">
+                    <div
+                      :class="[
+                        formColor(f.form),
+                        'w-[18px] h-[18px] rounded-[4px] flex items-center justify-center text-white text-2xs font-bold leading-none',
+                      ]"
+                    >
+                      {{ f.form }}
+                    </div>
+                  </template>
+                </div>
+              </td>
+
+              <!-- Points -->
+              <td class="py-3 px-1 text-center standings-sticky-right right-0 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 group-active:bg-gray-50 dark:group-active:bg-gray-700/30 transition-colors">
+                <span
+                  class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded-md text-footnote font-bold tabular-nums ring-1"
+                  :class="row.position === 1
+                    ? 'bg-emerald-500 text-white ring-transparent'
+                    : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 ring-transparent'"
+                >
+                  {{ getStat(row.statistics, "overall-points") }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right-edge scroll hint: sits just left of the pinned Pts column -->
+      <div
+        v-show="canScrollRight"
+        class="pointer-events-none absolute top-0 bottom-0 right-12 w-8 bg-gradient-to-l from-white to-transparent dark:from-gray-800"
+        aria-hidden="true"
+      />
+    </div>
+
+    <!-- Zone legend -->
+    <div
+      v-if="legendZones.length"
+      class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-3 py-2.5 border-t border-gray-100 dark:border-gray-700/60"
+    >
+      <div v-for="zone in legendZones" :key="zone.label" class="flex items-center gap-1.5">
+        <span class="w-2.5 h-2.5 rounded-full shrink-0" :class="zone.color" />
+        <span class="text-2xs text-gray-500 dark:text-gray-400">{{ zone.label }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* Compact header cells */
+/* Compact header cells — sticky to the top so column labels stay visible
+   while scrolling long tables. */
 .standings-th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   padding: 8px 4px;
   font-size: 0.6875rem; /* 11px — mínimo legible */
   font-weight: 600;
@@ -220,14 +302,23 @@ const formatGD = (val: string | number | undefined) => {
   text-transform: uppercase;
   color: #9ca3af; /* gray-400 */
   white-space: nowrap;
+  background: #ffffff;
+  box-shadow: inset 0 -1px 0 #f3f4f6; /* gray-100 — keeps a hairline under the header */
 }
 .dark .standings-th {
   color: #6b7280; /* gray-500 */
+  background: #1f2937; /* gray-800 */
+  box-shadow: inset 0 -1px 0 rgba(55, 65, 81, 0.6); /* gray-700/60 */
+}
+/* Corner cells (frozen row + column) must sit above the other sticky cells. */
+.standings-th.standings-sticky-left,
+.standings-th.standings-sticky-right {
+  z-index: 30;
 }
 
 /* Compact body cells */
 .standings-cell {
-  padding: 10px 4px;
+  padding: 12px 4px;
   text-align: center;
   font-size: 0.6875rem; /* 11px — mínimo legible */
   font-variant-numeric: tabular-nums;
@@ -253,6 +344,7 @@ const formatGD = (val: string | number | undefined) => {
 }
 .standings-table-wrapper::-webkit-scrollbar {
   height: 3px;
+  width: 3px;
 }
 .standings-table-wrapper::-webkit-scrollbar-track {
   background: transparent;
