@@ -225,7 +225,12 @@
   "mockDraft": {
     "intro": {
       "title": "Mock Draft",
-      "body": "Un draft de práctica contra equipos automáticos. Ensaya estrategias, aprende el valor real de cada jugador y descubre quién suele quedar disponible en cada ronda — sin arriesgar nada."
+      "body": "Un draft de práctica contra equipos automáticos. Ensaya estrategias, aprende el valor real de cada jugador y descubre quién suele quedar disponible en cada ronda — sin arriesgar nada.",
+      "badges": {
+        "free": "Gratis e ilimitado",
+        "instant": "Empieza al instante",
+        "noRisk": "Sin consecuencias"
+      }
     },
     "setup": {
       "title": "Configura tu mock draft",
@@ -242,7 +247,22 @@
       "snake": "Orden serpiente",
       "snakeHint": "El orden se invierte en cada ronda par, como en el draft real.",
       "start": "Empezar mock draft",
-      "creating": "Creando sala..."
+      "creating": "Creando sala...",
+      "presetSubtitle": "Copia la configuración de una liga tuya.",
+      "teamsHint": "Cuántos rivales pelean por los mismos jugadores.",
+      "teamsDecrease": "Quitar un equipo",
+      "teamsIncrease": "Añadir un equipo",
+      "lockedByLeague": "Lo fija la liga",
+      "slotHint": "Elegir pronto da estrellas; elegir tarde, dos picks seguidos.",
+      "slotPick": "Pick {pick}",
+      "slotPicks": "Elegirías en los picks {picks}…",
+      "timerHint": "Cuánto tiempo tienes para decidir cada fichaje.",
+      "difficultyHintShort": "Qué tan bien eligen los equipos automáticos.",
+      "recapTitle": "Tu sala",
+      "recapTeams": "{teams} equipos",
+      "recapSnake": "Serpiente",
+      "errorTitle": "No pudimos cargar la configuración",
+      "errorBody": "Revisa tu conexión e inténtalo de nuevo."
     },
     "difficulty": {
       "easy": "Fácil",
@@ -260,7 +280,11 @@
       "freeMock": "Mock draft libre",
       "detail": "{teams} equipos · {difficulty} · {picks}/{total} picks",
       "delete": "Eliminar mock draft",
-      "deleted": "Mock draft eliminado"
+      "deleted": "Mock draft eliminado",
+      "statusActive": "En curso",
+      "statusCompleted": "Terminado",
+      "confirmDelete": "¿Eliminar?",
+      "justNow": "Justo ahora"
     },
     "room": {
       "practiceMode": "Modo práctica",

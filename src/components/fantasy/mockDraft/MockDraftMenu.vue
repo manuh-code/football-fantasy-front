@@ -13,37 +13,43 @@
     <Transition name="slide-up">
       <section
         v-if="isPanelOpen"
-        class="fixed top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] bottom-[76px] left-0 right-0 z-[100] flex flex-col overflow-hidden rounded-t-3xl bg-gray-50 dark:bg-gray-900 shadow-[0_-8px_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 dark:ring-white/10"
+        class="fixed top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] left-0 right-0 z-[100] flex flex-col overflow-hidden rounded-t-3xl bg-gray-50 dark:bg-gray-900 shadow-[0_-8px_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 dark:ring-white/10"
+        :style="panelStyle"
         :aria-label="panelTitle"
       >
-        <div class="flex justify-center pt-2 pb-1 shrink-0">
-          <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-        </div>
-
-        <header
-          class="flex items-center justify-between gap-3 px-4 pb-2.5 shrink-0 border-b border-gray-100 dark:border-gray-800"
-        >
-          <div class="flex items-center gap-2 min-w-0">
-            <span
-              class="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-              :class="headerIconClass"
-            >
-              <v-icon :name="headerIconName" class="w-4 h-4" />
-            </span>
-            <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
-              {{ panelTitle }}
-            </h2>
+        <!-- Zona arrastrable: solo el handle + header cierran con swipe, para
+             que el scroll propio de la lista de abajo nunca se confunda con
+             el gesto de cerrar. -->
+        <div @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
+          <div class="flex justify-center pt-2 pb-1 shrink-0">
+            <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
           </div>
 
-          <button
-            type="button"
-            :aria-label="$t('fantasy.draft.menu.close')"
-            class="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 active:scale-90 transition-all cursor-pointer"
-            @click="closePanel"
+          <header
+            class="flex items-center justify-between gap-3 px-4 pb-2.5 shrink-0 border-b border-gray-100 dark:border-gray-800"
           >
-            <v-icon name="hi-solid-x" class="w-4 h-4" />
-          </button>
-        </header>
+            <div class="flex items-center gap-2 min-w-0">
+              <span
+                class="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
+                :class="headerIconClass"
+              >
+                <v-icon :name="headerIconName" class="w-4 h-4" />
+              </span>
+              <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
+                {{ panelTitle }}
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              :aria-label="$t('fantasy.draft.menu.close')"
+              class="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 active:scale-90 transition-all cursor-pointer"
+              @click="closePanel"
+            >
+              <v-icon name="hi-solid-x" class="w-4 h-4" />
+            </button>
+          </header>
+        </div>
 
         <div class="flex-1 overflow-y-auto overscroll-contain px-2.5 py-3">
           <DraftPicksTable
@@ -66,11 +72,18 @@
       </section>
     </Transition>
 
-    <!-- Píldora flotante de navegación, igual que la del draft real -->
+    <!-- Píldora flotante de navegación, igual que la del draft real.
+         `bottom` sigue a keyboardInset de forma continua (no solo por encima
+         del umbral de teclado) para que la barra de herramientas de iOS Safari
+         no la deje flotando a media pantalla al cargar o al hacer scroll —
+         ver useKeyboardInset. -->
     <nav
       :aria-label="$t('fantasy.draft.menu.nav')"
-      class="fixed left-0 right-0 bottom-0 z-[100] pointer-events-none flex justify-center"
-      :style="{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }"
+      class="fixed left-0 right-0 z-[100] pointer-events-none flex justify-center"
+      :style="{
+        bottom: `${keyboardInset}px`,
+        paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))',
+      }"
     >
       <div
         class="pointer-events-auto flex items-center gap-0.5 p-1 rounded-full max-w-[calc(100%-1rem)] bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-xl shadow-black/10 dark:shadow-black/40 transition-[transform,opacity] duration-200 ease-out"
@@ -175,6 +188,7 @@ import DraftWishlist from '@/components/fantasy/draft/DraftWishlist.vue'
 import MockDraftMyTeam from '@/components/fantasy/mockDraft/MockDraftMyTeam.vue'
 import { useDraftWishlistStore } from '@/store/fantasy/useDraftWishlistStore'
 import { useKeyboardInset } from '@/composables/useKeyboardInset'
+import { useDismissibleSheet } from '@/composables/useDismissibleSheet'
 import type { DraftBoardPick, DraftContender } from '@/components/fantasy/draft/shared/draftShared'
 import type { FantasyPlayerDraftResponse } from '@/interfaces/fantasy/draft/FantasyPlayerDraftResponse'
 import type {
@@ -214,7 +228,7 @@ type PanelTab = 'boards' | 'wishlist' | 'team'
 
 const { t } = useI18n()
 const wishlistStore = useDraftWishlistStore()
-const { isKeyboardOpen } = useKeyboardInset()
+const { isKeyboardOpen, keyboardInset } = useKeyboardInset()
 
 const activeTab = ref<PanelTab | null>(null)
 
@@ -250,6 +264,19 @@ function closePanel(): void {
   if (activeTab.value === 'boards') emit('board-closed')
   activeTab.value = null
 }
+
+const { dragOffset, onTouchStart, onTouchMove, onTouchEnd } = useDismissibleSheet(isPanelOpen, closePanel)
+
+const panelStyle = computed(() => {
+  const style: Record<string, string> = { bottom: `calc(76px + ${keyboardInset.value}px)` }
+
+  if (dragOffset.value > 0) {
+    style.transform = `translateY(${dragOffset.value}px)`
+    style.transition = 'none'
+  }
+
+  return style
+})
 
 watch(
   () => props.forceOpenBoard,

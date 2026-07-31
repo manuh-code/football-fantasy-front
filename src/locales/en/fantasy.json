@@ -225,7 +225,12 @@
   "mockDraft": {
     "intro": {
       "title": "Mock Draft",
-      "body": "A practice draft against automated teams. Rehearse strategies, learn what each player is really worth and find out who tends to be available in every round — with nothing at stake."
+      "body": "A practice draft against automated teams. Rehearse strategies, learn what each player is really worth and find out who tends to be available in every round — with nothing at stake.",
+      "badges": {
+        "free": "Free and unlimited",
+        "instant": "Starts instantly",
+        "noRisk": "Nothing at stake"
+      }
     },
     "setup": {
       "title": "Set up your mock draft",
@@ -242,7 +247,22 @@
       "snake": "Snake order",
       "snakeHint": "The order reverses on every even round, just like the real draft.",
       "start": "Start mock draft",
-      "creating": "Creating room..."
+      "creating": "Creating room...",
+      "presetSubtitle": "Copy the setup from one of your leagues.",
+      "teamsHint": "How many rivals compete for the same players.",
+      "teamsDecrease": "Remove a team",
+      "teamsIncrease": "Add a team",
+      "lockedByLeague": "Set by the league",
+      "slotHint": "Picking early lands stars; picking late gets you back-to-back picks.",
+      "slotPick": "Pick {pick}",
+      "slotPicks": "You'd pick at {picks}…",
+      "timerHint": "How long you get to decide each pick.",
+      "difficultyHintShort": "How well the automated teams pick.",
+      "recapTitle": "Your room",
+      "recapTeams": "{teams} teams",
+      "recapSnake": "Snake",
+      "errorTitle": "We couldn't load the setup",
+      "errorBody": "Check your connection and try again."
     },
     "difficulty": {
       "easy": "Easy",
@@ -260,7 +280,11 @@
       "freeMock": "Free mock draft",
       "detail": "{teams} teams · {difficulty} · {picks}/{total} picks",
       "delete": "Delete mock draft",
-      "deleted": "Mock draft deleted"
+      "deleted": "Mock draft deleted",
+      "statusActive": "In progress",
+      "statusCompleted": "Finished",
+      "confirmDelete": "Delete?",
+      "justNow": "Just now"
     },
     "room": {
       "practiceMode": "Practice mode",

@@ -13,42 +13,47 @@
     <Transition name="slide-up">
       <section
         v-if="isPanelOpen"
-        class="fixed top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] bottom-[76px] right-0 z-[100] flex flex-col overflow-hidden rounded-t-3xl bg-gray-50 dark:bg-gray-900 shadow-[0_-8px_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 dark:ring-white/10 transition-[left] duration-300"
-        :style="{ left: `${leftOffset}px` }"
+        class="fixed top-[calc(3rem+env(safe-area-inset-top,0px))] sm:top-[calc(3.5rem+env(safe-area-inset-top,0px))] right-0 z-[100] flex flex-col overflow-hidden rounded-t-3xl bg-gray-50 dark:bg-gray-900 shadow-[0_-8px_40px_rgba(0,0,0,0.2)] ring-1 ring-black/5 dark:ring-white/10 transition-[left] duration-300"
+        :style="panelStyle"
         :aria-label="panelTitle"
       >
-        <!-- Grip -->
-        <div class="flex justify-center pt-2 pb-1 shrink-0">
-          <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-        </div>
-
-        <!-- Panel header -->
-        <header
-          class="flex items-center justify-between gap-3 px-4 pb-2.5 shrink-0 border-b border-gray-100 dark:border-gray-800"
-        >
-          <div class="flex items-center gap-2 min-w-0">
-            <span
-              class="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-              :class="activeTab === 'wishlist'
-                ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
-                : 'bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400'"
-            >
-              <v-icon :name="activeTab === 'wishlist' ? 'bi-star-fill' : 'hi-solid-clipboard-list'" class="w-4 h-4" />
-            </span>
-            <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
-              {{ panelTitle }}
-            </h2>
+        <!-- Zona arrastrable: solo el grip + header cierran con swipe, para
+             que el scroll propio de la lista de abajo nunca se confunda con
+             el gesto de cerrar. -->
+        <div @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
+          <!-- Grip -->
+          <div class="flex justify-center pt-2 pb-1 shrink-0">
+            <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
           </div>
 
-          <button
-            type="button"
-            :aria-label="$t('fantasy.draft.menu.close')"
-            class="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 active:scale-90 transition-all cursor-pointer"
-            @click="closePanel"
+          <!-- Panel header -->
+          <header
+            class="flex items-center justify-between gap-3 px-4 pb-2.5 shrink-0 border-b border-gray-100 dark:border-gray-800"
           >
-            <v-icon name="hi-solid-x" class="w-4 h-4" />
-          </button>
-        </header>
+            <div class="flex items-center gap-2 min-w-0">
+              <span
+                class="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
+                :class="activeTab === 'wishlist'
+                  ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+                  : 'bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400'"
+              >
+                <v-icon :name="activeTab === 'wishlist' ? 'bi-star-fill' : 'hi-solid-clipboard-list'" class="w-4 h-4" />
+              </span>
+              <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
+                {{ panelTitle }}
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              :aria-label="$t('fantasy.draft.menu.close')"
+              class="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 active:scale-90 transition-all cursor-pointer"
+              @click="closePanel"
+            >
+              <v-icon name="hi-solid-x" class="w-4 h-4" />
+            </button>
+          </header>
+        </div>
 
         <!-- Panel body -->
         <div class="flex-1 overflow-y-auto overscroll-contain px-2.5 py-3">
@@ -67,13 +72,20 @@
       </section>
     </Transition>
 
-    <!-- Floating glass nav pill. Tracks the drawer width via leftOffset and,
-         crucially, retreats out of the way when the on-screen keyboard opens so
-         it never floats up into the middle of the screen while searching. -->
+    <!-- Floating glass nav pill. Tracks the drawer width via leftOffset;
+         `bottom` follows keyboardInset continuously (not just past the keyboard
+         threshold) so iOS Safari's toolbar collapsing/expanding on load and on
+         scroll can't leave it floating mid-screen — see useKeyboardInset. It
+         also fully retreats when a real keyboard opens, so it never sits on
+         top of it while searching. -->
     <nav
       :aria-label="$t('fantasy.draft.menu.nav')"
-      class="fixed right-0 bottom-0 z-[100] pointer-events-none flex justify-center transition-[left] duration-300"
-      :style="{ left: `${leftOffset}px`, paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }"
+      class="fixed right-0 z-[100] pointer-events-none flex justify-center transition-[left] duration-300"
+      :style="{
+        left: `${leftOffset}px`,
+        bottom: `${keyboardInset}px`,
+        paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))',
+      }"
     >
       <div
         class="pointer-events-auto flex items-center gap-0.5 p-1 rounded-full max-w-[calc(100%-1rem)] bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-xl shadow-black/10 dark:shadow-black/40 transition-[transform,opacity] duration-200 ease-out"
@@ -161,6 +173,7 @@ import DraftPicksTable from '@/components/fantasy/draft/shared/DraftPicksTable.v
 import DraftWishlist from '@/components/fantasy/draft/DraftWishlist.vue'
 import { useDraftWishlistStore } from '@/store/fantasy/useDraftWishlistStore'
 import { useKeyboardInset } from '@/composables/useKeyboardInset'
+import { useDismissibleSheet } from '@/composables/useDismissibleSheet'
 import type { DraftBoardPick, DraftContender } from '@/components/fantasy/draft/shared/draftShared'
 
 const router = useRouter()
@@ -190,7 +203,7 @@ const activeTab = ref<PanelTab | null>(null)
 const wishlistStore = useDraftWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count(props.fantasyLeagueUuid))
 
-const { isKeyboardOpen } = useKeyboardInset()
+const { isKeyboardOpen, keyboardInset } = useKeyboardInset()
 
 const isPanelOpen = computed(() => activeTab.value !== null)
 const isDraftActive = computed(() => activeTab.value === null)
@@ -215,6 +228,19 @@ function handleTabChange(tab: 'draft' | 'league' | PanelTab) {
 function closePanel() {
   activeTab.value = null
 }
+
+const { dragOffset, onTouchStart, onTouchMove, onTouchEnd } = useDismissibleSheet(isPanelOpen, closePanel)
+
+const panelStyle = computed(() => {
+  const style: Record<string, string> = { left: `${props.leftOffset}px`, bottom: `calc(76px + ${keyboardInset.value}px)` }
+
+  if (dragOffset.value > 0) {
+    style.transform = `translateY(${dragOffset.value}px)`
+    style.transition = 'none'
+  }
+
+  return style
+})
 
 
 </script>
