@@ -6,7 +6,7 @@
       <Transition name="backdrop">
         <div
           v-if="desktopState === 'full'"
-          class="fixed inset-0 bg-black/20 z-[60]"
+          class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[60]"
           @click="desktopState = 'half'"
         />
       </Transition>
@@ -37,9 +37,10 @@
             <button
               v-if="desktopState !== 'peek'"
               @click.stop="close"
-              class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform shrink-0"
+              class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all shrink-0"
+              :aria-label="$t('common.actions.close')"
             >
-              <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+              <v-icon name="hi-solid-x" class="w-4 h-4" />
             </button>
           </div>
 
@@ -114,7 +115,7 @@
       <Transition name="backdrop">
         <div
           v-if="mobileState === 'full'"
-          class="fixed inset-0 bg-black/30 z-[60]"
+          class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[60]"
           @click="mobileState = 'half'; mobileTranslateY = null"
         />
       </Transition>
@@ -122,7 +123,7 @@
       <!-- Bottom Sheet (offset above MenuDraft) -->
       <div
         ref="mobileSheetRef"
-        class="fixed inset-x-0 bottom-[52px] z-[61] bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex flex-col mobile-sheet"
+        class="fixed inset-x-0 bottom-[52px] z-[61] bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_40px_rgba(0,0,0,0.5)] flex flex-col mobile-sheet"
         :style="mobileSheetStyle"
         @touchstart.passive="onMobileTouchStart"
         @touchmove.passive="onMobileTouchMove"
@@ -133,7 +134,7 @@
           class="flex flex-col items-center pt-2 pb-1 cursor-grab active:cursor-grabbing shrink-0 touch-none"
           @click="toggleMobile"
         >
-          <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+          <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
         </div>
 
         <!-- Peek Header (always visible) -->
@@ -162,9 +163,10 @@
           <div class="flex items-center gap-1.5 shrink-0">
             <button
               @click.stop="close"
-              class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-90 transition-transform"
+              class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
+              :aria-label="$t('common.actions.close')"
             >
-              <v-icon name="hi-solid-x" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+              <v-icon name="hi-solid-x" class="w-4 h-4" />
             </button>
             <v-icon
               :name="
