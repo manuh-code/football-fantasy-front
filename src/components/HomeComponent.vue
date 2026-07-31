@@ -23,7 +23,7 @@
           :class="{ 'overflow-hidden': isAnimating }"
         >
           <Transition
-            :name="transitionName"
+            name="panel"
             @before-leave="isAnimating = true"
             @after-enter="isAnimating = false"
             @enter-cancelled="isAnimating = false"
@@ -110,15 +110,11 @@ const tabs = computed<{ key: TabKey; label: string; icon: string }[]>(() => [
 
 const activeTab = ref<TabKey>("standings");
 
-// Direction-aware slide: "next" when moving right, "prev" when moving left.
-const transitionName = ref<"slide-next" | "slide-prev">("slide-next");
+// Panels cross-fade on switch (see the `panel-*` transition in <style>).
 const isAnimating = ref(false);
-
-const tabIndex = (key: string) => tabs.value.findIndex((tab) => tab.key === key);
 
 const selectTab = (key: string) => {
   if (key === activeTab.value) return;
-  transitionName.value = tabIndex(key) > tabIndex(activeTab.value) ? "slide-next" : "slide-prev";
   activeTab.value = key as TabKey;
 };
 
@@ -174,51 +170,38 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Direction-aware horizontal slide (FotMob / Apple Sports style).
-   The leaving panel is taken out of flow so the entering panel defines the
-   container height — avoids vertical jumps when panels differ in height. */
-.slide-next-enter-active,
-.slide-next-leave-active,
-.slide-prev-enter-active,
-.slide-prev-leave-active {
-  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.32s ease;
+/* Fade-through panel switch (Material "fade through"): the outgoing panel
+   fades out and lifts slightly, the incoming one fades in rising from just
+   below — no horizontal slide. Exit resolves faster than enter so switches
+   feel snappy (asymmetric timing). The leaving panel is taken out of flow so
+   the entering panel defines the container height — avoids vertical jumps when
+   panels differ in height. */
+.panel-enter-active {
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.28s ease-out;
   will-change: transform, opacity;
 }
-
-.slide-next-leave-active,
-.slide-prev-leave-active {
+.panel-leave-active {
+  transition: transform 0.16s ease-in, opacity 0.16s ease-in;
+  will-change: transform, opacity;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
 }
 
-/* Forward (moving to a tab on the right) */
-.slide-next-enter-from {
-  transform: translateX(100%);
+.panel-enter-from {
   opacity: 0;
+  transform: translateY(10px);
 }
-.slide-next-leave-to {
-  transform: translateX(-100%);
+.panel-leave-to {
   opacity: 0;
-}
-
-/* Backward (moving to a tab on the left) */
-.slide-prev-enter-from {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-.slide-prev-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
+  transform: translateY(-6px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .slide-next-enter-active,
-  .slide-next-leave-active,
-  .slide-prev-enter-active,
-  .slide-prev-leave-active {
-    transition: opacity 0.2s ease;
+  .panel-enter-active,
+  .panel-leave-active {
+    transition: opacity 0.18s ease;
     transform: none !important;
   }
 }
