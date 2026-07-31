@@ -4,7 +4,8 @@
     <Transition name="bottomsheet-backdrop">
       <div
         v-if="isVisible"
-        class="fixed inset-0 z-[120] bg-black/40 backdrop-blur-[2px]"
+        class="fixed inset-0 bg-black/40 backdrop-blur-[2px]"
+        :style="{ zIndex }"
         @click="onBackdropClick"
       />
     </Transition>
@@ -15,7 +16,7 @@
         v-if="isVisible"
         ref="sheetRef"
         :class="[
-          'fixed z-[120] bottom-0 inset-x-0 md:inset-x-auto md:left-1/2 md:-translate-x-1/2',
+          'fixed bottom-0 inset-x-0 md:inset-x-auto md:left-1/2 md:-translate-x-1/2',
           'bg-white dark:bg-gray-900 rounded-t-2xl md:rounded-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2',
           'shadow-[0_-8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_40px_rgba(0,0,0,0.5)]',
           'flex flex-col overflow-hidden',
@@ -114,6 +115,10 @@ interface Props {
   // inside it. Opt-in: sheets that open under a still-focused trigger elsewhere
   // in the app should keep their current behaviour.
   autofocus?: boolean
+  // Stacking order for the backdrop + sheet. Defaults to the app-wide sheet
+  // layer (120); raise it for a sheet that opens ON TOP of another overlay
+  // (e.g. a notifications sheet launched from the team-profile drawer).
+  zIndex?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -127,6 +132,7 @@ const props = withDefaults(defineProps<Props>(), {
   role: 'alertdialog',
   ariaLabel: '',
   autofocus: false,
+  zIndex: 120,
 })
 
 // Ties the sheet to its heading for assistive tech; ids are document-global, so
@@ -146,13 +152,15 @@ const isSwiping = ref(false)
 const isDragging = ref(false)
 
 const sheetStyle = computed(() => {
-  if (!isSwiping.value && !isDragging.value) return {}
-  const delta = Math.max(0, touchDeltaY.value) // Only allow downward drag
-  if (delta < 5) return {}
-  return {
-    transform: `translateY(${delta}px)`,
-    transition: 'none',
+  const base: Record<string, string | number> = { zIndex: props.zIndex }
+  if (isSwiping.value || isDragging.value) {
+    const delta = Math.max(0, touchDeltaY.value) // Only allow downward drag
+    if (delta >= 5) {
+      base.transform = `translateY(${delta}px)`
+      base.transition = 'none'
+    }
   }
+  return base
 })
 
 function onTouchStart(e: TouchEvent) {
@@ -321,12 +329,17 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* Sheet content — mobile: slide from bottom, desktop: scale+fade */
+/* Sheet content — mobile: slide from bottom, desktop: scale+fade.
+   Enter uses the iOS "sheet" decel curve (smooth, no bounce); exit resolves
+   faster (asymmetric) so dismissing feels snappy. Only transform/opacity are
+   animated to keep it off the main thread. */
 .bottomsheet-content-enter-active {
-  transition: all 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
+  transition: transform 0.34s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.34s ease-out;
+  will-change: transform, opacity;
 }
 .bottomsheet-content-leave-active {
-  transition: all 0.2s ease-in;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1), opacity 0.22s ease-in;
+  will-change: transform, opacity;
 }
 
 /* Mobile: bottom to top */

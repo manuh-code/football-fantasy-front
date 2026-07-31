@@ -6,7 +6,7 @@
       <Transition name="backdrop">
         <div
           v-if="desktopState === 'full'"
-          class="fixed inset-0 bg-black/20 z-40"
+          class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-40"
           @click="desktopState = 'half'"
         />
       </Transition>
@@ -110,7 +110,7 @@
       <Transition name="backdrop">
         <div
           v-if="mobileState === 'full'"
-          class="fixed inset-0 bg-black/30 z-40"
+          class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-40"
           @click="mobileState = 'half'; mobileTranslateY = null"
         />
       </Transition>
@@ -118,7 +118,7 @@
       <!-- Bottom Sheet (offset above MenuDraft) -->
       <div
         ref="mobileSheetRef"
-        class="fixed inset-x-0 bottom-[52px] z-50 bg-white dark:bg-gray-900 rounded-t-3xl shadow-[0_-6px_32px_rgba(0,0,0,0.16)] dark:shadow-[0_-6px_32px_rgba(0,0,0,0.5)] ring-1 ring-black/5 dark:ring-white/10 flex flex-col mobile-sheet"
+        class="fixed inset-x-0 bottom-[52px] z-50 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_40px_rgba(0,0,0,0.5)] flex flex-col mobile-sheet"
         :style="mobileSheetStyle"
         @touchstart.passive="onMobileTouchStart"
         @touchmove.passive="onMobileTouchMove"
@@ -129,7 +129,7 @@
           class="flex flex-col items-center pt-2 pb-1 cursor-grab active:cursor-grabbing shrink-0 touch-none"
           @click="toggleMobile"
         >
-          <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+          <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
         </div>
 
         <!-- Peek Header (always visible) -->

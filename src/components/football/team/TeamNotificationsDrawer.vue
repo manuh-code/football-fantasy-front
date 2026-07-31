@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import BottomSheet from "@/components/ui/BottomSheet.vue";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import type { TeamNotificationEventResponse } from "@/interfaces/user/notification/TeamNotificationEventResponse";
 import { teamNotificationService } from "@/services/user/notification/TeamNotificationService";
@@ -126,266 +127,148 @@ const TINT_TILE: Record<EventTint, string> = {
   slate: "bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400",
   violet: "bg-violet-50 dark:bg-violet-900/25 text-violet-500 dark:text-violet-400",
 };
-
-// ── Keyboard close ──
-const onKeydown = (e: KeyboardEvent) => {
-  if (e.key === "Escape" && props.isOpen) emit("close");
-};
-onMounted(() => window.addEventListener("keydown", onKeydown));
-onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
-
-// Lock the body while open, nesting correctly when this sits above another
-// already-locked drawer: restore whatever the overflow was before we opened.
-let prevOverflow = "";
-watch(
-  () => props.isOpen,
-  (open) => {
-    if (typeof document === "undefined") return;
-    if (open) {
-      prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = prevOverflow;
-      isDragging.value = false;
-    }
-  },
-);
-
-// ── Drag-to-dismiss (mirrors the team-profile sheet) ──
-const dragOffsetY = ref(0);
-const isDragging = ref(false);
-const dragStartY = ref(0);
-const dragStartTime = ref(0);
-
-const onDragStart = (e: PointerEvent) => {
-  if (e.pointerType === "mouse" && e.button !== 0) return;
-  isDragging.value = true;
-  dragStartY.value = e.clientY;
-  dragStartTime.value = Date.now();
-  dragOffsetY.value = 0;
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-};
-
-const onDragMove = (e: PointerEvent) => {
-  if (!isDragging.value) return;
-  const delta = e.clientY - dragStartY.value;
-  dragOffsetY.value = delta > 0 ? delta : delta * 0.15;
-};
-
-const onDragEnd = (e: PointerEvent) => {
-  if (!isDragging.value) return;
-  isDragging.value = false;
-  try {
-    (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-  } catch {
-    // ignore
-  }
-  const elapsed = Date.now() - dragStartTime.value;
-  const velocity = elapsed > 0 ? dragOffsetY.value / elapsed : 0;
-  if (dragOffsetY.value > 100 || velocity > 0.6) {
-    emit("close");
-  } else {
-    dragOffsetY.value = 0;
-  }
-};
 </script>
 
 <template>
-  <Teleport to="body">
-    <!-- Backdrop — z sits above the team-profile sheet (elevated: z-130) so this
-         can be opened from within it. -->
-    <Transition name="tn-fade">
-      <div
-        v-if="isOpen"
-        class="fixed inset-0 z-[145] bg-black/60 backdrop-blur-sm"
-        @click="emit('close')"
-      />
-    </Transition>
-
-    <Transition name="tn-slide" @after-leave="dragOffsetY = 0">
-      <div
-        v-if="isOpen"
-        class="fixed bottom-0 left-0 right-0 md:left-4 md:right-4 md:bottom-4 md:max-w-md md:mx-auto z-[150] pointer-events-none"
-      >
-        <div
-          :style="{
-            transform: `translateY(${dragOffsetY}px)`,
-            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
-          }"
-          class="flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-t-3xl md:rounded-3xl max-h-[85dvh] overflow-hidden pointer-events-auto"
-          role="dialog"
-          aria-modal="true"
-          :aria-label="$t('football.team.notifications.aria')"
-        >
-          <!-- Draggable header -->
-          <div
-            @pointerdown="onDragStart"
-            @pointermove="onDragMove"
-            @pointerup="onDragEnd"
-            @pointercancel="onDragEnd"
-            class="relative shrink-0 cursor-grab active:cursor-grabbing touch-none select-none border-b border-gray-100 dark:border-gray-800"
-          >
-            <div class="flex justify-center pt-2.5 pb-1.5">
-              <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
-            </div>
-
-            <div class="flex items-center justify-between gap-3 px-4 pb-3 pt-1">
-              <div class="flex items-center gap-3 min-w-0">
-                <TeamLogo v-if="team" :team="team" size="lg" variant="square" />
-                <div class="min-w-0">
-                  <h2 class="text-callout font-bold text-gray-900 dark:text-white truncate">
-                    {{ $t('football.team.notifications.title') }}
-                  </h2>
-                  <p class="text-2xs text-gray-400 dark:text-gray-500 truncate">
-                    <template v-if="!isLoading && !loadError && events.length">
-                      {{ $t('football.team.notifications.summary', { count: enabledCount, total: events.length }) }}
-                    </template>
-                    <template v-else>
-                      {{ teamName }}
-                    </template>
-                  </p>
-                </div>
-              </div>
-              <button
-                @click.stop="emit('close')"
-                @pointerdown.stop
-                class="w-8 h-8 -mr-1 shrink-0 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                :aria-label="$t('common.actions.close')"
-              >
-                <v-icon name="hi-x" class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <!-- Body -->
-          <div
-            class="flex-1 overflow-y-auto overscroll-contain px-4 py-3"
-            style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom))"
-          >
-            <!-- Loading -->
-            <div v-if="isLoading" class="space-y-2">
-              <div
-                v-for="n in 5"
-                :key="n"
-                class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3"
-              >
-                <div class="w-9 h-9 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
-                <div class="h-3 flex-1 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
-                <div class="w-12 h-7 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
-              </div>
-            </div>
-
-            <!-- Error -->
-            <div
-              v-else-if="loadError"
-              class="min-h-[40vh] flex flex-col items-center justify-center text-center"
-            >
-              <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-400 dark:text-red-500 mb-3" />
-              <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ loadError }}</p>
-              <button
-                @click="retry"
-                class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
-              >
-                {{ $t('common.actions.retry') }}
-              </button>
-            </div>
-
-            <!-- Empty -->
-            <div
-              v-else-if="!events.length"
-              class="min-h-[40vh] flex flex-col items-center justify-center text-center"
-            >
-              <v-icon name="hi-solid-bell" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
-              <p class="text-footnote text-gray-400 dark:text-gray-500">
-                {{ $t('football.team.notifications.empty') }}
-              </p>
-            </div>
-
-            <!-- Events -->
-            <template v-else>
-              <p class="text-2xs text-gray-400 dark:text-gray-500 px-1 mb-2.5">
-                {{ $t('football.team.notifications.hint', { name: teamName }) }}
-              </p>
-              <div class="space-y-1.5">
-                <div
-                  v-for="ev in events"
-                  :key="ev.event"
-                  class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3"
-                >
-                  <!-- Artifact tile -->
-                  <div
-                    class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    :class="TINT_TILE[visualFor(ev.event).tint]"
-                  >
-                    <template v-if="visualFor(ev.event).kind === 'card'">
-                      <!-- Yellow/red card as its literal object -->
-                      <span class="relative inline-flex" style="transform: rotate(9deg)">
-                        <span
-                          v-if="visualFor(ev.event).card === 'yellowred'"
-                          class="absolute -left-1 top-0 w-3 h-4 rounded-[3px] bg-amber-400 shadow-sm"
-                        />
-                        <span
-                          class="relative w-3 h-4 rounded-[3px] shadow-sm"
-                          :class="visualFor(ev.event).card === 'yellow' ? 'bg-amber-400' : 'bg-red-500'"
-                        />
-                      </span>
-                    </template>
-                    <v-icon v-else :name="visualFor(ev.event).icon" class="w-5 h-5" />
-                  </div>
-
-                  <p class="flex-1 min-w-0 text-footnote font-semibold text-gray-800 dark:text-gray-200 truncate">
-                    {{ ev.name }}
-                  </p>
-
-                  <!-- Toggle -->
-                  <button
-                    @click="toggle(ev)"
-                    :disabled="!!savingEvent"
-                    class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 shrink-0"
-                    :class="[
-                      ev.enabled ? 'bg-emerald-600' : 'bg-gray-300 dark:bg-gray-600',
-                      savingEvent && savingEvent !== ev.event ? 'opacity-40' : '',
-                    ]"
-                    :aria-pressed="ev.enabled"
-                    :aria-label="$t('football.team.notifications.toggleAria', { name: ev.name })"
-                  >
-                    <span
-                      class="inline-flex items-center justify-center h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200"
-                      :class="ev.enabled ? 'translate-x-6' : 'translate-x-1'"
-                    >
-                      <v-icon
-                        v-if="savingEvent === ev.event"
-                        name="pr-spinner"
-                        class="w-3 h-3 text-emerald-600 animate-spin"
-                      />
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </template>
+  <!-- Elevated (z-150) so it can open on top of the team-profile sheet (z-130). -->
+  <BottomSheet
+    :is-visible="isOpen"
+    size="lg"
+    role="dialog"
+    :z-index="150"
+    :aria-label="$t('football.team.notifications.aria')"
+    @close="emit('close')"
+  >
+    <!-- Custom header: team logo + title + summary -->
+    <template #header>
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <TeamLogo v-if="team" :team="team" size="lg" variant="square" />
+          <div class="min-w-0">
+            <h2 class="text-base font-bold text-gray-900 dark:text-white truncate">
+              {{ $t('football.team.notifications.title') }}
+            </h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+              <template v-if="!isLoading && !loadError && events.length">
+                {{ $t('football.team.notifications.summary', { count: enabledCount, total: events.length }) }}
+              </template>
+              <template v-else>
+                {{ teamName }}
+              </template>
+            </p>
           </div>
         </div>
+        <button
+          @click="emit('close')"
+          class="w-8 h-8 shrink-0 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
+          :aria-label="$t('common.actions.close')"
+        >
+          <v-icon name="hi-solid-x" class="w-4 h-4" />
+        </button>
       </div>
-    </Transition>
-  </Teleport>
+    </template>
+
+    <!-- Body -->
+    <!-- Loading -->
+    <div v-if="isLoading" class="space-y-2">
+      <div
+        v-for="n in 5"
+        :key="n"
+        class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3"
+      >
+        <div class="w-9 h-9 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
+        <div class="h-3 flex-1 rounded bg-gray-200 dark:bg-gray-700 animate-pulse" />
+        <div class="w-12 h-7 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div
+      v-else-if="loadError"
+      class="min-h-[40vh] flex flex-col items-center justify-center text-center"
+    >
+      <v-icon name="hi-solid-exclamation-circle" class="w-9 h-9 text-red-400 dark:text-red-500 mb-3" />
+      <p class="text-footnote text-red-500 dark:text-red-400 mb-3">{{ loadError }}</p>
+      <button
+        @click="retry"
+        class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+      >
+        {{ $t('common.actions.retry') }}
+      </button>
+    </div>
+
+    <!-- Empty -->
+    <div
+      v-else-if="!events.length"
+      class="min-h-[40vh] flex flex-col items-center justify-center text-center"
+    >
+      <v-icon name="hi-solid-bell" class="w-9 h-9 text-gray-200 dark:text-gray-700 mb-2" />
+      <p class="text-footnote text-gray-400 dark:text-gray-500">
+        {{ $t('football.team.notifications.empty') }}
+      </p>
+    </div>
+
+    <!-- Events -->
+    <template v-else>
+      <p class="text-2xs text-gray-400 dark:text-gray-500 px-1 mb-2.5">
+        {{ $t('football.team.notifications.hint', { name: teamName }) }}
+      </p>
+      <div class="space-y-1.5">
+        <div
+          v-for="ev in events"
+          :key="ev.event"
+          class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 p-3"
+        >
+          <!-- Artifact tile -->
+          <div
+            class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+            :class="TINT_TILE[visualFor(ev.event).tint]"
+          >
+            <template v-if="visualFor(ev.event).kind === 'card'">
+              <!-- Yellow/red card as its literal object -->
+              <span class="relative inline-flex" style="transform: rotate(9deg)">
+                <span
+                  v-if="visualFor(ev.event).card === 'yellowred'"
+                  class="absolute -left-1 top-0 w-3 h-4 rounded-[3px] bg-amber-400 shadow-sm"
+                />
+                <span
+                  class="relative w-3 h-4 rounded-[3px] shadow-sm"
+                  :class="visualFor(ev.event).card === 'yellow' ? 'bg-amber-400' : 'bg-red-500'"
+                />
+              </span>
+            </template>
+            <v-icon v-else :name="visualFor(ev.event).icon" class="w-5 h-5" />
+          </div>
+
+          <p class="flex-1 min-w-0 text-footnote font-semibold text-gray-800 dark:text-gray-200 truncate">
+            {{ ev.name }}
+          </p>
+
+          <!-- Toggle -->
+          <button
+            @click="toggle(ev)"
+            :disabled="!!savingEvent"
+            class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 shrink-0"
+            :class="[
+              ev.enabled ? 'bg-emerald-600' : 'bg-gray-300 dark:bg-gray-600',
+              savingEvent && savingEvent !== ev.event ? 'opacity-40' : '',
+            ]"
+            :aria-pressed="ev.enabled"
+            :aria-label="$t('football.team.notifications.toggleAria', { name: ev.name })"
+          >
+            <span
+              class="inline-flex items-center justify-center h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200"
+              :class="ev.enabled ? 'translate-x-6' : 'translate-x-1'"
+            >
+              <v-icon
+                v-if="savingEvent === ev.event"
+                name="pr-spinner"
+                class="w-3 h-3 text-emerald-600 animate-spin"
+              />
+            </span>
+          </button>
+        </div>
+      </div>
+    </template>
+  </BottomSheet>
 </template>
-
-<style scoped>
-.tn-fade-enter-active,
-.tn-fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-.tn-fade-enter-from,
-.tn-fade-leave-to {
-  opacity: 0;
-}
-
-.tn-slide-enter-active,
-.tn-slide-leave-active {
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.tn-slide-enter-from,
-.tn-slide-leave-to {
-  transform: translateY(100%);
-}
-</style>
