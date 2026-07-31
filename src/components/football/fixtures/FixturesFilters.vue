@@ -128,7 +128,7 @@ const selectedRoundIndex = computed<number>({
         all-option
         :all-option-label="$t('football.fixtures.allTeams')"
         accent-color="emerald"
-        no-options-text="No teams available"
+        :no-options-text="$t('football.fixtures.noTeams')"
       >
         <template #selected="{ option }">
           <span class="text-footnote font-semibold text-gray-900 dark:text-white truncate flex-1">
