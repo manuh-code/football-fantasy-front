@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { footballPlayerService } from "@/services/football/player/FootballPlayerService";
 import type { FootballPlayerResponse } from "@/interfaces/football/player/FootballPlayerResponse";
 import type {
@@ -19,6 +20,8 @@ import PlayerVersusStatBars from "./PlayerVersusStatBars.vue";
 const props = defineProps<{
   seasonUuid: string;
 }>();
+
+const { t } = useI18n();
 
 const COLOR_A = "#10b981"; // emerald-500
 const COLOR_B = "#0ea5e9"; // sky-500
@@ -86,7 +89,7 @@ const loadVersus = async () => {
     versus.value = response.data;
   } catch (err) {
     console.error("Error loading player versus:", err);
-    error.value = "Couldn't load the comparison. Please try again.";
+    error.value = t("football.versus.loadError");
   } finally {
     isLoading.value = false;
   }
@@ -159,36 +162,43 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
         <!-- Player slots -->
         <div class="px-4 pt-5 pb-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
           <!-- Slot A -->
-          <button
-            @click="openSearch('a')"
-            class="relative min-w-0 flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors"
-            :class="playerA
-              ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/40 dark:bg-emerald-900/10'
-              : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
-          >
-            <template v-if="playerA">
-              <span
-                @click.stop="clearSlot('a')"
-                class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                :aria-label="$t('football.versus.removePlayer')"
-              >
-                <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
-              </span>
-              <span class="rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800" :style="{ '--tw-ring-color': COLOR_A }">
-                <PlayerAvatar :player="playerA" size="2xl" variant="circle" />
-              </span>
-              <div class="text-center w-full min-w-0">
-                <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
-                <p v-if="positionName(playerA)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
-              </div>
-            </template>
-            <template v-else>
-              <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
-                <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
-              </div>
-              <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
-            </template>
-          </button>
+          <div class="relative min-w-0">
+            <button
+              @click="openSearch('a')"
+              class="w-full h-full flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-800"
+              :class="playerA
+                ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/40 dark:bg-emerald-900/10'
+                : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
+              :aria-label="playerA ? playerA.common_name : $t('football.versus.addPlayer')"
+            >
+              <template v-if="playerA">
+                <span class="rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800" :style="{ '--tw-ring-color': COLOR_A }">
+                  <PlayerAvatar :player="playerA" size="2xl" variant="circle" />
+                </span>
+                <div class="text-center w-full min-w-0">
+                  <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerA.common_name }}</p>
+                  <p v-if="positionName(playerA)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerA) }}</p>
+                </div>
+              </template>
+              <template v-else>
+                <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
+                  <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                </div>
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
+              </template>
+            </button>
+            <!-- Clear: a separate sibling button (avoids invalid nested <button>
+                 and gives the remove action its own keyboard focus). -->
+            <button
+              v-if="playerA"
+              type="button"
+              @click="clearSlot('a')"
+              class="absolute top-1.5 right-1.5 z-10 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 transition-colors"
+              :aria-label="$t('football.versus.removePlayer')"
+            >
+              <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
+            </button>
+          </div>
 
           <!-- VS badge: split evenly between both players' colors — neutral by
                design, since it doesn't belong to either side — with the live
@@ -213,36 +223,43 @@ const positionName = (p: FootballPlayerResponse | null): string => p?.position?.
           </div>
 
           <!-- Slot B -->
-          <button
-            @click="openSearch('b')"
-            class="relative min-w-0 flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors"
-            :class="playerB
-              ? 'border-sky-200 dark:border-sky-800/50 bg-sky-50/40 dark:bg-sky-900/10'
-              : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
-          >
-            <template v-if="playerB">
-              <span
-                @click.stop="clearSlot('b')"
-                class="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                :aria-label="$t('football.versus.removePlayer')"
-              >
-                <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
-              </span>
-              <span class="rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800" :style="{ '--tw-ring-color': COLOR_B }">
-                <PlayerAvatar :player="playerB" size="2xl" variant="circle" />
-              </span>
-              <div class="text-center w-full min-w-0">
-                <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
-                <p v-if="positionName(playerB)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
-              </div>
-            </template>
-            <template v-else>
-              <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
-                <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
-              </div>
-              <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
-            </template>
-          </button>
+          <div class="relative min-w-0">
+            <button
+              @click="openSearch('b')"
+              class="w-full h-full flex flex-col items-center gap-2 rounded-2xl border p-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-800"
+              :class="playerB
+                ? 'border-sky-200 dark:border-sky-800/50 bg-sky-50/40 dark:bg-sky-900/10'
+                : 'border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
+              :aria-label="playerB ? playerB.common_name : $t('football.versus.addPlayer')"
+            >
+              <template v-if="playerB">
+                <span class="rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-800" :style="{ '--tw-ring-color': COLOR_B }">
+                  <PlayerAvatar :player="playerB" size="2xl" variant="circle" />
+                </span>
+                <div class="text-center w-full min-w-0">
+                  <p class="text-footnote font-bold text-gray-900 dark:text-white truncate">{{ playerB.common_name }}</p>
+                  <p v-if="positionName(playerB)" class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ positionName(playerB) }}</p>
+                </div>
+              </template>
+              <template v-else>
+                <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
+                  <v-icon name="hi-solid-plus" class="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                </div>
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('football.versus.addPlayer') }}</span>
+              </template>
+            </button>
+            <!-- Clear: a separate sibling button (avoids invalid nested <button>
+                 and gives the remove action its own keyboard focus). -->
+            <button
+              v-if="playerB"
+              type="button"
+              @click="clearSlot('b')"
+              class="absolute top-1.5 right-1.5 z-10 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 transition-colors"
+              :aria-label="$t('football.versus.removePlayer')"
+            >
+              <v-icon name="hi-solid-x" class="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         <!-- Results -->

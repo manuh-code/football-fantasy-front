@@ -197,6 +197,8 @@
     "filterByTeam": "Filtrar por equipo",
     "searchTeam": "Buscar equipo...",
     "allTeams": "Todos los equipos",
+    "noTeams": "No hay equipos disponibles",
+    "openMatchAria": "Ver detalle del partido {home} vs {away}",
     "noPlayoffs": "Aún no hay liguilla disponible",
     "noStageMatches": "No hay partidos en esta etapa",
     "bracketOpen": "Ver cuadro",
@@ -372,6 +374,7 @@
   },
   "versus": {
     "selectLeague": "Selecciona una liga para comparar jugadores",
+    "loadError": "No se pudo cargar la comparación. Inténtalo de nuevo.",
     "removePlayer": "Quitar jugador",
     "addPlayer": "Agregar jugador",
     "selectPlayer": "Seleccionar jugador",

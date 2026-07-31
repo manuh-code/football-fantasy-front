@@ -192,11 +192,16 @@ const getTeamResultClass = (
 
       <!-- Fixtures for this date -->
       <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
-        <div
+        <button
           v-for="(fixture, fIdx) in group.items"
           :key="fixture.uuid || fixture.name + '-' + fIdx"
+          type="button"
           @click="emit('fixture-selected', fixture)"
-          class="fixture-cell relative transition-colors cursor-pointer"
+          :aria-label="$t('football.fixtures.openMatchAria', {
+            home: getTeamName(getHomeParticipant(fixture)),
+            away: getTeamName(getAwayParticipant(fixture)),
+          })"
+          class="fixture-cell relative block w-full text-left transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500"
           :class="[
             isMatchLive(fixture)
               ? 'bg-red-50/40 dark:bg-red-900/5 border-l-[3px] border-l-red-500 dark:border-l-red-400'
@@ -280,7 +285,7 @@ const getTeamResultClass = (
               <TeamLogo :team="getAwayParticipant(fixture)" size="md" />
             </div>
           </div>
-        </div>
+        </button>
       </div>
     </section>
   </div>
