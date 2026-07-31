@@ -31,6 +31,13 @@ export const useMockDraftStore = defineStore('mockDraft', () => {
   const draft = ref<MockDraftResponse | null>(null)
   const isLoading = ref(false)
   const isPicking = ref(false)
+  /**
+   * Simular resuelve todos los picks que faltan de una vez, así que es la única
+   * acción que puede tardar lo bastante como para que la sala parezca colgada.
+   * Va aparte de `isPicking` para poder avisar de que se está simulando sin
+   * poner ese mismo cartel en cada fichaje normal.
+   */
+  const isSimulating = ref(false)
   /** Cuántos picks del board están visibles (los demás se están revelando). */
   const revealedCount = ref(0)
   const isRevealing = ref(false)
@@ -205,12 +212,14 @@ export const useMockDraftStore = defineStore('mockDraft', () => {
     if (!draft.value || isPicking.value) return null
 
     isPicking.value = true
+    isSimulating.value = true
     try {
       const result = await mockDraftService.simulate(draft.value.uuid, wishlistPlayerUuids)
       applySnapshot(result.draft, true)
       return result
     } finally {
       isPicking.value = false
+      isSimulating.value = false
     }
   }
 
@@ -221,12 +230,14 @@ export const useMockDraftStore = defineStore('mockDraft', () => {
     turnStartedAt.value = null
     isLoading.value = false
     isPicking.value = false
+    isSimulating.value = false
   }
 
   return {
     draft,
     isLoading,
     isPicking,
+    isSimulating,
     isRevealing,
     revealedCount,
     turnStartedAt,

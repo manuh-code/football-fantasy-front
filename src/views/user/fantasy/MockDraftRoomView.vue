@@ -83,10 +83,20 @@
             <button
               type="button"
               :disabled="mockDraftStore.isPicking"
-              class="px-2.5 py-1 rounded-lg text-2xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700/60 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+              class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-2xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700/60 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
               @click="handleSimulate"
             >
-              {{ $t('fantasy.mockDraft.room.simulate') }}
+              <v-icon
+                v-if="mockDraftStore.isSimulating"
+                name="pr-spinner"
+                class="w-3 h-3"
+                animation="spin"
+              />
+              {{
+                mockDraftStore.isSimulating
+                  ? $t('fantasy.mockDraft.room.simulating')
+                  : $t('fantasy.mockDraft.room.simulate')
+              }}
             </button>
           </div>
         </div>
@@ -143,6 +153,34 @@
       @board-closed="showBoardPanel = false"
       @leave="goToSetup"
     />
+
+    <!-- Simular resuelve de golpe todos los picks que faltan: puede tardar
+         varios segundos en una sala llena, así que se avisa con un overlay que
+         además bloquea la sala para que no parezca que se quedó colgada. -->
+    <Teleport to="body">
+      <Transition name="simulating-fade">
+        <div
+          v-if="mockDraftStore.isSimulating"
+          class="fixed inset-0 z-[110] flex items-center justify-center bg-gray-900/40 backdrop-blur-sm px-6"
+          role="status"
+          aria-live="polite"
+        >
+          <div
+            class="flex flex-col items-center gap-3 rounded-2xl bg-white dark:bg-gray-800 px-7 py-6 text-center shadow-xl ring-1 ring-black/5 dark:ring-white/10"
+          >
+            <v-icon name="pr-spinner" class="w-7 h-7 text-emerald-500" animation="spin" />
+            <div class="space-y-1">
+              <p class="text-sm font-bold text-gray-900 dark:text-white">
+                {{ $t('fantasy.mockDraft.room.simulatingTitle') }}
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 max-w-[15rem]">
+                {{ $t('fantasy.mockDraft.room.simulatingBody') }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -375,6 +413,15 @@ onUnmounted(() => {
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+}
+
+.simulating-fade-enter-active,
+.simulating-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.simulating-fade-enter-from,
+.simulating-fade-leave-to {
+  opacity: 0;
 }
 
 .my-turn-bar-enter-active {
