@@ -136,9 +136,11 @@ const onJoined = (pool: PoolResponse) => {
 
 // Arriving from a shared invite link (/pools?join=CODE): open the Join sheet
 // pre-filled with the code, then strip the query so a refresh doesn't reopen it.
+// `?join=` sin valor abre la hoja vacía — es el atajo "unirse con código" del
+// hub de inicio, que manda al usuario directo al formulario en un toque.
 onMounted(() => {
   const code = route.query.join;
-  if (typeof code === "string" && code.trim()) {
+  if (typeof code === "string") {
     joinInitialCode.value = code.trim();
     isJoinOpen.value = true;
     router.replace({ query: { ...route.query, join: undefined } });

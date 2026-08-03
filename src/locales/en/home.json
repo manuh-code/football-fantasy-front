@@ -14,9 +14,9 @@
   "nav": {
     "ariaLabel": "Home navigation",
     "home": "Home",
-    "games": "Games",
     "leagues": "Leagues",
-    "gaming": "Gaming",
+    "gaming": "Play",
+    "results": "Results",
     "following": "Following",
     "soon": "Soon"
   },

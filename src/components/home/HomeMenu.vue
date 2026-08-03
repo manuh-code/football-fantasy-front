@@ -23,13 +23,21 @@ const router = useRouter();
 const { t } = useI18n();
 const footballLeagueStore = useFootballLeagueStore();
 
-const isVisible = computed(() => footballLeagueStore.existLeague());
+// El hub (`/`) está exento de la selección de liga, así que ahí la nav se
+// muestra siempre; en el resto sigue esperando a que haya una liga elegida.
+const isVisible = computed(
+  () => route.name === "home" || footballLeagueStore.existLeague(),
+);
 
+// "Jugar" ocupa la primera posición a propósito: es la acción principal del
+// producto. Los datos de liga ("Resultados") quedan después porque son el
+// soporte, no el producto.
 const items = computed<BottomNavItem[]>(() => [
+  { key: "gaming", label: t("home.nav.gaming"), icon: "bi-trophy-fill", accent: "emerald" },
   {
-    key: "home",
-    label: t("home.nav.home"),
-    icon: "hi-solid-home",
+    key: "results",
+    label: t("home.nav.results"),
+    icon: "hi-solid-chart-bar",
     accent: "emerald",
   },
   {
@@ -38,13 +46,12 @@ const items = computed<BottomNavItem[]>(() => [
     icon: "hi-solid-collection",
     accent: "emerald",
   },
-  { key: "gaming", label: t("home.nav.gaming"), icon: "bi-trophy-fill", accent: "emerald" },
   { key: "following", label: t("home.nav.following"), icon: "hi-solid-star", accent: "emerald" },
 ]);
 
 // Pool, Survivor and Fantasy-leagues screens are children of the "Play"
 // (gaming) section: the fixed nav keeps Play highlighted on them, and pressing
-// Play jumps straight back to the GamingView hub.
+// Play jumps straight back to the hub at `/`.
 const GAMING_SECTION_ROUTES = new Set([
   "pools",
   "poolGroup",
@@ -59,20 +66,20 @@ const isGamingSection = computed(() =>
 );
 
 const activeKey = computed(() => {
-  if (route.name === "gaming" || isGamingSection.value) return "gaming";
+  if (route.name === "home" || isGamingSection.value) return "gaming";
+  if (route.name === "leagueOverview") return "results";
   if (route.name === "footballLeagues") return "leagues";
-  if (route.name === "home") return "home";
   if (route.name === "favorite-football-team") return "following";
   return "";
 });
 
 function onSelect(key: string) {
   if (key === "gaming") {
-    router.push({ name: "gaming" });
+    router.push({ name: "home" });
+  } else if (key === "results") {
+    router.push({ name: "leagueOverview" });
   } else if (key === "leagues") {
     router.push({ name: "footballLeagues" });
-  } else if (key === "home") {
-    router.push({ name: "home" });
   } else if (key === "following") {
     router.push({ name: "favorite-football-team" });
   }

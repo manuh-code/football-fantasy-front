@@ -110,8 +110,14 @@ export class UserService {
         throw new AxiosError('Failed to search teams');
     }
 
-    async getUserFantasyLeagues(): Promise<FantasyLeaguesResponse[]> {
-        const response = await this.api.get<ApiResponse<FantasyLeaguesResponse[]>>('user/fantasy/leagues');
+    async getUserFantasyLeagues(silent = false): Promise<FantasyLeaguesResponse[]> {
+        // `silent` lo usa el hub de inicio, donde esta llamada va en paralelo con
+        // las de quinielas y Survivor: un fallo debe degradar la sección sin
+        // toast. Ver useGameHub.
+        const config = silent
+            ? ({ _silent: true } as AxiosRequestConfig & { _silent?: boolean })
+            : undefined;
+        const response = await this.api.get<ApiResponse<FantasyLeaguesResponse[]>>('user/fantasy/leagues', config);
         if (response.data.code === 200) {
             return response.data.data;
         }

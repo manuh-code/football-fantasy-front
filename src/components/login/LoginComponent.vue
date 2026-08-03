@@ -228,8 +228,8 @@ const handleLogin = async () => {
             payload.value.email = '';
             payload.value.password = '';
 
-            // Redirect to gaming hub or to the page user was trying to access
-            const redirectTo = route.query.redirect as string || '/gaming'
+            // Redirect to the game hub or to the page user was trying to access
+            const redirectTo = route.query.redirect as string || '/'
             await router.push(redirectTo)
         }
     } catch (error) {

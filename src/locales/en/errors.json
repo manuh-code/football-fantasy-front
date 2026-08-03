@@ -33,12 +33,12 @@
     "linksTitle": "Get back in the game",
     "links": {
       "home": {
-        "title": "Home",
-        "description": "Live scores and the current matchweek"
-      },
-      "gaming": {
-        "title": "Games",
+        "title": "Play",
         "description": "Fantasy, pools and Survivor"
+      },
+      "results": {
+        "title": "Results",
+        "description": "Live standings, fixtures and statistics"
       },
       "guides": {
         "title": "Guides",

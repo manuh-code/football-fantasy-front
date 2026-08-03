@@ -47,17 +47,41 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'about',
   'guides',
   'guideDetail',
-  // Indexable y prerenderizada: no debe depender de que la API de ligas
-  // responda. La vista solo lista los tres modos y navega a otras rutas —
-  // esas sí piden liga cuando toca. Ver scripts/prerender.mjs.
-  'gaming',
+  // El hub de juego (`/`, alias `/gaming`) es indexable y está prerenderizado:
+  // no debe depender de que la API de ligas responda. La vista solo lista los
+  // tres modos y navega a otras rutas — esas sí piden liga cuando toca.
+  // Ver scripts/prerender.mjs.
+  'home',
 ])
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    // Hub de modos de juego: fantasy, quinielas y Survivor. La raíz es el
+    // producto (jugar), no el consumo de datos — los datos de liga viven en
+    // `leagueOverview`.
+    //
+    // `/gaming` se conserva como alias, no como redirección: era la URL del hub
+    // y sigue indexada con su HTML prerenderizado (dist/gaming/index.html). Un
+    // alias la mantiene sirviendo ese estático a los crawlers y montando el hub
+    // cuando entra el JS, sin romper enlaces ni marcadores existentes.
+    alias: '/gaming',
     name: 'home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/HomeView.vue'),
+    meta: {
+      title: 'Fantasy MX — Juega fantasy, quinielas y Survivor gratis',
+      description: 'Juega gratis con tus amigos: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación, en Liga MX, Premier League, LaLiga, Serie A y Bundesliga.',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/liga',
+    name: 'leagueOverview',
+    // Posiciones, partidos, estadísticas, versus, TOTW y fichajes. Estuvo en `/`
+    // hasta que la raíz pasó a ser el hub de juego; hereda tal cual las
+    // metaetiquetas de aquella ruta para no perder el posicionamiento que ya
+    // tenía en "posiciones y resultados en vivo".
+    component: () => import(/* webpackChunkName: "league-overview" */ '@/views/football/LeagueOverviewView.vue'),
     meta: {
       title: 'Fantasy MX — Posiciones, resultados y estadísticas en vivo',
       description: 'Sigue en vivo las posiciones, resultados y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, y juega fantasy, quinielas y Survivor gratis.',
@@ -305,17 +329,6 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/gaming',
-    name: 'gaming',
-    // Route level code-splitting for better performance
-    component: () => import(/* webpackChunkName: "gaming" */ '@/views/fantasy/GamingView.vue'),
-    meta: {
-      title: 'Fantasy Games - Football Fantasy',
-      description: 'Manage your fantasy games and leagues',
-      requiresAuth: false
-    }
-  },
-  {
     path: '/pools',
     name: 'pools',
     // Route level code-splitting for better performance
@@ -525,12 +538,12 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // An already-authenticated user hitting login/register is sent into the app.
-  // Honor an explicit ?redirect= target; otherwise land on the gaming hub
+  // Honor an explicit ?redirect= target; otherwise land on the game hub at `/`
   // (matches the post-login flows in LoginComponent / GoogleCallback). The old
   // /dashboard route is deprecated and must not be used here.
   if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
     const redirect = to.query.redirect as string | undefined;
-    return next(redirect && redirect.startsWith('/') ? redirect : { name: "gaming" });
+    return next(redirect && redirect.startsWith('/') ? redirect : { name: "home" });
   }
 
   // League gate: a football league must be selected to use the app. Without one,

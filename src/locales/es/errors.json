@@ -33,12 +33,12 @@
     "linksTitle": "Vuelve al partido",
     "links": {
       "home": {
-        "title": "Inicio",
-        "description": "Resultados en vivo y la jornada actual"
-      },
-      "gaming": {
-        "title": "Juegos",
+        "title": "Jugar",
         "description": "Fantasy, quinielas y Survivor"
+      },
+      "results": {
+        "title": "Resultados",
+        "description": "Posiciones, partidos y estadísticas en vivo"
       },
       "guides": {
         "title": "Guías",

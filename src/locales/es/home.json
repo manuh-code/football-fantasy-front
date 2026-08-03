@@ -14,9 +14,9 @@
   "nav": {
     "ariaLabel": "Navegación de inicio",
     "home": "Inicio",
-    "games": "Juegos",
     "leagues": "Ligas",
     "gaming": "Jugar",
+    "results": "Resultados",
     "following": "Siguiendo",
     "soon": "Pronto"
   },

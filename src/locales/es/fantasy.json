@@ -1,14 +1,49 @@
 {
   "gaming": {
+    "hero": {
+      "title": "Juega con tus amigos",
+      "titleReturning": "Tus juegos",
+      "subtitle": "Fantasy, quinielas y Survivor de Liga MX y las 5 grandes ligas. Gratis, toda la temporada."
+    },
+    "continue": {
+      "title": "Continuar jugando",
+      "loading": "Cargando tus juegos",
+      "retry": "No pudimos cargar todo. Reintentar"
+    },
+    "empty": {
+      "title": "Todavía no juegas nada",
+      "subtitle": "Crea tu primera liga, quiniela o Survivor, o únete con el código que te pase un amigo."
+    },
+    "more": {
+      "title": "Prueba otro modo",
+      "untried": "Sin estrenar"
+    },
+    "invite": {
+      "title": "¿Te invitaron a jugar?",
+      "fantasy": "Liga fantasy",
+      "pools": "Quiniela"
+    },
+    "meta": {
+      "participants": "{count} participante | {count} participantes",
+      "lives": "{count} vida | {count} vidas"
+    },
     "fantasy": {
       "title": "Fantasy",
-      "subtitle": "Arma tu equipo ideal y compite"
+      "subtitle": "Arma tu equipo ideal y compite",
+      "tag": "Draft en vivo",
+      "cta": "Jugar Fantasy"
     },
     "pools": {
       "title": "Quinielas",
-      "subtitle": "Predice los resultados y compite"
+      "subtitle": "Predice los resultados y compite",
+      "tag": "Marcador exacto",
+      "cta": "Jugar"
     },
-    "live": "En vivo",
+    "howTo": "¿Nuevo por aquí? Aprende a jugar en las guías",
+    "leagueData": {
+      "title": "Posiciones y resultados",
+      "subtitle": "Tabla, calendario y estadísticas de la liga"
+    },
     "loginRequired": "Inicia sesión para acceder a los juegos Fantasy"
   },
   "leagueCreate": {

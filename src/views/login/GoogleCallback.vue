@@ -17,10 +17,10 @@ const authenticate = async () => {
     await authStore.loginWithGoogle(queryString);
 
     // Restore the page the user was headed to before the OAuth round-trip
-    // (e.g. a shared invite link /pools?join=CODE). Falls back to the gaming hub.
+    // (e.g. a shared invite link /pools?join=CODE). Falls back to the game hub.
     const redirect = sessionStorage.getItem('post_auth_redirect');
     sessionStorage.removeItem('post_auth_redirect');
-    router.push(redirect || '/gaming');
+    router.push(redirect || '/');
   } catch (error) {
     console.error('Falló el login', error);
     hasError.value = true;

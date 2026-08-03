@@ -12,8 +12,9 @@ export interface OnboardingStep {
   bodyKey: string // clave i18n del cuerpo
 }
 
-// Guía del Home: bienvenida, selector de liga/jornada, secciones, fichajes,
-// modo Survivor y navegación/perfil.
+// Guía del Home (el hub de juego): qué es la app, los tres modos —fantasy,
+// quinielas y Survivor—, dónde quedaron los datos de liga y la navegación.
+// El orden es deliberado: los juegos primero, los datos después.
 export const HOME_STEPS: OnboardingStep[] = [
   {
     icon: 'md-sportssoccer',
@@ -22,28 +23,26 @@ export const HOME_STEPS: OnboardingStep[] = [
     bodyKey: 'onboarding.home.step1.body',
   },
   {
-    icon: 'hi-solid-collection',
+    icon: 'bi-trophy-fill',
     variant: 'blue',
     titleKey: 'onboarding.home.step2.title',
     bodyKey: 'onboarding.home.step2.body',
   },
   {
-    icon: 'hi-solid-chart-bar',
-    variant: 'amber',
+    icon: 'hi-solid-document-text',
+    variant: 'emerald',
     titleKey: 'onboarding.home.step3.title',
     bodyKey: 'onboarding.home.step3.body',
   },
-  // Nueva sección de Fichajes (pestaña del Home).
-  {
-    icon: 'hi-solid-switch-horizontal',
-    variant: 'emerald',
-    titleKey: 'onboarding.home.step4.title',
-    bodyKey: 'onboarding.home.step4.body',
-  },
-  // Nuevo modo de juego Survivor.
   {
     icon: 'hi-solid-shield-check',
     variant: 'red',
+    titleKey: 'onboarding.home.step4.title',
+    bodyKey: 'onboarding.home.step4.body',
+  },
+  {
+    icon: 'hi-solid-chart-bar',
+    variant: 'amber',
     titleKey: 'onboarding.home.step5.title',
     bodyKey: 'onboarding.home.step5.body',
   },
