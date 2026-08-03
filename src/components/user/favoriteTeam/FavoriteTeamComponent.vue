@@ -10,11 +10,14 @@
           {{ $t('user.favoriteTeam.following.title') }}
         </h1>
         <p class="text-footnote text-gray-500 dark:text-gray-400">
-          <template v-if="!isLoading && teams.length">
+          <template v-if="isLoading">
+            {{ $t('user.favoriteTeam.following.subtitle') }}
+          </template>
+          <template v-else-if="teams.length">
             {{ $t('user.favoriteTeam.following.count', { count: teams.length }, teams.length) }}
           </template>
           <template v-else>
-            {{ $t('user.favoriteTeam.following.subtitle') }}
+            {{ $t('user.favoriteTeam.following.emptyLead') }}
           </template>
         </p>
       </div>
@@ -51,32 +54,9 @@
       </button>
     </div>
 
-    <!-- Empty state -->
-    <div
-      v-else-if="!teams.length"
-      class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 p-10 flex flex-col items-center text-center"
-    >
-      <div class="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-4">
-        <v-icon name="bi-star" class="w-8 h-8 text-amber-400 dark:text-amber-500" />
-      </div>
-      <h2 class="text-callout font-semibold text-gray-900 dark:text-white">
-        {{ $t('user.favoriteTeam.following.empty.title') }}
-      </h2>
-      <p class="text-footnote text-gray-500 dark:text-gray-400 mt-1 max-w-xs">
-        {{ $t('user.favoriteTeam.following.empty.subtitle') }}
-      </p>
-      <button
-        @click="goExplore"
-        class="mt-5 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
-      >
-        <v-icon name="bi-trophy-fill" class="w-3.5 h-3.5" />
-        {{ $t('user.favoriteTeam.following.empty.cta') }}
-      </button>
-    </div>
-
     <!-- Teams grid -->
     <TransitionGroup
-      v-else
+      v-else-if="teams.length"
       tag="div"
       name="team-card"
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
@@ -122,6 +102,20 @@
       </div>
     </TransitionGroup>
 
+    <!-- Discovery: the way in when the shelf is empty, and the way to keep
+         adding once it isn't. -->
+    <FollowTeamDiscovery v-if="!isLoading && !loadError && isDiscoveryOpen" />
+
+    <button
+      v-else-if="!isLoading && !loadError"
+      type="button"
+      @click="openDiscovery"
+      class="w-full flex items-center justify-center gap-1.5 px-4 py-3 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 text-footnote font-semibold text-emerald-600 dark:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-500/50 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 transition-colors"
+    >
+      <v-icon name="hi-solid-plus" class="w-4 h-4" />
+      {{ $t('user.favoriteTeam.discover.open') }}
+    </button>
+
     <!-- Team profile drawer -->
     <FootballTeamProfileComponent
       :is-open="isProfileOpen"
@@ -133,10 +127,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
+import FollowTeamDiscovery from "@/components/user/favoriteTeam/FollowTeamDiscovery.vue";
 import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";
 import { useToast } from "@/composables/useToast";
 import { useUserStore } from "@/store/user/useUserStore";
@@ -145,7 +139,6 @@ import { footballLeagueService } from "@/services/football/league/FootballLeague
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 
 const { t } = useI18n();
-const router = useRouter();
 const toast = useToast();
 const userStore = useUserStore();
 const leagueStore = useFootballLeagueStore();
@@ -192,6 +185,26 @@ const teams = computed<FootballTeamResponse[]>(
   () => userStore.getUserData?.favoriteFootballTeam ?? [],
 );
 
+// ── Discovery ──
+// Se abre sola en cuanto sabemos que no sigues a nadie, y a partir de ahí manda
+// este estado y no la cantidad de equipos: si se cerrara al seguir el primero,
+// seguir el segundo costaría otro viaje de ida y vuelta.
+const isDiscoveryOpen = ref(false);
+
+const openDiscovery = () => {
+  isDiscoveryOpen.value = true;
+};
+
+watch(
+  [isLoading, teams],
+  ([loading, followed]) => {
+    if (!loading && !followed.length) {
+      isDiscoveryOpen.value = true;
+    }
+  },
+  { immediate: true },
+);
+
 const loadTeams = async () => {
   loadError.value = null;
   // We already have user data cached most of the time; only show the skeleton
@@ -225,10 +238,6 @@ const unfollow = async (team: FootballTeamResponse) => {
     next.delete(team.uuid);
     pendingUuids.value = next;
   }
-};
-
-const goExplore = () => {
-  router.push({ name: "gaming" });
 };
 
 onMounted(loadTeams);
