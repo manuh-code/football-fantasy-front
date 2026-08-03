@@ -116,5 +116,15 @@
     },
     "privacyLink": "Aviso de privacidad",
     "guidesLink": "Lee nuestras guías y aprende a jugar"
+  },
+  "footer": {
+    "navLabel": "Enlaces del sitio",
+    "tagline": "Fantasy, quinielas y Survivor de futbol. Gratis.",
+    "links": {
+      "landing": "Qué es Fantasy MX",
+      "guides": "Guías y reglas",
+      "about": "Acerca de",
+      "privacy": "Aviso de privacidad"
+    }
   }
 }

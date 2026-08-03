@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Football Fantasy — Vive tu liga y reta a tus amigos",
-    "description": "Sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Arma tu fantasy con draft en vivo, juega quinielas de marcador exacto y sobrevive en Survivor. Gratis."
+    "title": "Fantasy MX — Fantasy de Liga MX gratis, quinielas y Survivor",
+    "description": "Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. También Premier, LaLiga, Serie A y Bundesliga."
   },
   "brand": "Football Fantasy",
   "nav": {
@@ -29,9 +29,18 @@
     "pts": "pts"
   },
   "stats": {
-    "leagues": { "value": "5 ligas", "label": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga" },
-    "modes": { "value": "3 modos de juego", "label": "Fantasy, quinielas y Survivor con tus amigos" },
-    "free": { "value": "100% gratis", "label": "Sin pagos ni suscripciones" }
+    "leagues": {
+      "value": "5 ligas",
+      "label": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga"
+    },
+    "modes": {
+      "value": "3 modos de juego",
+      "label": "Fantasy, quinielas y Survivor con tus amigos"
+    },
+    "free": {
+      "value": "100% gratis",
+      "label": "Sin pagos ni suscripciones"
+    }
   },
   "features": {
     "title": "Todo lo que necesitas para vivir el futbol",

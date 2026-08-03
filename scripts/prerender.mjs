@@ -16,14 +16,18 @@
 //
 // Rutas generadas: /landingpage, /about, /guias, /guias/<slug> (todas las
 // guías declaradas en src/views/guides/guides.ts) y /privacy.
+//
+// Al final también escribe dist/sitemap.xml a partir de esas mismas rutas.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = resolve(root, 'dist')
 const SITE = 'https://fantasymx.cloud'
+const OG_IMAGE = `${SITE}/img/og-cover.png`
 
 const readJson = (p) => JSON.parse(readFileSync(resolve(root, p), 'utf8'))
 const guides = readJson('src/locales/es/guides.json')
@@ -113,6 +117,43 @@ const guidePage = (g) => {
       ${item.sections.map(sectionHtml).join('')}
       <h2>Otras guías</h2>
       <ul>${related.map((o) => `<li><a href="/guias/${o.slug}">${esc(guides.items[o.key].title)}</a></li>`).join('')}</ul>`,
+  }
+}
+
+// /gaming es el hub de modos de juego. En la app viva son tres tarjetas con un
+// subtítulo de cuatro palabras cada una: prerenderizar eso tal cual produciría
+// justo la "pantalla sin contenido" que este script existe para evitar. Así que
+// la versión estática combina los títulos reales de la app con el excerpt de la
+// guía de cada modo y enlaza a ellas, sin inventar copy nuevo.
+const gamingPage = () => {
+  const gaming = readJson('src/locales/es/fantasy.json').gaming
+  const survivorSub = readJson('src/locales/es/survivor.json').gaming.subtitle
+  const modes = [
+    { title: gaming.fantasy.title, sub: gaming.fantasy.subtitle, guide: 'fantasy' },
+    { title: gaming.pools.title, sub: gaming.pools.subtitle, guide: 'quiniela' },
+    { title: 'Survivor', sub: survivorSub, guide: 'survivor' },
+  ]
+  return {
+    path: '/gaming',
+    title: 'Juegos — Fantasy, quinielas y Survivor | Fantasy MX',
+    description:
+      'Los tres modos de juego de Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación. Gratis, en las 5 grandes ligas.',
+    body: `
+      <h1>Modos de juego</h1>
+      <p class="pr-lead">Tres formas de competir con tus amigos durante toda la temporada,
+      en Liga MX, Premier League, LaLiga, Serie A y Bundesliga.</p>
+      ${chips()}
+      ${modes
+        .map((m) => {
+          const g = GUIDES.find((x) => x.key === m.guide)
+          return `<h2>${esc(m.title)}</h2>
+            <p>${esc(m.sub)}. ${esc(guides.items[m.guide].excerpt)}</p>
+            <p><a href="/guias/${g.slug}">Cómo se juega ${esc(m.title)} paso a paso</a></p>`
+        })
+        .join('')}
+      <h2>Empieza a jugar</h2>
+      <p>Todos los modos son gratuitos y se juegan desde el navegador o instalando la app.
+      <a href="/guias">Consulta las guías</a> para aprender las reglas antes de tu primera jornada.</p>`,
   }
 }
 
@@ -211,14 +252,47 @@ const privacyPage = () => {
 const template = readFileSync(resolve(dist, 'index.html'), 'utf8')
 if (!template.includes('<div id="app">')) throw new Error('prerender: dist/index.html sin <div id="app">')
 
-const pages = [landingPage(), aboutPage(), guidesHub(), ...GUIDES.map(guidePage), privacyPage()]
+// index.html declara canonical y og:*/twitter:* con los valores de la home.
+// Aquí se REEMPLAZAN por los de cada página; añadirlos duplicaría los tags y
+// dejaría a los scrapers eligiendo cuál leer. Si alguna sustitución no encaja
+// el build falla, en vez de publicar en silencio la portada de la home en
+// cada URL.
+const sub = (html, re, value, what) => {
+  if (!re.test(html)) throw new Error(`prerender: no encontré ${what} en index.html`)
+  return html.replace(re, (...m) => `${m[1]}${esc(value)}${m[2]}`)
+}
+
+const metaRe = (attr, key) =>
+  new RegExp(`(<meta\\s+${attr}="${key}"\\s+content=")[^"]*(")`)
+
+const withSeo = (html, page) => {
+  const url = `${SITE}${page.path}`
+  let out = html
+    .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(page.title)}</title>`)
+    .replace(/(<link rel="canonical" href=")[^"]*(")/, (...m) => `${m[1]}${url}${m[2]}`)
+  out = sub(out, metaRe('name', 'description'), page.description, 'meta description')
+  out = sub(out, metaRe('property', 'og:url'), url, 'og:url')
+  out = sub(out, metaRe('property', 'og:title'), page.title, 'og:title')
+  out = sub(out, metaRe('property', 'og:description'), page.description, 'og:description')
+  out = sub(out, metaRe('name', 'twitter:title'), page.title, 'twitter:title')
+  out = sub(out, metaRe('name', 'twitter:description'), page.description, 'twitter:description')
+  if (!out.includes(OG_IMAGE)) throw new Error('prerender: falta og:image en index.html')
+  return out
+}
+
+const pages = [
+  landingPage(),
+  aboutPage(),
+  gamingPage(),
+  guidesHub(),
+  ...GUIDES.map(guidePage),
+  privacyPage(),
+]
 
 for (const page of pages) {
   const content = `<div class="pr"><main>${NAV}${page.body}${FOOTER}</main></div>`
-  let html = template
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(page.title)}</title>`)
-    .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/, `$1${esc(page.description)}$2`)
-    .replace('</head>', `${STYLES}<link rel="canonical" href="${SITE}${page.path}" />\n</head>`)
+  const html = withSeo(template, page)
+    .replace('</head>', `${STYLES}\n</head>`)
     .replace('<div id="app">', `<div id="app">${content}`)
   const outDir = resolve(dist, `.${page.path}`)
   mkdirSync(outDir, { recursive: true })
@@ -226,3 +300,76 @@ for (const page of pages) {
   console.log(`prerender ✓ ${page.path}`)
 }
 console.log(`prerender: ${pages.length} páginas generadas`)
+
+// ── Sitemap ─────────────────────────────────────────────────────────────────
+//
+// Se genera aquí y no como archivo estático en public/ para que comparta la
+// única fuente de verdad de las rutas: al agregar una guía a guides.ts entra
+// sola al sitemap, en vez de prerenderizarse pero quedar invisible para Google.
+//
+// `lastmod` sale de scripts/sitemap-stamps.json, un sello {hash, date} por URL
+// que solo avanza cuando el contenido de esa página cambia de verdad. Sellar
+// todas las URLs con la fecha del build es el antipatrón clásico: Google
+// detecta que el lastmod no es confiable y deja de usarlo para todo el sitio.
+// El archivo se commitea porque `git` no está disponible dentro del build de
+// Docker (.git está en .dockerignore), así que no se puede derivar del log.
+//
+// `changefreq` no se emite: Google lo ignora por completo. `priority` sí se
+// mantiene — Google también lo ignora, pero algunos crawlers menores lo leen y
+// no cuesta nada.
+
+const stampsRel = 'scripts/sitemap-stamps.json'
+const stampsPath = resolve(root, stampsRel)
+const stamps = existsSync(stampsPath) ? readJson(stampsRel) : {}
+const today = new Date().toISOString().slice(0, 10)
+
+/** Fecha del sello si el contenido sigue igual; hoy si cambió. */
+const lastmodFor = (path, content) => {
+  const hash = createHash('sha1').update(content).digest('hex').slice(0, 16)
+  if (stamps[path]?.hash !== hash) stamps[path] = { hash, date: today }
+  return stamps[path].date
+}
+
+// La home no se prerenderiza (la arma Vue en el cliente), así que su sello se
+// calcula sobre los fuentes que definen lo que muestra.
+const homeContent = ['src/views/HomeView.vue', 'src/locales/es/home.json']
+  .map((p) => readFileSync(resolve(root, p), 'utf8'))
+  .join('')
+
+// /landingpage por encima de / a propósito: es la página que queremos que
+// posicione para las búsquedas de descubrimiento ("qué es", "cómo jugar"),
+// mientras / responde a las de uso (resultados y posiciones en vivo).
+// Las guías individuales caen al valor por defecto.
+const PRIORITY = {
+  '/landingpage': '1.0',
+  '/': '0.9',
+  '/guias': '0.9',
+  '/gaming': '0.8',
+  '/about': '0.6',
+  '/privacy': '0.3',
+}
+
+// El sello cubre title y description además del body: los tres son contenido
+// indexable, así que reescribir un <title> también debe mover el lastmod.
+const urls = [
+  { path: '/', content: homeContent },
+  ...pages.map((p) => ({ path: p.path, content: p.title + p.description + p.body })),
+]
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map(
+    ({ path, content }) => `  <url>
+    <loc>${SITE}${path}</loc>
+    <lastmod>${lastmodFor(path, content)}</lastmod>
+    <priority>${PRIORITY[path] ?? '0.7'}</priority>
+  </url>`
+  )
+  .join('\n')}
+</urlset>
+`
+
+writeFileSync(resolve(dist, 'sitemap.xml'), sitemap)
+writeFileSync(stampsPath, `${JSON.stringify(stamps, null, 2)}\n`)
+console.log(`sitemap: ${urls.length} URLs → dist/sitemap.xml`)

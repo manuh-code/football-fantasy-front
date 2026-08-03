@@ -116,5 +116,15 @@
     },
     "privacyLink": "Privacy notice",
     "guidesLink": "Read our guides and learn how to play"
+  },
+  "footer": {
+    "navLabel": "Site links",
+    "tagline": "Football fantasy, pools and Survivor. Free.",
+    "links": {
+      "landing": "What is Fantasy MX",
+      "guides": "Guides and rules",
+      "about": "About",
+      "privacy": "Privacy notice"
+    }
   }
 }
