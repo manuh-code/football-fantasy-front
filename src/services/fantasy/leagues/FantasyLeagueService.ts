@@ -23,6 +23,7 @@ import { FantasyTradePayload } from "@/interfaces/fantasy/trade/FantasyTradePayl
 import { FantasyTradeResponse } from "@/interfaces/fantasy/trade/FantasyTradeResponse";
 import { PlayerFantasyScoreDetailResponse } from "@/interfaces/fantasy/score/PlayerFantasyScoreDetailResponse";
 import { DraftResults } from "@/interfaces/fantasy/draft/DraftResults";
+import { FantasyPlayoffBracketResponse } from "@/interfaces/fantasy/playoffs/FantasyPlayoffBracketResponse";
 
 
 export class FantasyLeagueService {
@@ -296,6 +297,19 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch matchup for round');
+    }
+
+    /**
+     * Cuadro de eliminatorias de la liga. Responde también antes de que empiece
+     * (con `has_started` en false y las series vacías), para poder anunciar
+     * cuántos clasifican desde el primer día.
+     */
+    async getPlayoffBracket(leagueUuid: string): Promise<FantasyPlayoffBracketResponse> {
+        const response = await this.api.get<ApiResponse<FantasyPlayoffBracketResponse>>(`fantasy/leagues/playoffs/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch playoff bracket');
     }
 
     async getStandingsByLeague(leagueUuid: string): Promise<FantasyStandingResponse[]> {

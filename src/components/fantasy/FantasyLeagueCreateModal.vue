@@ -152,6 +152,72 @@
 
         <span v-if="fieldError('participants_count')" class="text-xs text-red-600 dark:text-red-400">{{ fieldError('participants_count') }}</span>
       </div>
+
+      <!-- Champion mode — table leader vs. a knockout bracket -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.leagueCreate.champion.label') }}</label>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            v-for="mode in championModes"
+            :key="mode.value"
+            type="button"
+            :disabled="isLoading || mode.disabled"
+            @click="championMode = mode.value"
+            class="flex flex-col gap-1 p-3 rounded-xl border-[1.5px] text-left transition-colors disabled:opacity-50"
+            :class="championMode === mode.value
+              ? 'border-emerald-600 bg-emerald-50/60 dark:bg-emerald-900/10'
+              : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 active:bg-gray-100 dark:active:bg-gray-700/60'"
+          >
+            <span class="flex items-center gap-1.5">
+              <v-icon
+                :name="mode.icon"
+                class="w-3.5 h-3.5 shrink-0"
+                :class="championMode === mode.value ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'"
+              />
+              <span
+                class="text-xs font-bold"
+                :class="championMode === mode.value ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-200'"
+              >{{ mode.title }}</span>
+            </span>
+            <span class="text-2xs leading-snug text-gray-500 dark:text-gray-400">{{ mode.description }}</span>
+          </button>
+        </div>
+
+        <!-- Not enough matchdays left for a bracket at this participant count -->
+        <p v-if="playoffOptions.length === 0 && participantsCount" class="text-2xs text-amber-600 dark:text-amber-400">
+          {{ $t('fantasy.leagueCreate.champion.unavailable', { count: participantsCount }) }}
+        </p>
+      </div>
+
+      <!-- Playoff spots — only meaningful once the bracket mode is picked -->
+      <div v-if="championMode === 'playoffs' && playoffOptions.length > 0" class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.leagueCreate.champion.qualified.label') }}</label>
+
+        <div class="flex gap-2">
+          <button
+            v-for="option in playoffOptions"
+            :key="`po-${option}`"
+            type="button"
+            :disabled="isLoading"
+            @click="playoffTeams = option"
+            class="flex-1 flex flex-col items-center gap-0.5 py-2.5 rounded-xl border-[1.5px] transition-colors disabled:opacity-60"
+            :class="playoffTeams === option
+              ? 'border-emerald-600 bg-emerald-50/60 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400'
+              : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-700/60'"
+          >
+            <span class="text-sm font-bold tabular-nums">{{ option }}</span>
+            <span class="text-2xs font-medium">
+              {{ option === defaultPlayoffTeams ? $t('fantasy.leagueCreate.champion.qualified.recommended') : $t('fantasy.leagueCreate.champion.qualified.unit') }}
+            </span>
+          </button>
+        </div>
+
+        <p class="text-2xs text-gray-400 dark:text-gray-500">
+          {{ $t('fantasy.leagueCreate.champion.qualified.hint', { rounds: bracketMatchdays }) }}
+        </p>
+        <span v-if="fieldError('playoff_teams')" class="text-xs text-red-600 dark:text-red-400">{{ fieldError('playoff_teams') }}</span>
+      </div>
     </div>
 
     <template #footer>
@@ -188,6 +254,8 @@ import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagu
 import { useValidationStore } from "@/store/validation/useValidationStore";
 import type { FantasyLeagueCreatePayload } from "@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
+import type { FantasyPlayoffOption } from "@/interfaces/fantasy/leagues/FantasyParticipanCountResponse";
+import type { FantasyChampionMode } from "@/interfaces/fantasy/playoffs/FantasyPlayoffBracketResponse";
 import type { FootballLeagueResponse } from "@/interfaces/football/league/FootballLeagueResponse";
 
 const props = withDefaults(defineProps<{ isVisible?: boolean }>(), {
@@ -223,6 +291,45 @@ const participantOptions = ref<{ value: number; tag: string }[]>([]);
 const isFixedParticipants = ref(false);
 const loadingOptions = ref(false);
 
+// Champion mode. The bracket runs on the tournament's last matchdays, so which
+// spot counts are possible depends on how many matchdays the regular season
+// leaves free — that varies per league (Liga MX ~17, Premier ~38) and grows
+// tighter with every extra participant. The API resolves it per participant
+// count; an empty list means this league simply can't fit a bracket.
+const championMode = ref<FantasyChampionMode>("standings");
+const playoffTeams = ref<number | null>(null);
+const playoffOptionsByParticipants = ref<FantasyPlayoffOption[]>([]);
+
+const currentPlayoffOption = computed(() =>
+  playoffOptionsByParticipants.value.find((option) => option.participants === participantsCount.value),
+);
+const playoffOptions = computed(() => currentPlayoffOption.value?.options ?? []);
+const defaultPlayoffTeams = computed(() => currentPlayoffOption.value?.default ?? null);
+
+// Two matchdays per tie (home and away), one tie per bracket round.
+const bracketMatchdays = computed(() =>
+  playoffTeams.value ? Math.log2(playoffTeams.value) * 2 : 0,
+);
+
+const championModes = computed<
+  { value: FantasyChampionMode; title: string; description: string; icon: string; disabled: boolean }[]
+>(() => [
+  {
+    value: "standings",
+    title: t("fantasy.leagueCreate.champion.standings.title"),
+    description: t("fantasy.leagueCreate.champion.standings.desc"),
+    icon: "hi-solid-chart-bar",
+    disabled: false,
+  },
+  {
+    value: "playoffs",
+    title: t("fantasy.leagueCreate.champion.playoffs.title"),
+    description: t("fantasy.leagueCreate.champion.playoffs.desc"),
+    icon: "gi-crossed-swords",
+    disabled: playoffOptions.value.length === 0,
+  },
+]);
+
 const onLeagueLogoError = (e: Event) => {
   (e.target as HTMLImageElement).src = "/img/default-avatar.svg";
 };
@@ -254,7 +361,8 @@ const canSubmit = computed(
   () =>
     name.value.trim().length > 0 &&
     participantsCount.value !== null &&
-    !!selectedLeague.value
+    !!selectedLeague.value &&
+    (championMode.value !== "playoffs" || playoffTeams.value !== null)
 );
 
 // Resolve the participant count options for the selected league.
@@ -266,9 +374,12 @@ const loadParticipantOptions = async () => {
   participantsCount.value = null;
   isFixedParticipants.value = false;
   participantOptions.value = [];
+  playoffOptionsByParticipants.value = [];
   try {
     const response = await fantasyLeagueService.getParticipantOptions(leagueUuid);
     const data = response.data;
+
+    playoffOptionsByParticipants.value = data.playoffs ?? [];
 
     const labelMap: Record<string, string> = {
       min: t("fantasy.leagueCreate.participants.min"),
@@ -306,6 +417,8 @@ watch(
     if (visible) {
       name.value = "";
       showLeaguePicker.value = false;
+      championMode.value = "standings";
+      playoffTeams.value = null;
       selectedLeague.value = footballLeagueStore.getLeague;
       validationStore.clearValidatorError();
       loadLeagues();
@@ -314,9 +427,25 @@ watch(
   }
 );
 
+// The spot options are tied to the participant count, so changing it re-picks the
+// suggested bracket size — and drops back to the table mode when the new count
+// leaves no room for a bracket at all.
+watch(participantsCount, () => {
+  playoffTeams.value = defaultPlayoffTeams.value;
+  if (playoffOptions.value.length === 0) championMode.value = "standings";
+});
+
+// Entering the bracket mode without a size picked yet starts on the suggestion.
+watch(championMode, (mode) => {
+  if (mode === "playoffs" && playoffTeams.value === null) {
+    playoffTeams.value = defaultPlayoffTeams.value;
+  }
+});
+
 // Clear field errors as the user edits.
 watch(name, () => fieldError("name") && validationStore.clearFieldError("name"));
 watch(participantsCount, () => fieldError("participants_count") && validationStore.clearFieldError("participants_count"));
+watch(playoffTeams, () => fieldError("playoff_teams") && validationStore.clearFieldError("playoff_teams"));
 
 const close = () => {
   if (!isLoading.value) emit("close");
@@ -333,6 +462,10 @@ const handleCreate = async () => {
       name: name.value.trim(),
       league_uuid: selectedLeague.value.uuid,
       participants_count: participantsCount.value,
+      champion_mode: championMode.value,
+      // Sending a spot count in table mode would be meaningless; the API ignores
+      // it there, but leaving it out keeps the payload honest.
+      ...(championMode.value === "playoffs" ? { playoff_teams: playoffTeams.value } : {}),
     };
     const league = await fantasyLeagueService.storeFantasyLeague(payload);
     emit("created", league);

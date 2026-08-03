@@ -30,6 +30,17 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
       { key: 'rules', label: t('fantasy.detailTabs.rules'), icon: 'hi-solid-clipboard-list', accent: 'sky' },
     ]
 
+    // Only leagues that actually play a bracket get the tab — in table mode it
+    // would only ever show an "this league has no playoffs" placeholder.
+    if (leagueDetailStore.playsPlayoffs) {
+      list.splice(3, 0, {
+        key: 'playoffs',
+        label: t('fantasy.detailTabs.playoffs'),
+        icon: 'gi-crossed-swords',
+        accent: 'purple',
+      })
+    }
+
     if (canAccessMemberTabs.value) {
       list.push(
         {
