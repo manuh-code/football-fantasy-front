@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
 import { footballTeamService } from "@/services/football/team/FootballTeamService";
+import { useLiveFixtures } from "@/composables/football/useLiveFixtures";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
@@ -283,6 +284,15 @@ onMounted(() => {
     else loadRounds(props.stageUuid);
   }
 });
+
+// ── Live updates (Ably) ──
+// Score / state / match-clock pushes for whichever list is on screen. Both the
+// round-or-stage list and the focused team's schedule are fed, so a goal shows
+// up without the user re-selecting the round or reopening the panel.
+useLiveFixtures(() => [
+  ...fixtures.value,
+  ...teamSchedule.value.flatMap((round) => round.fixtures ?? []),
+]);
 
 // ── Derived list state ──
 // The list feeds off a two-step pipeline (regular: rounds → fixtures, playoffs:

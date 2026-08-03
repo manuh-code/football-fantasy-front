@@ -133,8 +133,9 @@ let liveChannel: Types.RealtimeChannelCallbacks | null = null;
 const toArray = <T,>(payload: T | T[]): T[] =>
   Array.isArray(payload) ? payload : payload != null ? [payload] : [];
 
-// 0. match-center-fixture → kickoff date/time, already localized to the
-//    viewer's timezone by the backend. Patch only the fields it carries.
+// 0. match-center-fixture → kickoff date/time (already localized to the viewer's
+//    timezone by the backend) plus everything that moves during the match: state
+//    badge, live flags and the running clock. Patch only the fields it carries.
 const onFixtureInfo = (msg: Types.Message) => {
   const f = fixture.value;
   if (!f) return;
@@ -144,14 +145,26 @@ const onFixtureInfo = (msg: Types.Message) => {
   if (data.starting_date != null) f.starting_date = data.starting_date;
   if (data.hour != null) f.hour = data.hour;
   if (data.starting_at_timestamp != null) f.starting_at_timestamp = data.starting_at_timestamp;
+  if (data.state != null) f.state = data.state;
+  if (data.is_inplay != null) f.is_inplay = data.is_inplay;
+  if (data.is_finished != null) f.is_finished = data.is_finished;
+  if (data.result_info != null) f.result_info = data.result_info;
+  // Assigned unconditionally: null is meaningful here (clock stopped at HT/FT)
+  // and must clear a previously running clock.
+  if ("live_clock" in data) f.live_clock = data.live_clock ?? null;
 };
 
 // 1. match-center-score → keep the scoreboard header in sync.
 const onScore = (msg: Types.Message) => {
-  console.log("onScore", msg.data);
   const f = fixture.value;
   if (!f?.participants) return;
-  for (const s of toArray<ScoreResponse>(msg.data)) {
+  const scores = toArray<ScoreResponse>(msg.data);
+  f.scores = scores;
+  for (const s of scores) {
+    // SportMonks sends one row per period AND per side (1ST_HALF, 2ND_HALF,
+    // CURRENT…). Only CURRENT is the running score — without this filter the
+    // header ends up showing whichever period happened to arrive last.
+    if (s.description !== "CURRENT") continue;
     const side = s.score?.participant;
     const goals = s.score?.goals;
     if (side == null || goals == null) continue;
@@ -160,7 +173,7 @@ const onScore = (msg: Types.Message) => {
     if (participant.current_score) {
       participant.current_score.score = goals;
     } else {
-      participant.current_score = { score: goals, participant: side, description: s.description ?? "" };
+      participant.current_score = { score: goals, participant: side, description: s.description };
     }
   }
 };

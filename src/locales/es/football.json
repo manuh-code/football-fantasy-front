@@ -216,6 +216,7 @@
     "noWeekFixtures": "No hay partidos esta semana",
     "live": "En vivo",
     "halfTime": "Descanso",
+    "fullTime": "Final",
     "errors": {
       "weeklyLoad": "Error al cargar los partidos de la semana",
       "noStage": "No hay etapa seleccionada",

@@ -1,10 +1,10 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 
-// Fixture list/detail views only get `currentperiod` as a one-off REST snapshot
-// (no per-second push), so the running match minute is extrapolated client-side
-// from that snapshot instead. A single shared 1s interval drives every visible
-// clock — one setInterval for the whole app, not one per fixture card.
+// The API sends `live_clock` as a snapshot (REST on load, then every ~10s over
+// realtime) rather than a per-second push, so the running match minute is
+// extrapolated client-side between snapshots. A single shared 1s interval drives
+// every visible clock — one setInterval for the whole app, not one per card.
 const tick = ref(Date.now());
 let subscribers = 0;
 let intervalId: ReturnType<typeof setInterval> | null = null;
@@ -45,8 +45,13 @@ const parseMinuteAndSeconds = (value: string): number => {
 const snapshots = new Map<string, { signature: string; baseSeconds: number; capturedAt: number }>();
 
 const captureSnapshot = (fixture: FootballFixtureResponse) => {
-  const period = fixture.currentperiod;
-  if (!period) return null;
+  const period = fixture.live_clock;
+  // A null minute means the clock isn't running (pre-match, HT, FT). Drop any
+  // stale snapshot so the card can't keep ticking a finished match forward.
+  if (!period || period.minute == null) {
+    snapshots.delete(fixture.uuid);
+    return null;
+  }
   const signature = `${period.minute}|${period.minute_and_seconds}|${period.added_time ?? ""}`;
   const cached = snapshots.get(fixture.uuid);
   if (cached && cached.signature === signature) return cached;
@@ -60,7 +65,7 @@ const captureSnapshot = (fixture: FootballFixtureResponse) => {
 
 /**
  * Formats a fixture's running match minute (e.g. "23'", "45+2'") from
- * `currentperiod`, ticking it forward client-side between snapshots.
+ * `live_clock`, ticking it forward client-side between snapshots.
  * Pass `paused: true` (e.g. half time) to freeze the displayed minute without
  * discarding the snapshot. Returns "" when the fixture carries no live clock.
  */
@@ -69,10 +74,9 @@ export function formatLiveMatchClock(
   nowMs: number,
   options: { paused?: boolean } = {},
 ): string {
-  const period = fixture.currentperiod;
-  if (!period) return "";
+  const period = fixture.live_clock;
   const snapshot = captureSnapshot(fixture);
-  if (!snapshot) return "";
+  if (!period || !snapshot) return "";
 
   if (period.added_time) {
     // Stoppage time is announced as a fixed extra allowance (e.g. "+3"), not a
