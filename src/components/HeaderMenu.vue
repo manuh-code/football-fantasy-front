@@ -9,8 +9,13 @@
         :aria-label="$t('home.header.goHome')"
         :title="$t('home.header.goHome')"
       >
-        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[10px] flex items-center justify-center">
-          <v-icon name="hi-solid-lightning-bolt" class="w-[18px] h-[18px] text-white" />
+        <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[10px] flex items-center justify-center">
+          <!-- Monograma "F": el mismo trazado que el favicon y el splash de
+               index.html, para que icono → splash → app sean una sola marca.
+               Va inline y no como <v-icon> porque es identidad, no iconografía. -->
+          <svg viewBox="0 0 39 54" class="w-[13px] h-[18px] text-white" fill="currentColor" aria-hidden="true">
+            <path d="M0 0h39v12H12v9h19v12H12v21H0z" />
+          </svg>
         </div>
         <div class="hidden sm:flex flex-col items-start">
           <span class="text-callout font-bold text-gray-900 dark:text-white leading-tight tracking-tight">Fantasy MX</span>

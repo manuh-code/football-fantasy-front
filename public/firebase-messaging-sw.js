@@ -21,13 +21,14 @@ const messaging = firebase.messaging()
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Background message received:', payload)
 
-  const notificationTitle = payload.notification?.title || '🏈 Football Fantasy'
+  const notificationTitle = payload.notification?.title || 'Fantasy MX'
   const notificationOptions = {
     body: payload.notification?.body || 'Tienes una nueva notificación',
     icon: payload.notification?.icon || '/img/icons/android-chrome-192x192.png',
-    // badge debe apuntar a un ícono existente; antes referenciaba badge-72x72.png
-    // (inexistente en public/) y daba 404. Android lo muestra como silueta.
-    badge: '/img/icons/android-chrome-192x192.png',
+    // Android aplasta el badge a una silueta desde el canal alfa, así que NO
+    // puede ser el icono normal: al ser opaco saldría como un cuadrado macizo.
+    // Este archivo es el monograma blanco sobre transparente.
+    badge: '/img/icons/notification-badge-96x96.png',
     tag: payload.data?.type || 'general',
     data: payload.data || {},
     actions: [],

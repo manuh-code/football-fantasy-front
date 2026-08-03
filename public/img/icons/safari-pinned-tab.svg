@@ -1,3 +1,5 @@
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.00251 14.9297L0 1.07422H6.14651L8.00251 4.27503L9.84583 1.07422H16L8.00251 14.9297Z" fill="black"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Silueta para la pestaña fijada de Safari: un solo trazado, negro puro y
+       sin fondo. Safari lo recolorea con el atributo `color` del <link>. -->
+  <path d="M2.22 0h11.56v3.56H5.78v2.66h5.63v3.56H5.78V16H2.22z" fill="black"/>
 </svg>
