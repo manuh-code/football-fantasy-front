@@ -23,6 +23,33 @@
     "title": "Not Found",
     "message": "Not Found - Resource not found"
   },
+  "notFound": {
+    "badge": "Error 404",
+    "title": "Offside",
+    "subtitle": "This play doesn't exist. The page you are looking for was moved, renamed or never made it onto the pitch.",
+    "requestedPath": "Requested path:",
+    "goHome": "Go to home",
+    "goBack": "Go back",
+    "linksTitle": "Get back in the game",
+    "links": {
+      "home": {
+        "title": "Home",
+        "description": "Live scores and the current matchweek"
+      },
+      "gaming": {
+        "title": "Games",
+        "description": "Fantasy, pools and Survivor"
+      },
+      "guides": {
+        "title": "Guides",
+        "description": "Learn how to play, step by step"
+      },
+      "faq": {
+        "title": "FAQ",
+        "description": "Answers to the most common questions"
+      }
+    }
+  },
   "422": {
     "title": "Validation Error",
     "message": "Validation error. Please check your data."

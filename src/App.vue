@@ -53,6 +53,10 @@
         <router-view />
       </main>
 
+      <!-- Navegación secundaria + enlaces legales. Solo en páginas de
+           contenido; ver FOOTER_ROUTES. -->
+      <AppFooter v-if="showFooter" />
+
       <!-- Toast Container -->
       <ToastContainer />
     </div>
@@ -78,6 +82,7 @@ import { usePushNotifications } from "./composables/usePushNotifications";
 import { usePwaAutoUpdate } from "@/composables/usePwaAutoUpdate";
 import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
 import PushPermissionModal from "@/components/pwa/PushPermissionModal.vue";
+import AppFooter from "@/components/AppFooter.vue";
 
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -86,6 +91,22 @@ const router = useRouter();
 const isHomeRoute = computed(() => router.currentRoute.value.name === "home");
 // Landing is a standalone marketing page with its own header + footer.
 const isLandingRoute = computed(() => router.currentRoute.value.name === "landingpage");
+
+// Rutas de contenido público: son las que Google indexa y donde el footer
+// aporta navegación real. Se deja fuera del resto (login, dashboard, draft,
+// quinielas…) porque ahí es ruido: son flujos de app, no páginas de lectura.
+// `landingpage` no está porque monta su propio footer.
+const FOOTER_ROUTES = new Set([
+  "home",
+  "gaming",
+  "guides",
+  "guideDetail",
+  "about",
+  "privacy",
+]);
+const showFooter = computed(() =>
+  FOOTER_ROUTES.has(router.currentRoute.value.name as string)
+);
 const { requestPermissionAndRegister, onForegroundMessage } =
   usePushNotifications();
 const toast = useToast();

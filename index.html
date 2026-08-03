@@ -31,6 +31,50 @@
     />
     <meta name="author" content="Fantasy MX" />
 
+    <!-- Canonical + Open Graph / Twitter.
+         Los valores de aquí son los de la home y actúan como fallback para las
+         rutas de app que no se prerenderizan (nginx sirve este mismo index.html
+         para todas). El router los reescribe en cada navegación (updateSeoTags
+         en src/router/index.ts) y el prerender los sustituye por los de cada
+         página estática. Deben ser URLs ABSOLUTAS: los scrapers de WhatsApp,
+         Facebook y X no resuelven rutas relativas. -->
+    <link rel="canonical" href="https://fantasymx.cloud/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fantasy MX" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:url" content="https://fantasymx.cloud/" />
+    <meta
+      property="og:title"
+      content="Fantasy MX — Futbol en vivo, fantasy, quinielas y Survivor"
+    />
+    <meta
+      property="og:description"
+      content="Fantasy MX: sigue la Liga MX en vivo con posiciones, calendario y estadísticas, arma tu equipo fantasy con draft en tiempo real, crea quinielas con tus amigos y juega Survivor. Gratis y desde tu móvil."
+    />
+    <meta
+      property="og:image"
+      content="https://fantasymx.cloud/img/og-cover.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Fantasy MX — fantasy con draft en vivo, quinielas y Survivor para Liga MX, Premier League, LaLiga, Serie A y Bundesliga"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Fantasy MX — Futbol en vivo, fantasy, quinielas y Survivor"
+    />
+    <meta
+      name="twitter:description"
+      content="Sigue el futbol en vivo y reta a tus amigos: fantasy con draft en tiempo real, quinielas de marcador exacto y Survivor. Gratis."
+    />
+    <meta
+      name="twitter:image"
+      content="https://fantasymx.cloud/img/og-cover.png"
+    />
+
     <!-- Theme color -->
     <meta
       name="theme-color"

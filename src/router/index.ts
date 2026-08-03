@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 
@@ -47,6 +47,10 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'about',
   'guides',
   'guideDetail',
+  // Indexable y prerenderizada: no debe depender de que la API de ligas
+  // responda. La vista solo lista los tres modos y navega a otras rutas —
+  // esas sí piden liga cuando toca. Ver scripts/prerender.mjs.
+  'gaming',
 ])
 
 const routes: Array<RouteRecordRaw> = [
@@ -65,9 +69,13 @@ const routes: Array<RouteRecordRaw> = [
     name: 'landingpage',
     // Public marketing page aimed at acquiring new users (anonymous-friendly).
     component: () => import(/* webpackChunkName: "landingpage" */ '@/views/landing/LandingView.vue'),
+    // Estos dos valores deben coincidir con `meta` en src/locales/es/landing.json:
+    // el prerender sirve ese texto al crawler y el guard sobrescribe con este
+    // otro al montar la app. Si divergen, Google ve un título antes de ejecutar
+    // el JS y otro después.
     meta: {
-      title: 'Football Fantasy — Vive tu liga y reta a tus amigos',
-      description: 'Sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Arma tu fantasy con draft en vivo, juega quinielas de marcador exacto y sobrevive en Survivor. Gratis.',
+      title: 'Fantasy MX — Fantasy de Liga MX gratis, quinielas y Survivor',
+      description: 'Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. También Premier, LaLiga, Serie A y Bundesliga.',
       requiresAuth: false
     }
   },
@@ -402,8 +410,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'not-found',
     component: () => import(/* webpackChunkName: "not-found" */ '@/views/NotFoundView.vue'),
     meta: {
-      title: 'Page Not Found - Football Fantasy',
-      description: 'The page you are looking for does not exist'
+      title: 'Página no encontrada — Fantasy MX',
+      description: 'La página que buscas no existe o cambió de dirección. Vuelve al inicio de Fantasy MX o consulta las guías.'
     }
   }
 ]
@@ -433,6 +441,45 @@ const router = createRouter({
 // stale token fails validation.
 const AUTH_STATE_ROUTES = new Set(['login', 'register', 'landingpage'])
 
+/** Origen público del sitio; las URLs de canonical y og:url deben ser absolutas. */
+const SITE_ORIGIN = 'https://fantasymx.cloud'
+
+/**
+ * Sincroniza title, description, canonical y Open Graph con la ruta activa.
+ *
+ * index.html trae estos tags con los valores de la home; sin esto, navegar por
+ * la SPA dejaba `canonical` y `og:*` congelados en la home para todas las
+ * rutas, y cualquier URL con parámetros (?utm_source=, ?ref=) podía indexarse
+ * como página distinta. Las páginas prerenderizadas ya vienen con los suyos
+ * desde scripts/prerender.mjs; esto cubre la navegación en cliente.
+ */
+function updateSeoTags(to: RouteLocationNormalized) {
+  const title = to.meta?.title as string | undefined
+  const description = to.meta?.description as string | undefined
+  // `to.path`, no `fullPath`: la canónica nunca debe arrastrar query params.
+  const url = `${SITE_ORIGIN}${to.path}`
+
+  if (title) {
+    document.title = title
+    setMeta('property', 'og:title', title)
+  }
+
+  if (description) {
+    setMeta('name', 'description', description)
+    setMeta('property', 'og:description', description)
+  }
+
+  setMeta('property', 'og:url', url)
+
+  const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+  if (canonical) canonical.href = url
+}
+
+/** Actualiza un <meta> existente; no crea tags que index.html no declare. */
+function setMeta(attr: 'name' | 'property', key: string, content: string) {
+  document.querySelector(`meta[${attr}="${key}"]`)?.setAttribute('content', content)
+}
+
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
   const needAuth = to.meta.requiresAuth;
@@ -441,18 +488,7 @@ router.beforeEach(async (to, from, next) => {
       ? await authStore.isAuthenticated()
       : false;
 
-  // Update document title
-  if (to.meta?.title) {
-    document.title = to.meta.title as string
-  }
-
-  // Update meta description
-  if (to.meta?.description) {
-    const metaDescription = document.querySelector('meta[name="description"]')
-    if (metaDescription) {
-      metaDescription.setAttribute('content', to.meta.description as string)
-    }
-  }
+  updateSeoTags(to)
 
   // Check authentication for protected routes
   if (needAuth && !isAuthenticated) {

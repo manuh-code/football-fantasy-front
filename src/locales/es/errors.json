@@ -23,6 +23,33 @@
     "title": "No encontrado",
     "message": "No encontrado: el recurso no existe"
   },
+  "notFound": {
+    "badge": "Error 404",
+    "title": "Fuera de juego",
+    "subtitle": "Esta jugada no existe. La página que buscas se movió, cambió de nombre o nunca llegó a la cancha.",
+    "requestedPath": "Ruta solicitada:",
+    "goHome": "Ir al inicio",
+    "goBack": "Volver",
+    "linksTitle": "Vuelve al partido",
+    "links": {
+      "home": {
+        "title": "Inicio",
+        "description": "Resultados en vivo y la jornada actual"
+      },
+      "gaming": {
+        "title": "Juegos",
+        "description": "Fantasy, quinielas y Survivor"
+      },
+      "guides": {
+        "title": "Guías",
+        "description": "Aprende a jugar paso a paso"
+      },
+      "faq": {
+        "title": "Preguntas frecuentes",
+        "description": "Resuelve las dudas más comunes"
+      }
+    }
+  },
   "422": {
     "title": "Error de validación",
     "message": "Error de validación. Revisa los datos ingresados."
