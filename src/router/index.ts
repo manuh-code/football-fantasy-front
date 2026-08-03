@@ -439,7 +439,7 @@ const router = createRouter({
 // (public) route we skip token validation entirely, so browsing public content
 // never hits the API to validate a token — and can't be bounced to login when a
 // stale token fails validation.
-const AUTH_STATE_ROUTES = new Set(['login', 'register', 'landingpage'])
+const AUTH_STATE_ROUTES = new Set(['login', 'register'])
 
 /** Origen público del sitio; las URLs de canonical y og:url deben ser absolutas. */
 const SITE_ORIGIN = 'https://fantasymx.cloud'
@@ -531,12 +531,6 @@ router.beforeEach(async (to, from, next) => {
   if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
     const redirect = to.query.redirect as string | undefined;
     return next(redirect && redirect.startsWith('/') ? redirect : { name: "gaming" });
-  }
-
-  // The landing page is a marketing page for new (anonymous) users. If an
-  // authenticated user lands on it, send them straight into the app.
-  if (to.name === 'landingpage' && isAuthenticated) {
-    return next({ name: "home" });
   }
 
   // League gate: a football league must be selected to use the app. Without one,
