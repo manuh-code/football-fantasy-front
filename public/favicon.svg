@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Fantasy MX">
+  <!-- Monograma "F" de Fantasy MX. El fondo es opaco a propósito: un icono
+       transparente se pierde contra la barra de pestañas clara de Chrome.
+       #059669 = theme_color del manifest, TileColor y color del mask-icon.
+       La F va 1.5 unidades a la derecha del centro geométrico para compensar
+       su masa, cargada arriba a la izquierda (ver scripts/generate-icons.py). -->
+  <rect width="100" height="100" rx="22" fill="#059669"/>
+  <path d="M32 23h39v12H44v9h19v12H44v21H32z" fill="#fff"/>
+</svg>

@@ -42,6 +42,7 @@ export default defineConfig({
       manifestFilename: 'manifest.json',
       includeAssets: [
         'favicon.ico',
+        'favicon.svg',
         'img/icons/apple-touch-icon.png',
         'img/icons/safari-pinned-tab.svg'
       ],
@@ -49,8 +50,11 @@ export default defineConfig({
         id: '/',
         lang: 'es',
         dir: 'ltr',
-        name: 'Football Fantasy',
-        short_name: 'FootballFantasy',
+        // Es el nombre que sale bajo el icono en el lanzador: debe ser la marca
+        // real ("Fantasy MX"), no el nombre del repo. `short_name` se trunca por
+        // encima de ~12 caracteres en Android.
+        name: 'Fantasy MX',
+        short_name: 'Fantasy MX',
         description: 'Fantasy football de la Liga MX: arma tu equipo, compite en drafts en vivo, quinielas y survivor con tus amigos.',
         theme_color: '#059669',
         // Matches the inline #app-splash background in index.html so Android's
