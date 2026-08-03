@@ -26,6 +26,11 @@ export function useAblyBroadcast() {
 
     const inPlayChannel = channel('inplay-channel_' + userStore.getTimezone);
 
+    // Live score/state/clock updates for every fixture list. Timezone-agnostic on
+    // purpose: the payload carries only fields that change during a match, never
+    // kickoff dates, so one channel serves all viewers (see FixtureLiveResource).
+    const liveFixturesChannel = channel('live-fixtures');
+
     // Match center uses two channels per fixture:
     //  - base channel `match-center-fixture-{uuid}` → presence only (we enter it
     //    announcing our timezone so the backend knows which localized channel to
@@ -39,5 +44,5 @@ export function useAblyBroadcast() {
     const fantasyLeagueChannel = (leagueUuid: string) => channel(`fantasy-league-${leagueUuid}`);
     const draftRoomChannel = (draftUuid: string) => channel(`draft-${draftUuid}`);
 
-    return { ably, channel, inPlayChannel, matchCenterFixtureChannel, matchCenterFixtureLocalizedChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
+    return { ably, channel, inPlayChannel, liveFixturesChannel, matchCenterFixtureChannel, matchCenterFixtureLocalizedChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
 }

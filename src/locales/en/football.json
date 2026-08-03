@@ -216,6 +216,7 @@
     "noWeekFixtures": "No fixtures this week",
     "live": "Live",
     "halfTime": "Half Time",
+    "fullTime": "Full Time",
     "errors": {
       "weeklyLoad": "Error loading weekly fixtures",
       "noStage": "No stage selected",

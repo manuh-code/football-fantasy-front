@@ -402,7 +402,7 @@ const isHalfTime = (fixture: FootballFixtureResponse): boolean =>
 const isFinished = (fixture: FootballFixtureResponse): boolean =>
   stateCodeOf(fixture).includes("FT") || stateNameOf(fixture).includes("finished");
 
-// Running match minute, extrapolated client-side from the `currentperiod`
+// Running match minute, extrapolated client-side from the `live_clock`
 // snapshot (see useLiveMatchClock) — ticks every second, frozen during HT.
 const clockTick = useLiveMatchClockTick();
 const liveClockLabel = (fixture: FootballFixtureResponse): string =>

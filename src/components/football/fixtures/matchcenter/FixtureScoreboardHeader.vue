@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";
+import { formatLiveMatchClock, useLiveMatchClockTick } from "@/composables/football/useLiveMatchClock";
 
 interface Props {
   fixture: FootballFixtureResponse;
@@ -13,6 +15,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { collapsed: false, stageUuid: null });
+
+const { t } = useI18n();
 
 // ── Team profile drawer (opened by tapping a crest) ──
 const isTeamProfileOpen = ref(false);
@@ -53,7 +57,11 @@ const hasScore = computed(() => homeScore.value !== null && awayScore.value !== 
 const stateName = computed(() => props.fixture.state?.name?.toLowerCase() ?? "");
 const stateCode = computed(() => props.fixture.state?.state?.toUpperCase() ?? "");
 
+// `is_inplay` / `is_finished` are the authoritative flags the API derives from
+// SportMonks' state; the name/code sniffing below is only a fallback for
+// payloads that predate them.
 const isLive = computed(() => {
+  if (props.fixture.is_inplay != null) return props.fixture.is_inplay;
   if (!stateName.value) return false;
   return (
     stateName.value.includes("live") ||
@@ -63,15 +71,31 @@ const isLive = computed(() => {
   );
 });
 
-const isFinished = computed(() => stateCode.value.includes("FT") || stateName.value.includes("finished"));
+const isFinished = computed(() => {
+  if (props.fixture.is_finished != null) return props.fixture.is_finished;
+  return stateCode.value.includes("FT") || stateName.value.includes("finished");
+});
+
+const isHalfTime = computed(
+  () => stateCode.value === "HT" || stateName.value.includes("half time"),
+);
+
+// Running match minute. The API pushes a `live_clock` snapshot every ~10s over
+// realtime; this ticks it forward every second in between so the header never
+// looks frozen, and freezes at half time instead of running through the break.
+const clockTick = useLiveMatchClockTick();
+const liveMinute = computed(() =>
+  formatLiveMatchClock(props.fixture, clockTick.value, { paused: isHalfTime.value }),
+);
 
 const stateLabel = computed(() => {
   if (!props.fixture.state) return "";
   if (isLive.value) {
-    if (stateName.value.includes("half time") || stateCode.value === "HT") return "HALF TIME";
-    return "LIVE";
+    if (isHalfTime.value) return t("football.fixtures.halfTime");
+    // Prefer the minute over a generic "Live" — it carries strictly more info.
+    return liveMinute.value || t("football.fixtures.live");
   }
-  if (isFinished.value) return "FULL TIME";
+  if (isFinished.value) return t("football.fixtures.fullTime");
   if (stateName.value.includes("postponed")) return "POSTPONED";
   if (stateName.value.includes("cancelled")) return "CANCELLED";
   return props.fixture.state.name;
@@ -209,11 +233,16 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           </span>
         </template>
 
-        <!-- State badge (collapses away on scroll to keep the bar thin) -->
+        <!-- State badge — carries the running minute while the match is live, so
+             it stays pinned even in the collapsed header (it's the one thing a
+             viewer keeps looking at); everything else collapses away. -->
         <div
           v-if="stateLabel"
           class="overflow-hidden transition-all duration-300 ease-out"
-          :class="collapsed ? 'max-h-0 opacity-0 mt-0' : 'max-h-6 opacity-100 mt-2'"
+          :class="[
+            collapsed && !isLive ? 'max-h-0 opacity-0 mt-0' : 'max-h-6 opacity-100',
+            collapsed ? 'mt-1' : 'mt-2',
+          ]"
         >
           <div
             class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full"
@@ -223,7 +252,7 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
             </span>
-            <span class="text-2xs font-bold tracking-widest">{{ stateLabel }}</span>
+            <span class="text-2xs font-bold tracking-widest tabular-nums">{{ stateLabel }}</span>
           </div>
         </div>
       </div>

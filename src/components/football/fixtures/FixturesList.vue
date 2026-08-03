@@ -108,22 +108,40 @@ const isHalfTime = (fixture: FootballFixtureResponse): boolean => {
   return stateName.includes("half time") || fixture.state?.state?.toUpperCase() === "HT";
 };
 
-// Running match minute, extrapolated client-side from the `currentperiod`
+// Running match minute, extrapolated client-side from the `live_clock`
 // snapshot (see useLiveMatchClock) — ticks every second, frozen during HT.
 const clockTick = useLiveMatchClockTick();
 const liveClockLabel = (fixture: FootballFixtureResponse): string =>
   formatLiveMatchClock(fixture, clockTick.value, { paused: isHalfTime(fixture) });
 
 
+// Short badge label, keyed off the state CODE rather than its display name.
+// `state.name` is localized server-side, so matching English words in it broke
+// for Spanish viewers — and live updates arrive rendered in the API's default
+// locale, which would otherwise flip the badge's language mid-match.
+const STATE_CODE_LABELS: Record<string, string> = {
+  FT: "FT",
+  AET: "FT",
+  FT_PEN: "FT",
+  AWARDED: "FT",
+  WO: "FT",
+  HT: "HT",
+  BREAK: "HT",
+  INPLAY_1ST_HALF: "LIVE",
+  INPLAY_2ND_HALF: "LIVE",
+  INPLAY_ET: "LIVE",
+  INPLAY_ET_SECOND_HALF: "LIVE",
+  INPLAY_PENALTIES: "LIVE",
+  PEN_BREAK: "LIVE",
+  EXTRA_TIME_BREAK: "LIVE",
+  POSTPONED: "POSTPONED",
+  CANCELLED: "CANCELLED",
+};
+
 const getFixtureStateText = (fixture: FootballFixtureResponse): string => {
   if (fixture.state) {
-    const stateName = fixture.state.name.toLowerCase();
-    if (stateName.includes("finished") || stateName.includes("ft")) return "FT";
-    if (stateName.includes("live") || stateName.includes("in play")) return "LIVE";
-    if (stateName.includes("ht") || stateName.includes("half time")) return "HT";
-    if (stateName.includes("postponed")) return "POSTPONED";
-    if (stateName.includes("cancelled")) return "CANCELLED";
-    return fixture.state.name;
+    const code = (fixture.state.state || fixture.state.developer_name || "").toUpperCase();
+    return STATE_CODE_LABELS[code] ?? fixture.state.name;
   }
   if (isMatchFinished(fixture)) return "FT";
   if (isMatchLive(fixture)) return "LIVE";

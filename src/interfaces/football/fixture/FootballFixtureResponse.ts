@@ -44,7 +44,7 @@ export interface FootballFixtureResponse {
     prediction?: PoolPredictionResponse | null;
     pick?: SurvivorPickResponse | null;
     aggregate?: FootballFixtureAggregateResponse | null;
-    currentperiod?: FootballLiveClockResponse | null;
+    live_clock?: FootballLiveClockResponse | null;
 
     name: string;
     starting_at: string;
