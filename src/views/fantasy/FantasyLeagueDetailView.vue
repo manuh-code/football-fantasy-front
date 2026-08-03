@@ -22,6 +22,11 @@
             <FantasyStandings :fantasy-league-uuid="uuid" />
           </div>
 
+          <!-- Playoff bracket — only rendered for leagues that play one -->
+          <div v-else-if="activeTab === 'playoffs'" key="playoffs">
+            <FantasyPlayoffBracket :fantasy-league-uuid="uuid" />
+          </div>
+
           <!-- Scoring Rules Content — read-only, visible to everyone -->
           <div v-else-if="activeTab === 'rules'" key="rules">
             <!-- Loading State -->
@@ -117,6 +122,7 @@ import TopTabsBar from '@/components/ui/TopTabsBar.vue'
 import { useFantasyLeagueTabs } from '@/composables/useFantasyLeagueTabs'
 import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyStandings from '@/components/fantasy/standings/FantasyStandings.vue'
+import FantasyPlayoffBracket from '@/components/fantasy/playoffs/FantasyPlayoffBracket.vue'
 import FantasyScoringRules from '@/components/fantasy/rules/FantasyScoringRules.vue'
 import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'

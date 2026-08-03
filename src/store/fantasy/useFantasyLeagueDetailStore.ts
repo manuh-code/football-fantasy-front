@@ -18,6 +18,7 @@ export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', ()
     (currentLeague.value?.draft?.status?.value || '').toUpperCase()
   )
   const isDraftNotStarted = computed(() => draftStatus.value === 'NOT_STARTED')
+  const playsPlayoffs = computed(() => currentLeague.value?.champion_mode === 'playoffs')
   const canActivateDraft = computed(() =>
     isAdmin.value &&
     isDraftNotStarted.value &&
@@ -53,6 +54,7 @@ export const useFantasyLeagueDetailStore = defineStore('fantasyLeagueDetail', ()
     isAdmin,
     draftStatus,
     isDraftNotStarted,
+    playsPlayoffs,
     canActivateDraft,
     setCurrentLeague,
     clearCurrentLeague,

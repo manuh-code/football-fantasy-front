@@ -193,6 +193,44 @@
       </div>
 
       <!-- ============================== -->
+      <!-- TITLE RACE — how the champion  -->
+      <!-- is decided, and who won it     -->
+      <!-- ============================== -->
+      <div class="bg-white dark:bg-gray-800/80 rounded-xl p-3 border border-gray-100 dark:border-gray-700/40">
+        <div class="flex items-center gap-2.5">
+          <div
+            class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+            :class="league.champion
+              ? 'bg-amber-100 dark:bg-amber-900/30'
+              : 'bg-violet-100 dark:bg-violet-900/30'"
+          >
+            <v-icon
+              :name="league.champion ? 'bi-trophy-fill' : (playsPlayoffs ? 'gi-crossed-swords' : 'hi-solid-chart-bar')"
+              class="w-4 h-4"
+              :class="league.champion ? 'text-amber-600 dark:text-amber-400' : 'text-violet-600 dark:text-violet-400'"
+            />
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-2xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+              {{ league.champion ? $t('fantasy.playoffs.championTitle') : $t('fantasy.leagueCreate.champion.label') }}
+            </p>
+            <p class="text-xs font-bold text-gray-900 dark:text-white truncate">
+              {{ league.champion ? league.champion.team_name : championModeLabel }}
+            </p>
+          </div>
+          <!-- Jump straight into the bracket rather than hunting for the tab -->
+          <button
+            v-if="playsPlayoffs"
+            type="button"
+            @click="navigateToTab('playoffs')"
+            class="shrink-0 text-2xs font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20 px-2.5 py-1 rounded-full active:scale-95 transition-transform"
+          >
+            {{ $t('fantasy.playoffs.qualifiedCount', { count: league.playoff_teams }) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================== -->
       <!-- QUICK ACCESS — Stats shortcut  -->
       <!-- (My Team / Matches now live in the top tab bar)  -->
       <!-- ============================== -->
@@ -527,6 +565,15 @@ const navigateToTab = (tab: string) => {
     query: { tab },
   });
 };
+
+// How this league crowns its champion — a bracket, or whoever tops the table.
+const playsPlayoffs = computed(() => league.value?.champion_mode === "playoffs");
+
+const championModeLabel = computed(() =>
+  playsPlayoffs.value
+    ? t("fantasy.leagueCreate.champion.playoffs.title")
+    : t("fantasy.leagueCreate.champion.standings.title"),
+);
 
 const goToCreateTeam = () => {
   showCreateTeamModal.value = false;

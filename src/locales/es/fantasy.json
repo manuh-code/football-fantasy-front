@@ -40,6 +40,24 @@
     "success": {
       "title": "¡Éxito!",
       "message": "¡La liga \"{name}\" se creó correctamente!"
+    },
+    "champion": {
+      "label": "¿Cómo se decide el campeón?",
+      "standings": {
+        "title": "Mejor de la tabla",
+        "desc": "Gana quien termine primero al cerrar la última jornada."
+      },
+      "playoffs": {
+        "title": "Playoffs",
+        "desc": "Los mejores de la tabla se juegan el título en eliminatorias a ida y vuelta."
+      },
+      "unavailable": "Con {count} participantes no quedan jornadas suficientes para jugar eliminatorias en esta liga.",
+      "qualified": {
+        "label": "Clasificados a playoffs",
+        "unit": "clasificados",
+        "hint": "El cuadro ocupa las últimas {rounds} jornadas del torneo.",
+        "recommended": "Sugerido"
+      }
     }
   },
   "leagueCard": {
@@ -68,6 +86,7 @@
     "players": "Jugadores",
     "matches": "Partidos",
     "standings": "Tabla",
+    "playoffs": "Eliminatorias",
     "trades": "Trades",
     "rules": "Reglas"
   },
@@ -101,6 +120,25 @@
       "title": "Aún no hay resultados",
       "body": "La tabla se llenará cuando comiencen los enfrentamientos."
     }
+  },
+  "playoffs": {
+    "title": "Eliminatorias",
+    "subtitle": "El camino al título",
+    "loading": "Cargando el cuadro…",
+    "error": "No pudimos cargar el cuadro de eliminatorias.",
+    "disabledTitle": "Esta liga no juega playoffs",
+    "disabledBody": "El campeón se decide por posición en la tabla al terminar la última jornada.",
+    "pendingTitle": "El cuadro aún no arranca",
+    "pendingBody": "Clasifican los {count} mejores de la tabla. Las llaves se sortean al terminar la temporada regular.",
+    "tbd": "Por definir",
+    "seed": "#{seed}",
+    "aggregate": "Global",
+    "legFirst": "Ida",
+    "legSecond": "Vuelta",
+    "championTitle": "Campeón",
+    "advances": "Avanza",
+    "roundLabel": "Ronda {round}",
+    "qualifiedCount": "{count} clasificados"
   },
   "userLeagues": {
     "title": "Mis ligas",

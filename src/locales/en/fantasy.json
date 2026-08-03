@@ -40,6 +40,24 @@
     "success": {
       "title": "Success!",
       "message": "League \"{name}\" has been created successfully!"
+    },
+    "champion": {
+      "label": "How is the champion decided?",
+      "standings": {
+        "title": "Top of the table",
+        "desc": "Whoever finishes first after the last matchday wins."
+      },
+      "playoffs": {
+        "title": "Playoffs",
+        "desc": "The top of the table fight for the title in two-legged knockout ties."
+      },
+      "unavailable": "With {count} participants there aren't enough matchdays left to play playoffs in this league.",
+      "qualified": {
+        "label": "Playoff spots",
+        "unit": "qualify",
+        "hint": "The bracket takes the last {rounds} matchdays of the tournament.",
+        "recommended": "Suggested"
+      }
     }
   },
   "leagueCard": {
@@ -68,6 +86,7 @@
     "players": "Players",
     "matches": "Matches",
     "standings": "Standings",
+    "playoffs": "Playoffs",
     "trades": "Trades",
     "rules": "Rules"
   },
@@ -101,6 +120,25 @@
       "title": "No results yet",
       "body": "The table fills in once matchups begin."
     }
+  },
+  "playoffs": {
+    "title": "Playoffs",
+    "subtitle": "The road to the title",
+    "loading": "Loading bracket…",
+    "error": "We couldn't load the playoff bracket.",
+    "disabledTitle": "This league doesn't play playoffs",
+    "disabledBody": "The champion is decided by table position once the last matchday ends.",
+    "pendingTitle": "The bracket hasn't started",
+    "pendingBody": "The top {count} of the table qualify. Ties are drawn once the regular season ends.",
+    "tbd": "TBD",
+    "seed": "#{seed}",
+    "aggregate": "Aggregate",
+    "legFirst": "1st leg",
+    "legSecond": "2nd leg",
+    "championTitle": "Champion",
+    "advances": "Advances",
+    "roundLabel": "Round {round}",
+    "qualifiedCount": "{count} qualify"
   },
   "userLeagues": {
     "title": "My Leagues",
