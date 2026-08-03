@@ -498,13 +498,13 @@ const handleRegister = async () => {
         acceptTerms.value = false;
 
         // Sign the user in automatically with the credentials they just used,
-        // then send them to the gaming hub (or the page they were headed to).
+        // then send them to the game hub (or the page they were headed to).
         // If the auto-login fails (e.g. a network hiccup), the account still
         // exists, so fall back to the login screen instead of leaving the user
         // stranded on the register form.
         try {
             await authStore.login({ email, password, device_name: 'web', remember: true });
-            const redirectTo = (route.query.redirect as string) || '/gaming';
+            const redirectTo = (route.query.redirect as string) || '/';
             await router.push(redirectTo);
         } catch (loginError) {
             console.error('Auto-login after registration failed:', loginError);

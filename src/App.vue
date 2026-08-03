@@ -31,9 +31,10 @@
     </transition>
 
     <!-- Header Menu - Fixed at top, outside transform context.
-         Hidden on Home (renders its own HomeHeaderMenu) and on the landing page
-         (a standalone marketing page with its own header). -->
-    <HeaderMenu v-if="!isHomeRoute && !isLandingRoute" />
+         Hidden on the league overview (renders its own HomeHeaderMenu with the
+         stage switcher) and on the landing page (a standalone marketing page
+         with its own header). -->
+    <HeaderMenu v-if="!isLeagueOverviewRoute && !isLandingRoute" />
 
     <!-- Main Content with Swipe Transform -->
     <div
@@ -87,8 +88,11 @@ import AppFooter from "@/components/AppFooter.vue";
 const themeStore = useThemeStore();
 const router = useRouter();
 
-// Home renders its own header (HomeHeaderMenu); hide the global one there.
-const isHomeRoute = computed(() => router.currentRoute.value.name === "home");
+// La vista de liga monta su propio header (HomeHeaderMenu, con el selector de
+// etapa); ahí se oculta el global.
+const isLeagueOverviewRoute = computed(
+  () => router.currentRoute.value.name === "leagueOverview"
+);
 // Landing is a standalone marketing page with its own header + footer.
 const isLandingRoute = computed(() => router.currentRoute.value.name === "landingpage");
 
@@ -98,7 +102,7 @@ const isLandingRoute = computed(() => router.currentRoute.value.name === "landin
 // `landingpage` no está porque monta su propio footer.
 const FOOTER_ROUTES = new Set([
   "home",
-  "gaming",
+  "leagueOverview",
   "guides",
   "guideDetail",
   "about",

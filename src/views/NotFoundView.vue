@@ -13,8 +13,8 @@ const { t } = useI18n()
  * recuperación acabe rebotando al login.
  */
 const RECOVERY_LINKS = [
-  { key: 'home', icon: 'hi-solid-home', to: { name: 'home' } },
-  { key: 'gaming', icon: 'bi-trophy-fill', to: { name: 'gaming' } },
+  { key: 'home', icon: 'bi-trophy-fill', to: { name: 'home' } },
+  { key: 'results', icon: 'hi-solid-chart-bar', to: { name: 'leagueOverview' } },
   { key: 'guides', icon: 'hi-solid-academic-cap', to: { name: 'guides' } },
   {
     key: 'faq',

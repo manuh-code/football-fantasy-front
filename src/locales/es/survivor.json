@@ -1,6 +1,8 @@
 {
   "gaming": {
-    "subtitle": "Elige un equipo cada jornada y sobrevive"
+    "subtitle": "Elige un equipo cada jornada y sobrevive",
+    "tag": "Por eliminación",
+    "cta": "Jugar"
   },
   "nav": {
     "aria": "Navegación de Survivor",

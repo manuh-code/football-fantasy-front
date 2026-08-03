@@ -79,6 +79,7 @@ const NAV = `<header class="pr-nav">
   <a class="pr-brand" href="/">Fantasy MX</a>
   <nav aria-label="Secciones">
     <a href="/">Inicio</a>
+    <a href="/liga">Resultados</a>
     <a href="/guias">Guías y reglas</a>
     <a href="/about">Acerca de</a>
     <a href="/landingpage">Qué es Fantasy MX</a>
@@ -120,11 +121,17 @@ const guidePage = (g) => {
   }
 }
 
-// /gaming es el hub de modos de juego. En la app viva son tres tarjetas con un
-// subtítulo de cuatro palabras cada una: prerenderizar eso tal cual produciría
-// justo la "pantalla sin contenido" que este script existe para evitar. Así que
-// la versión estática combina los títulos reales de la app con el excerpt de la
-// guía de cada modo y enlaza a ellas, sin inventar copy nuevo.
+// El hub de modos de juego vive en `/`; `/gaming` fue su URL original y se
+// conserva como alias en el router (hay enlaces y marcadores apuntando ahí).
+// Se sigue prerenderizando para que esa URL indexada no sirva un shell vacío,
+// pero declara `/` como canónica: es la misma pantalla, y las señales deben
+// consolidarse en la raíz.
+//
+// En la app viva son tres tarjetas con un subtítulo de cuatro palabras cada
+// una: prerenderizar eso tal cual produciría justo la "pantalla sin contenido"
+// que este script existe para evitar. Así que la versión estática combina los
+// títulos reales de la app con el excerpt de la guía de cada modo y enlaza a
+// ellas, sin inventar copy nuevo.
 const gamingPage = () => {
   const gaming = readJson('src/locales/es/fantasy.json').gaming
   const survivorSub = readJson('src/locales/es/survivor.json').gaming.subtitle
@@ -135,6 +142,7 @@ const gamingPage = () => {
   ]
   return {
     path: '/gaming',
+    canonical: '/',
     title: 'Juegos — Fantasy, quinielas y Survivor | Fantasy MX',
     description:
       'Los tres modos de juego de Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación. Gratis, en las 5 grandes ligas.',
@@ -266,7 +274,10 @@ const metaRe = (attr, key) =>
   new RegExp(`(<meta\\s+${attr}="${key}"\\s+content=")[^"]*(")`)
 
 const withSeo = (html, page) => {
-  const url = `${SITE}${page.path}`
+  // `canonical` permite que una página se prerenderice en su propia URL pero
+  // consolide sus señales en otra (ver gamingPage). Sin él, canónica = la URL
+  // de la propia página, que es el caso normal.
+  const url = `${SITE}${page.canonical ?? page.path}`
   let out = html
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(page.title)}</title>`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/, (...m) => `${m[1]}${url}${m[2]}`)
@@ -330,30 +341,51 @@ const lastmodFor = (path, content) => {
   return stamps[path].date
 }
 
-// La home no se prerenderiza (la arma Vue en el cliente), así que su sello se
-// calcula sobre los fuentes que definen lo que muestra.
-const homeContent = ['src/views/HomeView.vue', 'src/locales/es/home.json']
-  .map((p) => readFileSync(resolve(root, p), 'utf8'))
-  .join('')
+// Ni `/` (hub de juego) ni `/liga` (datos de la liga) se prerenderizan: las
+// arma Vue en el cliente. `/` no puede prerenderizarse porque su archivo sería
+// dist/index.html, que es también el fallback SPA de todas las demás rutas —
+// inyectarle contenido haría que cualquier ruta parpadease con el hub antes de
+// montar. Así que el sello de ambas se calcula sobre los fuentes que definen lo
+// que muestran.
+const sourceStamp = (paths) =>
+  paths.map((p) => readFileSync(resolve(root, p), 'utf8')).join('')
 
-// /landingpage por encima de / a propósito: es la página que queremos que
-// posicione para las búsquedas de descubrimiento ("qué es", "cómo jugar"),
-// mientras / responde a las de uso (resultados y posiciones en vivo).
-// Las guías individuales caen al valor por defecto.
+const homeContent = sourceStamp([
+  'src/views/HomeView.vue',
+  'src/components/home/GameHub.vue',
+  'src/locales/es/fantasy.json',
+])
+const leagueContent = sourceStamp([
+  'src/views/football/LeagueOverviewView.vue',
+  'src/components/HomeComponent.vue',
+  'src/locales/es/home.json',
+])
+
+// /landingpage y / comparten la prioridad máxima: la primera capta las
+// búsquedas de descubrimiento ("qué es", "cómo jugar") y la raíz es el producto
+// en sí (jugar). /liga hereda el peso que tenía la raíz cuando servía los datos
+// de liga. Las guías individuales caen al valor por defecto.
 const PRIORITY = {
   '/landingpage': '1.0',
-  '/': '0.9',
+  '/': '1.0',
   '/guias': '0.9',
-  '/gaming': '0.8',
+  '/liga': '0.9',
   '/about': '0.6',
   '/privacy': '0.3',
 }
 
 // El sello cubre title y description además del body: los tres son contenido
 // indexable, así que reescribir un <title> también debe mover el lastmod.
+//
+// Las páginas con `canonical` propia (hoy /gaming → /) quedan fuera: apuntan a
+// otra URL como preferente, y listar en el sitemap una página canonicalizada es
+// una señal contradictoria para Google.
 const urls = [
   { path: '/', content: homeContent },
-  ...pages.map((p) => ({ path: p.path, content: p.title + p.description + p.body })),
+  { path: '/liga', content: leagueContent },
+  ...pages
+    .filter((p) => !p.canonical)
+    .map((p) => ({ path: p.path, content: p.title + p.description + p.body })),
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,6 +1,8 @@
 {
   "gaming": {
-    "subtitle": "Pick a team every round and survive"
+    "subtitle": "Pick a team every round and survive",
+    "tag": "Knockout",
+    "cta": "Play"
   },
   "nav": {
     "aria": "Survivor navigation",

@@ -14,8 +14,15 @@ export class SurvivorService {
         this.api = apiFantasyInstance;
     }
 
-    async getMySurvivors(): Promise<SurvivorResponse[]> {
-        const response = await this.api.get<ApiResponse<SurvivorResponse[]>>("survivor/my/survivors");
+    async getMySurvivors(silent = false): Promise<SurvivorResponse[]> {
+        // `silent` lo usa el hub de inicio: ahí esta llamada es una de tres que
+        // se lanzan en paralelo para pintar "continuar jugando", y un fallo debe
+        // degradar la sección en silencio, no lanzarle un toast de error a
+        // alguien que solo abrió la app.
+        const config = silent
+            ? ({ _silent: true } as AxiosRequestConfig & { _silent?: boolean })
+            : undefined;
+        const response = await this.api.get<ApiResponse<SurvivorResponse[]>>("survivor/my/survivors", config);
         if (response.data.code === 200) {
             return response.data.data;
         }

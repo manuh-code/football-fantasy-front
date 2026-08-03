@@ -1,14 +1,49 @@
 {
   "gaming": {
+    "hero": {
+      "title": "Play with your friends",
+      "titleReturning": "Your games",
+      "subtitle": "Fantasy, pools and Survivor for Liga MX and the top 5 leagues. Free, all season long."
+    },
+    "continue": {
+      "title": "Keep playing",
+      "loading": "Loading your games",
+      "retry": "We couldn't load everything. Retry"
+    },
+    "empty": {
+      "title": "You're not playing anything yet",
+      "subtitle": "Create your first league, pool or Survivor, or join with the code a friend sent you."
+    },
+    "more": {
+      "title": "Try another mode",
+      "untried": "Not tried yet"
+    },
+    "invite": {
+      "title": "Got an invite?",
+      "fantasy": "Fantasy league",
+      "pools": "Pool"
+    },
+    "meta": {
+      "participants": "{count} player | {count} players",
+      "lives": "{count} life | {count} lives"
+    },
     "fantasy": {
       "title": "Fantasy",
-      "subtitle": "Build your dream team and compete"
+      "subtitle": "Build your dream team and compete",
+      "tag": "Live draft",
+      "cta": "Play Fantasy"
     },
     "pools": {
       "title": "Pools",
-      "subtitle": "Predict match results and compete"
+      "subtitle": "Predict match results and compete",
+      "tag": "Exact score",
+      "cta": "Play"
     },
-    "live": "Live",
+    "howTo": "New here? Learn how to play in the guides",
+    "leagueData": {
+      "title": "Standings and results",
+      "subtitle": "Table, fixtures and league statistics"
+    },
     "loginRequired": "Please login to access Fantasy games"
   },
   "leagueCreate": {

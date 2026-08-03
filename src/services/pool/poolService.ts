@@ -1,3 +1,4 @@
+import type { AxiosRequestConfig } from "axios";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
@@ -17,8 +18,13 @@ export class PoolService {
         this.api = apiFantasyInstance;
     }
 
-    async getMyPools(): Promise<PoolResponse[]> {
-        const response = await this.api.get<ApiResponse<PoolResponse[]>>("/pool/show-my-pools");
+    async getMyPools(silent = false): Promise<PoolResponse[]> {
+        // Ver la nota de `silent` en SurvivorService.getMySurvivors: el hub de
+        // inicio necesita que un fallo aquí no dispare un toast global.
+        const config = silent
+            ? ({ _silent: true } as AxiosRequestConfig & { _silent?: boolean })
+            : undefined;
+        const response = await this.api.get<ApiResponse<PoolResponse[]>>("/pool/show-my-pools", config);
         if (response.data.code === 200) {
             return response.data.data;
         }

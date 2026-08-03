@@ -8,28 +8,28 @@
   "progress": "Paso {current} de {total}",
   "home": {
     "step1": {
-      "title": "¡Bienvenido!",
-      "body": "Sigue a tu liga, consulta resultados y compite con tus amigos. Te mostramos lo básico en unos segundos."
+      "title": "Aquí se juega",
+      "body": "Fantasy MX son tres juegos para competir con tus amigos toda la temporada. Te los explicamos en 30 segundos."
     },
     "step2": {
-      "title": "Elige tu liga y jornada",
-      "body": "Desde el botón de arriba puedes cambiar de liga y de jornada para ver justo lo que te interesa."
+      "title": "Fantasy",
+      "body": "Crea tu liga privada, reparte a los jugadores en un draft en vivo y suma puntos con lo que hagan cada jornada."
     },
     "step3": {
-      "title": "Explora las secciones",
-      "body": "Cambia entre Clasificación, Partidos, Estadísticas, Comparativa y el Equipo de la semana con las pestañas."
+      "title": "Quinielas",
+      "body": "Predice el marcador exacto de cada partido de la jornada y compite por el primer puesto de tu grupo."
     },
     "step4": {
-      "title": "Fichajes al día",
-      "body": "En la nueva pestaña Fichajes ves los últimos movimientos de la liga: quién llega, de qué equipo y por cuánto."
+      "title": "Survivor",
+      "body": "Elige un equipo cada jornada y sobrevive. Solo puedes usar cada equipo una vez; sigues con vida mientras aciertes."
     },
     "step5": {
-      "title": "Modo Survivor",
-      "body": "Elige un equipo cada jornada y sobrevive. Solo puedes elegir un equipo por jornada; sigues con vida mientras aciertes."
+      "title": "Resultados de la liga",
+      "body": "En la pestaña Resultados tienes la tabla, el calendario, las estadísticas y los fichajes de tu liga."
     },
     "step6": {
-      "title": "Tu perfil y tus quinielas",
-      "body": "Usa la barra inferior para moverte por la app y entra a tu perfil. En Quinielas compites prediciendo resultados."
+      "title": "Muévete por la app",
+      "body": "Usa la barra inferior para saltar entre Jugar, Resultados y Ligas, y entra a tu perfil desde arriba."
     }
   },
   "pool": {
