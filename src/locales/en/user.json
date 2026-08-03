@@ -221,15 +221,30 @@
       "count": "no teams | {count} team | {count} teams",
       "loading": "Loading your teams...",
       "loadError": "We couldn't load your teams. Please try again.",
-      "empty": {
-        "title": "You're not following any team yet",
-        "subtitle": "Open a team's profile and tap the star to start following it.",
-        "cta": "Explore games"
-      },
       "unfollowAria": "Unfollow {name}",
       "unfollowedTitle": "Unfollowed",
       "unfollowedMsg": "You stopped following {name}.",
-      "error": "We couldn't update this team. Please try again."
+      "error": "We couldn't update this team. Please try again.",
+      "emptyLead": "Follow your teams to keep them within reach."
+    },
+    "discover": {
+      "title": "Most followed",
+      "titleRandom": "Discover teams",
+      "resultsTitle": "Results",
+      "hint": "Tap a crest to follow it",
+      "searchLabel": "Search team",
+      "searchPlaceholder": "Search a team by name",
+      "clearSearch": "Clear the search",
+      "noResults": "No team matches \"{search}\".",
+      "noResultsHint": "Check the spelling or try the short name.",
+      "loadError": "We couldn't load the suggestions.",
+      "searchError": "We couldn't search teams. Please try again.",
+      "followAria": "Follow {name}",
+      "alreadyFollowing": "You already follow this team",
+      "followedTitle": "Team followed",
+      "followedMsg": "You now follow {name}.",
+      "error": "We couldn't follow this team. Please try again.",
+      "open": "Follow more teams"
     }
   }
 }

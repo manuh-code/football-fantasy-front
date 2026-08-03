@@ -4,7 +4,7 @@ import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { UserPayload } from "@/interfaces/user/userPayload";
 import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
 import { FavoriteTeamPayload } from "@/interfaces/user/favoriteTeam/FavoriteTeamPayload";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosRequestConfig } from "axios";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
@@ -13,6 +13,7 @@ import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/Fantas
 import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 import { LineupPlayerUpdatePayload } from "@/interfaces/fantasy/lineup/LineupPlayerUpdatePayload";
 import { FantasyFootballPlayerVersusResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayerVersusResponse";
+import { FollowableTeamResponse, FollowableTeamsMeta, FollowableTeamsResult } from "@/interfaces/football/team/FollowableTeamResponse";
 
 export class UserService {
     private readonly api;
@@ -84,6 +85,29 @@ export class UserService {
             return response.data.data;
         }
         throw new AxiosError('Failed to unfollow favorite team');
+    }
+
+    async getTopFollowedTeams(limit?: number): Promise<FollowableTeamsResult> {
+        const response = await this.api.get<ApiResponse<FollowableTeamResponse[], FollowableTeamsMeta>>('user/favorite/teams/discover/top', {
+            params: limit ? { limit } : undefined,
+        });
+        if (response.data.code === 200) {
+            return { teams: response.data.data, source: response.data.meta?.source ?? 'random' };
+        }
+        throw new AxiosError('Failed to fetch suggested teams');
+    }
+
+    async searchFollowableTeams(search: string, limit?: number): Promise<FollowableTeamsResult> {
+        const response = await this.api.get<ApiResponse<FollowableTeamResponse[], FollowableTeamsMeta>>('user/favorite/teams/discover/search', {
+            params: { search, ...(limit ? { limit } : {}) },
+            // El buscador dispara una consulta por pausa de tecleo; un toast por
+            // cada fallo sería ruido. El componente muestra el error en su lugar.
+            _silent: true,
+        } as AxiosRequestConfig & { _silent?: boolean });
+        if (response.data.code === 200) {
+            return { teams: response.data.data, source: response.data.meta?.source ?? 'search' };
+        }
+        throw new AxiosError('Failed to search teams');
     }
 
     async getUserFantasyLeagues(): Promise<FantasyLeaguesResponse[]> {

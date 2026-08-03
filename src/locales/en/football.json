@@ -63,7 +63,9 @@
     "l": "L",
     "gf": "GF",
     "ga": "GA",
-    "gd": "GD"
+    "gd": "GD",
+    "followedAria": "You follow this team",
+    "followedLegend": "Teams you follow"
   },
   "statistics": {
     "viewAria": "Statistics view",

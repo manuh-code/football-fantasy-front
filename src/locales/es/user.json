@@ -221,15 +221,30 @@
       "count": "sin equipos | {count} equipo | {count} equipos",
       "loading": "Cargando tus equipos...",
       "loadError": "No pudimos cargar tus equipos. Inténtalo de nuevo.",
-      "empty": {
-        "title": "Aún no sigues a ningún equipo",
-        "subtitle": "Abre el perfil de un equipo y toca la estrella para empezar a seguirlo.",
-        "cta": "Explorar juegos"
-      },
       "unfollowAria": "Dejar de seguir a {name}",
       "unfollowedTitle": "Dejaste de seguir",
       "unfollowedMsg": "Dejaste de seguir a {name}.",
-      "error": "No pudimos actualizar este equipo. Inténtalo de nuevo."
+      "error": "No pudimos actualizar este equipo. Inténtalo de nuevo.",
+      "emptyLead": "Sigue a tus equipos para tenerlos siempre a la mano."
+    },
+    "discover": {
+      "title": "Los más seguidos",
+      "titleRandom": "Descubre equipos",
+      "resultsTitle": "Resultados",
+      "hint": "Toca un escudo para seguirlo",
+      "searchLabel": "Buscar equipo",
+      "searchPlaceholder": "Busca un equipo por nombre",
+      "clearSearch": "Borrar la búsqueda",
+      "noResults": "Ningún equipo coincide con «{search}».",
+      "noResultsHint": "Revisa la escritura o prueba con el nombre corto.",
+      "loadError": "No pudimos cargar las sugerencias.",
+      "searchError": "No pudimos buscar equipos. Inténtalo de nuevo.",
+      "followAria": "Seguir a {name}",
+      "alreadyFollowing": "Ya sigues a este equipo",
+      "followedTitle": "Equipo seguido",
+      "followedMsg": "Ahora sigues a {name}.",
+      "error": "No pudimos seguir a este equipo. Inténtalo de nuevo.",
+      "open": "Seguir más equipos"
     }
   }
 }

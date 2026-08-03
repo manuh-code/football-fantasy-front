@@ -63,7 +63,9 @@
     "l": "P",
     "gf": "GF",
     "ga": "GC",
-    "gd": "DG"
+    "gd": "DG",
+    "followedAria": "Sigues a este equipo",
+    "followedLegend": "Equipos que sigues"
   },
   "statistics": {
     "viewAria": "Vista de estadísticas",

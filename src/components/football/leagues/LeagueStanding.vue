@@ -63,6 +63,8 @@ import { AD_SLOTS } from "@/config/ads";
 import StandingsTable from "./StandingsTable.vue";
 import StandingsTableSkeleton from "./StandingsTableSkeleton.vue";
 import FootballTeamProfileComponent from "@/components/football/team/FootballTeamProfileComponent.vue";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useUserStore } from "@/store/user/useUserStore";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
 import type { FootballLeagueStandingsPayload } from "@/interfaces/football/league/Standing/FootballLeagueStandingsPayload";
 
@@ -72,6 +74,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const standings = ref<FootballLeagueStandingsResponse[]>([]);
 const loading = ref(false);
@@ -120,7 +124,22 @@ watch(
   },
 );
 
+/**
+ * La tabla resalta a los equipos que sigue el usuario leyéndolos del store. Si
+ * la sesión llegó aquí sin haber pasado por login (token persistido, store
+ * vacío) no habría a quién resaltar, así que se hidrata una sola vez.
+ */
+const ensureFollowedTeams = async () => {
+  if (!authStore.getToken() || userStore.getUserData) return;
+  try {
+    await userStore.setUserDataFromApi();
+  } catch {
+    // Sin datos de usuario la tabla se pinta igual, sólo sin resaltados.
+  }
+};
+
 onMounted(() => {
+  ensureFollowedTeams();
   if (props.stageUuid && props.seasonUuid) {
     fetchStandings();
   }

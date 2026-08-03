@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
+import { useUserStore } from "@/store/user/useUserStore";
 import type { FootballLeagueStandingsResponse } from "@/interfaces/football/league/FootballLeagueStandingsResponse";
 
 const props = defineProps<{
@@ -13,6 +14,19 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const userStore = useUserStore();
+
+// ── Followed teams ──
+// Los equipos que sigue el usuario ya viven en el store (y en localStorage), así
+// que resaltarlos no cuesta una petición extra ni afecta a los anónimos.
+const followedUuids = computed(
+  () => new Set((userStore.getUserData?.favoriteFootballTeam ?? []).map((team) => team.uuid)),
+);
+
+const isFollowed = (row: FootballLeagueStandingsResponse): boolean =>
+  !!row.team?.uuid && followedUuids.value.has(row.team.uuid);
+
+const hasFollowedInTable = computed(() => props.standings.some(isFollowed));
 
 const onTeamSelect = (row: FootballLeagueStandingsResponse) => {
   if (row.team?.uuid) emit("team-selected", row.team.uuid);
@@ -163,6 +177,7 @@ watch(
               :aria-label="$t('football.standings.openTeamAria', { team: row.team?.name })"
               :class="{
                 'border-b border-gray-50 dark:border-gray-700/30': idx < standings.length - 1,
+                'standings-row--followed': isFollowed(row),
               }"
             >
               <!-- Position with zone indicator -->
@@ -185,7 +200,18 @@ watch(
               <td class="py-3 pl-2 pr-1 standings-sticky-left left-8 z-10 bg-white dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-700/30 group-active:bg-gray-50 dark:group-active:bg-gray-700/30 transition-colors">
                 <div class="flex items-center gap-2 min-w-0">
                   <TeamLogo :team="row.team" size="sm" variant="square" />
-                  <span class="text-xs font-medium text-gray-900 dark:text-white truncate">
+                  <v-icon
+                    v-if="isFollowed(row)"
+                    name="hi-solid-star"
+                    class="w-3 h-3 text-amber-500 shrink-0"
+                    :aria-label="$t('football.standings.followedAria')"
+                  />
+                  <span
+                    class="text-xs truncate"
+                    :class="isFollowed(row)
+                      ? 'font-bold text-gray-900 dark:text-white'
+                      : 'font-medium text-gray-900 dark:text-white'"
+                  >
                     {{ row.team?.name }}
                   </span>
                   <v-icon
@@ -284,6 +310,12 @@ watch(
         <span class="w-2.5 h-2.5 rounded-full shrink-0" :class="zone.color" />
         <span class="text-2xs text-gray-500 dark:text-gray-400">{{ zone.label }}</span>
       </div>
+      <div v-if="hasFollowedInTable" class="flex items-center gap-1.5">
+        <v-icon name="hi-solid-star" class="w-2.5 h-2.5 text-amber-500 shrink-0" />
+        <span class="text-2xs text-gray-500 dark:text-gray-400">
+          {{ $t('football.standings.followedLegend') }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -335,6 +367,23 @@ watch(
 }
 .dark .standings-row:hover {
   background-color: rgba(55, 65, 81, 0.3); /* gray-700/30 */
+}
+
+/* Followed teams — an amber wash across the whole row.
+   Painted on the cells, not the row: the pinned # / Team / Pts columns carry
+   their own opaque background to cover the scrolling content underneath, and it
+   would hide a tint set on the <tr>. */
+.standings-row--followed > td {
+  background-color: #fffbeb; /* amber-50 */
+}
+.standings-row--followed:hover > td {
+  background-color: #fef3c7; /* amber-100 */
+}
+.dark .standings-row--followed > td {
+  background-color: rgba(120, 53, 15, 0.22); /* amber-900/22 */
+}
+.dark .standings-row--followed:hover > td {
+  background-color: rgba(120, 53, 15, 0.34);
 }
 
 /* Smooth horizontal scroll on mobile */

@@ -25,10 +25,20 @@
 
 <script setup lang="ts">
 import { ref, computed, withDefaults, defineProps } from 'vue'
-import { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
+
+/**
+ * Lo único que el escudo necesita saber del equipo. Se declara estructuralmente
+ * para que sirva igual con FootballTeamResponse que con las variantes más
+ * acotadas (equipos sugeridos, participantes de un partido, etc.).
+ */
+interface TeamLike {
+  name?: string | null
+  short_code?: string | null
+  image_path?: string | null
+}
 
 interface Props {
-  team?: FootballTeamResponse | null
+  team?: TeamLike | null
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   variant?: 'square' | 'rounded' | 'circle'
   fallbackSrc?: string
