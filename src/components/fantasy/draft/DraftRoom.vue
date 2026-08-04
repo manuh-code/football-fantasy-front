@@ -29,6 +29,7 @@
           :is-my-turn="isMyTurn"
           :duration-seconds="turnStarted?.duration_seconds ?? null"
           :ends-at="turnEndsAt"
+          :absent="turnStarted?.absent ?? false"
           :compact="isTimerCompact"
           @expired="onTurnExpired"
         />
@@ -537,8 +538,16 @@ onMounted(async () => {
     };
     // El board de la sala y el del panel comparten esta lista, así que el pick
     // que llega por Ably actualiza los dos de una vez.
-    if (!picks.value.some((p) => p.pick === newPick.pick)) {
+    //
+    // Es un upsert, no un push: el endpoint de picks pre-crea una fila por cada
+    // turno del orden con `player` en null, así que el hueco de este pick YA
+    // está en la lista. Descartarlo por "duplicado" dejaba el board congelado
+    // en 0 fichajes hasta recargar la página.
+    const index = picks.value.findIndex((p) => p.pick === newPick.pick);
+    if (index === -1) {
       picks.value.push(newPick);
+    } else {
+      picks.value[index] = newPick;
     }
   });
 
@@ -574,8 +583,14 @@ onUnmounted(() => {
   ably.connection.off("connected", handleReconnect);
   ably.connection.off("update", handleReconnect);
   if (channel) {
+    // El canal es de una instancia Ably singleton, así que sobrevive al
+    // componente: hay que dar de baja TODOS los eventos suscritos o al volver a
+    // entrar a la sala se acumulan handlers de instancias muertas (toasts
+    // duplicados por pick y picks escritos en un ref que ya nadie pinta).
     channel.unsubscribe("turn.started");
     channel.unsubscribe("turn.skipped");
+    channel.unsubscribe("player.selected");
+    channel.unsubscribe("draft.finished");
     channel.presence.unsubscribe();
     channel.presence.leave();
   }

@@ -243,6 +243,7 @@
       "sec": "seg",
       "waiting": "Esperando el draft...",
       "waitingSub": "El cronómetro iniciará cuando comience un turno",
+      "absent": "No está en la sala",
       "unknown": "Desconocido"
     },
     "completed": {

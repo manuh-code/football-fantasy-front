@@ -243,6 +243,7 @@
       "sec": "sec",
       "waiting": "Waiting for draft...",
       "waitingSub": "The timer will start when a turn begins",
+      "absent": "Not in the room",
       "unknown": "Unknown"
     },
     "completed": {

@@ -64,7 +64,14 @@
         >
           {{ headline }}
         </p>
-        <p v-if="!compact && contender" class="text-2xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+        <!-- Con el turno en tregua, el pick/ronda cede el sitio: esa misma
+             información está en el board justo debajo, y lo que hace falta
+             explicar es por qué el reloj es tan corto. -->
+        <p v-if="!compact && absent" class="flex items-center gap-1 min-w-0 text-2xs font-medium text-amber-600 dark:text-amber-400 mt-0.5">
+          <v-icon name="ri-robot-line" class="w-3 h-3 shrink-0" />
+          <span class="truncate">{{ $t('fantasy.draft.timer.absent') }}</span>
+        </p>
+        <p v-else-if="!compact && contender" class="text-2xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
           {{ $t('fantasy.draft.timer.pickRound', { pick: pick ?? '-', round: round ?? '-' }) }}
           <span v-if="totalRounds"> / {{ totalRounds }}</span>
         </p>
@@ -73,28 +80,37 @@
         </p>
       </div>
 
-      <!-- Cuenta atrás -->
-      <div class="shrink-0 text-right leading-none">
-        <template v-if="hasTimer">
-          <span
-            class="count-surface inline-block font-black tabular-nums tracking-tight transition-[font-size,color] duration-300"
-            :class="[compact ? 'text-lg' : 'text-3xl', palette.time, urgency === 'critical' || expired ? 'animate-pulse' : '']"
-          >
-            {{ displayTime }}
-          </span>
-          <p
-            v-if="!compact && expired"
-            class="text-2xs font-medium mt-1 uppercase tracking-wider text-red-500/80 dark:text-red-400/80"
-          >
-            {{ $t('fantasy.draft.timer.expired') }}
-          </p>
-        </template>
+      <!-- Cuenta atrás. En compacto la subline no existe, así que el motivo de
+           la tregua viaja como icono pegado al número. -->
+      <div class="shrink-0 flex items-center gap-1.5 text-right leading-none">
         <v-icon
-          v-else
-          name="hi-solid-clock"
-          class="text-gray-300 dark:text-gray-600"
-          :class="compact ? 'w-4 h-4' : 'w-6 h-6'"
+          v-if="absent && compact"
+          name="ri-robot-line"
+          class="w-3.5 h-3.5 text-amber-500 dark:text-amber-400"
+          :aria-label="$t('fantasy.draft.timer.absent')"
         />
+        <div>
+          <template v-if="hasTimer">
+            <span
+              class="count-surface inline-block font-black tabular-nums tracking-tight transition-[font-size,color] duration-300"
+              :class="[compact ? 'text-lg' : 'text-3xl', palette.time, urgency === 'critical' || expired ? 'animate-pulse' : '']"
+            >
+              {{ displayTime }}
+            </span>
+            <p
+              v-if="!compact && expired"
+              class="text-2xs font-medium mt-1 uppercase tracking-wider text-red-500/80 dark:text-red-400/80"
+            >
+              {{ $t('fantasy.draft.timer.expired') }}
+            </p>
+          </template>
+          <v-icon
+            v-else
+            name="hi-solid-clock"
+            class="text-gray-300 dark:text-gray-600"
+            :class="compact ? 'w-4 h-4' : 'w-6 h-6'"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -127,8 +143,14 @@ const props = withDefaults(
     compact?: boolean
     /** Texto alternativo cuando no hay nadie en el reloj (esperando). */
     waitingLabel?: string | null
+    /**
+     * El del reloj no está conectado a la sala, así que su turno corre con una
+     * duración reducida y se resuelve por autopick. Solo el draft real lo usa:
+     * en el mock nadie puede ausentarse.
+     */
+    absent?: boolean
   }>(),
-  { totalRounds: null, compact: false, waitingLabel: null },
+  { totalRounds: null, compact: false, waitingLabel: null, absent: false },
 )
 
 const emit = defineEmits<{ expired: [] }>()
