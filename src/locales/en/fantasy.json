@@ -270,7 +270,8 @@
       "snake": "snake order",
       "onTheClock": "On the clock",
       "prevRound": "Previous round",
-      "nextRound": "Next round"
+      "nextRound": "Next round",
+      "round": "Round {round}"
     },
     "menu": {
       "nav": "Draft navigation",

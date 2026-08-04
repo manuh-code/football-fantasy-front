@@ -270,7 +270,8 @@
       "snake": "orden serpiente",
       "onTheClock": "En el reloj",
       "prevRound": "Ronda anterior",
-      "nextRound": "Ronda siguiente"
+      "nextRound": "Ronda siguiente",
+      "round": "Ronda {round}"
     },
     "menu": {
       "nav": "Navegación del draft",

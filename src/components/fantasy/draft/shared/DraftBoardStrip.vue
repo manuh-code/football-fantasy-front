@@ -34,8 +34,12 @@
         >
           <v-icon name="hi-solid-chevron-left" class="w-3.5 h-3.5" />
         </button>
+        <!-- Ronda del draft, no jornada del torneo: son las plazas de la
+             plantilla (17 con la formación por defecto), no los partidos de la
+             temporada. Reutilizar football.rounds.rounds hacía que en español
+             se leyera "Jornada 17" en una liga que juega 38. -->
         <span class="text-2xs font-bold text-gray-700 dark:text-gray-300 min-w-[3.25rem] text-center tabular-nums">
-          {{ $t('football.rounds.rounds') }} {{ viewRound }}
+          {{ $t('fantasy.draft.board.round', { round: viewRound }) }}
         </span>
         <button
           type="button"
