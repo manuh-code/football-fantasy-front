@@ -243,6 +243,7 @@
       "sec": "sec",
       "waiting": "Waiting for draft...",
       "waitingSub": "The timer will start when a turn begins",
+      "absent": "Not in the room",
       "unknown": "Unknown"
     },
     "completed": {
@@ -269,7 +270,8 @@
       "snake": "snake order",
       "onTheClock": "On the clock",
       "prevRound": "Previous round",
-      "nextRound": "Next round"
+      "nextRound": "Next round",
+      "round": "Round {round}"
     },
     "menu": {
       "nav": "Draft navigation",
