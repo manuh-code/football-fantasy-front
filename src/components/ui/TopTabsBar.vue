@@ -13,10 +13,18 @@ const props = withDefaults(
     /** Key of the active tab (highlighted with its accent). */
     activeKey?: string;
     ariaLabel?: string;
+    /**
+     * `inline` — icono y texto en una línea. Cabe cómodo hasta 3 opciones.
+     * `stacked` — icono sobre texto, como BottomNavBar. Cada opción baja de
+     * ~105px a ~56px, que es lo que permite mostrar 5 sin scroll horizontal en
+     * un móvil de 375px.
+     */
+    layout?: "inline" | "stacked";
   }>(),
   {
     activeKey: "",
     ariaLabel: "Section tabs",
+    layout: "inline",
   },
 );
 
@@ -48,6 +56,15 @@ const ACCENT_INDICATOR: Record<BottomNavAccent, string> = {
 
 const isActive = (item: BottomNavItem): boolean =>
   !item.disabled && !!item.accent && props.activeKey === item.key;
+
+const itemLayoutClass = computed(() =>
+  props.layout === "stacked"
+    ? "flex-col justify-center gap-0.5 px-2.5 py-1.5 min-w-[56px] text-2xs"
+    : "gap-1.5 px-3.5 py-2 text-xs",
+);
+const iconSizeClass = computed(() =>
+  props.layout === "stacked" ? "w-[18px] h-[18px]" : "w-4 h-4",
+);
 
 // Buttons carry only text weight/color — the highlighted background lives in the
 // single sliding indicator behind them (same architecture as BottomNavBar).
@@ -169,10 +186,14 @@ watch(
     :aria-label="ariaLabel"
     class="tabs-sticky sticky z-40 pointer-events-none flex justify-center mb-4"
   >
+    <!-- Fila: la píldora y, opcionalmente, una acción fija a su derecha. La
+         acción va FUERA del carril que hace scroll para que no se pueda
+         desplazar fuera de pantalla (es el caso del botón "Más"). -->
+    <div class="flex items-center gap-1.5 max-w-full">
     <!-- Wrapper matches the pill's own box (not the scrolling content inside it)
          so the edge-fade overlays below stay pinned to its visual edges instead
          of scrolling away with the tabs. -->
-    <div class="relative max-w-full">
+    <div class="relative min-w-0 max-w-full">
       <div
         ref="scrollContainerRef"
         class="tabs-scroll relative pointer-events-auto flex items-center gap-1 p-1 rounded-full max-w-full overflow-x-auto overscroll-x-contain bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/30"
@@ -200,15 +221,15 @@ watch(
           :aria-current="isActive(item) ? 'page' : undefined"
           :disabled="item.disabled"
           @click="onClick(item)"
-          class="relative z-10 flex items-center gap-1.5 shrink-0 px-3.5 py-2 rounded-full text-xs whitespace-nowrap transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
-          :class="tabClasses(item)"
+          class="relative z-10 flex items-center shrink-0 rounded-full whitespace-nowrap transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
+          :class="[itemLayoutClass, tabClasses(item)]"
         >
           <v-icon
             :name="item.icon"
-            class="w-4 h-4 shrink-0 transition-transform duration-200 ease-out"
-            :class="isActive(item) ? 'scale-110' : ''"
+            class="shrink-0 transition-transform duration-200 ease-out"
+            :class="[iconSizeClass, isActive(item) ? 'scale-110' : '']"
           />
-          <span>{{ item.label }}</span>
+          <span class="leading-none tracking-tight">{{ item.label }}</span>
         </button>
       </div>
 
@@ -223,6 +244,12 @@ watch(
         :class="canScrollRight ? 'opacity-100' : 'opacity-0'"
         aria-hidden="true"
       />
+      </div>
+
+      <!-- Acción fija junto a la píldora, fuera del carril con scroll (el botón
+           "Más" de la liga fantasy). Lo que se monte aquí debe traer su propio
+           `pointer-events-auto`: el <nav> es click-through. -->
+      <slot name="trailing" />
     </div>
   </nav>
 </template>

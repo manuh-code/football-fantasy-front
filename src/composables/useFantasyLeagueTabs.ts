@@ -5,12 +5,23 @@ import { useFantasyLeagueDetailStore } from '@/store/fantasy/useFantasyLeagueDet
 import type { BottomNavItem } from '@/components/ui/BottomNavBar.vue'
 
 /**
- * Shared secondary tabs (TopTabsBar) for the fantasy-league screens — league
- * detail, player search and my team. Keeps the items, member/admin gating and
- * cross-screen navigation identical everywhere.
+ * Navegación de las pantallas de liga fantasy — detalle, búsqueda de jugadores
+ * y mi equipo. Mantiene idénticos los destinos, el control de permisos y el
+ * salto entre pantallas en las tres.
  *
- * "myLeagues" is a neutral shortcut (no accent → never highlighted) back to
- * the leagues list; member-only tabs are appended when allowed.
+ * Los destinos se reparten en dos grupos porque no todos pesan lo mismo:
+ *
+ * - `primaryTabs`  — lo que se consulta durante la jornada. Va en la tira, con
+ *                    tope de 5 (`bottom-nav-limit` de Material Design). Todos
+ *                    llevan el mismo acento: el resaltado ya lo hace el chip
+ *                    deslizante, así que un color por pestaña solo era ruido.
+ * - `overflowItems` — lo que se mira de vez en cuando o una sola vez. Vive tras
+ *                    el botón "Más", en una hoja inferior.
+ *
+ * "Mis ligas" ya no es una pestaña: salir de la liga es subir de nivel, no
+ * moverse entre paneles, y mezclarlo con el resto era lo que hacía que la tira
+ * costara de leer (regla `nav-hierarchy`). Ahora es la flecha atrás de la
+ * cabecera — ver `goToLeagues`.
  */
 export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
   const route = useRoute()
@@ -22,25 +33,18 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
     () => leagueDetailStore.isMember || leagueDetailStore.isAdmin,
   )
 
-  const tabItems = computed<BottomNavItem[]>(() => {
+  const primaryTabs = computed<BottomNavItem[]>(() => {
     const list: BottomNavItem[] = [
-      { key: 'myLeagues', label: t('fantasy.detailTabs.myLeagues'), icon: 'hi-solid-collection' },
-      { key: 'overview', label: t('fantasy.detailTabs.overview'), icon: 'hi-solid-information-circle', accent: 'blue' },
-      { key: 'standings', label: t('fantasy.detailTabs.standings'), icon: 'bi-trophy-fill', accent: 'amber' },
-      { key: 'rules', label: t('fantasy.detailTabs.rules'), icon: 'hi-solid-clipboard-list', accent: 'sky' },
+      {
+        key: 'overview',
+        label: t('fantasy.detailTabs.overview'),
+        icon: 'hi-solid-information-circle',
+        accent: 'emerald',
+      },
     ]
 
-    // Only leagues that actually play a bracket get the tab — in table mode it
-    // would only ever show an "this league has no playoffs" placeholder.
-    if (leagueDetailStore.playsPlayoffs) {
-      list.splice(3, 0, {
-        key: 'playoffs',
-        label: t('fantasy.detailTabs.playoffs'),
-        icon: 'gi-crossed-swords',
-        accent: 'purple',
-      })
-    }
-
+    // Orden por frecuencia de uso de un manager activo: primero lo que se toca
+    // cada semana (alinear, ver el duelo), después lo que se consulta.
     if (canAccessMemberTabs.value) {
       list.push(
         {
@@ -50,40 +54,95 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
           accent: 'emerald',
           disabled: leagueDetailStore.isDraftNotStarted,
         },
-        { key: 'players', label: t('fantasy.detailTabs.players'), icon: 'hi-solid-user-add', accent: 'orange' },
-        { key: 'matches', label: t('fantasy.detailTabs.matches'), icon: 'gi-crossed-swords', accent: 'red' },
-        { key: 'trades', label: t('fantasy.detailTabs.trades'), icon: 'hi-solid-switch-horizontal', accent: 'purple' },
+        {
+          key: 'matches',
+          label: t('fantasy.detailTabs.matches'),
+          icon: 'gi-crossed-swords',
+          accent: 'emerald',
+        },
       )
     }
 
-    // Configuración de la liga: va al final porque no se consulta durante la
-    // jornada, se toca una vez antes de que arranque el draft.
-    if (leagueDetailStore.isAdmin) {
+    list.push({
+      key: 'standings',
+      label: t('fantasy.detailTabs.standings'),
+      icon: 'hi-solid-table',
+      accent: 'emerald',
+    })
+
+    if (canAccessMemberTabs.value) {
       list.push({
-        key: 'management',
-        label: t('fantasy.detailTabs.management'),
-        icon: 'hi-solid-adjustments',
-        accent: 'purple',
+        key: 'players',
+        label: t('fantasy.detailTabs.players'),
+        icon: 'hi-solid-user-add',
+        accent: 'emerald',
       })
     }
 
     return list
   })
 
-  const onTabSelect = (key: string) => {
-    if (key === 'myLeagues') {
-      router.push({ name: 'userFantasyLeague' })
-      return
+  const overflowItems = computed<BottomNavItem[]>(() => {
+    const list: BottomNavItem[] = []
+
+    if (canAccessMemberTabs.value) {
+      list.push({
+        key: 'trades',
+        label: t('fantasy.detailTabs.trades'),
+        icon: 'hi-solid-switch-horizontal',
+        accent: 'emerald',
+      })
     }
+
+    // Solo las ligas que juegan cuadro tienen la pestaña — en modo tabla solo
+    // mostraría un "esta liga no tiene eliminatorias".
+    if (leagueDetailStore.playsPlayoffs) {
+      list.push({
+        key: 'playoffs',
+        label: t('fantasy.detailTabs.playoffs'),
+        icon: 'bi-trophy-fill',
+        accent: 'emerald',
+      })
+    }
+
+    list.push({
+      key: 'rules',
+      label: t('fantasy.detailTabs.rules'),
+      icon: 'hi-solid-clipboard-list',
+      accent: 'emerald',
+    })
+
+    // Configuración de la liga: se toca una vez antes de que arranque el draft,
+    // así que nunca debió competir por sitio con lo de cada jornada.
+    if (leagueDetailStore.isAdmin) {
+      list.push({
+        key: 'management',
+        label: t('fantasy.detailTabs.management'),
+        icon: 'hi-solid-adjustments',
+        accent: 'emerald',
+      })
+    }
+
+    return list
+  })
+
+  /** Nombre de la liga para la cabecera; vacío mientras no haya cargado. */
+  const leagueName = computed(() => leagueDetailStore.currentLeague?.name ?? '')
+
+  const goToLeagues = () => {
+    router.push({ name: 'userFantasyLeague' })
+  }
+
+  const onTabSelect = (key: string) => {
     if (key === 'players') {
       if (route.name !== 'searchPlayerFantasy') {
         router.push({ name: 'searchPlayerFantasy', params: { uuid: getLeagueUuid() } })
       }
       return
     }
-    // Content tabs (overview / myteam / matches) live in the detail view's
-    // query so they survive refresh / can be shared. From any other screen,
-    // jump back to the detail view on that tab.
+    // Las pestañas de contenido viven en la query de la vista de detalle, así
+    // que sobreviven a una recarga y se pueden compartir. Desde cualquier otra
+    // pantalla se vuelve al detalle en esa pestaña.
     if (route.name === 'fantasyLeagueDetail') {
       router.replace({ query: { ...route.query, tab: key } })
     } else {
@@ -95,5 +154,5 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
     }
   }
 
-  return { tabItems, onTabSelect }
+  return { primaryTabs, overflowItems, leagueName, goToLeagues, onTabSelect }
 }
