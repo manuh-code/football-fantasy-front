@@ -234,7 +234,7 @@
       <!-- QUICK ACCESS — Stats shortcut  -->
       <!-- (My Team / Matches now live in the top tab bar)  -->
       <!-- ============================== -->
-      <button
+      <!-- <button
         v-if="league.isMember || league.isAdmin"
         @click="navigateToTab('statistics')"
         class="w-full flex items-center gap-3 py-3 px-4 bg-white dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700/40 hover:border-orange-200 dark:hover:border-orange-800/40 active:scale-[0.99] transition-all"
@@ -244,7 +244,7 @@
         </div>
         <span class="flex-1 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('fantasy.detail.stats') }}</span>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600" />
-      </button>
+      </button> -->
 
       <!-- ==================================================== -->
       <!-- DRAFT CARD — the primary pre-season action, so it    -->

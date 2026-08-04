@@ -125,7 +125,9 @@
   },
   "detailTabs": {
     "nav": "League navigation",
-    "myLeagues": "My Leagues",
+    "back": "Back to my leagues",
+    "more": "More",
+    "moreTitle": "More options",
     "overview": "Overview",
     "team": "My Team",
     "players": "Players",
