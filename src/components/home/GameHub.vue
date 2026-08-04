@@ -1,3 +1,19 @@
+<!--
+  Hub de modos de juego — la pantalla raíz de la app.
+
+  Organizado en tres zonas fijas, cada una un `<section>` con su propio título.
+  El orden es el mismo en todos los estados, de forma que la posición de las
+  cosas no cambia entre visitas; lo que cambia es el contenido de cada zona:
+
+    1. Tus juegos     — partidas en curso. Solo aparece si hay algo que continuar.
+    2. Modos de juego — presentación completa si no juegas a nada, fila compacta
+                        si ya tienes partidas (ver GameHubModes).
+    3. Más            — utilidades: unirse con código, guías y datos de liga.
+
+  La zona 3 es una única lista agrupada y no tres tarjetas sueltas: son cuatro
+  atajos secundarios y comparten la misma forma de fila, así que el ojo los
+  procesa de golpe en vez de uno a uno.
+-->
 <template>
   <div class="space-y-6">
     <!-- Pitch: la frase que explica qué es la app. Es la razón de ser de esta
@@ -20,14 +36,33 @@
       </p>
     </header>
 
-    <!-- ── Continuar jugando ────────────────────────────────────────────────
-         Solo con sesión. Es lo que convierte el hub en una pantalla viva: sin
-         esto se ve igual el día 1 que en la jornada 12. -->
-    <section v-if="isAuthenticated" :aria-busy="showSkeleton">
-      <!-- Esqueleto mientras carga: reserva la altura real de las filas para
-           que la lista no salte al llegar (CLS). -->
-      <div v-if="showSkeleton" class="space-y-3" :aria-label="$t('fantasy.gaming.continue.loading')">
-        <div class="h-5 w-40 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+    <!-- Anuncia el final de la carga a un lector de pantalla. Va aparte y no
+         como `aria-live` sobre la lista a propósito: las cuentas atrás se
+         refrescan cada minuto y la lista entera se releería con cada tic. -->
+    <p v-if="isAuthenticated" role="status" class="sr-only">
+      {{ showSkeleton ? $t('fantasy.gaming.continue.loading') : $t('fantasy.gaming.continue.status', games.length) }}
+    </p>
+
+    <!-- ── 1. Tus juegos ────────────────────────────────────────────────────
+         Lo que convierte el hub en una pantalla viva: sin esto se ve igual el
+         día 1 que en la jornada 12. Cuando no hay ninguna partida esta zona
+         desaparece entera y el estado vacío pasa a ser la entradilla de la
+         zona 2, que es donde está la acción. -->
+    <section
+      v-if="showContinue"
+      aria-labelledby="game-hub-continue-title"
+      :aria-busy="showSkeleton"
+    >
+      <h2
+        id="game-hub-continue-title"
+        class="text-callout font-bold text-gray-900 dark:text-white mb-3"
+      >
+        {{ $t('fantasy.gaming.continue.title') }}
+      </h2>
+
+      <!-- El título real se pinta ya; solo se esqueletiza el contenido, con la
+           altura exacta de las filas para que la lista no salte al llegar. -->
+      <div v-if="showSkeleton" class="space-y-3">
         <div
           v-for="n in 2"
           :key="n"
@@ -35,13 +70,9 @@
         />
       </div>
 
-      <template v-else-if="hasGames">
-        <h2 class="text-callout font-bold text-gray-900 dark:text-white mb-3">
-          {{ $t('fantasy.gaming.continue.title') }}
-        </h2>
-
-        <ul class="space-y-3">
-          <li v-for="game in games" :key="game.id">
+      <template v-else>
+        <ul id="game-hub-games" class="space-y-3">
+          <li v-for="game in visibleGames" :key="game.id">
             <RouterLink
               :to="game.to"
               class="flex items-center gap-3 min-h-[44px] px-4 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer active:scale-[0.99] transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
@@ -68,8 +99,8 @@
                   {{ game.name }}
                 </h3>
                 <p class="mt-0.5 flex items-center gap-1.5 text-footnote text-gray-500 dark:text-gray-400 leading-snug">
-                  <span :class="MODE_STYLE[game.mode].label">{{ modeLabel(game.mode) }}</span>
-                  <template v-if="game.meta">
+                  <span :class="MODE_STYLE[game.mode].label">{{ modeTitle(game.mode, t) }}</span>
+                  <template v-if="metaLabel(game)">
                     <span aria-hidden="true">·</span>
                     <span class="truncate">{{ metaLabel(game) }}</span>
                   </template>
@@ -86,14 +117,34 @@
                 <v-icon name="hi-solid-clock" class="w-3 h-3" />
                 {{ deadlineLabel(game) }}
               </span>
+              <!-- El chevron va siempre, también con plazo: es la señal de que
+                   la fila navega, y antes el plazo la sustituía. -->
               <v-icon
-                v-else
                 name="hi-solid-chevron-right"
                 class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
               />
             </RouterLink>
           </li>
         </ul>
+
+        <!-- Con muchas partidas la lista empujaba el resto del hub fuera de
+             pantalla. Se muestran las más urgentes —vienen ordenadas por
+             plazo— y el resto queda a un toque. -->
+        <button
+          v-if="hiddenCount > 0"
+          type="button"
+          :aria-expanded="isExpanded"
+          aria-controls="game-hub-games"
+          @click="isExpanded = !isExpanded"
+          class="mt-3 w-full flex items-center justify-center gap-1.5 min-h-[44px] px-4 py-2.5 rounded-2xl text-footnote font-semibold text-emerald-600 dark:text-emerald-400 cursor-pointer active:bg-emerald-50 dark:active:bg-emerald-900/20 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+        >
+          {{ isExpanded ? $t('fantasy.gaming.continue.showLess') : $t('fantasy.gaming.continue.showAll', { count: hiddenCount }) }}
+          <v-icon
+            name="hi-solid-chevron-down"
+            class="w-4 h-4 transition-transform duration-200"
+            :class="{ 'rotate-180': isExpanded }"
+          />
+        </button>
 
         <!-- Una de las tres fuentes falló: se avisa sin bloquear el resto. -->
         <button
@@ -107,211 +158,103 @@
           {{ $t('fantasy.gaming.continue.retry') }}
         </button>
       </template>
+    </section>
 
-      <!-- Con sesión pero sin ninguna partida: el estado vacío es la pantalla
-           de venta más importante de la app. No se deja en blanco — dice qué
-           falta y cómo empezar. -->
+    <!-- ── 2. Modos de juego ────────────────────────────────────────────────
+         Oculta durante la carga: si se pintara, quien tiene partidas vería un
+         instante la presentación completa antes de que la fila compacta la
+         reemplace. -->
+    <GameHubModes
+      v-if="!showSkeleton"
+      :variant="hasGames ? 'compact' : 'full'"
+      :untouched="untouchedModes"
+      @navigate="handleNavigation"
+    >
+      <!-- Estado vacío. Va aquí como entradilla, y no como tarjeta propia más
+           arriba, para que el aviso y la acción que lo resuelve estén juntos:
+           una tarjeta suelta que solo dice "no juegas nada" es un callejón. -->
       <div
-        v-else-if="hasLoaded"
-        class="rounded-2xl border border-dashed border-gray-300 dark:border-gray-600 px-5 py-6 text-center"
+        v-if="isEmpty"
+        class="flex items-start gap-3 rounded-2xl bg-emerald-50/70 dark:bg-emerald-900/15 ring-1 ring-emerald-500/15 px-4 py-3"
       >
-        <div
-          class="mx-auto mb-3 grid place-items-center w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 ring-1 ring-emerald-500/15"
-        >
-          <v-icon name="hi-solid-sparkles" class="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-        </div>
-        <h2 class="text-callout font-bold text-gray-900 dark:text-white">
-          {{ $t('fantasy.gaming.empty.title') }}
-        </h2>
-        <p class="mt-1 text-footnote text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
-          {{ $t('fantasy.gaming.empty.subtitle') }}
-        </p>
-      </div>
-    </section>
-
-    <!-- ── Los tres modos ───────────────────────────────────────────────────
-         Presentación completa (hero + rejilla) mientras el usuario no juegue a
-         nada: ahí su trabajo es explicar y vender. En cuanto hay partidas pasa
-         a una fila compacta, porque entonces compite con "continuar jugando" y
-         debe perder. -->
-    <section v-if="!hasGames && !showSkeleton" class="space-y-3">
-      <!-- Fantasy — tarjeta principal. Tres tarjetas idénticas comunican "tres
-           cosas equivalentes", que es lo mismo que no comunicar jerarquía. -->
-      <button
-        type="button"
-        @click="handleNavigation('fantasy')"
-        class="group w-full text-left rounded-3xl overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 shadow-medium cursor-pointer active:scale-[0.98] transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950"
-      >
-        <div class="relative px-5 py-5">
-          <span
-            class="pointer-events-none absolute -top-8 -right-6 w-32 h-32 rounded-full bg-white/10 blur-2xl"
-            aria-hidden="true"
-          />
-          <div class="relative flex items-start gap-3.5">
-            <div class="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm grid place-items-center shrink-0">
-              <v-icon name="bi-trophy-fill" class="w-6 h-6 text-white" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <span
-                class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-bold uppercase tracking-wide bg-white/20 text-white"
-              >
-                {{ $t('fantasy.gaming.fantasy.tag') }}
-              </span>
-              <h2 class="mt-1.5 text-2xl font-black text-white leading-tight">
-                {{ $t('fantasy.gaming.fantasy.title') }}
-              </h2>
-              <p class="mt-0.5 text-sm text-white/80 leading-snug">
-                {{ $t('fantasy.gaming.fantasy.subtitle') }}
-              </p>
-            </div>
-          </div>
-          <div class="relative mt-4 flex items-center justify-between">
-            <span class="text-callout font-bold text-white">
-              {{ $t('fantasy.gaming.fantasy.cta') }}
-            </span>
-            <span
-              class="w-8 h-8 rounded-full bg-white/20 grid place-items-center transition-transform duration-200 group-active:translate-x-0.5"
-            >
-              <v-icon name="hi-solid-arrow-right" class="w-4 h-4 text-white" />
-            </span>
-          </div>
-        </div>
-      </button>
-
-      <!-- Quinielas y Survivor — secundarios, pero con el mismo peso entre sí. -->
-      <div class="grid grid-cols-2 gap-3">
-        <button
-          v-for="mode in secondaryModes"
-          :key="mode.key"
-          type="button"
-          @click="handleNavigation(mode.key)"
-          class="group flex flex-col h-full text-left rounded-2xl px-4 py-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm cursor-pointer active:scale-[0.98] transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
-        >
-          <div
-            class="w-11 h-11 rounded-2xl grid place-items-center shrink-0 bg-gradient-to-br"
-            :class="MODE_STYLE[mode.key].gradient"
-          >
-            <v-icon :name="MODE_STYLE[mode.key].icon" class="w-5 h-5 text-white" />
-          </div>
-          <h2 class="mt-3 text-lg font-bold text-gray-900 dark:text-white leading-tight">
-            {{ mode.title }}
-          </h2>
-          <p class="mt-0.5 text-footnote text-gray-500 dark:text-gray-400 leading-snug flex-1">
-            {{ mode.subtitle }}
+        <v-icon
+          name="hi-solid-sparkles"
+          class="w-5 h-5 mt-0.5 text-emerald-600 dark:text-emerald-400 shrink-0"
+        />
+        <div class="min-w-0">
+          <p class="text-footnote font-bold text-gray-900 dark:text-white">
+            {{ $t('fantasy.gaming.empty.title') }}
           </p>
-          <span
-            class="mt-3 inline-flex items-center text-2xs font-bold uppercase tracking-wide"
-            :class="MODE_STYLE[mode.key].label"
-          >
-            {{ mode.tag }}
-          </span>
-        </button>
+          <p class="mt-0.5 text-footnote text-gray-500 dark:text-gray-400 leading-snug">
+            {{ $t('fantasy.gaming.empty.subtitle') }}
+          </p>
+        </div>
       </div>
-    </section>
+    </GameHubModes>
 
-    <!-- Con partidas en curso: los modos siguen accesibles, en fila compacta.
-         Los que el usuario todavía no ha probado van primero y marcados — es la
-         vía natural de crecimiento dentro del producto. -->
-    <section v-else-if="hasGames">
-      <h2 class="text-callout font-bold text-gray-900 dark:text-white mb-3">
-        {{ $t('fantasy.gaming.more.title') }}
+    <!-- ── 3. Más ───────────────────────────────────────────────────────────
+         Cuatro atajos secundarios en una sola lista agrupada. Las dos primeras
+         filas son el alta por código: estos juegos son sociales y se entra por
+         el código que te pasa un amigo, así que merece un sitio fijo en el hub
+         y no estar escondido tras un FAB dentro de cada modo (deep link
+         `?join=`). Survivor no aparece porque la API no expone alta por código. -->
+    <section aria-labelledby="game-hub-more-title">
+      <h2
+        id="game-hub-more-title"
+        class="text-callout font-bold text-gray-900 dark:text-white mb-3"
+      >
+        {{ $t('fantasy.gaming.secondary.title') }}
       </h2>
-      <div class="grid grid-cols-3 gap-2.5">
-        <button
-          v-for="mode in compactModes"
-          :key="mode.key"
-          type="button"
-          @click="handleNavigation(mode.key)"
-          class="relative flex flex-col items-center gap-2 min-h-[44px] px-2 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 cursor-pointer active:scale-[0.97] transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
-        >
-          <span
-            v-if="mode.isNew"
-            class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500"
-            :aria-label="$t('fantasy.gaming.more.untried')"
-          />
-          <div
-            class="w-9 h-9 rounded-xl grid place-items-center bg-gradient-to-br"
-            :class="MODE_STYLE[mode.key].gradient"
-          >
-            <v-icon :name="MODE_STYLE[mode.key].icon" class="w-4 h-4 text-white" />
-          </div>
-          <span class="text-2xs font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">
-            {{ mode.title }}
-          </span>
-        </button>
-      </div>
-    </section>
-
-    <!-- ── Unirse por invitación ────────────────────────────────────────────
-         Estos juegos son sociales: se entra por el código que te pasa un amigo,
-         no navegando. Merece un sitio fijo en el hub y no estar escondido tras
-         un FAB dentro de cada modo. Cada acción abre la hoja de "unirse" del
-         modo correspondiente (deep link `?join=`). Survivor no aparece porque
-         la API no expone alta por código. -->
-    <section v-if="isAuthenticated" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 overflow-hidden">
-      <div class="flex items-center gap-2.5 px-4 pt-3.5 pb-2">
-        <v-icon name="hi-solid-user-add" class="w-4 h-4 text-emerald-500 shrink-0" />
-        <h2 class="text-footnote font-bold text-gray-900 dark:text-white">
-          {{ $t('fantasy.gaming.invite.title') }}
-        </h2>
-      </div>
-      <div class="grid grid-cols-2 divide-x divide-gray-100 dark:divide-gray-700/60 border-t border-gray-100 dark:border-gray-700/60">
+      <div
+        class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 overflow-hidden divide-y divide-gray-100 dark:divide-gray-700/60"
+      >
         <RouterLink
-          v-for="target in joinTargets"
-          :key="target.key"
-          :to="target.to"
-          class="flex items-center justify-center gap-1.5 min-h-[44px] px-3 py-3 text-footnote font-semibold text-emerald-600 dark:text-emerald-400 cursor-pointer active:bg-emerald-50 dark:active:bg-emerald-900/20 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500/50"
+          v-for="link in secondaryLinks"
+          :key="link.key"
+          :to="link.to"
+          class="flex items-center gap-3 min-h-[44px] px-4 py-3 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/40 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500/50"
         >
-          <v-icon :name="MODE_STYLE[target.key].icon" class="w-4 h-4 shrink-0" />
-          {{ target.label }}
+          <div
+            class="w-9 h-9 rounded-xl grid place-items-center shrink-0"
+            :class="link.accent
+              ? 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400'
+              : 'bg-gray-100 dark:bg-gray-700/60 text-gray-500 dark:text-gray-300'"
+          >
+            <v-icon :name="link.icon" class="w-[18px] h-[18px]" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">
+              {{ link.title }}
+            </h3>
+            <p
+              v-if="link.subtitle"
+              class="mt-0.5 text-footnote text-gray-500 dark:text-gray-400 leading-snug truncate"
+            >
+              {{ link.subtitle }}
+            </p>
+          </div>
+          <v-icon
+            name="hi-solid-chevron-right"
+            class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+          />
         </RouterLink>
       </div>
     </section>
-
-    <!-- Guías: la salida para quien todavía no entiende un modo. -->
-    <RouterLink
-      :to="{ name: 'guides' }"
-      class="flex items-center gap-2 min-h-[44px] px-4 py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 text-footnote font-medium text-gray-600 dark:text-gray-300 cursor-pointer active:scale-[0.99] transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
-    >
-      <v-icon name="hi-solid-academic-cap" class="w-4 h-4 text-emerald-500 shrink-0" />
-      <span class="flex-1 min-w-0">{{ $t('fantasy.gaming.howTo') }}</span>
-      <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0" />
-    </RouterLink>
-
-    <!-- Los datos de liga siguen a un toque de distancia, pero por debajo del
-         juego: son el soporte del producto, no el producto. -->
-    <RouterLink
-      :to="{ name: 'leagueOverview' }"
-      class="flex items-center gap-3 min-h-[44px] px-4 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 cursor-pointer active:scale-[0.99] transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
-    >
-      <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700/60 grid place-items-center shrink-0">
-        <v-icon name="hi-solid-chart-bar" class="w-5 h-5 text-gray-500 dark:text-gray-300" />
-      </div>
-      <div class="flex-1 min-w-0">
-        <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight">
-          {{ $t('fantasy.gaming.leagueData.title') }}
-        </h3>
-        <p class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5 truncate">
-          {{ $t('fantasy.gaming.leagueData.subtitle') }}
-        </p>
-      </div>
-      <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0" />
-    </RouterLink>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink, useRouter, type RouteLocationRaw } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/store/auth/useAuthStore'
-import { useToast } from '@/composables/useToast'
 import { useGameHub, ROUTE_BY_MODE, type ActiveGame, type GameMode } from '@/composables/useGameHub'
+import GameHubModes from './gameHub/GameHubModes.vue'
+import { MODE_STYLE, modeTitle, guideRouteForMode } from './gameHub/gameModes'
 
 const router = useRouter()
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
-const { info } = useToast()
 
 const { isLoading, hasLoaded, hasPartialFailure, games, hasGames, untouchedModes, load } = useGameHub()
 
@@ -322,29 +265,7 @@ const { isLoading, hasLoaded, hasPartialFailure, games, hasGames, untouchedModes
 // de contenido en la primera pantalla de cada arranque.
 const isAuthenticated = ref(!!authStore.token)
 
-/** Única fuente de estilo por modo: icono, degradado y color de etiqueta. */
-const MODE_STYLE: Record<GameMode, { icon: string; gradient: string; label: string }> = {
-  fantasy: {
-    icon: 'bi-trophy-fill',
-    gradient: 'from-blue-500 to-indigo-600',
-    label: 'text-indigo-600 dark:text-indigo-400',
-  },
-  pools: {
-    icon: 'hi-solid-document-text',
-    gradient: 'from-emerald-400 to-emerald-600',
-    label: 'text-emerald-600 dark:text-emerald-400',
-  },
-  survivor: {
-    icon: 'hi-solid-shield-check',
-    gradient: 'from-rose-500 to-red-600',
-    label: 'text-rose-600 dark:text-rose-400',
-  },
-}
-
-// "Survivor" es nombre de marca — intencionalmente sin traducir.
-const modeLabel = (mode: GameMode): string =>
-  mode === 'survivor' ? 'Survivor' : t(`fantasy.gaming.${mode}.title`)
-
+// ── Qué zona se pinta ──
 /**
  * Esqueleto mientras no sepamos qué tiene el usuario. Cubre también el hueco
  * entre el montaje y el inicio de `load()` (la comprobación de sesión es
@@ -354,6 +275,12 @@ const modeLabel = (mode: GameMode): string =>
  */
 const showSkeleton = computed(() => isAuthenticated.value && !hasLoaded.value)
 
+/** La zona 1 solo existe si hay algo que continuar (o que esperar). */
+const showContinue = computed(() => isAuthenticated.value && (showSkeleton.value || hasGames.value))
+
+/** Con sesión y sin ninguna partida: el aviso pasa a la zona 2. */
+const isEmpty = computed(() => isAuthenticated.value && hasLoaded.value && !hasGames.value)
+
 /**
  * Cabecera de usuario que vuelve: título corto, sin argumento de venta. Incluye
  * el rato de carga a propósito — quien tiene sesión casi siempre tiene partidas,
@@ -362,44 +289,70 @@ const showSkeleton = computed(() => isAuthenticated.value && !hasLoaded.value)
  */
 const isReturning = computed(() => hasGames.value || showSkeleton.value)
 
-const secondaryModes = computed(() => [
-  {
-    key: 'pools' as const,
-    title: t('fantasy.gaming.pools.title'),
-    subtitle: t('fantasy.gaming.pools.subtitle'),
-    tag: t('fantasy.gaming.pools.tag'),
-  },
-  {
-    key: 'survivor' as const,
-    title: 'Survivor',
-    subtitle: t('survivor.gaming.subtitle'),
-    tag: t('survivor.gaming.tag'),
-  },
-])
+// ── Lista de partidas ──
+/**
+ * Cuántas filas se ven sin desplegar. Cuatro entran en una pantalla de móvil
+ * junto al título y dejan ver que debajo sigue habiendo hub.
+ */
+const COLLAPSED_COUNT = 4
+const isExpanded = ref(false)
 
-/** Fila compacta: los modos sin estrenar primero, con su punto de aviso. */
-const compactModes = computed(() => {
-  const untried = new Set(untouchedModes.value)
-  return (Object.keys(ROUTE_BY_MODE) as GameMode[])
-    .map((key) => ({ key, title: modeLabel(key), isNew: untried.has(key) }))
-    .sort((a, b) => Number(b.isNew) - Number(a.isNew))
-})
+const visibleGames = computed(() =>
+  isExpanded.value ? games.value : games.value.slice(0, COLLAPSED_COUNT)
+)
+const hiddenCount = computed(() => Math.max(0, games.value.length - COLLAPSED_COUNT))
+
+// ── Zona 3 ──
+interface SecondaryLink {
+  key: string
+  icon: string
+  title: string
+  subtitle?: string
+  /** Acción, no navegación: se tiñe de esmeralda para separarla del resto. */
+  accent?: boolean
+  to: RouteLocationRaw
+}
 
 /**
- * Modos con alta por código. El deep link `?join=` (sin valor) abre la hoja de
- * "unirse" vacía en la vista destino; con valor la abre prerrellenada, que es
- * como funcionan los enlaces de invitación que ya se comparten.
+ * El alta por código solo aparece con sesión: las hojas de "unirse" viven en
+ * vistas protegidas y sin sesión la fila solo llevaría al login. El deep link
+ * `?join=` (sin valor) abre la hoja vacía; con valor la abre prerrellenada, que
+ * es como funcionan los enlaces de invitación que ya se comparten.
  */
-const joinTargets = computed(() => [
+const secondaryLinks = computed<SecondaryLink[]>(() => [
+  ...(isAuthenticated.value
+    ? [
+        {
+          key: 'joinFantasy',
+          icon: 'hi-solid-user-add',
+          accent: true,
+          title: t('fantasy.gaming.invite.fantasy'),
+          to: { name: 'userFantasyLeague', query: { join: '' } },
+        },
+        {
+          key: 'joinPools',
+          icon: 'hi-solid-user-add',
+          accent: true,
+          title: t('fantasy.gaming.invite.pools'),
+          to: { name: 'pools', query: { join: '' } },
+        },
+      ]
+    : []),
   {
-    key: 'fantasy' as const,
-    label: t('fantasy.gaming.invite.fantasy'),
-    to: { name: 'userFantasyLeague', query: { join: '' } },
+    key: 'guides',
+    icon: 'hi-solid-academic-cap',
+    title: t('fantasy.gaming.guides.title'),
+    subtitle: t('fantasy.gaming.guides.subtitle'),
+    to: { name: 'guides' },
   },
+  // Los datos de liga siguen a un toque, pero por debajo del juego: son el
+  // soporte del producto, no el producto.
   {
-    key: 'pools' as const,
-    label: t('fantasy.gaming.invite.pools'),
-    to: { name: 'pools', query: { join: '' } },
+    key: 'leagueData',
+    icon: 'hi-solid-chart-bar',
+    title: t('fantasy.gaming.leagueData.title'),
+    subtitle: t('fantasy.gaming.leagueData.subtitle'),
+    to: { name: 'leagueOverview' },
   },
 ])
 
@@ -441,21 +394,22 @@ const metaLabel = (game: ActiveGame): string => {
 }
 
 const handleNavigation = async (gameMode: GameMode) => {
-  const target = { name: ROUTE_BY_MODE[gameMode] }
-
+  // Sin sesión no se manda al login. Esta zona es el argumento de venta y el
+  // muro castigaba justo a quien se interesaba: tocaba una tarjeta que le
+  // acababan de vender y recibía un formulario. En su lugar va a la guía
+  // pública del modo, que lo explica y termina con su propia invitación a
+  // registrarse — la cuenta se pide al crear o unirse, no al mirar.
   if (!(await authStore.isAuthenticated())) {
-    info(t('fantasy.gaming.loginRequired'))
-    // El redirect apunta al modo que se tocó, no al hub: quien entra buscando
-    // una quiniela debe aterrizar en quinielas después de iniciar sesión, no de
-    // vuelta aquí para tener que elegir otra vez.
-    router.push({
-      name: 'login',
-      query: { redirect: router.resolve(target).fullPath },
-    })
-    return
+    const guide = guideRouteForMode(gameMode)
+    if (guide) {
+      router.push(guide)
+      return
+    }
   }
 
-  router.push(target)
+  // Con sesión (o si un modo se quedara sin guía) va al modo. En ese segundo
+  // caso el guardián del router se encarga de pedir sesión.
+  router.push({ name: ROUTE_BY_MODE[gameMode] })
 }
 
 onMounted(async () => {

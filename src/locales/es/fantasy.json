@@ -8,20 +8,28 @@
     "continue": {
       "title": "Continuar jugando",
       "loading": "Cargando tus juegos",
+      "status": "{count} juego en curso | {count} juegos en curso",
+      "showAll": "Ver {count} más",
+      "showLess": "Ver menos",
       "retry": "No pudimos cargar todo. Reintentar"
     },
     "empty": {
       "title": "Todavía no juegas nada",
       "subtitle": "Crea tu primera liga, quiniela o Survivor, o únete con el código que te pase un amigo."
     },
+    "modes": {
+      "title": "Modos de juego"
+    },
     "more": {
       "title": "Prueba otro modo",
-      "untried": "Sin estrenar"
+      "untried": "Sin jugar"
+    },
+    "secondary": {
+      "title": "Más"
     },
     "invite": {
-      "title": "¿Te invitaron a jugar?",
-      "fantasy": "Liga fantasy",
-      "pools": "Quiniela"
+      "fantasy": "Unirme a una liga con código",
+      "pools": "Unirme a una quiniela con código"
     },
     "meta": {
       "participants": "{count} participante | {count} participantes",
@@ -39,12 +47,14 @@
       "tag": "Marcador exacto",
       "cta": "Jugar"
     },
-    "howTo": "¿Nuevo por aquí? Aprende a jugar en las guías",
+    "guides": {
+      "title": "Cómo se juega",
+      "subtitle": "Guías de fantasy, quinielas y Survivor"
+    },
     "leagueData": {
       "title": "Posiciones y resultados",
       "subtitle": "Tabla, calendario y estadísticas de la liga"
-    },
-    "loginRequired": "Inicia sesión para acceder a los juegos Fantasy"
+    }
   },
   "leagueCreate": {
     "title": "Crear liga Fantasy",
@@ -123,7 +133,8 @@
     "standings": "Tabla",
     "playoffs": "Eliminatorias",
     "trades": "Trades",
-    "rules": "Reglas"
+    "rules": "Reglas",
+    "management": "Gestión"
   },
   "standings": {
     "title": "Tabla general",
@@ -578,26 +589,6 @@
     "retry": "Reintentar",
     "pts": "pts"
   },
-  "management": {
-    "loadingRules": "Cargando reglas de puntuación...",
-    "loadingError": "Error de carga",
-    "ruleTypes": "Tipos de regla:",
-    "totalConfigs": "Configuraciones totales:",
-    "ruleType": "Tipo de regla",
-    "editCondition": "Editar condición",
-    "editCondShort": "Editar cond.",
-    "notApplicable": "No aplica",
-    "saving": "Guardando...",
-    "saveRules": "Guardar reglas",
-    "enterValue": "Ingresa un valor",
-    "enterText": "Ingresa un texto",
-    "errorLoadConditions": "Error al cargar las reglas de condición",
-    "errorSave": "Error al guardar las reglas de puntuación",
-    "errorInit": "Error al inicializar el componente",
-    "updated": "Reglas de puntuación actualizadas correctamente",
-    "noRulesTitle": "Sin reglas de puntuación",
-    "noRulesBody": "Esta liga aún no tiene reglas de puntuación configuradas."
-  },
   "rules": {
     "title": "Reglas de puntuación",
     "subtitle": "Así suma y resta cada jugador según su posición en esta liga",
@@ -650,6 +641,34 @@
       "SHOTS_ON_TARGET": "Tiro a puerta",
       "SUCCESSFUL_DRIBBLES": "Regate exitoso",
       "BLOCKED_SHOTS": "Tiro bloqueado"
+    }
+  },
+  "scoringEditor": {
+    "title": "Reglas de puntuación",
+    "subtitle": "Define cuánto vale cada jugada en tu liga. Se pueden cambiar hasta que arranque el draft.",
+    "presetsLabel": "Estilo de liga",
+    "presetsHint": "Elige un estilo para llenar todos los valores de un toque, o ajústalos uno por uno abajo.",
+    "pendingChanges": "1 cambio sin guardar | {count} cambios sin guardar",
+    "save": "Guardar",
+    "discard": "Descartar",
+    "savedTitle": "Reglas actualizadas",
+    "savedMsg": "Los puntos de las jornadas ya jugadas se están recalculando.",
+    "resetDefaults": "Restaurar valores por defecto",
+    "resetTitle": "Valores restaurados",
+    "resetMsg": "Tu liga volvió a las reglas por defecto.",
+    "changedFromDefault": "Por defecto: {value}",
+    "loadError": "No pudimos cargar las reglas de puntuación.",
+    "pointsAria": "Puntos por {name}",
+    "increaseAria": "Subir puntos de {name}",
+    "decreaseAria": "Bajar puntos de {name}",
+    "toggleAria": "Activar o desactivar {name}",
+    "enableHint": "Activar: volverá a sumar",
+    "disableHint": "Desactivar: dejará de sumar",
+    "locked": {
+      "title": "Las reglas ya no se pueden cambiar",
+      "draft_started": "El draft ya arrancó. Las reglas quedan fijas para que nadie arme su equipo con unas reglas y juegue con otras.",
+      "league_started": "La liga ya empezó y las reglas quedan fijas hasta que termine.",
+      "generic": "Esta liga ya no admite cambios en su puntuación."
     }
   },
   "join": {

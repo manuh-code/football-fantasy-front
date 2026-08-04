@@ -160,6 +160,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useScoringRuleMeta, type PositionMeta } from '@/composables/fantasy/useScoringRuleMeta'
 import { FantasyLeagueScoringRules, FantasyRule } from '@/interfaces/fantasy/leagues/FantasyLeagueScoringRules'
 
 const props = defineProps({
@@ -169,70 +170,23 @@ const props = defineProps({
   },
 })
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 
-interface PositionMeta {
-  icon: string
-  badgeBg: string
-  badgeText: string
-  order: number
-  labelKey: string
-}
-
-const POSITION_META: Record<string, PositionMeta> = {
-  GOALKEEPER: { icon: 'hi-solid-shield-check', badgeBg: 'bg-blue-50 dark:bg-blue-900/30', badgeText: 'text-blue-600 dark:text-blue-400', order: 0, labelKey: 'goalkeeper' },
-  DEFENDER: { icon: 'hi-solid-shield-exclamation', badgeBg: 'bg-green-50 dark:bg-green-900/30', badgeText: 'text-green-600 dark:text-green-400', order: 1, labelKey: 'defender' },
-  MIDFIELDER: { icon: 'hi-solid-lightning-bolt', badgeBg: 'bg-yellow-50 dark:bg-yellow-900/30', badgeText: 'text-yellow-600 dark:text-yellow-400', order: 2, labelKey: 'midfielder' },
-  ATTACKER: { icon: 'hi-solid-fire', badgeBg: 'bg-red-50 dark:bg-red-900/30', badgeText: 'text-red-600 dark:text-red-400', order: 3, labelKey: 'attacker' },
-}
-const DEFAULT_POSITION_META: PositionMeta = {
-  icon: 'hi-solid-user-group',
-  badgeBg: 'bg-gray-50 dark:bg-gray-800',
-  badgeText: 'text-gray-500 dark:text-gray-400',
-  order: 99,
-  labelKey: '',
-}
-
-const STAT_ICONS: Record<string, string> = {
-  GOALS: 'gi-soccer-ball',
-  PENALTIES_SCORED: 'md-sportssoccer',
-  ASSISTS: 'hi-solid-user-add',
-  OWN_GOALS: 'hi-solid-x-circle',
-  YELLOWRED_CARDS: 'hi-solid-exclamation-circle',
-  REDCARDS: 'hi-solid-ban',
-  FOULS: 'hi-solid-exclamation',
-  PENALTIES_MISSES: 'md-cancel',
-  PENALTIES_COMMITTED: 'hi-solid-x',
-  PENALTIES_WON: 'hi-solid-plus-circle',
-  PENALTIES_SAVED: 'bi-shield-check',
-  GOALKEEPER_CLEANSHEET: 'hi-solid-shield-check',
-  GOALKEEPER_GOALS_CONCEDED: 'hi-solid-shield-exclamation',
-  GOALS_CONCEDED: 'hi-solid-shield-exclamation',
-  HIT_WOODWORK: 'hi-solid-lightning-bolt',
-  SAVES: 'hi-solid-eye',
-  ACCURATE_PASSES: 'hi-solid-switch-horizontal',
-  KEY_PASSES: 'hi-solid-sparkles',
-  TACKLES: 'gi-crossed-swords',
-  INTERCEPTIONS: 'hi-solid-filter',
-  CLEARANCES: 'hi-solid-arrow-up',
-  DUELS_WON: 'bi-trophy',
-  SHOTS_ON_TARGET: 'hi-solid-location-marker',
-  SUCCESSFUL_DRIBBLES: 'hi-solid-cursor-click',
-  BLOCKED_SHOTS: 'hi-solid-shield-exclamation',
-}
+// Iconos, etiquetas y lectura de condiciones se comparten con el editor del
+// admin (FantasyScoringRulesEditor) para que ambas pantallas nombren igual la
+// misma regla.
+const meta = useScoringRuleMeta()
 
 function positionDevName(group: FantasyLeagueScoringRules): string {
   return group.position?.developer_name || ''
 }
 
 function positionMeta(group: FantasyLeagueScoringRules): PositionMeta {
-  return POSITION_META[positionDevName(group)] || DEFAULT_POSITION_META
+  return meta.positionMeta(positionDevName(group))
 }
 
 function positionLabel(group: FantasyLeagueScoringRules): string {
-  const meta = POSITION_META[positionDevName(group)]
-  if (meta) return t(`fantasy.rules.positions.${meta.labelKey}`)
-  return group.position?.name || '—'
+  return meta.positionLabel(positionDevName(group), group.position?.name)
 }
 
 function positionKey(group: FantasyLeagueScoringRules): string {
@@ -250,49 +204,15 @@ function rulesCountLabel(count: number): string {
 }
 
 function statIcon(rule: FantasyRule): string {
-  const devName = rule.type?.developer_name || ''
-  return STAT_ICONS[devName] || 'hi-solid-chart-bar'
+  return meta.statIcon(rule.type?.developer_name)
 }
 
 function statLabel(rule: FantasyRule): string {
-  const devName = rule.type?.developer_name
-  const key = devName ? `fantasy.rules.stats.${devName}` : ''
-  if (key && te(key)) return t(key)
-  return rule.type?.name || rule.type?.code || '—'
-}
-
-function parseCondition(condition: FantasyRule['condition']): Record<string, unknown> | null {
-  if (condition === null || condition === undefined) return null
-  if (typeof condition === 'string') {
-    if (!condition.trim()) return null
-    try {
-      const parsed = JSON.parse(condition)
-      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null
-    } catch {
-      return null
-    }
-  }
-  if (typeof condition === 'object' && !Array.isArray(condition)) {
-    return Object.keys(condition).length ? (condition as Record<string, unknown>) : null
-  }
-  return null
+  return meta.statLabel(rule.type?.developer_name, rule.type?.name || rule.type?.code)
 }
 
 function conditionText(rule: FantasyRule): string | null {
-  const obj = parseCondition(rule.condition)
-  if (!obj) return null
-
-  if (obj.range && typeof obj.range === 'object') {
-    const range = obj.range as Record<string, unknown>
-    return t('fantasy.rules.conditionRange', { min: range.min, max: range.max })
-  }
-  if (obj.every !== undefined) return t('fantasy.rules.conditionEvery', { value: obj.every })
-  if (obj.exact !== undefined) return t('fantasy.rules.conditionExact', { value: obj.exact })
-  if (obj.multiplier !== undefined) return t('fantasy.rules.conditionMultiplier', { value: obj.multiplier })
-  if (obj.min_rating !== undefined) return t('fantasy.rules.conditionMinRating', { value: obj.min_rating })
-  if (obj.min_minutes !== undefined) return t('fantasy.rules.conditionMinMinutes', { value: obj.min_minutes })
-  if (obj.minutes !== undefined) return t('fantasy.rules.conditionMinutes', { value: obj.minutes })
-  return t('fantasy.rules.conditionBadge')
+  return meta.conditionText(rule.condition)
 }
 
 function positives(group: FantasyLeagueScoringRules): FantasyRule[] {

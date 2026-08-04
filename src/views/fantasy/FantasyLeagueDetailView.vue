@@ -9,9 +9,14 @@
         @select="onTabSelect"
       />
 
-      <!-- Dynamic Content Area with Smooth Transitions -->
+      <!-- Contenido de la pestaña activa.
+           La entrada es una animación CSS sobre un contenedor con :key, no un
+           <Transition>: el modo out-in se quedaba a medias y dejaba pegada la
+           clase tab-content-enter-from (opacity: 0), que había que contrarrestar
+           a mano con un hook onEnter. Con :key el bloque se vuelve a montar en
+           cada cambio y la animación se dispara sola. -->
       <div class="relative">
-        <Transition name="tab-content" mode="out-in" @enter="onEnter" @leave="onLeave">
+        <div :key="activeTab" class="tab-panel">
           <!-- League Overview Content -->
           <div v-if="activeTab === 'overview'" key="overview">
             <FantasyLeagueDetail :uuid="uuid" />
@@ -70,34 +75,12 @@
             <FantasyTradeCenter :fantasy-league-uuid="uuid" />
           </div>
 
-          <!-- Management Content -->
+          <!-- Management Content — el editor pide sus propias reglas, que traen
+               además el valor por defecto y el estado de bloqueo. -->
           <div v-else-if="activeTab === 'management'" key="management">
-            <!-- Loading State -->
-            <div v-if="isLoadingLeague" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center">
-              <v-icon name="pr-spinner" class="w-5 h-5 text-gray-300 dark:text-gray-600 mx-auto" animation="spin" />
-              <p class="text-footnote text-gray-400 dark:text-gray-500 mt-3">{{ $t('fantasy.management.loadingRules') }}</p>
-            </div>
-
-            <!-- No Scoring Data -->
-            <div v-else-if="!scoringData" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 py-16 text-center px-6">
-              <div class="w-14 h-14 bg-amber-50 dark:bg-amber-900/20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                <v-icon name="hi-solid-exclamation" class="w-7 h-7 text-amber-400" />
-              </div>
-              <h3 class="text-callout font-semibold text-gray-900 dark:text-white mb-1">{{ $t('fantasy.management.noRulesTitle') }}</h3>
-              <p class="text-footnote text-gray-400 dark:text-gray-500 max-w-xs mx-auto">
-                {{ $t('fantasy.management.noRulesBody') }}
-              </p>
-            </div>
-
-            <!-- Management Component -->
-            <FantasyLeagueManagement 
-              v-else
-              :scoring-data="scoringData" 
-              :league-uuid="uuid"
-              @saved="handleLeagueSaved"
-            />
+            <FantasyScoringRulesEditor :league-uuid="uuid" />
           </div>
-        </Transition>
+        </div>
       </div>
     </div>
 
@@ -115,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import HomeMenu from '@/components/home/HomeMenu.vue'
 import TopTabsBar from '@/components/ui/TopTabsBar.vue'
@@ -124,7 +107,7 @@ import FantasyLeagueDetail from '@/components/fantasy/FantasyLeagueDetail.vue'
 import FantasyStandings from '@/components/fantasy/standings/FantasyStandings.vue'
 import FantasyPlayoffBracket from '@/components/fantasy/playoffs/FantasyPlayoffBracket.vue'
 import FantasyScoringRules from '@/components/fantasy/rules/FantasyScoringRules.vue'
-import FantasyLeagueManagement from '@/components/fantasy/FantasyLeagueManagement.vue'
+import FantasyScoringRulesEditor from '@/components/fantasy/rules/FantasyScoringRulesEditor.vue'
 import FootballPlayerStatisticMenu from '@/components/football/player/FootballPlayerStatisticMenu.vue'
 import MyFantasyTeamComponent from '@/components/user/fantasy/MyFantasyTeamComponent.vue'
 import FantasyLeagueMatchup from '@/components/fantasy/matchups/FantasyLeagueMatchup.vue'
@@ -210,23 +193,7 @@ const fetchLeagueData = async () => {
   }
 }
 
-const handleLeagueSaved = () => {
-  // Recargar datos de la liga después de guardar
-  fetchLeagueData()
-}
-
 // Store persists across routes — no clearing on unmount
-
-// Transition event handlers
-const onEnter = (el: Element) => {
-  nextTick(() => {
-    (el as HTMLElement).style.opacity = '1'
-  })
-}
-
-const onLeave = (el: Element) => {
-  (el as HTMLElement).style.opacity = '0'
-}
 
 // Cargar datos al montar
 onMounted(() => {
@@ -235,27 +202,24 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Tab content transitions */
-.tab-content-enter-active,
-.tab-content-leave-active {
-  transition: opacity 0.2s ease;
+/* Tab content: sólo entrada, sin salida animada (ver el comentario del bloque).
+   Sin fill-mode a propósito: con `both`, una pestaña en segundo plano deja la
+   animación congelada en su primer fotograma y el contenido se queda en
+   opacity 0. Sin fill, si la animación no corre el bloque simplemente se ve. */
+.tab-panel {
+  animation: tab-panel-in 0.2s ease;
 }
 
-.tab-content-enter-from,
-.tab-content-leave-to {
-  opacity: 0;
-}
-
-.tab-content-enter-to,
-.tab-content-leave-from {
-  opacity: 1;
+@keyframes tab-panel-in {
+  from {
+    opacity: 0;
+  }
 }
 
 /* Accessibility: Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .tab-content-enter-active,
-  .tab-content-leave-active {
-    transition: none !important;
+  .tab-panel {
+    animation: none;
   }
 }
 </style>
