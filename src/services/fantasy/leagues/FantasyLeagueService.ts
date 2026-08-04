@@ -1,5 +1,5 @@
 
-import type { AxiosRequestConfig } from "axios";
+import { AxiosError, type AxiosRequestConfig } from "axios";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { FantasyLeagueCreatePayload } from "@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload";
@@ -7,6 +7,7 @@ import { FantasyLeagueJoined } from "@/interfaces/fantasy/leagues/FantasyLeagueJ
 import { useUserStore } from "@/store";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { ScoreRulePayload } from "@/interfaces/fantasy/score/ScoreRulePayload";
+import { ScoringEditorResponse } from "@/interfaces/fantasy/score/ScoringEditorResponse";
 import { FantasyRoundResponse } from "@/interfaces/fantasy/rounds/FantasyRoundResponse";
 import { FantasyPlayerDraftResponse } from "@/interfaces/fantasy/draft/FantasyPlayerDraftResponse";
 import { FantasyPlayerDraftPayload } from "@/interfaces/fantasy/draft/FantasyPlayerDraftPayload";
@@ -62,12 +63,31 @@ export class FantasyLeagueService {
         throw new Error('Failed to join fantasy league');
     }
 
-    async updateScoreRules(payload: ScoreRulePayload, leagueUuid: string): Promise<ApiResponse<null>> {
-        const response = await this.api.put<ApiResponse<null>>(`fantasy/leagues/score/${leagueUuid}`, payload);
+    async getScoringEditor(leagueUuid: string): Promise<ScoringEditorResponse> {
+        const response = await this.api.get<ApiResponse<ScoringEditorResponse>>(`fantasy/leagues/score/${leagueUuid}`);
         if (response.data.code === 200) {
-            return response.data;
+            return response.data.data;
         }
-        throw new Error('Failed to update score rules');
+        throw new AxiosError('Failed to fetch scoring rules');
+    }
+
+    // Guardar y restaurar devuelven el editor completo, no sólo un ok: el guardado
+    // puede cambiar `is_custom` y `active_preset`, y volver a pedirlo sería un
+    // viaje extra para pintar lo que el servidor ya calculó.
+    async updateScoreRules(payload: ScoreRulePayload, leagueUuid: string): Promise<ScoringEditorResponse> {
+        const response = await this.api.put<ApiResponse<ScoringEditorResponse>>(`fantasy/leagues/score/${leagueUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to update score rules');
+    }
+
+    async resetScoreRules(leagueUuid: string): Promise<ScoringEditorResponse> {
+        const response = await this.api.delete<ApiResponse<ScoringEditorResponse>>(`fantasy/leagues/score/${leagueUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to reset score rules');
     }
 
     async getFantasyRoundsByLeagueUuid(leagueUuid: string): Promise<FantasyRoundResponse[]> {

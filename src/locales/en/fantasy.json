@@ -8,20 +8,28 @@
     "continue": {
       "title": "Keep playing",
       "loading": "Loading your games",
+      "status": "{count} game in progress | {count} games in progress",
+      "showAll": "Show {count} more",
+      "showLess": "Show less",
       "retry": "We couldn't load everything. Retry"
     },
     "empty": {
       "title": "You're not playing anything yet",
       "subtitle": "Create your first league, pool or Survivor, or join with the code a friend sent you."
     },
+    "modes": {
+      "title": "Game modes"
+    },
     "more": {
       "title": "Try another mode",
-      "untried": "Not tried yet"
+      "untried": "Not played"
+    },
+    "secondary": {
+      "title": "More"
     },
     "invite": {
-      "title": "Got an invite?",
-      "fantasy": "Fantasy league",
-      "pools": "Pool"
+      "fantasy": "Join a league with a code",
+      "pools": "Join a pool with a code"
     },
     "meta": {
       "participants": "{count} player | {count} players",
@@ -39,12 +47,14 @@
       "tag": "Exact score",
       "cta": "Play"
     },
-    "howTo": "New here? Learn how to play in the guides",
+    "guides": {
+      "title": "How to play",
+      "subtitle": "Fantasy, pools and Survivor guides"
+    },
     "leagueData": {
       "title": "Standings and results",
       "subtitle": "Table, fixtures and league statistics"
-    },
-    "loginRequired": "Please login to access Fantasy games"
+    }
   },
   "leagueCreate": {
     "title": "Create Fantasy League",
@@ -123,7 +133,8 @@
     "standings": "Standings",
     "playoffs": "Playoffs",
     "trades": "Trades",
-    "rules": "Rules"
+    "rules": "Rules",
+    "management": "Settings"
   },
   "standings": {
     "title": "Standings",
@@ -578,26 +589,6 @@
     "retry": "Retry",
     "pts": "pts"
   },
-  "management": {
-    "loadingRules": "Loading scoring rules...",
-    "loadingError": "Loading error",
-    "ruleTypes": "Rule types:",
-    "totalConfigs": "Total configurations:",
-    "ruleType": "Rule Type",
-    "editCondition": "Edit condition",
-    "editCondShort": "Edit cond.",
-    "notApplicable": "Not applicable",
-    "saving": "Saving...",
-    "saveRules": "Save Rules",
-    "enterValue": "Enter a value",
-    "enterText": "Enter text",
-    "errorLoadConditions": "Error loading condition rules",
-    "errorSave": "Error saving scoring rules",
-    "errorInit": "Error initializing component",
-    "updated": "Scoring rules updated successfully",
-    "noRulesTitle": "No scoring rules",
-    "noRulesBody": "This league doesn't have scoring rules configured yet."
-  },
   "rules": {
     "title": "Scoring rules",
     "subtitle": "How each player scores and loses points based on their position in this league",
@@ -650,6 +641,34 @@
       "SHOTS_ON_TARGET": "Shot on target",
       "SUCCESSFUL_DRIBBLES": "Successful dribble",
       "BLOCKED_SHOTS": "Blocked shot"
+    }
+  },
+  "scoringEditor": {
+    "title": "Scoring rules",
+    "subtitle": "Set what every play is worth in your league. You can change them until the draft starts.",
+    "presetsLabel": "League style",
+    "presetsHint": "Pick a style to fill every value at once, or tune them one by one below.",
+    "pendingChanges": "1 unsaved change | {count} unsaved changes",
+    "save": "Save",
+    "discard": "Discard",
+    "savedTitle": "Rules updated",
+    "savedMsg": "Points for matchdays already played are being recalculated.",
+    "resetDefaults": "Restore default values",
+    "resetTitle": "Defaults restored",
+    "resetMsg": "Your league is back on the default rules.",
+    "changedFromDefault": "Default: {value}",
+    "loadError": "We couldn't load the scoring rules.",
+    "pointsAria": "Points for {name}",
+    "increaseAria": "Increase points for {name}",
+    "decreaseAria": "Decrease points for {name}",
+    "toggleAria": "Turn {name} on or off",
+    "enableHint": "Turn on: it will count again",
+    "disableHint": "Turn off: it will stop counting",
+    "locked": {
+      "title": "Scoring rules are locked",
+      "draft_started": "The draft has started. Rules stay locked so nobody drafts under one set of rules and plays under another.",
+      "league_started": "The league has started, so rules stay locked until it ends.",
+      "generic": "This league no longer accepts scoring changes."
     }
   },
   "join": {

@@ -56,6 +56,17 @@ export function useFantasyLeagueTabs(getLeagueUuid: () => string) {
       )
     }
 
+    // Configuración de la liga: va al final porque no se consulta durante la
+    // jornada, se toca una vez antes de que arranque el draft.
+    if (leagueDetailStore.isAdmin) {
+      list.push({
+        key: 'management',
+        label: t('fantasy.detailTabs.management'),
+        icon: 'hi-solid-adjustments',
+        accent: 'purple',
+      })
+    }
+
     return list
   })
 
