@@ -859,5 +859,21 @@
     "attacker": "DEL",
     "flex": "FLEX",
     "bench": "BAN"
+  },
+  "rosterGrade": {
+    "title": "Calificación de plantilla",
+    "position": "{position}º de {total} en la liga",
+    "differenceSuffix": "frente a tus rivales",
+    "byLine": "Fuerza por línea",
+    "averageMark": "media",
+    "weakestLine": "Tu línea más floja es {line}.",
+    "bestPlayer": "Tu mejor titular",
+    "disclaimer": "La nota compara los puntos de tu once titular con la media de la liga, usando los puntos de la temporada de referencia: mide qué tan fuerte es tu plantilla hoy, no cómo va la temporada.",
+    "unscoredTitle": "Todavía no se puede calificar",
+    "unscoredBody": "Tu plantilla tiene {players} jugadores, pero la temporada de referencia aún no tiene puntos calculados. En cuanto los tenga, aquí aparece tu nota.",
+    "rankingTitle": "Clasificación de la liga",
+    "statStarters": "Tu once",
+    "statAverage": "Media liga",
+    "statBench": "Tu banca"
   }
 }

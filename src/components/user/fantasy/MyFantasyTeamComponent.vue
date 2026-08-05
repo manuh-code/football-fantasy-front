@@ -98,6 +98,10 @@
         :round-name="selectedRound?.round?.name ?? $t('fantasy.myTeam.matchupFallback')"
       />
 
+      <!-- Roster grade — sits right above the actions on purpose: it's what
+           tells you whether you need to go add players in the first place. -->
+      <RosterGradeCard ref="rosterGradeRef" :league-uuid="leagueUuid!" />
+
       <!-- Quick Actions — "Add players" is the primary CTA (filled emerald),
            while Trades is a visible "coming soon" affordance instead of a dead
            disabled button: tapping it explains it's on the way. -->
@@ -131,8 +135,8 @@
         :is-loading="isLoading"
         :fantasy-round-uuid="selectedRoundUuid ?? ''"
         @draft-by-position="handleDraftPlayerByPosition"
-        @player-removed="loadPlayers"
-        @lineup-updated="loadPlayers"
+        @player-removed="onRosterChanged"
+        @lineup-updated="onRosterChanged"
       />
     </div>
 
@@ -174,6 +178,7 @@ import RoundSelector from "@/components/fantasy/rounds/RoundSelector.vue";
 import FantasyTeamDisplay from "@/components/fantasy/lineup/FantasyTeamDisplay.vue";
 import FantasyTeamDisplaySkeleton from "@/components/fantasy/lineup/FantasyTeamDisplaySkeleton.vue";
 import MatchupByRoundAndUser from "@/components/fantasy/matchups/MatchupByRoundAndUser.vue";
+import RosterGradeCard from "@/components/fantasy/team/RosterGradeCard.vue";
 
 interface Props {
   fantasyLeagueUuid?: string;
@@ -210,6 +215,7 @@ const league = ref<FantasyLeaguesResponse | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 const highlightedPlayerUuid = ref<string | null>(null);
+const rosterGradeRef = ref<InstanceType<typeof RosterGradeCard> | null>(null);
 
 // Methods
 async function loadLeague() {
@@ -256,6 +262,15 @@ async function loadPlayers() {
   } finally {
     isLoading.value = false;
   }
+}
+
+/**
+ * Un cambio de alineación mueve la nota (solo el once titular puntúa), así que
+ * la boleta se recalcula junto con la plantilla en vez de quedarse vieja.
+ */
+async function onRosterChanged() {
+  await loadPlayers();
+  rosterGradeRef.value?.reload();
 }
 
 /**
