@@ -859,5 +859,21 @@
     "attacker": "FW",
     "flex": "FLEX",
     "bench": "BN"
+  },
+  "rosterGrade": {
+    "title": "Roster grade",
+    "position": "{position} of {total} in the league",
+    "differenceSuffix": "against your rivals",
+    "byLine": "Strength by line",
+    "averageMark": "average",
+    "weakestLine": "Your weakest line is {line}.",
+    "bestPlayer": "Your best starter",
+    "disclaimer": "The grade compares your starting eleven's points with the league average, using the reference season's points: it measures how strong your roster is today, not how the season is going.",
+    "unscoredTitle": "Can't be graded yet",
+    "unscoredBody": "Your roster has {players} players, but the reference season has no points calculated yet. As soon as it does, your grade shows up here.",
+    "rankingTitle": "League standings",
+    "statStarters": "Your eleven",
+    "statAverage": "League avg.",
+    "statBench": "Your bench"
   }
 }

@@ -25,6 +25,7 @@ import { FantasyTradeResponse } from "@/interfaces/fantasy/trade/FantasyTradeRes
 import { PlayerFantasyScoreDetailResponse } from "@/interfaces/fantasy/score/PlayerFantasyScoreDetailResponse";
 import { DraftResults } from "@/interfaces/fantasy/draft/DraftResults";
 import { FantasyPlayoffBracketResponse } from "@/interfaces/fantasy/playoffs/FantasyPlayoffBracketResponse";
+import { RosterGrade } from "@/interfaces/fantasy/team/RosterGrade";
 
 
 export class FantasyLeagueService {
@@ -288,6 +289,24 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch draft results');
+    }
+
+    /**
+     * Calificación de la plantilla actual. Misma fórmula que la boleta del
+     * draft, pero sobre el lineup vigente, así que cambia con los traspasos.
+     *
+     * Devuelve 404 mientras la liga no tenga plantilla que calificar (antes del
+     * draft); quien la consuma debe tratarlo como "todavía no", no como error.
+     */
+    async getRosterGrade(fantasyLeagueUuid: string): Promise<RosterGrade> {
+        const response = await this.api.get<ApiResponse<RosterGrade>>(
+            `fantasy/leagues/team/grade/${fantasyLeagueUuid}`,
+            { _silent: true } as AxiosRequestConfig & { _silent?: boolean }
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch roster grade');
     }
 
     async lineupPlayerRemove(payload: LineupPlayerRemovePayload): Promise<ApiResponse<null>> {
