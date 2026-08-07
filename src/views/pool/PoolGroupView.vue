@@ -1,13 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-3xl">
-      <!-- Secondary tabs: My Pools / Info / Predictions / Standings -->
-      <TabsBar
-        :items="items"
-        :active-key="activeTab"
-        :aria-label="$t('pool.group.nav')"
-        @select="onSelect"
-      />
+      <!-- Navegación de la quiniela: salir ← / pestañas de sus paneles -->
+      <PoolNav :active-key="activeTab" :pool-name="poolName" @select="onSelect" />
 
       <!-- Pool Group / Rules Component -->
       <div class="animate-page-enter">
@@ -17,6 +12,7 @@
           :pool-uuid="poolUuid"
           :active-tab="activeTab"
           @select-tab="onSelect"
+          @loaded="poolName = $event.name"
         />
       </div>
     </div>
@@ -39,11 +35,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import HomeMenu from "@/components/home/HomeMenu.vue";
-import TabsBar from "@/components/ui/TabsBar.vue";
-import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
+import PoolNav from "@/components/pool/PoolNav.vue";
 import PoolGroupComponent from "@/components/pool/PoolGroupComponent.vue";
 import PoolRulesComponent from "@/components/pool/PoolRulesComponent.vue";
 import OnboardingTour from "@/components/onboarding/OnboardingTour.vue";
@@ -76,26 +71,15 @@ onMounted(async () => {
 document.title = t("pool.group.docTitle");
 
 const route = useRoute();
-const router = useRouter();
 
 const poolUuid = computed(() => route.params.uuid as string);
 const activeTab = ref("info");
 
-// "myPools" is a neutral shortcut (no accent → never highlighted) back to the
-// pools list; the rest switch the active tab.
-const items = computed<BottomNavItem[]>(() => [
-  { key: "myPools", label: t("pool.group.tabs.myPools"), icon: "hi-solid-collection" },
-  { key: "info", label: t("pool.group.tabs.info"), icon: "hi-solid-information-circle", accent: "emerald" },
-  { key: "predictions", label: t("pool.group.tabs.predictions"), icon: "hi-solid-clipboard-list", accent: "blue" },
-  { key: "standings", label: t("pool.group.tabs.standings"), icon: "bi-trophy-fill", accent: "amber" },
-  { key: "rules", label: t("pool.group.tabs.rules"), icon: "hi-solid-bookmark", accent: "purple" },
-]);
+// El nombre lo trae el componente que ya carga la quiniela; la cabecera de la
+// navegación solo lo muestra, así que no vuelve a pedirlo.
+const poolName = ref("");
 
 const onSelect = (key: string) => {
-  if (key === "myPools") {
-    router.push({ name: "pools" });
-    return;
-  }
   activeTab.value = key;
 };
 </script>

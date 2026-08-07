@@ -493,5 +493,13 @@
   },
   "matchcenter": {
     "vs": "vs"
+  },
+  "leaguePicker": {
+    "title": "Change league",
+    "subtitle": "Pick the football league",
+    "searchPlaceholder": "Search league",
+    "empty": "No leagues available",
+    "noMatches": "No league matches “{query}”",
+    "error": "Couldn't load the leagues."
   }
 }

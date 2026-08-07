@@ -37,11 +37,13 @@
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-start justify-between gap-2">
-              <h1
+              <!-- h2: el h1 de la pantalla es el nombre que lleva la cabecera
+                   de navegación, justo encima de esta tarjeta. -->
+              <h2
                 class="text-xl font-bold text-gray-900 dark:text-white leading-tight"
               >
                 {{ pool.name }}
-              </h1>
+              </h2>
               <span
                 v-if="stageBadgeInfo"
                 :class="[
@@ -328,7 +330,11 @@ const props = withDefaults(
   { activeTab: "info" },
 );
 
-const emit = defineEmits<{ "select-tab": [key: string] }>();
+const emit = defineEmits<{
+  "select-tab": [key: string];
+  /** La quiniela cargada, para que la cabecera de navegación no la vuelva a pedir. */
+  loaded: [pool: PoolResponse];
+}>();
 
 const { success, error } = useToast();
 const { t, locale } = useI18n();
@@ -523,6 +529,7 @@ const loadPool = async () => {
 
   try {
     pool.value = await poolService.getPoolByUuid(props.poolUuid);
+    emit("loaded", pool.value);
   } catch (e) {
     console.error("Error loading pool group:", e);
     errorMessage.value = t("pool.group.loadError");
