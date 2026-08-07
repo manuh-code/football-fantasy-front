@@ -1,5 +1,6 @@
 import { FootballTeamResponse } from "./FootballTeamResponse";
 import { FootballPlayerResponse } from "../player/FootballPlayerResponse";
+import { RankedPlayer } from "../player/FootballPlayerStatisticByStageResponse";
 import { TypeResponse } from "../type/TypeResponse";
 import { FootballFixtureResponse } from "../fixture/FootballFixtureResponse";
 import { SidelinedPlayer } from "../player/SidelinedPlayerResponse";
@@ -14,14 +15,17 @@ export interface TeamPlayerProfile {
 }
 
 export interface BestPlayerStatistic {
-    type: TypeResponse;
-    player: FootballPlayerResponse;
+    player: RankedPlayer;
     value: string;
 }
 
 export interface BestPlayersGroup {
+    key: string;
+    /** Translated label; the ranked entries no longer repeat it. */
     type: string;
     stat_group: string;
+    stat_group_key: string;
+    total: number;
     statistics: BestPlayerStatistic[];
 }
 

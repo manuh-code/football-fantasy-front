@@ -2,7 +2,7 @@ import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballPlayerFantasyPointsPayload } from "@/interfaces/football/player/FootballPlayerFantasyPointsPayload";
 import { FootballPlayerFantasyPointsResponse } from "@/interfaces/football/player/FootballPlayerFantasyPointsResponse";
-import { FootballPlayerStatisticByStageResponse } from "@/interfaces/football/player/FootballPlayerStatisticByStageResponse";
+import { FootballPlayerStatisticByStageResponse, PlayerStatisticOption } from "@/interfaces/football/player/FootballPlayerStatisticByStageResponse";
 import { FootballPlayerStatisticPayload } from "@/interfaces/football/player/FootballPlayerStatisticPayload";
 import { FootballPlayerStatisticResponse } from "@/interfaces/football/player/FootballPlayerStatisticResponse";
 import { FootballPlayerTopScorePayload } from "@/interfaces/football/player/FootballPlayerTopScorePayload";
@@ -72,13 +72,39 @@ export class FootballPlayerService {
         throw new AxiosError('Failed to fetch fantasy player score versus');
     }
 
-    async getPlayerStatisticByStage(stageUuid: string, select: string = 'GOALS,ASSISTS,RATING,ACCURATE_PASSES,PENALTIES_SCORED,YELLOWCARDS,SAVES,INTERCEPTIONS,TACKLES_WON'): Promise<ApiResponse<FootballPlayerStatisticByStageResponse[]>> {
-        const response = await this.api.get<ApiResponse<FootballPlayerStatisticByStageResponse[]>>(`/football/players/statistics/stage/${stageUuid}?select=${select}`);
+    /**
+     * Ranked players for each requested statistic.
+     *
+     * `limit` caps how many players come back per statistic. The panel asks for
+     * a podium; only the "see all" drawer needs the full ranking, which for a
+     * busy stat runs to hundreds of rows.
+     */
+    async getPlayerStatisticByStage(
+        stageUuid: string,
+        select: string,
+        limit?: number,
+    ): Promise<ApiResponse<FootballPlayerStatisticByStageResponse[]>> {
+        const response = await this.api.get<ApiResponse<FootballPlayerStatisticByStageResponse[]>>(
+            `/football/players/statistics/stage/${stageUuid}`,
+            { params: { select, ...(limit ? { limit } : {}) } },
+        );
         if (response.data.code === 200) {
             return response.data;
         }
 
         throw new AxiosError('Failed to fetch football player statistics by stage');
+    }
+
+    /** The statistics this stage actually has data for. */
+    async getAvailablePlayerStatistics(stageUuid: string): Promise<ApiResponse<PlayerStatisticOption[]>> {
+        const response = await this.api.get<ApiResponse<PlayerStatisticOption[]>>(
+            `/football/players/statistics/stage/${stageUuid}/available`,
+        );
+        if (response.data.code === 200) {
+            return response.data;
+        }
+
+        throw new AxiosError('Failed to fetch available player statistics');
     }
 
     async getTeamOfTheWeekByRound(roundUuid: string): Promise<ApiResponse<TeamOfTheWeekByRoundResponse[]>> {

@@ -176,7 +176,7 @@ const playerGroups = computed<{ label: string; players: TeamPlayerProfile[] }[]>
 
 // ── Best players: title + colored accent per leaderboard ──
 const bestPlayerTitle = (group: BestPlayersGroup): string =>
-  group.statistics[0]?.type?.name ?? group.type ?? t("football.team.topFallback");
+  group.type ?? t("football.team.topFallback");
 
 // ── Latest fixtures helpers ──
 const getParticipant = (
@@ -732,8 +732,8 @@ const onDragEnd = (e: PointerEvent) => {
                 <!-- ── Best Players ── -->
                 <div key="best_players" v-else-if="activeTab === 'best_players'" class="px-4 py-3 space-y-4">
                   <div
-                    v-for="(group, gIdx) in profile.best_players"
-                    :key="group.type + '-' + gIdx"
+                    v-for="group in profile.best_players"
+                    :key="group.key"
                   >
                     <div class="flex items-center justify-between mb-1.5 px-1">
                       <p class="text-xs font-bold text-gray-800 dark:text-gray-200">

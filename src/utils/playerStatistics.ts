@@ -8,7 +8,3 @@ export const formatPlayerStatValue = (value: string | null | undefined): string 
   if (!Number.isFinite(n)) return value;
   return n % 1 === 0 ? String(n) : n.toFixed(2);
 };
-
-/** Humanize a stat_group / developer_name into a Title Case label. */
-export const formatStatLabel = (raw: string): string =>
-  raw.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());

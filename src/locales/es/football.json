@@ -74,6 +74,27 @@
     "noPlayerStats": "Aún no hay estadísticas de jugadores",
     "noTeamStats": "Aún no hay estadísticas de equipos",
     "viewAll": "Ver todos",
+    "loadError": "No pudimos cargar las estadísticas.",
+    "viewAllCount": "Ver los {count}",
+    "rankedPlayers": "{count} jugadores en el ranking",
+    "partialRanking": "Mostrando solo el podio: no pudimos cargar el resto.",
+    "presets": {
+      "aria": "Filtrar estadísticas por categoría",
+      "featured": "Destacadas",
+      "offensive": "Ofensivas",
+      "overall": "Generales",
+      "defensive": "Defensivas",
+      "custom": "A tu medida"
+    },
+    "filter": {
+      "open": "Elegir estadísticas",
+      "title": "Elegir estadísticas",
+      "subtitle": "{count} de {max} seleccionadas",
+      "searchLabel": "Buscar estadística",
+      "searchPlaceholder": "Buscar: goles, atajadas…",
+      "noMatches": "Ninguna estadística coincide con «{term}».",
+      "apply": "Ver {count} estadísticas"
+    },
     "leader": "Líder",
     "textValues": {
       "firstHalf": "1er tiempo",
