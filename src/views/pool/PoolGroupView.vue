@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-3xl">
       <!-- Secondary tabs: My Pools / Info / Predictions / Standings -->
-      <TopTabsBar
+      <TabsBar
         :items="items"
         :active-key="activeTab"
         :aria-label="$t('pool.group.nav')"
@@ -11,7 +11,7 @@
 
       <!-- Pool Group / Rules Component -->
       <div class="animate-page-enter">
-        <PoolRulesComponent v-if="activeTab === 'rules'" />
+        <PoolRulesComponent v-if="activeTab === 'rules'" :pool-uuid="poolUuid" />
         <PoolGroupComponent
           v-else
           :pool-uuid="poolUuid"
@@ -42,7 +42,7 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import HomeMenu from "@/components/home/HomeMenu.vue";
-import TopTabsBar from "@/components/ui/TopTabsBar.vue";
+import TabsBar from "@/components/ui/TabsBar.vue";
 import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import PoolGroupComponent from "@/components/pool/PoolGroupComponent.vue";
 import PoolRulesComponent from "@/components/pool/PoolRulesComponent.vue";

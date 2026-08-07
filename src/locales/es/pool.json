@@ -29,7 +29,12 @@
     "current": "Actual",
     "stageResolveError": "No se pudo determinar la etapa. Inténtalo de nuevo.",
     "created": "¡Quiniela creada!",
-    "createdBody": "\"{name}\" ya está lista."
+    "createdBody": "\"{name}\" ya está lista.",
+    "participantsLabel": "Participantes",
+    "participantsValue": "{count} participante | {count} participantes",
+    "participantsHint": "Podrás cambiarlo hasta que arranque el primer partido",
+    "participantsDecreaseAria": "Reducir el cupo de participantes",
+    "participantsIncreaseAria": "Aumentar el cupo de participantes"
   },
   "join": {
     "title": "Unirse a quiniela",
@@ -73,12 +78,24 @@
       "finished": "Finalizada"
     },
     "scoring": {
-      "exactScoreLabel": "Resultado exacto",
-      "exactScoreHint": "Acierta el marcador final",
-      "correctWinnerLabel": "Ganador correcto",
-      "correctWinnerHint": "El equipo correcto que gana",
-      "correctDrawLabel": "Empate correcto",
-      "correctDrawHint": "Acertaste el empate"
+      "codes": {
+        "exact_score": {
+          "label": "Resultado exacto",
+          "hint": "Acierta el marcador final"
+        },
+        "home_win": {
+          "label": "Gana el local",
+          "hint": "Acertaste que ganaba el equipo de casa"
+        },
+        "away_win": {
+          "label": "Gana el visitante",
+          "hint": "Acertaste que ganaba el visitante"
+        },
+        "draw": {
+          "label": "Empate",
+          "hint": "Acertaste el empate"
+        }
+      }
     },
     "rules": {
       "title": "Reglas del juego",
@@ -157,5 +174,34 @@
     "noFixturesBody": "No hay partidos en esta ronda.",
     "locked": "Se revela al iniciar",
     "noPrediction": "Sin predicción"
+  },
+  "settings": {
+    "subtitle": "Ajusta cuánto paga cada acierto. Sólo tú, y sólo hasta que arranque el primer partido.",
+    "readOnlyHint": "Así puntúa esta quiniela. Sólo su administrador puede cambiarlo.",
+    "customBadge": "Personalizada",
+    "loadError": "No se pudieron cargar las reglas de esta quiniela. Inténtalo de nuevo.",
+    "changedFromDefault": "De fábrica: {value}",
+    "locked": {
+      "title": "Reglas congeladas",
+      "pool_started": "La quiniela ya arrancó: quien pronosticó lo hizo con estas reglas, así que ni los puntos ni el cupo se pueden cambiar.",
+      "generic": "Estas reglas ya no se pueden cambiar."
+    },
+    "capacityTitle": "Cupo",
+    "capacityValue": "{count} lugar | {count} lugares",
+    "capacityOccupied": "Ya dentro: {count}",
+    "capacityFloor": "No puedes bajar de {min}: bajar el cupo no saca a nadie.",
+    "capacityDecreaseAria": "Reducir el cupo de la quiniela",
+    "capacityIncreaseAria": "Aumentar el cupo de la quiniela",
+    "pointsAria": "Puntos por {name}",
+    "decreaseAria": "Restar un punto a {name}",
+    "increaseAria": "Sumar un punto a {name}",
+    "pendingChanges": "{count} cambio sin guardar | {count} cambios sin guardar",
+    "discard": "Descartar",
+    "save": "Guardar",
+    "savedTitle": "Ajustes guardados",
+    "savedMsg": "Tu quiniela ya juega con estas reglas.",
+    "resetDefaults": "Volver a la puntuación de siempre",
+    "resetTitle": "Puntuación restablecida",
+    "resetMsg": "La quiniela vuelve a pagar como el resto."
   }
 }

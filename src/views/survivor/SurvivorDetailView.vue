@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-3xl">
       <!-- Secondary tabs: Survivors / My Picks / Standings (not available yet) -->
-      <TopTabsBar
+      <TabsBar
         :items="items"
         :active-key="activeTab"
         :aria-label="$t('survivor.nav.aria')"
@@ -30,7 +30,7 @@ import SurvivorDetailComponent from "@/components/survivor/SurvivorDetailCompone
 import SurvivorMyPicksComponent from "@/components/survivor/SurvivorMyPicksComponent.vue";
 import SurvivorRulesComponent from "@/components/survivor/SurvivorRulesComponent.vue";
 import HomeMenu from "@/components/home/HomeMenu.vue";
-import TopTabsBar from "@/components/ui/TopTabsBar.vue";
+import TabsBar from "@/components/ui/TabsBar.vue";
 import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 
 const { t } = useI18n();

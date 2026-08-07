@@ -2,25 +2,13 @@
 // Shared floating bottom navigation (FotMob / Apple Sports style).
 // Minimal glass pill that hugs its content. Reused across the app.
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { ACCENT_CHIP, ACCENT_TEXT, type NavAccent, type NavItem } from "@/components/ui/navAccents";
 
-export type BottomNavAccent =
-  | "blue"
-  | "emerald"
-  | "orange"
-  | "red"
-  | "purple"
-  | "sky"
-  | "amber";
-
-export interface BottomNavItem {
-  key: string;
-  label: string;
-  icon: string;
-  /** Accent color applied when this item is the active one. Omit for a neutral
-   *  item that never highlights (e.g. a "navigate away" shortcut). */
-  accent?: BottomNavAccent;
-  disabled?: boolean;
-}
+// The palette and the item shape are shared with the section tabs (see
+// navAccents.ts). Re-exported under the old names so the screens that import
+// these types keep working without a rename.
+export type BottomNavAccent = NavAccent;
+export type BottomNavItem = NavItem;
 
 // --- Single-pill guard (module-level, shared by every instance) --------------
 // Several screens mount their own <BottomNavBar> (HomeMenu, MenuDraft, ...)
@@ -80,28 +68,6 @@ const isTopMost = computed(
 );
 const showBar = computed(() => props.visible && isTopMost.value);
 
-// Static maps so Tailwind keeps these classes during purge.
-const ACCENT_TEXT: Record<BottomNavAccent, string> = {
-  blue: "text-blue-600 dark:text-blue-400",
-  emerald: "text-emerald-600 dark:text-emerald-400",
-  orange: "text-orange-600 dark:text-orange-400",
-  red: "text-red-600 dark:text-red-400",
-  purple: "text-purple-600 dark:text-purple-400",
-  sky: "text-sky-600 dark:text-sky-400",
-  amber: "text-amber-600 dark:text-amber-400",
-};
-// Active-item chip: a stronger tint plus a crisp inset ring so the selected
-// destination reads as a raised, clearly-selected key — not just a ghost tint.
-const ACCENT_BG: Record<BottomNavAccent, string> = {
-  blue: "bg-blue-500/15 ring-1 ring-inset ring-blue-500/30 dark:bg-blue-400/15 dark:ring-blue-400/30",
-  emerald: "bg-emerald-500/15 ring-1 ring-inset ring-emerald-500/30 dark:bg-emerald-400/15 dark:ring-emerald-400/30",
-  orange: "bg-orange-500/15 ring-1 ring-inset ring-orange-500/30 dark:bg-orange-400/15 dark:ring-orange-400/30",
-  red: "bg-red-500/15 ring-1 ring-inset ring-red-500/30 dark:bg-red-400/15 dark:ring-red-400/30",
-  purple: "bg-purple-500/15 ring-1 ring-inset ring-purple-500/30 dark:bg-purple-400/15 dark:ring-purple-400/30",
-  sky: "bg-sky-500/15 ring-1 ring-inset ring-sky-500/30 dark:bg-sky-400/15 dark:ring-sky-400/30",
-  amber: "bg-amber-500/15 ring-1 ring-inset ring-amber-500/30 dark:bg-amber-400/15 dark:ring-amber-400/30",
-};
-
 const isActive = (item: BottomNavItem): boolean =>
   !item.disabled && !!item.accent && props.activeKey === item.key;
 
@@ -113,7 +79,7 @@ const itemClasses = (item: BottomNavItem): string => {
   return "text-gray-500 dark:text-gray-400 active:text-gray-700 dark:active:text-gray-200";
 };
 
-// Item metrics are TopTabsBar's stacked tier verbatim (18px glyph over a 2xs
+// Item metrics are TabsBar's stacked tier verbatim (18px glyph over a 2xs
 // label, gap-0.5, py-1.5), so the bar down here and the section tabs up there
 // read as the same control rather than two sizes of the same idea. Only the
 // horizontal breathing room adapts: a screen with 5-6 destinations tightens its
@@ -129,7 +95,7 @@ const itemSizeClass = computed(() =>
 
 const activeItem = computed(() => props.items.find((item) => isActive(item)) ?? null);
 const indicatorColorClass = computed(() =>
-  activeItem.value?.accent ? ACCENT_BG[activeItem.value.accent] : "",
+  activeItem.value?.accent ? ACCENT_CHIP[activeItem.value.accent] : "",
 );
 
 const onClick = (item: BottomNavItem): void => {
@@ -389,7 +355,7 @@ const onBarPointerCancel = () => {
   /* A touch of overshoot on the move itself (a real "settle", not just an
      ease-out) is the improved slide; width/height/color stay non-bouncy so
      they don't stretch oddly when jumping between differently sized tabs.
-     Same curves and durations as TopTabsBar/TabsMenu: now that the chip is the
+     Same curves and durations as TabsBar: now that the chip is the
      same size up there and down here, a different settle would be the one thing
      still giving away that they are two components. */
   transition:

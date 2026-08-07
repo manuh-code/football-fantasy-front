@@ -30,7 +30,12 @@
     "stageResolveError": "Couldn't determine the stage. Please try again.",
     "created": "Pool created!",
     "createdBody": "\"{name}\" is ready to go.",
-    "createError": "Failed to create pool. Please try again later."
+    "createError": "Failed to create pool. Please try again later.",
+    "participantsLabel": "Participants",
+    "participantsValue": "{count} participant | {count} participants",
+    "participantsHint": "You can change this until the first match kicks off",
+    "participantsDecreaseAria": "Decrease participant capacity",
+    "participantsIncreaseAria": "Increase participant capacity"
   },
   "join": {
     "joined": "You joined!",
@@ -74,12 +79,24 @@
       "finished": "Finished"
     },
     "scoring": {
-      "exactScoreLabel": "Exact score",
-      "exactScoreHint": "Nail the final result",
-      "correctWinnerLabel": "Correct winner",
-      "correctWinnerHint": "Right team to win",
-      "correctDrawLabel": "Correct draw",
-      "correctDrawHint": "Called the tie"
+      "codes": {
+        "exact_score": {
+          "label": "Exact score",
+          "hint": "Nail the final result"
+        },
+        "home_win": {
+          "label": "Home win",
+          "hint": "You called the home team to win"
+        },
+        "away_win": {
+          "label": "Away win",
+          "hint": "You called the away team to win"
+        },
+        "draw": {
+          "label": "Draw",
+          "hint": "You called the tie"
+        }
+      }
     },
     "rules": {
       "title": "Game rules",
@@ -158,5 +175,34 @@
     "noFixturesBody": "There are no matches in this round.",
     "locked": "Revealed at kickoff",
     "noPrediction": "No prediction"
+  },
+  "settings": {
+    "subtitle": "Set what each correct call pays. Only you, and only until the first match kicks off.",
+    "readOnlyHint": "This is how the pool scores. Only its admin can change it.",
+    "customBadge": "Custom",
+    "loadError": "Failed to load this pool's rules. Please try again.",
+    "changedFromDefault": "Default: {value}",
+    "locked": {
+      "title": "Rules locked",
+      "pool_started": "The pool has already started: everyone predicted under these rules, so neither the points nor the capacity can change.",
+      "generic": "These rules can no longer be changed."
+    },
+    "capacityTitle": "Capacity",
+    "capacityValue": "{count} spot | {count} spots",
+    "capacityOccupied": "Already in: {count}",
+    "capacityFloor": "You can't go below {min}: lowering capacity doesn't remove anyone.",
+    "capacityDecreaseAria": "Decrease pool capacity",
+    "capacityIncreaseAria": "Increase pool capacity",
+    "pointsAria": "Points for {name}",
+    "decreaseAria": "Decrease {name} by one point",
+    "increaseAria": "Increase {name} by one point",
+    "pendingChanges": "{count} unsaved change | {count} unsaved changes",
+    "discard": "Discard",
+    "save": "Save",
+    "savedTitle": "Settings saved",
+    "savedMsg": "Your pool now plays by these rules.",
+    "resetDefaults": "Back to the standard scoring",
+    "resetTitle": "Scoring reset",
+    "resetMsg": "The pool pays like every other one again."
   }
 }

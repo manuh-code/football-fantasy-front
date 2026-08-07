@@ -8,6 +8,8 @@ import { PoolPayload } from "@/interfaces/pool/PoolPayload";
 import { PoolPredictionResponse } from "@/interfaces/pool/PoolPredictionResponse";
 import { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import { PoolSavePredictionPayload } from "@/interfaces/pool/PoolSavePredictionPayload";
+import { PoolSettingsPayload } from "@/interfaces/pool/PoolSettingsPayload";
+import { PoolSettingsResponse } from "@/interfaces/pool/PoolSettingsResponse";
 import { PoolStandingResponse } from "@/interfaces/pool/PoolStandingResponse";
 
 export class PoolService {
@@ -48,6 +50,39 @@ export class PoolService {
         }
 
         throw new Error('Failed to create pool');
+    }
+
+    /**
+     * Cupo y puntos por acierto de la quiniela. Lo consume la pestaña de reglas
+     * para todos los participantes; `is_editable` en la respuesta dice si quien
+     * pregunta puede además cambiarlos.
+     */
+    async getPoolSettings(poolGroupUuid: string): Promise<PoolSettingsResponse> {
+        const response = await this.api.get<ApiResponse<PoolSettingsResponse>>(`/pool/settings/${poolGroupUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to fetch pool settings');
+    }
+
+    async updatePoolSettings(poolGroupUuid: string, payload: PoolSettingsPayload): Promise<PoolSettingsResponse> {
+        const response = await this.api.put<ApiResponse<PoolSettingsResponse>>(`/pool/settings/${poolGroupUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to update pool settings');
+    }
+
+    /** Devuelve la puntuación al set compartido. El cupo no se toca. */
+    async resetPoolSettings(poolGroupUuid: string): Promise<PoolSettingsResponse> {
+        const response = await this.api.delete<ApiResponse<PoolSettingsResponse>>(`/pool/settings/${poolGroupUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+
+        throw new Error('Failed to reset pool settings');
     }
 
     async joinPool(payload: PoolJoinPayload): Promise<PoolResponse> {

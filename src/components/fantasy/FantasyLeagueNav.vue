@@ -35,7 +35,7 @@
       <div v-else class="h-4 w-40 rounded bg-gray-200 dark:bg-gray-800 animate-pulse" />
     </div>
 
-    <TopTabsBar
+    <TabsBar
       :items="primaryTabs"
       :active-key="activeKey"
       layout="stacked"
@@ -66,7 +66,7 @@
           </button>
         </div>
       </template>
-    </TopTabsBar>
+    </TabsBar>
 
     <BottomSheet
       :is-visible="isMoreOpen"
@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TopTabsBar from '@/components/ui/TopTabsBar.vue'
+import TabsBar from '@/components/ui/TabsBar.vue'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import { useFantasyLeagueTabs } from '@/composables/useFantasyLeagueTabs'
 
