@@ -96,16 +96,18 @@
         <span v-if="participantsError" class="text-xs text-red-600 dark:text-red-400">{{ participantsError }}</span>
       </div>
 
-      <!-- League — pick which league this pool belongs to -->
+      <!-- League — pick which league this pool belongs to. The list lives in its
+           own sheet so it never pushes the rest of the form off-screen. -->
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('pool.create.league') }}</label>
 
-        <!-- Current selection — tap to expand the picker -->
         <button
           type="button"
           :disabled="isLoading"
-          @click="showLeaguePicker = !showLeaguePicker"
-          class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3.5 text-left transition-colors active:bg-gray-100 dark:active:bg-gray-800 disabled:opacity-60"
+          aria-haspopup="dialog"
+          :aria-expanded="isLeaguePickerOpen"
+          @click="isLeaguePickerOpen = true"
+          class="flex items-center gap-3 min-h-[44px] bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3.5 text-left transition-colors active:bg-gray-100 dark:active:bg-gray-800 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
         >
           <img
             v-if="selectedLeague"
@@ -123,55 +125,8 @@
             </p>
             <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ $t('pool.create.leagueChange') }}</p>
           </div>
-          <v-icon
-            :name="showLeaguePicker ? 'hi-solid-chevron-up' : 'hi-solid-chevron-down'"
-            class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0"
-          />
+          <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
         </button>
-
-        <!-- Inline league picker -->
-        <div
-          v-if="showLeaguePicker"
-          class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden max-h-56 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700/60"
-        >
-          <!-- Loading -->
-          <div v-if="loadingLeagues" class="p-3 space-y-2.5">
-            <div v-for="n in 3" :key="`lg-sk-${n}`" class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse shrink-0" />
-              <div class="h-3 w-28 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
-            </div>
-          </div>
-
-          <!-- Empty -->
-          <p v-else-if="leagues.length === 0" class="px-4 py-3 text-xs text-gray-400 dark:text-gray-500">
-            {{ $t('pool.create.leagueEmpty') }}
-          </p>
-
-          <!-- Options -->
-          <template v-else>
-            <button
-              v-for="option in leagues"
-              :key="option.uuid"
-              type="button"
-              @click="chooseLeague(option)"
-              class="w-full flex items-center gap-3 px-3.5 py-2.5 text-left transition-colors active:bg-gray-100/70 dark:active:bg-gray-700/40"
-              :class="option.uuid === selectedLeague?.uuid ? 'bg-emerald-50/60 dark:bg-emerald-900/10' : ''"
-            >
-              <img
-                :src="option.image_path || '/img/default-avatar.svg'"
-                :alt="option.name"
-                class="w-8 h-8 object-contain shrink-0"
-                @error="onLeagueLogoError"
-              />
-              <span class="flex-1 min-w-0 text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{{ option.name }}</span>
-              <v-icon
-                v-if="option.uuid === selectedLeague?.uuid"
-                name="hi-solid-check"
-                class="w-4 h-4 text-emerald-500 shrink-0"
-              />
-            </button>
-          </template>
-        </div>
       </div>
 
       <!-- Stage — auto-resolved for the current league (read-only) -->
@@ -239,14 +194,22 @@
       </div>
     </template>
   </BottomSheet>
+
+  <!-- Cambio de liga, apilado sobre este formulario. -->
+  <LeaguePickerSheet
+    :is-visible="isLeaguePickerOpen"
+    :selected-uuid="selectedLeague?.uuid"
+    @close="isLeaguePickerOpen = false"
+    @select="chooseLeague"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import BottomSheet from "@/components/ui/BottomSheet.vue";
+import LeaguePickerSheet from "@/components/football/leagues/LeaguePickerSheet.vue";
 import { FormInput } from "@/components/ui";
 import { poolService } from "@/services/pool/poolService";
-import catalogService from "@/services/catalog/CatalogService";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import { useValidationStore } from "@/store/validation/useValidationStore";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
@@ -284,30 +247,14 @@ const loadingStage = ref(false);
 // another one here without touching the global league selection — the pool is
 // simply created for whichever league is chosen. Changing it re-resolves the stage.
 const selectedLeague = ref<FootballLeagueResponse | null>(null);
-const leagues = ref<FootballLeagueResponse[]>([]);
-const loadingLeagues = ref(false);
-const showLeaguePicker = ref(false);
+const isLeaguePickerOpen = ref(false);
 
 const onLeagueLogoError = (e: Event) => {
   (e.target as HTMLImageElement).src = "/img/default-avatar.svg";
 };
 
-// Lazily load the available leagues the first time the picker is needed.
-const loadLeagues = async () => {
-  if (leagues.value.length > 0) return;
-  loadingLeagues.value = true;
-  try {
-    leagues.value = await catalogService.getFootballLeagues();
-  } catch (e) {
-    console.error("Error loading leagues:", e);
-  } finally {
-    loadingLeagues.value = false;
-  }
-};
-
-// Commit a league choice: collapse the picker and re-resolve its stage.
+// Commit a league choice coming back from the picker sheet: re-resolve its stage.
 const chooseLeague = (league: FootballLeagueResponse) => {
-  showLeaguePicker.value = false;
   if (selectedLeague.value?.uuid === league.uuid) return;
   selectedLeague.value = league;
   loadStage();
@@ -367,10 +314,9 @@ watch(
       name.value = "";
       description.value = "";
       maxParticipants.value = PARTICIPANTS_DEFAULT;
-      showLeaguePicker.value = false;
+      isLeaguePickerOpen.value = false;
       selectedLeague.value = footballLeagueStore.getLeague;
       validationStore.clearValidatorError();
-      loadLeagues();
       loadStage();
     }
   }

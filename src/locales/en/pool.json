@@ -23,7 +23,6 @@
     "leagueInfo": "Your pool will be created for this league",
     "leagueChange": "Tap to change league",
     "leaguePick": "Select a league",
-    "leagueEmpty": "No leagues available",
     "stage": "Stage",
     "stageInfo": "Your pool will be created for this stage",
     "current": "Current",
@@ -45,10 +44,12 @@
     "codePlaceholder": "Enter access code..."
   },
   "group": {
-    "nav": "Pool group navigation",
+    "nav": {
+      "aria": "Pool panels",
+      "back": "Back to my pools"
+    },
     "docTitle": "Pool Group - Football Fantasy",
     "tabs": {
-      "myPools": "My Pools",
       "info": "Info",
       "predictions": "Predictions",
       "standings": "Standings",

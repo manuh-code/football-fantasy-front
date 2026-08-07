@@ -493,5 +493,13 @@
   },
   "matchcenter": {
     "vs": "vs"
+  },
+  "leaguePicker": {
+    "title": "Cambiar de liga",
+    "subtitle": "Elige la liga de fútbol",
+    "searchPlaceholder": "Buscar liga",
+    "empty": "No hay ligas disponibles",
+    "noMatches": "Ninguna liga coincide con «{query}»",
+    "error": "No se pudieron cargar las ligas."
   }
 }

@@ -66,8 +66,7 @@
     "league": {
       "label": "Football league",
       "pick": "Pick a league",
-      "change": "Tap to change",
-      "empty": "No leagues available"
+      "change": "Tap to change"
     },
     "participants": {
       "label": "Number of Participants",

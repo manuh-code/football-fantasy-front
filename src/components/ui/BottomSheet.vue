@@ -93,6 +93,14 @@
   </Teleport>
 </template>
 
+<script lang="ts">
+// Estado del bloqueo de scroll, compartido por todas las hojas: el <script
+// setup> de abajo se ejecuta una vez por instancia, y esto tiene que ser uno
+// solo para toda la app. Ver `lockBodyScroll`.
+let openSheetCount = 0
+let lockedScrollY = 0
+</script>
+
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, useId, onMounted, onUnmounted } from 'vue'
 
@@ -269,16 +277,42 @@ function onBackdropClick() {
 // The position: fixed + top trick prevents the browser from jumping to top
 // (or staying at bottom after the virtual keyboard closes) when overflow
 // is toggled. We save scrollY before locking and restore it on unlock.
-let lockedScrollY = 0
+//
+// The lock is counted across every open sheet, not held per instance: a sheet
+// opened ON TOP of another (the league picker over a create form) would
+// otherwise re-read scrollY — 0 while the body is already fixed — and, on
+// closing, hand scrolling back to the page with the first sheet still open.
 let previouslyFocused: HTMLElement | null = null
+let holdsScrollLock = false
 
-watch(() => props.isVisible, async (visible) => {
-  if (visible) {
+const lockBodyScroll = () => {
+  if (openSheetCount === 0) {
     lockedScrollY = window.scrollY || document.documentElement.scrollTop
     document.body.style.overflow = 'hidden'
     document.body.style.position = 'fixed'
     document.body.style.top = `-${lockedScrollY}px`
     document.body.style.width = '100%'
+  }
+  openSheetCount++
+  holdsScrollLock = true
+}
+
+const unlockBodyScroll = () => {
+  if (!holdsScrollLock) return
+  holdsScrollLock = false
+  openSheetCount = Math.max(0, openSheetCount - 1)
+  if (openSheetCount > 0) return // Another sheet is still open above/below.
+
+  document.body.style.overflow = ''
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.width = ''
+  window.scrollTo({ top: lockedScrollY, behavior: 'instant' })
+}
+
+watch(() => props.isVisible, async (visible) => {
+  if (visible) {
+    lockBodyScroll()
 
     if (props.autofocus) {
       previouslyFocused = document.activeElement as HTMLElement | null
@@ -288,11 +322,7 @@ watch(() => props.isVisible, async (visible) => {
       sheetRef.value?.focus({ preventScroll: true })
     }
   } else {
-    document.body.style.overflow = ''
-    document.body.style.position = ''
-    document.body.style.top = ''
-    document.body.style.width = ''
-    window.scrollTo({ top: lockedScrollY, behavior: 'instant' })
+    unlockBodyScroll()
 
     previouslyFocused?.focus({ preventScroll: true })
     previouslyFocused = null
@@ -309,10 +339,9 @@ function handleKeydown(e: KeyboardEvent) {
 onMounted(() => document.addEventListener('keydown', handleKeydown))
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
-  document.body.style.overflow = ''
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
+  // Un desmontaje con la hoja abierta (navegar desde dentro de ella) también
+  // tiene que soltar su parte del bloqueo, ni más ni menos.
+  unlockBodyScroll()
 })
 </script>
 

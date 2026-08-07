@@ -23,7 +23,6 @@
     "leagueInfo": "Tu quiniela se creará para esta liga",
     "leagueChange": "Toca para cambiar de liga",
     "leaguePick": "Selecciona una liga",
-    "leagueEmpty": "No hay ligas disponibles",
     "stage": "Etapa",
     "stageInfo": "Tu quiniela se creará para esta etapa",
     "current": "Actual",
@@ -44,10 +43,12 @@
     "joinedBody": "Ahora formas parte de \"{name}\"."
   },
   "group": {
-    "nav": "Navegación del grupo de quiniela",
+    "nav": {
+      "aria": "Paneles de la quiniela",
+      "back": "Volver a mis quinielas"
+    },
     "docTitle": "Grupo de quiniela - Football Fantasy",
     "tabs": {
-      "myPools": "Mis quinielas",
       "info": "Info",
       "predictions": "Predicciones",
       "standings": "Posiciones",
