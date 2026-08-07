@@ -10,12 +10,14 @@ import type {
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
+import TabsBar from "@/components/ui/TabsBar.vue";
 import TransferComponent from "@/components/football/transfer/TransferComponent.vue";
 import TeamNotificationsDrawer from "./TeamNotificationsDrawer.vue";
 import FootballTeamProfileSkeleton from "./FootballTeamProfileSkeleton.vue";
 import { useUserStore } from "@/store/user/useUserStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useToast } from "@/composables/useToast";
+import { useBodyScrollLock } from "@/composables/useBodyScrollLock";
 
 interface Props {
   isOpen: boolean;
@@ -28,7 +30,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { elevated: false });
 const emit = defineEmits<{ close: [] }>();
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -124,8 +126,6 @@ const loadProfile = async (teamUuid: string, stageUuid: string) => {
   activeTab.value = "team";
   try {
     profile.value = await footballTeamService.getTeamProfileByStage(teamUuid, stageUuid);
-    // TEMP DEBUG: inspect next_fixture participants shape
-    console.log("[next_fixture]", JSON.parse(JSON.stringify(profile.value?.next_fixture?.participants)));
   } catch (err) {
     console.error("Error loading team profile:", err);
     loadError.value = t("football.team.loadError");
@@ -261,13 +261,18 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeydown);
 });
 
+// El mismo bloqueo contado que usan las hojas: este cajón puede tener una
+// encima (la lista de "Más", las notificaciones del equipo) y soltarlo por su
+// cuenta devolvería el scroll al fondo con el cajón todavía abierto.
+const { lock: lockBodyScroll, unlock: unlockBodyScroll } = useBodyScrollLock();
+
 watch(
   () => props.isOpen,
   (open) => {
-    if (typeof document !== "undefined") {
-      document.body.style.overflow = open ? "hidden" : "";
-    }
-    if (!open) {
+    if (open) {
+      lockBodyScroll();
+    } else {
+      unlockBodyScroll();
       isDragging.value = false;
     }
   },
@@ -436,34 +441,26 @@ const onDragEnd = (e: PointerEvent) => {
             </div>
           </div>
 
-          <!-- Linear tab menu -->
+          <!-- Secciones del perfil. Eran siete en una tira que se arrastraba de
+               lado: en un teléfono se veían tres y las otras cuatro no existían.
+               Ahora las cuatro habituales están a la vista y el resto vive tras
+               "Más", con su nombre. La hoja se apila por encima de este cajón
+               (que llega a z-130 cuando va elevado). -->
           <div
             v-if="!isLoading && !loadError"
             class="shrink-0 px-4 pt-2.5 pb-2.5 border-b border-gray-100 dark:border-gray-800"
           >
-            <div
-              class="tab-track flex items-center gap-1 p-0.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-x-auto"
+            <TabsBar
+              v-model="activeTab"
+              :items="tabs"
+              variant="rail"
+              layout="stacked"
               role="tablist"
+              default-accent="emerald"
+              :max-visible="4"
+              :overflow-z-index="140"
               :aria-label="$t('football.team.sectionsAria')"
-            >
-              <button
-                v-for="tab in tabs"
-                :key="tab.key"
-                type="button"
-                role="tab"
-                :aria-selected="activeTab === tab.key"
-                @click="activeTab = tab.key"
-                class="shrink-0 flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all duration-200"
-                :class="
-                  activeTab === tab.key
-                    ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                "
-              >
-                <v-icon :name="tab.icon" class="w-3.5 h-3.5 shrink-0" />
-                <span>{{ tab.label }}</span>
-              </button>
-            </div>
+            />
           </div>
 
           <!-- Scrollable body -->
@@ -962,15 +959,6 @@ const onDragEnd = (e: PointerEvent) => {
 .tp-tab-leave-to {
   opacity: 0;
   transform: translateY(-6px);
-}
-
-.tab-track {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-padding: 0 0.5rem;
-}
-.tab-track::-webkit-scrollbar {
-  display: none;
 }
 
 .tabular-nums {

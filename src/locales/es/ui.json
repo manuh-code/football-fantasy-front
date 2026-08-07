@@ -18,7 +18,9 @@
     "next": "Siguiente"
   },
   "tabs": {
-    "aria": "Navegación por pestañas"
+    "aria": "Navegación por pestañas",
+    "more": "Más",
+    "moreTitle": "Más secciones"
   },
   "select": {
     "clearSelection": "Limpiar selección",

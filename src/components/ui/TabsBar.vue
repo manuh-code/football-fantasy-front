@@ -1,5 +1,8 @@
 <script setup lang="ts" generic="K extends string = string">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import BottomSheet from "@/components/ui/BottomSheet.vue";
+import { useMediaQuery } from "@/composables/useMediaQuery";
 import { ACCENT_CHIP, ACCENT_TEXT, type NavAccent, type NavItem } from "@/components/ui/navAccents";
 
 /**
@@ -48,6 +51,33 @@ const props = withDefaults(
      * `tablist` — the options swap panels in place, without navigating.
      */
     role?: "navigation" | "tablist";
+    /**
+     * Options moved behind the "More" button, chosen by meaning rather than by
+     * how many fit — what a fantasy league does with its admin screens. Takes
+     * precedence over `maxVisible`.
+     */
+    overflow?: NavItem<K>[];
+    /**
+     * How many options stay in the strip on a phone; the rest fall behind
+     * "More". Unset means every option stays in the strip.
+     *
+     * A strip past five options stops being readable — you can't see how many
+     * there are, and the ones off the edge may as well not exist
+     * (`bottom-nav-limit`). Scrolling sideways doesn't fix that: it hides the
+     * count too.
+     */
+    maxVisible?: number;
+    /** Same, from 768px up, where the row has real estate. Unset means all. */
+    maxVisibleWide?: number;
+    /** Label of the overflow button while no option inside it is active. */
+    overflowLabel?: string;
+    /** Heading of the sheet the overflow button opens. */
+    overflowTitle?: string;
+    /**
+     * Stacking order of the overflow sheet. Raise it above whatever surface the
+     * strip lives on — a strip inside a drawer needs to clear that drawer.
+     */
+    overflowZIndex?: number;
   }>(),
   {
     activeKey: "",
@@ -57,6 +87,12 @@ const props = withDefaults(
     layout: "inline",
     defaultAccent: undefined,
     role: "navigation",
+    overflow: undefined,
+    maxVisible: undefined,
+    maxVisibleWide: undefined,
+    overflowLabel: "",
+    overflowTitle: "",
+    overflowZIndex: undefined,
   },
 );
 
@@ -64,6 +100,8 @@ const emit = defineEmits<{
   select: [key: K];
   "update:modelValue": [key: K];
 }>();
+
+const { t } = useI18n();
 
 const active = computed<string>(() => props.modelValue ?? props.activeKey ?? "");
 const isFloating = computed(() => props.variant === "floating");
@@ -79,6 +117,54 @@ const onClick = (item: NavItem<K>): void => {
   emit("select", item.key);
   emit("update:modelValue", item.key);
 };
+
+// ── Overflow ─────────────────────────────────────────────────────────────────
+// Either the caller says which options belong behind "More", or the strip keeps
+// the first `maxVisible` and moves the tail there itself.
+const isWide = useMediaQuery("(min-width: 768px)");
+
+const limit = computed(() => {
+  const max = isWide.value ? props.maxVisibleWide : props.maxVisible;
+  return max && max > 0 ? max : props.items.length;
+});
+
+const hasExplicitOverflow = computed(() => (props.overflow?.length ?? 0) > 0);
+
+const strip = computed<NavItem<K>[]>(() =>
+  hasExplicitOverflow.value ? props.items : props.items.slice(0, limit.value),
+);
+
+const overflowItems = computed<NavItem<K>[]>(() =>
+  hasExplicitOverflow.value ? (props.overflow as NavItem<K>[]) : props.items.slice(limit.value),
+);
+
+const isOverflowOpen = ref(false);
+
+// When the open panel lives in the sheet, the button takes its name and its
+// highlight: otherwise nothing on the bar tells the user where they are.
+const activeOverflowItem = computed(() => overflowItems.value.find(isActive) ?? null);
+const overflowIcon = computed(() => activeOverflowItem.value?.icon ?? "hi-solid-dots-horizontal");
+const overflowText = computed(
+  () => activeOverflowItem.value?.label ?? (props.overflowLabel || t("ui.tabs.more")),
+);
+const overflowSheetTitle = computed(() => props.overflowTitle || t("ui.tabs.moreTitle"));
+
+const overflowButtonClass = computed(() => {
+  const item = activeOverflowItem.value;
+  if (!item) return "text-gray-500 dark:text-gray-400 font-semibold";
+  const accent = accentOf(item) as NavAccent;
+  return `${ACCENT_TEXT[accent]} font-bold ${ACCENT_CHIP[accent]}`;
+});
+
+const selectOverflow = (item: NavItem<K>): void => {
+  if (item.disabled) return;
+  isOverflowOpen.value = false;
+  onClick(item);
+};
+
+// Un cambio de panel desde fuera (atrás del navegador, enlace compartido) debe
+// cerrar la hoja: si no, se queda abierta encima del panel nuevo.
+watch(active, () => (isOverflowOpen.value = false));
 
 // ── Presentation ─────────────────────────────────────────────────────────────
 const trackClass = computed(() =>
@@ -101,6 +187,14 @@ const itemLayoutClass = computed(() =>
     : "gap-1.5 px-3.5 py-2 text-xs",
 );
 const iconSizeClass = computed(() => (props.layout === "stacked" ? "w-[18px] h-[18px]" : "w-4 h-4"));
+
+// The overflow button sits outside the scrolling track, in its own copy of the
+// track's shell, so both blocks measure exactly the same height.
+const trailingWrapClass = computed(() =>
+  isFloating.value
+    ? "p-1 bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/30"
+    : "p-0.5 bg-gray-100 dark:bg-gray-800",
+);
 
 // Options carry only weight and colour; the highlight itself is the one chip
 // gliding behind them.
@@ -129,7 +223,9 @@ const setButtonRef = (key: string, el: Element | null): void => {
   else buttonRefs.delete(key);
 };
 
-const activeItem = computed(() => props.items.find((item) => isActive(item)) ?? null);
+// Only an option still in the strip can carry the chip; when the active one
+// lives in the sheet, the overflow button wears the highlight instead.
+const activeItem = computed(() => strip.value.find((item) => isActive(item)) ?? null);
 const indicatorClass = computed(() => {
   const accent = activeItem.value ? accentOf(activeItem.value) : undefined;
   return accent ? ACCENT_CHIP[accent] : "";
@@ -225,8 +321,10 @@ onUnmounted(() => {
   trackObserver?.disconnect();
 });
 
+// `strip`, not `items`: the breakpoint can move options in and out of it
+// without `items` ever changing.
 watch(
-  () => [active.value, props.items] as const,
+  () => [active.value, strip.value] as const,
   () => nextTick(() => refresh("smooth")),
   { flush: "post" },
 );
@@ -235,10 +333,11 @@ watch(
 <template>
   <!-- Floating: the wrapper spans the row but is click-through, so only the
        pill takes taps and the content behind its edges stays reachable. -->
+  <!-- El rol `tablist` va en la pista, no aquí: el botón "Más" es un
+       `aria-haspopup`, no una pestaña, y dentro de un tablist no pinta nada. -->
   <component
     :is="isTablist ? 'div' : 'nav'"
-    :aria-label="ariaLabel"
-    :role="isTablist ? 'tablist' : undefined"
+    :aria-label="isTablist ? undefined : ariaLabel"
     class="flex"
     :class="isFloating ? 'tabs-sticky sticky z-40 pointer-events-none justify-center mb-4' : 'relative'"
   >
@@ -250,6 +349,8 @@ watch(
       <div class="relative min-w-0 max-w-full" :class="isFloating ? '' : 'flex-1'">
         <div
           ref="trackRef"
+          :role="isTablist ? 'tablist' : undefined"
+          :aria-label="isTablist ? ariaLabel : undefined"
           class="tabs-track relative pointer-events-auto flex items-center rounded-full max-w-full overflow-x-auto overscroll-x-contain"
           :class="trackClass"
           @scroll="updateEdges"
@@ -258,6 +359,7 @@ watch(
                always matches it exactly. Sits behind the options (z-10). -->
           <span
             v-if="indicatorRect"
+            aria-hidden="true"
             class="tabs-indicator absolute top-0 left-0 rounded-full pointer-events-none"
             :class="indicatorClass"
             :style="{
@@ -268,7 +370,7 @@ watch(
           />
 
           <button
-            v-for="item in items"
+            v-for="item in strip"
             :key="item.key"
             :ref="(el) => setButtonRef(item.key, el as Element | null)"
             type="button"
@@ -303,11 +405,83 @@ watch(
         />
       </div>
 
-      <!-- Action parked beside the strip, outside the scrolling track (the
-           fantasy league's "More" button). Whatever goes here brings its own
+      <!-- "More": the rest of the options, parked beside the strip and outside
+           the scrolling track so it can never be scrolled off. -->
+      <div
+        v-if="overflowItems.length"
+        class="pointer-events-auto shrink-0 rounded-full"
+        :class="trailingWrapClass"
+      >
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          :aria-expanded="isOverflowOpen"
+          :aria-label="overflowText"
+          @click="isOverflowOpen = true"
+          class="flex items-center shrink-0 rounded-full whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
+          :class="[itemLayoutClass, overflowButtonClass]"
+        >
+          <v-icon :name="overflowIcon" class="shrink-0" :class="iconSizeClass" />
+          <span class="leading-none tracking-tight">{{ overflowText }}</span>
+        </button>
+      </div>
+
+      <!-- Extra action beside the strip. Whatever goes here brings its own
            `pointer-events-auto`: the floating wrapper is click-through. -->
       <slot name="trailing" />
     </div>
+
+    <!-- The overflow options, named and reachable in one tap instead of hidden
+         past the edge of a sideways scroll. -->
+    <BottomSheet
+      v-if="overflowItems.length"
+      :is-visible="isOverflowOpen"
+      :title="overflowSheetTitle"
+      size="auto"
+      role="dialog"
+      :z-index="overflowZIndex"
+      @close="isOverflowOpen = false"
+    >
+      <nav
+        :aria-label="overflowSheetTitle"
+        class="pb-2 divide-y divide-gray-100 dark:divide-gray-800"
+      >
+        <button
+          v-for="item in overflowItems"
+          :key="item.key"
+          type="button"
+          :disabled="item.disabled"
+          :aria-current="isActive(item) ? 'page' : undefined"
+          @click="selectOverflow(item)"
+          class="w-full flex items-center gap-3 min-h-[44px] px-1 py-3 text-left cursor-pointer active:bg-gray-50 dark:active:bg-gray-800/60 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <div
+            class="w-9 h-9 rounded-xl grid place-items-center shrink-0"
+            :class="isActive(item)
+              ? ACCENT_CHIP[accentOf(item) as NavAccent]
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'"
+          >
+            <v-icon
+              :name="item.icon"
+              class="w-[18px] h-[18px]"
+              :class="isActive(item) ? ACCENT_TEXT[accentOf(item) as NavAccent] : ''"
+            />
+          </div>
+          <span
+            class="flex-1 min-w-0 truncate text-callout"
+            :class="isActive(item)
+              ? `font-bold ${ACCENT_TEXT[accentOf(item) as NavAccent]}`
+              : 'font-semibold text-gray-900 dark:text-white'"
+          >
+            {{ item.label }}
+          </span>
+          <v-icon
+            name="hi-solid-chevron-right"
+            class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+          />
+        </button>
+      </nav>
+    </BottomSheet>
   </component>
 </template>
 

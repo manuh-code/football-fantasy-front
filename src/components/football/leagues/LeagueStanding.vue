@@ -13,12 +13,17 @@
 
       <!-- Error -->
       <div v-else-if="error" class="py-12 px-6 text-center">
-        <v-icon name="hi-solid-exclamation" class="w-8 h-8 text-red-400 mx-auto mb-3" />
+        <div
+          class="w-12 h-12 rounded-2xl mx-auto mb-3 grid place-items-center bg-red-50 dark:bg-red-900/20"
+        >
+          <v-icon name="hi-solid-exclamation" class="w-6 h-6 text-red-400" />
+        </div>
         <p class="text-footnote text-red-500 dark:text-red-400 mb-4">{{ error }}</p>
         <button
           @click="fetchStandings"
-          class="px-4 py-1.5 bg-red-500 text-white rounded-full text-footnote font-medium active:bg-red-600 transition-colors"
+          class="inline-flex items-center gap-1.5 min-h-[44px] px-5 bg-red-500 text-white rounded-full text-footnote font-semibold active:scale-[0.98] active:bg-red-600 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
         >
+          <v-icon name="hi-solid-refresh" class="w-4 h-4" />
           {{ $t('common.actions.retry') }}
         </button>
       </div>

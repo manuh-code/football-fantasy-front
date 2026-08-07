@@ -1,7 +1,11 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 export function useMediaQuery(query: string) {
-  const matches = ref(false)
+  // Se resuelve ya en el primer render, no en onMounted: quien decide QUÉ pinta
+  // con esto (cuántas pestañas caben, por ejemplo) enseñaría si no un fotograma
+  // de la versión móvil en un escritorio. Sin `window` —prerender— se asume que
+  // no encaja, que es el layout más estrecho y por tanto el más seguro.
+  const matches = ref(typeof window !== 'undefined' && window.matchMedia(query).matches)
   let mediaQuery: MediaQueryList | null = null
 
   onMounted(() => {
