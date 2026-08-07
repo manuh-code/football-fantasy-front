@@ -110,21 +110,22 @@ const isActive = (item: BottomNavItem): boolean =>
 const itemClasses = (item: BottomNavItem): string => {
   if (item.disabled) return "text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50";
   if (isActive(item)) return ACCENT_TEXT[item.accent as BottomNavAccent];
-  return "text-gray-400 dark:text-gray-500 active:text-gray-600 dark:active:text-gray-300";
+  return "text-gray-500 dark:text-gray-400 active:text-gray-700 dark:active:text-gray-200";
 };
 
-// Screens with every tab available (e.g. a fantasy league once "Home" is
-// added to its member tabs) can reach 5-6 items; tighten the pill so it still
-// fits one row instead of overflowing on narrow phones.
+// Item metrics are TopTabsBar's stacked tier verbatim (18px glyph over a 2xs
+// label, gap-0.5, py-1.5), so the bar down here and the section tabs up there
+// read as the same control rather than two sizes of the same idea. Only the
+// horizontal breathing room adapts: a screen with 5-6 destinations tightens its
+// padding instead of shrinking the type, which would break the match.
+//
+// `min-h-[44px]` is the one deliberate departure. The top strips are secondary
+// tabs; this is the app's primary navigation, sitting where thumbs land, so it
+// keeps the 44px touch floor the compact padding alone would fall just under.
 const isDense = computed(() => props.items.length > 4);
 const itemSizeClass = computed(() =>
-  isDense.value ? "px-3 py-2 min-w-[52px] gap-0.5" : "px-5 py-2.5 min-w-[68px] gap-1",
+  isDense.value ? "px-2 min-w-[52px]" : "px-2.5 min-w-[64px]",
 );
-const itemLabelSizeClass = computed(() => (isDense.value ? "text-2xs" : "text-xs"));
-const rowGapClass = computed(() => (isDense.value ? "gap-0.5" : "gap-1"));
-// Slightly smaller glyphs in dense mode so 5–6 destinations stay on one row on
-// the narrowest phones without crowding.
-const iconSizeClass = computed(() => (isDense.value ? "w-5 h-5" : "w-6 h-6"));
 
 const activeItem = computed(() => props.items.find((item) => isActive(item)) ?? null);
 const indicatorColorClass = computed(() =>
@@ -325,8 +326,7 @@ const onBarPointerCancel = () => {
     >
       <div
         ref="containerRef"
-        class="relative pointer-events-auto flex items-center p-1.5 rounded-full max-w-[calc(100%-1rem)] bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-xl shadow-black/10 dark:shadow-black/40 select-none touch-none"
-        :class="rowGapClass"
+        class="relative pointer-events-auto flex items-center gap-1 p-1 rounded-full max-w-[calc(100%-1rem)] bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.04] dark:border-white/10 shadow-xl shadow-black/10 dark:shadow-black/40 select-none touch-none"
         @pointerdown="onBarPointerDown"
         @pointermove="onBarPointerMove"
         @pointerup="onBarPointerUp"
@@ -366,17 +366,17 @@ const onBarPointerCancel = () => {
           :aria-current="isActive(item) ? 'page' : undefined"
           :disabled="item.disabled"
           @click="onClick(item)"
-          class="relative z-10 flex shrink-0 flex-col items-center justify-center rounded-full transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
+          class="relative z-10 flex shrink-0 flex-col items-center justify-center gap-0.5 py-1.5 min-h-[44px] rounded-full text-2xs transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
           :class="[itemSizeClass, itemClasses(item)]"
         >
           <v-icon
             :name="item.icon"
-            class="shrink-0 transition-transform duration-200 ease-out"
-            :class="[iconSizeClass, isActive(item) ? 'scale-110' : '']"
+            class="w-[18px] h-[18px] shrink-0 transition-transform duration-200 ease-out"
+            :class="isActive(item) ? 'scale-110' : ''"
           />
           <span
             class="whitespace-nowrap tracking-tight leading-none"
-            :class="[itemLabelSizeClass, isActive(item) ? 'font-bold' : 'font-semibold']"
+            :class="isActive(item) ? 'font-bold' : 'font-semibold'"
           >{{ item.label }}</span>
         </button>
       </div>
@@ -388,12 +388,15 @@ const onBarPointerCancel = () => {
 .nav-indicator {
   /* A touch of overshoot on the move itself (a real "settle", not just an
      ease-out) is the improved slide; width/height/color stay non-bouncy so
-     they don't stretch oddly when jumping between differently sized tabs. */
+     they don't stretch oddly when jumping between differently sized tabs.
+     Same curves and durations as TopTabsBar/TabsMenu: now that the chip is the
+     same size up there and down here, a different settle would be the one thing
+     still giving away that they are two components. */
   transition:
-    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    width 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    height 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 260ms ease;
+    transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    width 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 240ms ease;
   will-change: transform;
 }
 .nav-press {

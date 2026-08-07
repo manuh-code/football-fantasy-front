@@ -74,6 +74,27 @@
     "noPlayerStats": "No player statistics available yet",
     "noTeamStats": "No team statistics available yet",
     "viewAll": "View all",
+    "loadError": "We couldn't load the statistics.",
+    "viewAllCount": "See all {count}",
+    "rankedPlayers": "{count} players ranked",
+    "partialRanking": "Showing the podium only — we couldn't load the rest.",
+    "presets": {
+      "aria": "Filter statistics by category",
+      "featured": "Featured",
+      "offensive": "Offensive",
+      "overall": "Overall",
+      "defensive": "Defensive",
+      "custom": "Custom"
+    },
+    "filter": {
+      "open": "Choose statistics",
+      "title": "Choose statistics",
+      "subtitle": "{count} of {max} selected",
+      "searchLabel": "Search statistic",
+      "searchPlaceholder": "Search: goals, saves…",
+      "noMatches": "No statistic matches “{term}”.",
+      "apply": "Show {count} statistics"
+    },
     "leader": "Leader",
     "textValues": {
       "firstHalf": "1st half",
