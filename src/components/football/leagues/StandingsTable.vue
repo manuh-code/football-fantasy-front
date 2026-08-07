@@ -140,7 +140,133 @@ watch(
 
 <template>
   <div class="standings">
-    <div class="relative">
+    <!-- ── Teléfono: una fila por equipo, sin scroll lateral ──
+         La tabla completa mide 600px de ancho mínimo: en un móvil eso dejaba
+         DG, GF, GC y la forma fuera de pantalla, entre la columna de equipo y
+         los puntos anclados, sin más pista que un degradado. Aquí cada equipo
+         ocupa dos líneas y se lee entero de una vez (`table-handling`). -->
+    <div class="sm:hidden">
+      <!-- Cabecera mínima: sin ella los dos números de la derecha no dicen qué
+           son. -->
+      <div
+        class="flex items-center gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700/60"
+        aria-hidden="true"
+      >
+        <span class="w-5 text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">#</span>
+        <span class="flex-1 text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          {{ $t('football.standings.team') }}
+        </span>
+        <span class="w-10 text-center text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          {{ $t('football.standings.gd') }}
+        </span>
+        <span class="w-9 text-center text-2xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          {{ $t('football.standings.pts') }}
+        </span>
+      </div>
+
+      <ul class="divide-y divide-gray-50 dark:divide-gray-700/30">
+        <li v-for="(row, idx) in standings" :key="`m-${row.team?.uuid || idx}`">
+          <button
+            type="button"
+            @click="onTeamSelect(row)"
+            class="relative w-full flex items-center gap-2 pl-3 pr-3 py-2.5 min-h-[60px] text-left transition-colors duration-150 cursor-pointer active:bg-gray-50 dark:active:bg-gray-700/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500"
+            :class="isFollowed(row) ? 'bg-amber-50 dark:bg-amber-900/20' : ''"
+            :aria-label="$t('football.standings.openTeamAria', { team: row.team?.name })"
+          >
+            <!-- Franja de zona, pegada al borde igual que en la tabla -->
+            <span
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-7 rounded-r-full"
+              :class="positionZoneColor(row.position)"
+              aria-hidden="true"
+            />
+
+            <span
+              class="w-5 text-center text-xs tabular-nums shrink-0"
+              :class="row.position === 1
+                ? 'font-extrabold text-emerald-600 dark:text-emerald-400'
+                : 'font-semibold text-gray-500 dark:text-gray-400'"
+            >
+              {{ row.position }}
+            </span>
+
+            <TeamLogo :team="row.team" size="sm" variant="square" />
+
+            <span class="flex-1 min-w-0">
+              <span class="flex items-center gap-1">
+                <v-icon
+                  v-if="isFollowed(row)"
+                  name="hi-solid-star"
+                  class="w-3 h-3 text-amber-500 shrink-0"
+                  :aria-label="$t('football.standings.followedAria')"
+                />
+                <span
+                  class="truncate text-footnote text-gray-900 dark:text-white"
+                  :class="isFollowed(row) ? 'font-bold' : 'font-semibold'"
+                >
+                  {{ row.team?.name }}
+                </span>
+              </span>
+
+              <!-- Segunda línea: el resto de la fila de la tabla, comprimido.
+                   PJ y el registro G-E-P a la izquierda, la forma a la derecha;
+                   en pantallas muy estrechas cede primero el texto, nunca la
+                   forma. -->
+              <span class="flex items-center gap-1.5 mt-1 overflow-hidden">
+                <span class="flex items-center gap-1.5 min-w-0 truncate">
+                  <span class="text-2xs tabular-nums text-gray-400 dark:text-gray-500">
+                    {{ getStat(row.statistics, 'overall-matches-played') }} {{ $t('football.standings.mp') }}
+                  </span>
+                  <span class="text-2xs text-gray-300 dark:text-gray-600" aria-hidden="true">·</span>
+                  <span class="text-2xs tabular-nums">
+                    <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{ getStat(row.statistics, 'overall-won') }}</span
+                    ><span class="text-gray-300 dark:text-gray-600">-</span><span class="text-gray-500 dark:text-gray-400">{{ getStat(row.statistics, 'overall-draw') }}</span
+                    ><span class="text-gray-300 dark:text-gray-600">-</span><span class="font-semibold text-red-500 dark:text-red-400">{{ getStat(row.statistics, 'overall-lost') }}</span>
+                  </span>
+                </span>
+
+                <!-- La letra va dentro del cuadro: el color por sí solo no
+                     distingue ganado de perdido para todo el mundo. -->
+                <span class="ml-auto flex items-center gap-[3px] shrink-0">
+                  <span
+                    v-for="(f, i) in lastFive(row.form)"
+                    :key="`m-f-${i}`"
+                    :class="[
+                      formColor(f.form),
+                      'w-4 h-4 rounded-[3px] flex items-center justify-center text-white text-2xs font-bold leading-none',
+                    ]"
+                  >
+                    {{ f.form }}
+                  </span>
+                </span>
+              </span>
+            </span>
+
+            <span
+              class="w-10 text-center text-2xs tabular-nums font-semibold shrink-0"
+              :class="gdColor(getStat(row.statistics, 'goal-difference'))"
+            >
+              {{ formatGD(getStat(row.statistics, 'goal-difference')) }}
+            </span>
+
+            <span
+              class="w-9 flex justify-center shrink-0"
+            >
+              <span
+                class="inline-flex items-center justify-center min-w-[30px] px-1.5 py-0.5 rounded-md text-footnote font-bold tabular-nums"
+                :class="row.position === 1
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'"
+              >
+                {{ getStat(row.statistics, 'overall-points') }}
+              </span>
+            </span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ── Tablet y escritorio: la tabla completa, que ya cabe ── -->
+    <div class="relative hidden sm:block">
       <div
         ref="scrollWrapper"
         class="standings-table-wrapper overflow-x-auto overflow-y-auto max-h-[70vh]"

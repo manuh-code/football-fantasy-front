@@ -8,13 +8,19 @@
 
     <template v-if="hasLeague">
       <template v-if="selectedStageUuid">
-        <!-- Linear scrollable tab menu (Standings / Fixtures / Statistics / Versus / TOTW) -->
+        <!-- Secciones de la liga. En el móvil solo caben las cuatro de cada
+             jornada; las otras tres viven tras "Más", con nombre y en una lista
+             que se lee de un vistazo, en vez de escondidas tras un scroll
+             lateral que ni siquiera dice cuántas hay. A partir de 768px caben
+             todas en la tira. -->
         <TabsBar
           :model-value="activeTab"
           :items="tabs"
           variant="rail"
+          layout="stacked"
           role="tablist"
           default-accent="emerald"
+          :max-visible="4"
           :aria-label="$t('home.league.sectionsAriaLabel')"
           @update:model-value="selectTab"
         />

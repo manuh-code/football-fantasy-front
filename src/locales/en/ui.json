@@ -18,7 +18,9 @@
     "next": "Next"
   },
   "tabs": {
-    "aria": "Tab Navigation"
+    "aria": "Tab Navigation",
+    "more": "More",
+    "moreTitle": "More sections"
   },
   "select": {
     "clearSelection": "Clear selection",
