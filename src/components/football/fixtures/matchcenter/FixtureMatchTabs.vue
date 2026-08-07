@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import TabsMenu from "@/components/ui/TabsMenu.vue";
+import TabsBar from "@/components/ui/TabsBar.vue";
 
 // Linear menu for the Match Center sections. Delegates the scrollable pill
-// design + overflow hints to the shared TabsMenu component.
+// design + overflow hints to the shared TabsBar component.
 export type MatchTab = "info" | "comments" | "events" | "stats" | "lineups" | "head2head" | "playerstats";
 
 const activeTab = defineModel<MatchTab>({ required: true });
@@ -24,10 +24,12 @@ const tabs = computed<{ key: MatchTab; label: string; icon: string }[]>(() => [
 
 <template>
   <div class="px-4 pt-2 pb-2.5">
-    <TabsMenu
+    <TabsBar
       v-model="activeTab"
-      :tabs="tabs"
-      variant="pills"
+      :items="tabs"
+      variant="rail"
+      role="tablist"
+      default-accent="emerald"
       :aria-label="$t('football.matchCenter.sections')"
     />
   </div>

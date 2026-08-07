@@ -54,7 +54,7 @@ const options = computed<AvailabilityOption[]>(() => [
 ])
 
 // Edge fade hint: the pill row overflows on narrow phones with no visual cue
-// that it scrolls — same pattern as TopTabsBar.vue.
+// that it scrolls — same pattern as TabsBar.vue.
 const scrollContainerRef = ref<HTMLElement | null>(null)
 const canScrollLeft = ref(false)
 const canScrollRight = ref(false)

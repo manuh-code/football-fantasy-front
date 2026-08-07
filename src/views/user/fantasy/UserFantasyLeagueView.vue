@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
       <!-- Secondary section tabs: My Leagues / Search -->
-      <TopTabsBar
+      <TabsBar
         :items="tabItems"
         :active-key="activeTab"
         :aria-label="$t('fantasy.userLeagues.navAria')"
@@ -92,7 +92,7 @@ import UserFantasyLeagueSearch from '@/components/user/fantasy/UserFantasyLeague
 import FantasyLeagueCreateModal from '@/components/fantasy/FantasyLeagueCreateModal.vue'
 import FantasyLeagueJoinModal from '@/components/fantasy/FantasyLeagueJoinModal.vue'
 import HomeMenu from '@/components/home/HomeMenu.vue'
-import TopTabsBar from '@/components/ui/TopTabsBar.vue'
+import TabsBar from '@/components/ui/TabsBar.vue'
 import type { BottomNavItem } from '@/components/ui/BottomNavBar.vue'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
 

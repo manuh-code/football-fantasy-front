@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-28">
     <div class="container mx-auto px-4 max-w-7xl mb-24 md:mb-0">
       <!-- Secondary section tabs: global destinations live in the fixed nav -->
-      <TopTabsBar :items="tabItems" :active-key="activeTab" :aria-label="$t('pool.nav.aria')" @select="activeTab = $event" />
+      <TabsBar :items="tabItems" :active-key="activeTab" :aria-label="$t('pool.nav.aria')" @select="activeTab = $event" />
 
       <!-- Pool / Rules Component -->
       <div class="animate-page-enter">
@@ -75,7 +75,7 @@ import PoolRulesComponent from "@/components/pool/PoolRulesComponent.vue";
 import PoolCreateModal from "@/components/pool/PoolCreateModal.vue";
 import PoolJoinModal from "@/components/pool/PoolJoinModal.vue";
 import HomeMenu from "@/components/home/HomeMenu.vue";
-import TopTabsBar from "@/components/ui/TopTabsBar.vue";
+import TabsBar from "@/components/ui/TabsBar.vue";
 import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 

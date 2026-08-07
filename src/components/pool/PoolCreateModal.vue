@@ -43,6 +43,59 @@
         <span v-if="descriptionError" class="text-xs text-red-600 dark:text-red-400">{{ descriptionError }}</span>
       </div>
 
+      <!-- Participants — how many people fit in the pool. Editable later from
+           the Rules tab, but only until the first match kicks off. -->
+      <div class="flex flex-col gap-1.5">
+        <label for="pool-participants" class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          {{ $t('pool.create.participantsLabel') }}
+        </label>
+
+        <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-2 pl-3.5">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-900 dark:text-white">
+              {{ $t('pool.create.participantsValue', { count: maxParticipants }, maxParticipants) }}
+            </p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              {{ $t('pool.create.participantsHint') }}
+            </p>
+          </div>
+
+          <div class="flex items-center h-11 rounded-xl bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden shrink-0">
+            <button
+              type="button"
+              :disabled="isLoading || maxParticipants <= PARTICIPANTS_MIN"
+              @click="nudgeParticipants(-1)"
+              :aria-label="$t('pool.create.participantsDecreaseAria')"
+              class="w-11 h-11 grid place-items-center text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500"
+            >
+              <v-icon name="hi-solid-minus" class="w-4 h-4" />
+            </button>
+            <input
+              id="pool-participants"
+              :value="maxParticipants"
+              @input="onParticipantsInput"
+              @blur="onParticipantsBlur"
+              :disabled="isLoading"
+              type="text"
+              inputmode="numeric"
+              :aria-label="$t('pool.create.participantsLabel')"
+              class="w-12 h-11 bg-transparent text-center text-base font-bold tabular-nums text-gray-900 dark:text-white border-0 p-0 focus:outline-none focus:ring-0 disabled:cursor-not-allowed"
+            />
+            <button
+              type="button"
+              :disabled="isLoading || maxParticipants >= PARTICIPANTS_MAX"
+              @click="nudgeParticipants(1)"
+              :aria-label="$t('pool.create.participantsIncreaseAria')"
+              class="w-11 h-11 grid place-items-center text-gray-500 dark:text-gray-400 active:bg-gray-100 dark:active:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-500"
+            >
+              <v-icon name="hi-solid-plus" class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <span v-if="participantsError" class="text-xs text-red-600 dark:text-red-400">{{ participantsError }}</span>
+      </div>
+
       <!-- League — pick which league this pool belongs to -->
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $t('pool.create.league') }}</label>
@@ -212,9 +265,15 @@ const emit = defineEmits<{
 const validationStore = useValidationStore();
 const footballLeagueStore = useFootballLeagueStore();
 
+/** Mismas cotas que valida el API (config `pool.participants`). */
+const PARTICIPANTS_MIN = 2;
+const PARTICIPANTS_MAX = 100;
+const PARTICIPANTS_DEFAULT = 10;
+
 // Form state
 const name = ref("");
 const description = ref("");
+const maxParticipants = ref(PARTICIPANTS_DEFAULT);
 const isLoading = ref(false);
 
 // The pool's stage is resolved automatically from the selected league (single stage).
@@ -256,6 +315,28 @@ const chooseLeague = (league: FootballLeagueResponse) => {
 
 const fieldError = (field: string) => validationStore.getFieldError(field)[0] || "";
 const descriptionError = computed(() => fieldError("description"));
+const participantsError = computed(() => fieldError("max_participants"));
+
+const clampParticipants = (value: number): number =>
+  Math.min(PARTICIPANTS_MAX, Math.max(PARTICIPANTS_MIN, value));
+
+const nudgeParticipants = (delta: number) => {
+  maxParticipants.value = clampParticipants(maxParticipants.value + delta);
+};
+
+const onParticipantsInput = (event: Event) => {
+  const raw = (event.target as HTMLInputElement).value.trim();
+  const parsed = Number(raw);
+  // Un campo a medio borrar todavía no es un número; se ignora hasta que lo sea.
+  if (raw === "" || Number.isNaN(parsed)) return;
+  maxParticipants.value = clampParticipants(Math.trunc(parsed));
+};
+
+const onParticipantsBlur = (event: Event) => {
+  // Se reescribe el DOM a mano: si quedó "abc" el valor ligado no cambió y Vue
+  // no volvería a pintar el input, dejando basura sobre el número real.
+  (event.target as HTMLInputElement).value = String(maxParticipants.value);
+};
 
 const canSubmit = computed(
   () => name.value.trim().length > 0 && !!selectedLeague.value && !!stage.value
@@ -285,6 +366,7 @@ watch(
     if (visible) {
       name.value = "";
       description.value = "";
+      maxParticipants.value = PARTICIPANTS_DEFAULT;
       showLeaguePicker.value = false;
       selectedLeague.value = footballLeagueStore.getLeague;
       validationStore.clearValidatorError();
@@ -297,6 +379,7 @@ watch(
 // Clear field errors as the user edits.
 watch(name, () => fieldError("name") && validationStore.clearFieldError("name"));
 watch(description, () => descriptionError.value && validationStore.clearFieldError("description"));
+watch(maxParticipants, () => participantsError.value && validationStore.clearFieldError("max_participants"));
 
 const close = () => {
   if (!isLoading.value) emit("close");
@@ -313,6 +396,7 @@ const handleCreate = async () => {
       stage_uuid: stage.value.uuid,
       name: name.value.trim(),
       description: description.value.trim() || null,
+      max_participants: maxParticipants.value,
     });
     emit("created", pool);
   } catch (e) {

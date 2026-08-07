@@ -101,7 +101,7 @@ const SKELETON_WIDTHS = ["w-20", "w-16", "w-24", "w-16"];
 const emit = defineEmits<{ "update:modelValue": [index: number] }>();
 
 // Static maps so Tailwind keeps these classes during purge (same convention as
-// BottomNavBar/TopTabsBar).
+// BottomNavBar/TabsBar).
 const ACCENT_ACTIVE_BG: Record<BottomNavAccent, string> = {
   blue: "bg-blue-500 text-white shadow-md shadow-blue-500/25",
   emerald: "bg-emerald-500 text-white shadow-md shadow-emerald-500/25",

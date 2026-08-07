@@ -9,10 +9,12 @@
     <template v-if="hasLeague">
       <template v-if="selectedStageUuid">
         <!-- Linear scrollable tab menu (Standings / Fixtures / Statistics / Versus / TOTW) -->
-        <TabsMenu
+        <TabsBar
           :model-value="activeTab"
-          :tabs="tabs"
-          variant="pills"
+          :items="tabs"
+          variant="rail"
+          role="tablist"
+          default-accent="emerald"
           :aria-label="$t('home.league.sectionsAriaLabel')"
           @update:model-value="selectTab"
         />
@@ -68,7 +70,7 @@ import { ref, computed, defineAsyncComponent, onMounted, type Component } from "
 import { useI18n } from "vue-i18n";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import HomeHeaderMenu from "@/components/home/HomeHeaderMenu.vue";
-import TabsMenu from "@/components/ui/TabsMenu.vue";
+import TabsBar from "@/components/ui/TabsBar.vue";
 
 // Lazy-load heavy content panels. Keep the raw loaders so we can warm the
 // chunks on mount — that way the slide transition has a resolved component to
