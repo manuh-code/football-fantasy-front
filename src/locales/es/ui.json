@@ -128,5 +128,11 @@
       "about": "Acerca de",
       "privacy": "Aviso de privacidad"
     }
+  },
+  "dateTimePicker": {
+    "title": "Fecha y hora",
+    "hint": "Elige un día y la hora",
+    "hour": "Hora",
+    "minute": "Minutos"
   }
 }
