@@ -3,6 +3,7 @@ import { AxiosError, type AxiosRequestConfig } from "axios";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import { FantasyLeagueCreatePayload } from "@/interfaces/fantasy/leagues/FantasyLeagueCreatePayload";
+import { FantasyLeagueDraftPayload } from "@/interfaces/fantasy/leagues/FantasyLeagueDraftPayload";
 import { FantasyLeagueJoined } from "@/interfaces/fantasy/leagues/FantasyLeagueJoined";
 import { useUserStore } from "@/store";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
@@ -210,6 +211,21 @@ export class FantasyLeagueService {
             return response.data;
         }
         throw new Error('Failed to fetch participant options');
+    }
+
+    /**
+     * Guarda la configuración del draft de la liga: tipo, fecha/hora y, en el
+     * draft en vivo, el tiempo por turno. Crea el draft si aún no existía.
+     */
+    async storeDraftSettings(leagueUuid: string, payload: FantasyLeagueDraftPayload): Promise<FantasyLeaguesResponse> {
+        const response = await this.api.post<ApiResponse<FantasyLeaguesResponse>>(`fantasy/leagues/draft/store`, {
+            fantasy_league_uuid: leagueUuid,
+            ...payload,
+        });
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to save draft settings');
     }
 
     async activateDraft(leagueUuid: string): Promise<ApiResponse<null>> {

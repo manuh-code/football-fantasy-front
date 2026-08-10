@@ -309,6 +309,37 @@
       "loadError": "No se pudo cargar la boleta del draft."
     }
   },
+  "draftSettings": {
+    "title": "Configuración del draft",
+    "subtitle": "Define cómo y cuándo se ficha en esta liga",
+    "type": {
+      "label": "Tipo de draft",
+      "snake": {
+        "title": "En vivo",
+        "desc": "Cada quien elige en su turno, contra reloj."
+      },
+      "auto": {
+        "title": "Automático",
+        "desc": "El sistema ficha por todos a la hora que elijas."
+      }
+    },
+    "day": {
+      "label": "Fecha y hora del draft",
+      "placeholder": "Elige fecha y hora",
+      "autoHint": "A esta hora el sistema empieza a fichar solo. No hace falta que nadie entre.",
+      "snakeHint": "Cuándo se reúnen a draftear. El draft lo activas tú desde la sala."
+    },
+    "timer": {
+      "label": "Tiempo por selección",
+      "minutes": "min"
+    },
+    "auto": {
+      "requirementTitle": "Requiere la liga completa",
+      "requirementBody": "Van {joined} de {total} participantes. Si falta gente a la hora del draft, no arranca: espera y comienza solo en cuanto se llene."
+    },
+    "submit": "Guardar",
+    "saved": "Configuración del draft actualizada"
+  },
   "mockDraft": {
     "intro": {
       "title": "Mock Draft",
@@ -453,7 +484,10 @@
     },
     "enterDraftRoom": "Entrar a la sala del draft",
     "goToDraftActivate": "Ir al draft · Activar",
-    "activateHint": "Podrás activar el draft cuando estés dentro de la sala."
+    "activateHint": "Podrás activar el draft cuando estés dentro de la sala.",
+    "draftType": "Tipo de draft",
+    "autoDraftScheduled": "El draft correrá solo en la fecha programada.",
+    "autoDraftWaitingMembers": "El draft automático arrancará en cuanto se llene la liga."
   },
   "teamCreate": {
     "preview": "Vista previa",

@@ -47,6 +47,9 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'about',
   'guides',
   'guideDetail',
+  // La invitación llega por correo, muchas veces antes de tener cuenta: no
+  // puede pasar por la selección de liga antes de dejarse ver.
+  'invitation',
   // El hub de juego (`/`, alias `/gaming`) es indexable y está prerenderizado:
   // no debe depender de que la API de ligas responda. La vista solo lista los
   // tres modos y navega a otras rutas — esas sí piden liga cuando toca.
@@ -235,6 +238,28 @@ const routes: Array<RouteRecordRaw> = [
       title: 'Favorite Football Team - Football Fantasy',
       description: 'Select your favorite football team',
       requiresAuth: true
+    }
+  },
+  {
+    path: '/avisos',
+    name: 'notices',
+    component: () => import(/* webpackChunkName: "notices" */ '@/views/notice/NoticesView.vue'),
+    meta: {
+      title: 'Avisos - Fantasy MX',
+      description: 'Invitaciones y novedades de tus ligas y quinielas',
+      requiresAuth: true
+    }
+  },
+  {
+    // Destino del enlace del correo de invitación. Pública: quien la abre puede
+    // no tener cuenta todavía — la pantalla lo manda a registrarse y vuelve.
+    path: '/invitations/:token',
+    name: 'invitation',
+    component: () => import(/* webpackChunkName: "invitation" */ '@/views/invitation/InvitationView.vue'),
+    meta: {
+      title: 'Invitación - Fantasy MX',
+      description: 'Acepta tu invitación a una liga fantasy o quiniela',
+      requiresAuth: false
     }
   },
   {

@@ -1,0 +1,50 @@
+{
+  "invite": {
+    "trigger": "Invite",
+    "title": "Invite by email",
+    "subtitleLeague": "We email them a link to join the league",
+    "subtitlePool": "We email them a link to join the pool",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name{'@'}email.com",
+    "send": "Send invitation",
+    "sending": "Sending…",
+    "sent": "Invitation sent to {email}",
+    "hint": "If they don't have an account yet, the email walks them through creating one and the invitation is accepted right after.",
+    "spotsLeft": "1 spot left | {count} spots left",
+    "noSpots": "No spots left",
+    "pending": {
+      "title": "Pending invitations",
+      "empty": "You haven't invited anyone yet.",
+      "expires": "Expires on {date}",
+      "cancel": "Cancel invitation",
+      "cancelled": "Invitation cancelled"
+    }
+  },
+  "accept": {
+    "eyebrowLeague": "Fantasy league invitation",
+    "eyebrowPool": "Pool invitation",
+    "invitedBy": "{name} invited you",
+    "forEmail": "Invitation for {email}",
+    "accept": "Accept invitation",
+    "accepting": "Accepting…",
+    "decline": "Decline",
+    "declined": "You declined the invitation",
+    "accepted": "You're in! Welcome to \"{name}\"",
+    "goToLeague": "Go to the league",
+    "goToPool": "Go to the pool",
+    "signInTitle": "Sign in to accept",
+    "signInBody": "This invitation is for {email}. Sign in with that account to accept it.",
+    "signIn": "Sign in",
+    "registerTitle": "Create your account to accept",
+    "registerBody": "There is no account for {email} yet. Create one and the invitation is accepted right after.",
+    "register": "Create account",
+    "wrongAccountTitle": "You're on a different account",
+    "wrongAccountBody": "This invitation is for {email} and you are signed in as {current}.",
+    "switchAccount": "Switch account",
+    "expiresOn": "The link expires on {date}",
+    "invalidTitle": "This link no longer works",
+    "invalidBody": "The invitation may have expired or the admin cancelled it. Ask them for a new one.",
+    "goHome": "Go home",
+    "closed": "This league or pool already started, so the invitation may no longer be acceptable."
+  }
+}

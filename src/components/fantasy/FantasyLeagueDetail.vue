@@ -264,32 +264,55 @@
               <v-icon name="gi-soccer-ball" class="w-4 h-4 text-orange-500 dark:text-orange-400" />
               <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.draft') }}</h3>
             </div>
-            <span
-              class="text-2xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
-              :class="DRAFT_PILL_CLASS[draftStatusKey]"
-            >
-              {{ draftStatusLabel }}
-            </span>
+            <div class="flex items-center gap-2">
+              <!-- Configurar: sólo el admin, y sólo mientras el draft no haya
+                   arrancado — cambiar el tipo a media selección no tendría
+                   a dónde aplicarse. -->
+              <button
+                v-if="league.isAdmin && draftStatusKey === 'pending'"
+                type="button"
+                :aria-label="$t('fantasy.draftSettings.title')"
+                class="p-1 -m-1 text-gray-400 dark:text-gray-500 active:text-emerald-600 dark:active:text-emerald-400 transition-colors"
+                @click="showDraftSettings = true"
+              >
+                <v-icon name="hi-solid-cog" class="w-4 h-4" />
+              </button>
+              <span
+                class="text-2xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
+                :class="DRAFT_PILL_CLASS[draftStatusKey]"
+              >
+                {{ draftStatusLabel }}
+              </span>
+            </div>
           </div>
 
           <!-- Draft details -->
           <div class="space-y-2.5">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.draftType') }}</span>
+              <span class="text-xs font-semibold text-gray-900 dark:text-white">
+                {{ $t(`fantasy.draftSettings.type.${league.draft.draft_type === 'auto' ? 'auto' : 'snake'}.title`) }}
+              </span>
+            </div>
             <div class="flex justify-between items-center">
               <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.date') }}</span>
               <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
                 {{ formatDate(league.draft.draft_day, true) }}
               </span>
             </div>
-            <div class="flex justify-between items-center">
+            <!-- El auto draft no tiene reloj de turno que mostrar. -->
+            <div v-if="league.draft.draft_type !== 'auto'" class="flex justify-between items-center">
               <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.pickTimer') }}</span>
               <span class="text-xs font-semibold text-gray-900 dark:text-white tabular-nums">
                 {{ league.draft.pick_timer }}s
               </span>
             </div>
 
-            <!-- Auto-pick toggle -->
+            <!-- Auto-pick toggle. En el auto draft no hay nada que decidir:
+                 todos los turnos los ficha el backend, así que el interruptor
+                 no tendría efecto y sólo confundiría. -->
             <div
-              v-if="(league.isMember || league.isAdmin) && draftStatusValue !== 'COMPLETED'"
+              v-if="(league.isMember || league.isAdmin) && draftStatusValue !== 'COMPLETED' && league.draft.draft_type !== 'auto'"
               class="flex justify-between items-center"
             >
               <span class="text-xs text-gray-400 dark:text-gray-500">{{ $t('fantasy.detail.autoPick') }}</span>
@@ -320,12 +343,24 @@
                 v-if="draftStatusValue !== 'COMPLETED'"
                 variant="primary"
                 size="sm"
-                :text="league.isAdmin && draftStatusValue !== 'ACTIVE' ? $t('fantasy.detail.goToDraftActivate') : $t('fantasy.detail.enterDraftRoom')"
+                :text="isAutoDraft
+                  ? $t('fantasy.detail.enterDraftRoom')
+                  : (league.isAdmin && draftStatusValue !== 'ACTIVE' ? $t('fantasy.detail.goToDraftActivate') : $t('fantasy.detail.enterDraftRoom'))"
                 class="w-full"
                 @click="goToDraft"
               />
+              <!-- El auto draft no se activa a mano: arranca solo a su hora, y
+                   lo que el admin necesita saber es qué falta para que ocurra. -->
               <p
-                v-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
+                v-if="isAutoDraft && draftStatusKey === 'pending'"
+                class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
+              >
+                {{ isLeagueFull
+                  ? $t('fantasy.detail.autoDraftScheduled')
+                  : $t('fantasy.detail.autoDraftWaitingMembers') }}
+              </p>
+              <p
+                v-else-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"
                 class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
               >
                 {{ $t('fantasy.detail.activateHint') }}
@@ -364,9 +399,23 @@
               <v-icon name="hi-solid-users" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               <h3 class="text-2xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $t('fantasy.detail.participants') }}</h3>
             </div>
-            <span class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
-              {{ league.members_count || 0 }}/{{ league.participants_count }}
-            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-2xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
+                {{ league.members_count || 0 }}/{{ league.participants_count }}
+              </span>
+              <!-- Invitar por correo. Sólo el admin, y sólo mientras quede cupo
+                   y el draft no haya arrancado: después el invitado entraría sin
+                   plantel. -->
+              <button
+                v-if="canInvite"
+                type="button"
+                class="h-8 pl-2 pr-3 rounded-full flex items-center gap-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-2xs font-bold active:scale-95 transition-transform duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+                @click="isInviteOpen = true"
+              >
+                <v-icon name="hi-solid-mail" class="w-3.5 h-3.5" aria-hidden="true" />
+                {{ $t('invitation.invite.trigger') }}
+              </button>
+            </div>
           </div>
 
           <!-- Participant grid cards -->
@@ -445,6 +494,24 @@
       @close="showCreateTeamModal = false"
       @create="goToCreateTeam"
     />
+
+    <!-- Configuración del draft (admin) -->
+    <DraftSettingsModal
+      :is-visible="showDraftSettings"
+      :league="league"
+      @close="showDraftSettings = false"
+      @saved="fetchLeague"
+    />
+
+    <!-- Invitar participantes por correo (admin) -->
+    <InviteMemberModal
+      v-if="league"
+      :is-visible="isInviteOpen"
+      invitable-type="fantasy_league"
+      :invitable-uuid="league.uuid"
+      :spots-left="spotsLeft"
+      @close="isInviteOpen = false"
+    />
   </div>
 </template>
 
@@ -456,6 +523,8 @@ import { useToast } from "@/composables/useToast";
 import { useFantasyLeagueDetailStore } from "@/store/fantasy/useFantasyLeagueDetailStore";
 import { ButtonComponent } from "@/components/ui";
 import CreateTeamModal from "@/components/fantasy/team/CreateTeamModal.vue";
+import DraftSettingsModal from "@/components/fantasy/draft/DraftSettingsModal.vue";
+import InviteMemberModal from "@/components/invitation/InviteMemberModal.vue";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
@@ -480,6 +549,8 @@ const league = ref<FantasyLeaguesResponse | null>(null);
 const isLoading = ref(true);
 const errorMessage = ref<string>("");
 const showCreateTeamModal = ref(false);
+const showDraftSettings = ref(false);
+const isInviteOpen = ref(false);
 const isDraftActivatedViaAbly = ref(false);
 const isAutoPick = ref(false);
 const isTogglingAutoPick = ref(false);
@@ -510,6 +581,31 @@ const draftStatusKey = computed<DraftStatusKey>(() => {
 
 const draftStatusLabel = computed(() =>
   t(`fantasy.detail.draftStatus.${draftStatusKey.value}`),
+);
+
+const isAutoDraft = computed(() => league.value?.draft?.draft_type === "auto");
+
+// El auto draft no arranca hasta que no esté la liga entera: es lo que decide
+// qué aviso se le muestra al admin bajo el botón.
+const isLeagueFull = computed(
+  () => (league.value?.participants?.length ?? 0) >= (league.value?.participants_count ?? 0),
+);
+
+const spotsLeft = computed(() =>
+  Math.max(
+    0,
+    (league.value?.participants_count ?? 0) - (league.value?.participants?.length ?? 0),
+  ),
+);
+
+// Invitar sólo tiene sentido antes del draft y con lugares libres; el backend
+// vuelve a comprobar lo mismo al enviar y al aceptar.
+const canInvite = computed(
+  () =>
+    !!league.value?.isAdmin &&
+    draftStatusKey.value !== "active" &&
+    draftStatusKey.value !== "completed" &&
+    !isLeagueFull.value,
 );
 
 const DRAFT_DOT_CLASS: Record<DraftStatusKey, string> = {

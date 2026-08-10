@@ -276,14 +276,24 @@ const showPrivacyModal = ref(false);
 // Terms acceptance
 const acceptTerms: Ref<boolean> = ref(false);
 
-// Form payload
+// Form payload.
+// El correo puede venir prellenado por `?email=`: es el camino de una
+// invitación, donde la cuenta TIENE que crearse con el correo invitado o el
+// enlace no la reconoce después. Se abre el formulario de correo directamente
+// para no esconder detrás de un clic el único campo que ya está decidido.
+const invitedEmail = (route.query.email as string | undefined)?.trim() ?? '';
+
 const payload = ref<UserStorePayload>({
     firstName: '',
     lastName: '',
-    email: '',
+    email: invitedEmail,
     password: '',
     password_confirmation: ''
 });
+
+if (invitedEmail) {
+    showEmailForm.value = true;
+}
 
 // Form errors
 const errors = ref<FormErrors>({
