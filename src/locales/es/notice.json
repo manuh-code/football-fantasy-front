@@ -1,0 +1,45 @@
+{
+  "bell": {
+    "aria": "Avisos",
+    "ariaUnread": "Avisos, {count} sin leer"
+  },
+  "panel": {
+    "title": "Avisos",
+    "subtitleEmpty": "Todo al día",
+    "subtitleUnread": "1 sin leer | {count} sin leer",
+    "markAllRead": "Marcar todo como leído",
+    "viewAll": "Ver todos los avisos"
+  },
+  "page": {
+    "title": "Avisos",
+    "subtitle": "Invitaciones y novedades de tus ligas y quinielas",
+    "loadMore": "Cargar más"
+  },
+  "empty": {
+    "title": "No tienes avisos",
+    "body": "Aquí van a llegar las invitaciones a ligas fantasy y quinielas."
+  },
+  "actions": {
+    "delete": "Eliminar aviso",
+    "open": "Abrir",
+    "retry": "Reintentar"
+  },
+  "time": {
+    "now": "Ahora",
+    "minutes": "hace {n} min",
+    "hours": "hace {n} h",
+    "days": "hace {n} d"
+  },
+  "types": {
+    "fantasy_league_invitation": {
+      "title": "Invitación a liga fantasy",
+      "body": "{inviter} te invitó a la liga \"{name}\".",
+      "action": "Ver invitación"
+    },
+    "pool_invitation": {
+      "title": "Invitación a quiniela",
+      "body": "{inviter} te invitó a la quiniela \"{name}\".",
+      "action": "Ver invitación"
+    }
+  }
+}

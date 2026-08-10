@@ -40,9 +40,13 @@ export function useAblyBroadcast() {
     const matchCenterFixtureChannel = (fixtureUuid: string) => channel(`match-center-fixture-${fixtureUuid}`);
     const matchCenterFixtureLocalizedChannel = (fixtureUuid: string) => channel(`match-center-fixture-${fixtureUuid}_${userStore.getTimezone}`);
 
+    // Canal personal de avisos (la campanita). Uno por usuario: es lo único que
+    // el backend conoce del destinatario cuando publica.
+    const userNoticesChannel = (userUuid: string) => channel(`user-notices-${userUuid}`);
+
     const draftFantasyLeagueChannel = (leagueUuid: string) => channel(`draft-${leagueUuid}`);
     const fantasyLeagueChannel = (leagueUuid: string) => channel(`fantasy-league-${leagueUuid}`);
     const draftRoomChannel = (draftUuid: string) => channel(`draft-${draftUuid}`);
 
-    return { ably, channel, inPlayChannel, liveFixturesChannel, matchCenterFixtureChannel, matchCenterFixtureLocalizedChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
+    return { ably, channel, inPlayChannel, liveFixturesChannel, matchCenterFixtureChannel, matchCenterFixtureLocalizedChannel, userNoticesChannel, draftFantasyLeagueChannel, fantasyLeagueChannel, draftRoomChannel }
 }

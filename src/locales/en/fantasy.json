@@ -309,6 +309,37 @@
       "loadError": "Could not load the draft grade."
     }
   },
+  "draftSettings": {
+    "title": "Draft settings",
+    "subtitle": "Choose how and when this league drafts",
+    "type": {
+      "label": "Draft type",
+      "snake": {
+        "title": "Live",
+        "desc": "Everyone picks on their turn, against the clock."
+      },
+      "auto": {
+        "title": "Automatic",
+        "desc": "The system picks for everyone at the time you set."
+      }
+    },
+    "day": {
+      "label": "Draft date and time",
+      "placeholder": "Pick a date and time",
+      "autoHint": "At this time the system starts picking on its own. Nobody needs to show up.",
+      "snakeHint": "When everyone meets to draft. You activate it from the draft room."
+    },
+    "timer": {
+      "label": "Time per pick",
+      "minutes": "min"
+    },
+    "auto": {
+      "requirementTitle": "Requires a full league",
+      "requirementBody": "{joined} of {total} participants have joined. If anyone is missing at draft time it won't start: it waits and begins on its own once the league fills up."
+    },
+    "submit": "Save",
+    "saved": "Draft settings updated"
+  },
   "mockDraft": {
     "intro": {
       "title": "Mock Draft",
@@ -453,7 +484,10 @@
     },
     "enterDraftRoom": "Enter the draft room",
     "goToDraftActivate": "Go to draft · Activate",
-    "activateHint": "You can activate the draft once you're inside the room."
+    "activateHint": "You can activate the draft once you're inside the room.",
+    "draftType": "Draft type",
+    "autoDraftScheduled": "The draft will run on its own at the scheduled time.",
+    "autoDraftWaitingMembers": "The auto draft will start as soon as the league is full."
   },
   "teamCreate": {
     "preview": "Preview",

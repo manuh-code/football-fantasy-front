@@ -46,7 +46,11 @@
       <div class="flex-1" />
 
       <!-- Auth: login / profile -->
-      <div class="flex items-center shrink-0">
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Avisos: esta vista monta su propio header, así que la campanita
+             también tiene que estar aquí o desaparece en la pantalla de liga. -->
+        <NoticeBell v-if="isAuthenticatedRef" />
+
         <button
           v-if="!isAuthenticatedRef"
           @click="handleLogin"
@@ -160,6 +164,7 @@ import { useI18n } from "vue-i18n";
 import { getActivePinia, type Pinia, type Store } from "pinia";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import StageSelector from "@/components/football/leagues/StageSelector.vue";
+import NoticeBell from "@/components/notice/NoticeBell.vue";
 
 // Two-way bindings so the parent (HomeComponent) always has the active context.
 const selectedStageUuid = defineModel<string>("stageUuid", { default: "" });

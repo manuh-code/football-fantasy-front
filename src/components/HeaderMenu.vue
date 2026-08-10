@@ -37,6 +37,10 @@
           {{ $t('home.header.login') }}
         </button>
 
+        <!-- Avisos (bandeja + tiempo real). Sólo con sesión: sin usuario no hay
+             canal al que suscribirse ni bandeja que leer. -->
+        <NoticeBell v-if="isAuthenticatedRef" />
+
         <!-- User Avatar (when authenticated) -->
         <button
           v-if="isAuthenticatedRef"
@@ -64,6 +68,7 @@
 </template>
 
 <script lang="ts" setup>
+import NoticeBell from '@/components/notice/NoticeBell.vue'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useUserStore } from '@/store/user/useUserStore'
 import { computed, ref, watch } from 'vue'

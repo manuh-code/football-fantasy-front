@@ -1,0 +1,50 @@
+{
+  "invite": {
+    "trigger": "Invitar",
+    "title": "Invitar por correo",
+    "subtitleLeague": "Se le manda un correo con el enlace para unirse a la liga",
+    "subtitlePool": "Se le manda un correo con el enlace para unirse a la quiniela",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "nombre{'@'}correo.com",
+    "send": "Enviar invitación",
+    "sending": "Enviando…",
+    "sent": "Invitación enviada a {email}",
+    "hint": "Si esa persona todavía no tiene cuenta, el correo la guía para crearla y la invitación queda aceptada al terminar.",
+    "spotsLeft": "Queda 1 lugar | Quedan {count} lugares",
+    "noSpots": "Ya no queda cupo",
+    "pending": {
+      "title": "Invitaciones pendientes",
+      "empty": "Todavía no has invitado a nadie.",
+      "expires": "Vence el {date}",
+      "cancel": "Cancelar invitación",
+      "cancelled": "Invitación cancelada"
+    }
+  },
+  "accept": {
+    "eyebrowLeague": "Invitación a liga fantasy",
+    "eyebrowPool": "Invitación a quiniela",
+    "invitedBy": "Te invitó {name}",
+    "forEmail": "Invitación para {email}",
+    "accept": "Aceptar invitación",
+    "accepting": "Aceptando…",
+    "decline": "Rechazar",
+    "declined": "Rechazaste la invitación",
+    "accepted": "¡Listo! Ya formas parte de \"{name}\"",
+    "goToLeague": "Ir a la liga",
+    "goToPool": "Ir a la quiniela",
+    "signInTitle": "Inicia sesión para aceptar",
+    "signInBody": "Esta invitación es para {email}. Entra con esa cuenta para aceptarla.",
+    "signIn": "Iniciar sesión",
+    "registerTitle": "Crea tu cuenta para aceptar",
+    "registerBody": "Todavía no hay una cuenta con {email}. Créala y la invitación se acepta enseguida.",
+    "register": "Crear cuenta",
+    "wrongAccountTitle": "Estás en otra cuenta",
+    "wrongAccountBody": "Esta invitación es para {email} y ahora mismo estás como {current}.",
+    "switchAccount": "Cambiar de cuenta",
+    "expiresOn": "El enlace vence el {date}",
+    "invalidTitle": "Este enlace ya no sirve",
+    "invalidBody": "La invitación pudo vencer o el administrador la canceló. Pídele una nueva.",
+    "goHome": "Ir al inicio",
+    "closed": "Esta liga o quiniela ya arrancó, la invitación puede que ya no se pueda aceptar."
+  }
+}

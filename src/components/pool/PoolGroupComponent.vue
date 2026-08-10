@@ -202,6 +202,17 @@
               }}</span>
             </button>
           </div>
+
+          <!-- Invitar por correo: para quien no está a mano para pasarle el
+               código. El invitado recibe el enlace y entra sin teclearlo. -->
+          <button
+            type="button"
+            @click="isInviteOpen = true"
+            class="mt-2 w-full h-11 flex items-center justify-center gap-1.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 transition-transform active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+          >
+            <v-icon name="hi-solid-mail" class="w-4 h-4" aria-hidden="true" />
+            <span class="text-footnote font-semibold">{{ $t("invitation.invite.trigger") }}</span>
+          </button>
           </template>
         </div>
 
@@ -309,6 +320,16 @@
       :member="selectedMember"
       @close="memberPredictionsOpen = false"
     />
+
+    <!-- Invitar participantes por correo (admin) -->
+    <InviteMemberModal
+      v-if="pool"
+      :is-visible="isInviteOpen"
+      invitable-type="pool_group"
+      :invitable-uuid="pool.uuid"
+      :spots-left="spotsLeft"
+      @close="isInviteOpen = false"
+    />
   </div>
 </template>
 
@@ -322,6 +343,7 @@ import PoolPredictionComponent from "@/components/pool/PoolPredictionComponent.v
 import PoolStandingComponent from "@/components/pool/PoolStandingComponent.vue";
 import PoolStandingsPreview from "@/components/pool/PoolStandingsPreview.vue";
 import PoolMemberPredictionsSheet from "@/components/pool/PoolMemberPredictionsSheet.vue";
+import InviteMemberModal from "@/components/invitation/InviteMemberModal.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 
@@ -391,6 +413,13 @@ const isPoolFull = computed(() => {
   const max = pool.value?.max_participants || 0;
   return max > 0 && memberCount.value >= max;
 });
+
+// Invitaciones por correo (misma tarjeta que el código de acceso, que ya es
+// sólo del admin: la API no manda `access_code` a nadie más).
+const isInviteOpen = ref(false);
+const spotsLeft = computed(() =>
+  Math.max(0, (pool.value?.max_participants || 0) - memberCount.value),
+);
 
 // Member predictions drawer — lets you drill into any membership's picks
 // per round. Requires a stage (predictions are stage-scoped).

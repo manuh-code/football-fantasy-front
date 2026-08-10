@@ -1,0 +1,45 @@
+{
+  "bell": {
+    "aria": "Notices",
+    "ariaUnread": "Notices, {count} unread"
+  },
+  "panel": {
+    "title": "Notices",
+    "subtitleEmpty": "All caught up",
+    "subtitleUnread": "1 unread | {count} unread",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all notices"
+  },
+  "page": {
+    "title": "Notices",
+    "subtitle": "Invitations and news from your leagues and pools",
+    "loadMore": "Load more"
+  },
+  "empty": {
+    "title": "No notices yet",
+    "body": "Invitations to fantasy leagues and pools will show up here."
+  },
+  "actions": {
+    "delete": "Delete notice",
+    "open": "Open",
+    "retry": "Retry"
+  },
+  "time": {
+    "now": "Now",
+    "minutes": "{n} min ago",
+    "hours": "{n} h ago",
+    "days": "{n} d ago"
+  },
+  "types": {
+    "fantasy_league_invitation": {
+      "title": "Fantasy league invitation",
+      "body": "{inviter} invited you to the league \"{name}\".",
+      "action": "View invitation"
+    },
+    "pool_invitation": {
+      "title": "Pool invitation",
+      "body": "{inviter} invited you to the pool \"{name}\".",
+      "action": "View invitation"
+    }
+  }
+}
