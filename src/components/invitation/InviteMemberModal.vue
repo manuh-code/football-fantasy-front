@@ -166,9 +166,12 @@ const subtitle = computed(() => {
       props.spotsLeft,
     );
   }
-  return props.invitableType === "pool_group"
-    ? t("invitation.invite.subtitlePool")
-    : t("invitation.invite.subtitleLeague");
+  // Un mapa y no un ternario: con dos tipos "el que no es quiniela" era la liga
+  // fantasy, pero al aparecer el survivor ese caso por defecto le habría puesto
+  // el subtítulo equivocado.
+  if (props.invitableType === "pool_group") return t("invitation.invite.subtitlePool");
+  if (props.invitableType === "survivor_pool") return t("invitation.invite.subtitleSurvivor");
+  return t("invitation.invite.subtitleLeague");
 });
 
 /**

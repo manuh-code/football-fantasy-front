@@ -46,7 +46,9 @@
     "all": "Todos",
     "none": "Ninguno",
     "optional": "Opcional",
-    "required": "Obligatorio"
+    "required": "Obligatorio",
+    "on": "Sí",
+    "off": "No"
   },
   "validation": {
     "required": "Este campo es obligatorio",

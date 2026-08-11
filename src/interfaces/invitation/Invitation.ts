@@ -1,4 +1,4 @@
-export type InvitableType = "fantasy_league" | "pool_group";
+export type InvitableType = "fantasy_league" | "pool_group" | "survivor_pool";
 
 export type InvitationStatus =
   | "pending"

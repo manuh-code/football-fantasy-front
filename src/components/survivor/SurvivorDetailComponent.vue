@@ -26,13 +26,59 @@
           <p v-if="survivor?.description" class="text-footnote text-gray-500 dark:text-gray-400 leading-snug mt-0.5">
             {{ survivor.description }}
           </p>
-          <div v-if="survivor" class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 mt-2">
-            <v-icon name="hi-solid-heart" class="w-3.5 h-3.5 text-rose-400" />
-            <span>{{ $t('survivor.list.livesCount', { count: survivor.max_lives }) }}</span>
+          <div v-if="survivor" class="flex items-center flex-wrap gap-x-3 gap-y-1.5 text-xs text-gray-400 dark:text-gray-500 mt-2">
+            <span class="flex items-center gap-1.5">
+              <v-icon name="hi-solid-heart" class="w-3.5 h-3.5 text-rose-400" />
+              {{ $t('survivor.list.livesCount', { count: survivor.lives_remaining ?? survivor.max_lives }) }}
+            </span>
+            <span
+              v-if="!survivor.is_official && survivor.max_participants"
+              class="flex items-center gap-1.5"
+            >
+              <v-icon name="hi-solid-users" class="w-3.5 h-3.5" />
+              <span class="tabular-nums">{{ survivor.participants_count ?? 0 }}/{{ survivor.max_participants }}</span>
+            </span>
           </div>
         </div>
       </div>
+
+      <!-- Repartir el survivor: sólo su admin, y sólo mientras quede cupo. El
+           código y la invitación por correo llevan al mismo sitio; se ofrecen
+           los dos porque uno se pega en un chat y el otro no exige tenerlo. -->
+      <div
+        v-if="survivor?.is_admin && survivor.access_code"
+        class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-gray-50 dark:border-gray-700/40"
+      >
+        <button
+          type="button"
+          class="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-gray-50 dark:bg-gray-900/40 text-footnote font-bold tracking-wider text-gray-700 dark:text-gray-200 active:bg-gray-100 dark:active:bg-gray-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/50"
+          :aria-label="$t('survivor.list.copyCodeAria', { code: survivor.access_code })"
+          @click="copyCode(survivor.access_code)"
+        >
+          <v-icon :name="codeCopied ? 'hi-solid-check' : 'hi-solid-duplicate'" class="w-3.5 h-3.5" />
+          {{ survivor.access_code }}
+        </button>
+
+        <button
+          v-if="canInvite"
+          type="button"
+          class="inline-flex items-center gap-1.5 h-9 pl-2.5 pr-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-footnote font-bold active:scale-95 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+          @click="isInviteOpen = true"
+        >
+          <v-icon name="hi-solid-mail" class="w-3.5 h-3.5" aria-hidden="true" />
+          {{ $t('invitation.invite.trigger') }}
+        </button>
+      </div>
     </div>
+
+    <InviteMemberModal
+      v-if="survivor?.is_admin"
+      :is-visible="isInviteOpen"
+      invitable-type="survivor_pool"
+      :invitable-uuid="survivorUuid"
+      :spots-left="spotsLeft"
+      @close="isInviteOpen = false"
+    />
 
     <!-- Rounds loading -->
     <div v-if="loadingRounds" class="flex items-center justify-center py-10">
@@ -232,6 +278,7 @@ import { survivorService } from "@/services/survivor/SurvivorServive";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
 import { useToast } from "@/composables/useToast";
 import RoundCarousel from "@/components/ui/RoundCarousel.vue";
+import InviteMemberModal from "@/components/invitation/InviteMemberModal.vue";
 import type { FootballRoundResponse } from "@/interfaces/football/round/FootballRoundResponse";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
@@ -242,11 +289,39 @@ const props = defineProps<{ survivorUuid: string }>();
 
 const { t, locale } = useI18n();
 const leagueStore = useFootballLeagueStore();
-const { success } = useToast();
+const { success, error } = useToast();
 
 // --- Survivor header (resolved from the user's survivors so the header survives refresh) ---
 const survivor = ref<SurvivorResponse | null>(null);
 const loadingSurvivor = ref(false);
+
+// --- Repartir el survivor (sólo admin) ---
+const isInviteOpen = ref(false);
+const codeCopied = ref(false);
+
+const spotsLeft = computed(() => {
+  const max = survivor.value?.max_participants;
+  if (!max) return undefined;
+  return Math.max(0, max - (survivor.value?.participants_count ?? 0));
+});
+
+/** Sin cupo libre no tiene sentido gastar una invitación. */
+const canInvite = computed(() => spotsLeft.value === undefined || spotsLeft.value > 0);
+
+/**
+ * `navigator.clipboard` no existe fuera de un contexto seguro, así que el fallo
+ * se avisa en vez de dejar al usuario creyendo que copió el código.
+ */
+const copyCode = async (code: string) => {
+  try {
+    await navigator.clipboard.writeText(code);
+    codeCopied.value = true;
+    setTimeout(() => (codeCopied.value = false), 2000);
+  } catch (e) {
+    console.error("Error copying access code:", e);
+    error(t("survivor.list.copyErrorTitle"), t("survivor.list.copyErrorBody", { code }));
+  }
+};
 
 // --- Rounds ---
 const rounds = ref<FootballRoundResponse[]>([]);

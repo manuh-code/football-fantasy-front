@@ -2,8 +2,14 @@ import type { AxiosRequestConfig } from "axios";
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
+import { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
 import { SurvivorPayload } from "@/interfaces/survivor/SurvivorPayload";
 import { SurvivorResponse } from "@/interfaces/survivor/SurvivorResponse";
+import {
+    SurvivorCreatePayload,
+    SurvivorSettingsPayload,
+    SurvivorSettingsResponse,
+} from "@/interfaces/survivor/SurvivorSettingsResponse";
 import { SurvivorUserPickResponse } from "@/interfaces/survivor/SurvivorUserPickResponse";
 
 export class SurvivorService {
@@ -75,6 +81,75 @@ export class SurvivorService {
             return;
         }
         throw new Error('Failed to delete picks by IDs');
+    }
+
+    // ── Survivors creados por usuarios ──────────────────────────────────────
+
+    /** La temporada en curso de una liga: sobre ella se jugará el survivor. */
+    async getStageByLeagueUuid(leagueUuid: string): Promise<FootballStageResponse> {
+        const response = await this.api.get<ApiResponse<FootballStageResponse>>(`survivor/league/${leagueUuid}/stage`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch the survivor stage for this league');
+    }
+
+    async createSurvivor(payload: SurvivorCreatePayload): Promise<SurvivorResponse> {
+        const response = await this.api.post<ApiResponse<SurvivorResponse>>('survivor/store', payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to create survivor');
+    }
+
+    async joinByAccessCode(accessCode: string): Promise<SurvivorResponse> {
+        const response = await this.api.post<ApiResponse<SurvivorResponse>>('survivor/join', { access_code: accessCode });
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to join survivor');
+    }
+
+    async leaveSurvivor(survivorUuid: string): Promise<void> {
+        const response = await this.api.delete<ApiResponse<void>>(`survivor/leave/${survivorUuid}`);
+        if (response.data.code === 200) {
+            return;
+        }
+        throw new Error('Failed to leave survivor');
+    }
+
+    async deleteSurvivor(survivorUuid: string): Promise<void> {
+        const response = await this.api.delete<ApiResponse<void>>(`survivor/destroy/${survivorUuid}`);
+        if (response.data.code === 200) {
+            return;
+        }
+        throw new Error('Failed to delete survivor');
+    }
+
+    // ── Reglas ──────────────────────────────────────────────────────────────
+
+    async getSettings(survivorUuid: string): Promise<SurvivorSettingsResponse> {
+        const response = await this.api.get<ApiResponse<SurvivorSettingsResponse>>(`survivor/settings/${survivorUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch survivor settings');
+    }
+
+    async updateSettings(survivorUuid: string, payload: SurvivorSettingsPayload): Promise<SurvivorSettingsResponse> {
+        const response = await this.api.put<ApiResponse<SurvivorSettingsResponse>>(`survivor/settings/${survivorUuid}`, payload);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to update survivor settings');
+    }
+
+    async resetSettings(survivorUuid: string): Promise<SurvivorSettingsResponse> {
+        const response = await this.api.delete<ApiResponse<SurvivorSettingsResponse>>(`survivor/settings/${survivorUuid}`);
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to reset survivor settings');
     }
 }
 

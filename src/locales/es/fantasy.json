@@ -219,7 +219,9 @@
       "notAvailableTitle": "El draft aún no está disponible",
       "notAvailableBody": "El administrador de la liga todavía no activó el draft. Te avisaremos cuando comience.",
       "activatedTitle": "Draft activado",
-      "activatedMessage": "El draft se activó correctamente."
+      "activatedMessage": "El draft se activó correctamente.",
+      "autoDraftNoRoomTitle": "Este draft es automático",
+      "autoDraftNoRoomBody": "El sistema ficha por todos los equipos; no hay sala que atender. Te avisaremos por correo cuando termine."
     },
     "room": {
       "autoPick": "Selección automática",
@@ -487,7 +489,8 @@
     "activateHint": "Podrás activar el draft cuando estés dentro de la sala.",
     "draftType": "Tipo de draft",
     "autoDraftScheduled": "El draft correrá solo en la fecha programada.",
-    "autoDraftWaitingMembers": "El draft automático arrancará en cuanto se llene la liga."
+    "autoDraftWaitingMembers": "El draft automático arrancará en cuanto se llene la liga.",
+    "autoDraftRunning": "El draft se está ejecutando en automático. Te avisaremos por correo cuando termine."
   },
   "teamCreate": {
     "preview": "Vista previa",

@@ -11,7 +11,7 @@
 
       <div class="animate-page-enter">
         <SurvivorMyPicksComponent v-if="activeTab === 'mypicks'" :survivor-uuid="survivorUuid" />
-        <SurvivorRulesComponent v-else-if="activeTab === 'rules'" />
+        <SurvivorRulesComponent v-else-if="activeTab === 'rules'" :survivor-uuid="survivorUuid" />
         <SurvivorDetailComponent v-else :survivor-uuid="survivorUuid" />
       </div>
     </div>

@@ -18,7 +18,8 @@
       "expires": "Vence el {date}",
       "cancel": "Cancelar invitación",
       "cancelled": "Invitación cancelada"
-    }
+    },
+    "subtitleSurvivor": "Se le manda un correo con el enlace para unirse al survivor"
   },
   "accept": {
     "eyebrowLeague": "Invitación a liga fantasy",

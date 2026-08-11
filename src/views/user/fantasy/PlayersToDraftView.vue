@@ -174,6 +174,21 @@ async function setupForLeague(uuid: string) {
   isLoadingLeague.value = true;
   try {
     const league = await fantasyLeagueService.showFantasyLeague(uuid);
+
+    // El auto draft no tiene sala que atender: el backend ficha por todos en
+    // segundo plano y el plantel se avisa por correo (FinishDraftAction /
+    // SendDraftSummaryJob), nunca en esta pantalla. Si alguien llega aquí de
+    // todos modos —enlace viejo, notificación, URL a mano— se le regresa al
+    // detalle de la liga antes de pintar nada de la sala en vivo.
+    if (league.draft?.draft_type === "auto") {
+      toast.info(
+        t("fantasy.draft.activation.autoDraftNoRoomTitle"),
+        t("fantasy.draft.activation.autoDraftNoRoomBody"),
+      );
+      router.replace({ name: "fantasyLeagueDetail", params: { uuid } });
+      return;
+    }
+
     leagueDetailStore.setCurrentLeague(league);
   } catch (error) {
     console.error("Error loading league:", error);
