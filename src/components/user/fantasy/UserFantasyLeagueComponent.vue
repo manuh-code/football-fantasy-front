@@ -32,9 +32,22 @@
           class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden transition-all duration-200 cursor-pointer active:scale-[0.98] hover:shadow-md"
         >
           <div class="p-4">
-            <!-- Header: icon + name + role badge -->
+            <!-- Header: escudo de la liga + name + role badge -->
             <div class="flex items-start gap-3">
-              <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+              <!-- El escudo dice de un vistazo sobre qué liga se juega. Si no
+                   hay logo se cae al icono de siempre, que nunca falla. -->
+              <img
+                v-if="leagueLogo(league)"
+                :src="leagueLogo(league)!"
+                :alt="league.football_league!.name"
+                loading="lazy"
+                class="w-11 h-11 object-contain shrink-0"
+                @error="onLeagueLogoError"
+              />
+              <div
+                v-else
+                class="w-11 h-11 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shrink-0"
+              >
                 <v-icon name="bi-trophy-fill" class="w-5 h-5 text-white" />
               </div>
               <div class="flex-1 min-w-0">
@@ -166,6 +179,25 @@ let shareResetTimer: ReturnType<typeof setTimeout> | undefined;
 
 // Computed properties
 const fantasyLeagues = computed(() => userStore.getUserFantasyLeagues);
+
+/**
+ * Escudos que no cargaron (CDN caído, url muerta).
+ *
+ * Se marca la url y no se le cambia el `src` a una imagen genérica: así la
+ * tarjeta vuelve a su icono de siempre en vez de enseñar un avatar de persona
+ * donde debería ir un escudo.
+ */
+const failedLogos = ref(new Set<string>());
+
+const onLeagueLogoError = (event: Event) => {
+  const src = (event.target as HTMLImageElement).src;
+  failedLogos.value = new Set(failedLogos.value).add(src);
+};
+
+const leagueLogo = (league: FantasyLeaguesResponse): string | null => {
+  const src = league.football_league?.image_path;
+  return src && !failedLogos.value.has(src) ? src : null;
+};
 
 // Methods
 const loadFantasyLeagues = async () => {

@@ -219,7 +219,9 @@
       "notAvailableTitle": "Draft not available yet",
       "notAvailableBody": "The league admin hasn't activated the draft yet. You'll be notified when it starts.",
       "activatedTitle": "Draft Activated",
-      "activatedMessage": "The draft has been activated successfully."
+      "activatedMessage": "The draft has been activated successfully.",
+      "autoDraftNoRoomTitle": "This draft is automatic",
+      "autoDraftNoRoomBody": "The system drafts every team on its own — there's no room to attend. We'll email you once it's done."
     },
     "room": {
       "autoPick": "Auto Pick",
@@ -487,7 +489,8 @@
     "activateHint": "You can activate the draft once you're inside the room.",
     "draftType": "Draft type",
     "autoDraftScheduled": "The draft will run on its own at the scheduled time.",
-    "autoDraftWaitingMembers": "The auto draft will start as soon as the league is full."
+    "autoDraftWaitingMembers": "The auto draft will start as soon as the league is full.",
+    "autoDraftRunning": "The draft is running automatically. We'll email you once it's done."
   },
   "teamCreate": {
     "preview": "Preview",

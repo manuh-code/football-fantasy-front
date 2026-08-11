@@ -339,18 +339,21 @@
 
             <!-- Action buttons -->
             <div class="pt-2 space-y-2">
+              <!-- El auto draft no tiene sala: el backend ficha por todos solo
+                   y el resultado se avisa por correo (ver FinishDraftAction).
+                   No hay nada que hacer ahí dentro, así que no se ofrece el
+                   botón — entrar a la sala queda bloqueado también del lado
+                   de la propia vista, por si alguien llega por URL directa. -->
               <ButtonComponent
-                v-if="draftStatusValue !== 'COMPLETED'"
+                v-if="!isAutoDraft && draftStatusValue !== 'COMPLETED'"
                 variant="primary"
                 size="sm"
-                :text="isAutoDraft
-                  ? $t('fantasy.detail.enterDraftRoom')
-                  : (league.isAdmin && draftStatusValue !== 'ACTIVE' ? $t('fantasy.detail.goToDraftActivate') : $t('fantasy.detail.enterDraftRoom'))"
+                :text="league.isAdmin && draftStatusValue !== 'ACTIVE' ? $t('fantasy.detail.goToDraftActivate') : $t('fantasy.detail.enterDraftRoom')"
                 class="w-full"
                 @click="goToDraft"
               />
               <!-- El auto draft no se activa a mano: arranca solo a su hora, y
-                   lo que el admin necesita saber es qué falta para que ocurra. -->
+                   lo que todos necesitan saber es qué falta para que ocurra. -->
               <p
                 v-if="isAutoDraft && draftStatusKey === 'pending'"
                 class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
@@ -358,6 +361,12 @@
                 {{ isLeagueFull
                   ? $t('fantasy.detail.autoDraftScheduled')
                   : $t('fantasy.detail.autoDraftWaitingMembers') }}
+              </p>
+              <p
+                v-else-if="isAutoDraft && draftStatusKey === 'active'"
+                class="text-2xs text-center text-gray-400 dark:text-gray-500 leading-tight"
+              >
+                {{ $t('fantasy.detail.autoDraftRunning') }}
               </p>
               <p
                 v-else-if="league.isAdmin && draftStatusValue !== 'ACTIVE' && draftStatusValue !== 'COMPLETED'"

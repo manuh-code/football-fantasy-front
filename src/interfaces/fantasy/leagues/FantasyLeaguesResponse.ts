@@ -1,4 +1,5 @@
 import { UserDataInterface } from "@/interfaces/user/userInterface";
+import { FootballLeagueSummary } from "@/interfaces/football/league/FootballLeagueSummary";
 import { FantasyDraftResponse } from "../draft/FantasyDraftResponse";
 import { FantasyLeagueScoringRules } from "./FantasyLeagueScoringRules";
 import { FantasyLeagueFormationResponse } from "./FantasyLeagueFormationResponse";
@@ -21,7 +22,10 @@ export interface FantasyLeaguesResponse {
     isMember: boolean | null;
     show_create_team: boolean | null;
     password: string | null;
+    /** Imagen propia de la liga fantasy (la que sube su admin). */
     image_path: string;
+    /** Liga de futbol sobre la que se juega; su escudo va en la tarjeta. */
+    football_league?: FootballLeagueSummary | null;
     started_at: string; // ISO 8601 date string
     isAdmin: boolean | null;
     participants: UserDataInterface[] | null;

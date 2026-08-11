@@ -18,7 +18,17 @@
     "countOne": "{count} survivor",
     "countOther": "{count} survivor",
     "lives": "Vidas",
-    "livesCount": "{count} vidas"
+    "livesCount": "{count} vidas",
+    "tabOfficial": "Oficiales",
+    "tabMine": "Mis ligas",
+    "groupsAria": "Tipo de survivor",
+    "adminBadge": "Admin",
+    "drawIsLoss": "Empate = vida",
+    "copyCodeAria": "Copiar el código {code}",
+    "copyErrorTitle": "No se pudo copiar",
+    "copyErrorBody": "Apunta el código a mano: {code}",
+    "emptyMineTitle": "Todavía no tienes ligas propias",
+    "emptyMineBody": "Crea un survivor con tus reglas o entra al de alguien más con su código."
   },
   "status": {
     "active": "Activo",
@@ -63,16 +73,6 @@
     "step2": "No puedes repetir un equipo que ya hayas elegido antes en este Survivor — una vez usado, queda \"quemado\" para el resto del torneo.",
     "step3": "Puedes cambiar tu elección todas las veces que quieras mientras la jornada no haya comenzado.",
     "step4": "En cuanto arranca el primer partido de la jornada, esta se bloquea por completo: ya no puedes elegir ni cambiar tu pick.",
-    "livesLabel": "Vidas",
-    "lives": {
-      "lossLabel": "Tu equipo pierde",
-      "lossHint": "El equipo que elegiste pierde su partido",
-      "noPickLabel": "No elegiste a tiempo",
-      "noPickHint": "No hiciste tu elección antes de que la jornada se bloqueara",
-      "drawLabel": "Tu equipo empata",
-      "drawHint": "Un empate no cuesta vida — sobrevives"
-    },
-    "livesNote": "Cada participante empieza con un número de vidas definido por el pool (normalmente 1). Al llegar a 0 vidas, quedas eliminado del Survivor.",
     "endLabel": "Fin del juego",
     "endText": "El Survivor termina cuando se agotan las jornadas del torneo o cuando queda un único sobreviviente, según cómo esté configurado el pool."
   },
@@ -101,5 +101,100 @@
       "draws": "Empatados",
       "losses": "Perdidos"
     }
+  },
+  "create": {
+    "title": "Nuevo survivor",
+    "subtitle": "Tus reglas, tu gente",
+    "submit": "Crear survivor",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Survivor de la oficina",
+    "descLabel": "Descripción",
+    "descPlaceholder": "¿De qué va este survivor?",
+    "league": "Liga",
+    "leaguePick": "Elige una liga",
+    "leagueChange": "Toca para cambiarla",
+    "stageInfo": "Se jugará sobre las jornadas de esta temporada",
+    "stageResolveError": "Esta liga no tiene una temporada en curso, así que todavía no se puede crear un survivor sobre ella.",
+    "participantsLabel": "Cupo",
+    "participantsValue": "{count} participante | {count} participante | {count} participantes",
+    "participantsHint": "Puedes ampliarlo después, mientras no arranque",
+    "participantsDecreaseAria": "Quitar un lugar",
+    "participantsIncreaseAria": "Agregar un lugar",
+    "rulesLabel": "Reglas",
+    "rulesHint": "Puedes cambiarlas después, mientras nadie haya jugado una jornada.",
+    "createdTitle": "Survivor creado",
+    "createdBody": "\"{name}\" ya está listo. Comparte su código para que entren."
+  },
+  "join": {
+    "title": "Entrar a un survivor",
+    "subtitle": "Con el código que te pasaron",
+    "submit": "Entrar",
+    "codeLabel": "Código de acceso",
+    "codePlaceholder": "ABC123",
+    "hint": "Son 6 caracteres. Da igual si lo escribes en minúsculas.",
+    "joinedTitle": "Ya estás dentro",
+    "joinedBody": "Entraste a \"{name}\"."
+  },
+  "settings": {
+    "title": "Reglas de esta liga",
+    "subtitle": "Solo tú puedes cambiarlas, y solo hasta que arranque.",
+    "readOnlyHint": "Las define quien administra este survivor.",
+    "officialHint": "Es un survivor de la casa: sus reglas son fijas para todos.",
+    "customBadge": "Personalizado",
+    "changedFromDefault": "Lo normal es {value}",
+    "resetDefaults": "Volver a las reglas de siempre",
+    "loadError": "No se pudieron cargar las reglas.",
+    "save": "Guardar",
+    "discard": "Descartar",
+    "pendingChanges": "{count} cambio sin guardar | {count} cambio sin guardar | {count} cambios sin guardar",
+    "savedTitle": "Reglas guardadas",
+    "savedMsg": "A partir de ahora se juega así.",
+    "resetTitle": "Reglas restauradas",
+    "resetMsg": "Este survivor vuelve a jugarse con las reglas de siempre.",
+    "capacityTitle": "Cupo",
+    "capacityValue": "{count} participante | {count} participante | {count} participantes",
+    "capacityOccupied": "{count} dentro ahora mismo",
+    "capacityFloor": "No puede bajar de {min}: es la gente que ya entró.",
+    "capacityDecreaseAria": "Quitar un lugar",
+    "capacityIncreaseAria": "Agregar un lugar",
+    "locked": {
+      "title": "Reglas congeladas",
+      "generic": "Ya no se pueden cambiar.",
+      "survivor_started": "El survivor ya arrancó. Quien eligió lo hizo con estas reglas, así que cambiarlas ahora sería mover la portería a media jornada.",
+      "official": "Es un survivor de la casa. Sus reglas son iguales para todos y no se pueden cambiar.",
+      "not_admin": "Solo quien administra este survivor puede cambiar sus reglas."
+    },
+    "fields": {
+      "lives": {
+        "label": "Vidas",
+        "hint": "Aguantas {count} fallo antes de quedar fuera | Aguantas {count} fallo antes de quedar fuera | Aguantas {count} fallos antes de quedar fuera",
+        "decreaseAria": "Quitar una vida",
+        "increaseAria": "Agregar una vida"
+      },
+      "draw": {
+        "label": "Si tu equipo empata",
+        "defaultHint": "Lo normal es que el empate te salve",
+        "options": {
+          "survive": {
+            "label": "Te salvas",
+            "hint": "Empatar no te cuesta nada: solo perder resta."
+          },
+          "loss": {
+            "label": "Cuesta vida",
+            "hint": "Solo ganar te mantiene dentro. Empatar resta igual que perder."
+          }
+        }
+      },
+      "miss": {
+        "label": "Si no eliges a tiempo",
+        "defaultHint": "Lo normal es que no elegir cueste una vida",
+        "onHint": "Olvidarte de una jornada te cuesta una vida.",
+        "offHint": "Olvidarte de una jornada no te cuesta nada."
+      }
+    }
+  },
+  "fab": {
+    "close": "Cerrar menú",
+    "quickActions": "Acciones rápidas"
   }
 }

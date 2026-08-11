@@ -46,7 +46,9 @@
     "all": "All",
     "none": "None",
     "optional": "Optional",
-    "required": "Required"
+    "required": "Required",
+    "on": "On",
+    "off": "Off"
   },
   "validation": {
     "required": "This field is required",

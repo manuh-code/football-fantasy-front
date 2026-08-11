@@ -18,7 +18,17 @@
     "countOne": "{count} survivor",
     "countOther": "{count} survivor",
     "lives": "Lives",
-    "livesCount": "{count} lives"
+    "livesCount": "{count} lives",
+    "tabOfficial": "Official",
+    "tabMine": "My leagues",
+    "groupsAria": "Survivor type",
+    "adminBadge": "Admin",
+    "drawIsLoss": "Draw = life",
+    "copyCodeAria": "Copy code {code}",
+    "copyErrorTitle": "Could not copy",
+    "copyErrorBody": "Write the code down: {code}",
+    "emptyMineTitle": "No leagues of your own yet",
+    "emptyMineBody": "Create a survivor with your own rules, or join someone else's with their code."
   },
   "status": {
     "active": "Active",
@@ -63,16 +73,6 @@
     "step2": "You can't reuse a team you've already picked earlier in this Survivor — once used, it's \"burned\" for the rest of the competition.",
     "step3": "You may change your pick as many times as you like while the round hasn't started yet.",
     "step4": "Once the first match of the round kicks off, the round locks completely: no more picks or changes are allowed.",
-    "livesLabel": "Lives",
-    "lives": {
-      "lossLabel": "Your team loses",
-      "lossHint": "The team you picked loses its match",
-      "noPickLabel": "You didn't pick in time",
-      "noPickHint": "You made no pick before the round locked",
-      "drawLabel": "Your team draws",
-      "drawHint": "A draw doesn't cost a life — you survive"
-    },
-    "livesNote": "Each participant starts with a number of lives set by the pool (typically 1). Reaching 0 lives means you're eliminated from the Survivor.",
     "endLabel": "End of game",
     "endText": "The Survivor ends when the tournament's rounds run out, or when a single survivor remains, depending on how the pool is configured."
   },
@@ -101,5 +101,100 @@
       "draws": "Drawn",
       "losses": "Lost"
     }
+  },
+  "create": {
+    "title": "New survivor",
+    "subtitle": "Your rules, your people",
+    "submit": "Create survivor",
+    "nameLabel": "Name",
+    "namePlaceholder": "Office survivor",
+    "descLabel": "Description",
+    "descPlaceholder": "What is this survivor about?",
+    "league": "League",
+    "leaguePick": "Pick a league",
+    "leagueChange": "Tap to change it",
+    "stageInfo": "It will be played over this season's rounds",
+    "stageResolveError": "This league has no season in progress, so a survivor cannot be created for it yet.",
+    "participantsLabel": "Capacity",
+    "participantsValue": "{count} participant | {count} participant | {count} participants",
+    "participantsHint": "You can raise it later, as long as it has not started",
+    "participantsDecreaseAria": "Remove a spot",
+    "participantsIncreaseAria": "Add a spot",
+    "rulesLabel": "Rules",
+    "rulesHint": "You can change them later, as long as nobody has played a round.",
+    "createdTitle": "Survivor created",
+    "createdBody": "\"{name}\" is ready. Share its code so others can join."
+  },
+  "join": {
+    "title": "Join a survivor",
+    "subtitle": "With the code you were given",
+    "submit": "Join",
+    "codeLabel": "Access code",
+    "codePlaceholder": "ABC123",
+    "hint": "Six characters. Lowercase works too.",
+    "joinedTitle": "You're in",
+    "joinedBody": "You joined \"{name}\"."
+  },
+  "settings": {
+    "title": "This league's rules",
+    "subtitle": "Only you can change them, and only until it starts.",
+    "readOnlyHint": "They are set by whoever runs this survivor.",
+    "officialHint": "This is a house survivor: its rules are the same for everyone.",
+    "customBadge": "Custom",
+    "changedFromDefault": "Usually {value}",
+    "resetDefaults": "Back to the usual rules",
+    "loadError": "The rules could not be loaded.",
+    "save": "Save",
+    "discard": "Discard",
+    "pendingChanges": "{count} unsaved change | {count} unsaved change | {count} unsaved changes",
+    "savedTitle": "Rules saved",
+    "savedMsg": "This is how it is played from now on.",
+    "resetTitle": "Rules restored",
+    "resetMsg": "This survivor goes back to the usual rules.",
+    "capacityTitle": "Capacity",
+    "capacityValue": "{count} participant | {count} participant | {count} participants",
+    "capacityOccupied": "{count} in right now",
+    "capacityFloor": "It cannot go below {min} — that is how many already joined.",
+    "capacityDecreaseAria": "Remove a spot",
+    "capacityIncreaseAria": "Add a spot",
+    "locked": {
+      "title": "Rules frozen",
+      "generic": "They can no longer be changed.",
+      "survivor_started": "The survivor has already started. Whoever picked did so under these rules, so changing them now would be moving the goalposts mid-round.",
+      "official": "This is a house survivor. Its rules are the same for everyone and cannot be changed.",
+      "not_admin": "Only whoever runs this survivor can change its rules."
+    },
+    "fields": {
+      "lives": {
+        "label": "Lives",
+        "hint": "You survive {count} miss before you are out | You survive {count} miss before you are out | You survive {count} misses before you are out",
+        "decreaseAria": "Remove a life",
+        "increaseAria": "Add a life"
+      },
+      "draw": {
+        "label": "If your team draws",
+        "defaultHint": "Usually a draw keeps you alive",
+        "options": {
+          "survive": {
+            "label": "You survive",
+            "hint": "A draw costs you nothing: only a loss takes a life."
+          },
+          "loss": {
+            "label": "Costs a life",
+            "hint": "Only a win keeps you in. A draw costs the same as a loss."
+          }
+        }
+      },
+      "miss": {
+        "label": "If you do not pick in time",
+        "defaultHint": "Usually not picking costs a life",
+        "onHint": "Missing a round costs you a life.",
+        "offHint": "Missing a round costs you nothing."
+      }
+    }
+  },
+  "fab": {
+    "close": "Close menu",
+    "quickActions": "Quick actions"
   }
 }
