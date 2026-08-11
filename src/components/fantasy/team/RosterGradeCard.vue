@@ -12,6 +12,38 @@
     </div>
   </div>
 
+  <!-- Bajo candado: la tira se enseña igual, con la nota tapada. Esconderla
+       dejaría al usuario sin saber que la boleta existe, que es justo lo que
+       hay que vender aquí. -->
+  <button
+    v-else-if="!canSeeGrade"
+    type="button"
+    class="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-amber-200 dark:border-amber-500/30 px-3 py-2.5 flex items-center gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 active:scale-[0.99] transition-all duration-200 cursor-pointer"
+    @click="requirePremium(PREMIUM_FEATURES.fantasyRosterGrade)"
+  >
+    <span class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-amber-50 dark:bg-amber-500/10">
+      <v-icon name="hi-solid-lock-closed" class="w-5 h-5 text-amber-500" />
+    </span>
+
+    <span class="min-w-0 flex-1">
+      <span class="flex items-center gap-1.5 min-w-0">
+        <span class="truncate text-footnote font-semibold text-gray-900 dark:text-white">
+          {{ $t('fantasy.rosterGrade.title') }}
+        </span>
+        <PremiumBadge class="shrink-0" />
+      </span>
+      <span class="block text-2xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+        {{ $t('premium.features.fantasy.roster_grade') }}
+      </span>
+    </span>
+
+    <v-icon
+      name="hi-solid-chevron-right"
+      class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0"
+      aria-hidden="true"
+    />
+  </button>
+
   <!-- Sin plantilla que calificar (liga sin draft todavía): la tira simplemente
        no existe, no hay nada que explicar aquí. -->
   <template v-else-if="grade">
@@ -68,6 +100,9 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import RosterGradeDrawer from '@/components/fantasy/team/RosterGradeDrawer.vue'
+import PremiumBadge from '@/components/premium/PremiumBadge.vue'
+import { usePremium } from '@/composables/usePremium'
+import { PREMIUM_FEATURES } from '@/interfaces/user/billing/EntitlementsResponse'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
 import type { RosterGrade } from '@/interfaces/fantasy/team/RosterGrade'
 
@@ -107,8 +142,15 @@ const gradeTheme = computed(() => {
   return { box: 'bg-gray-100 dark:bg-gray-700/60', text: 'text-gray-400 dark:text-gray-500' }
 })
 
+const { requirePremium, can } = usePremium()
+
+const canSeeGrade = computed(() => can(PREMIUM_FEATURES.fantasyRosterGrade))
+
 async function loadGrade(): Promise<void> {
-  if (!props.leagueUuid) {
+  // Sin la función desbloqueada no se llama al endpoint: contestaría 402 y el
+  // interceptor abriría la hoja de venta sola, sin que el usuario tocara nada.
+  // Aquí se pinta la tira de cebo y se espera a que la toque.
+  if (!props.leagueUuid || !canSeeGrade.value) {
     grade.value = null
     return
   }
@@ -126,7 +168,9 @@ async function loadGrade(): Promise<void> {
   }
 }
 
-watch(() => props.leagueUuid, loadGrade, { immediate: true })
+// También se observa el candado: el estado premium llega de forma asíncrona, y
+// sin esto la tira se quedaría de cebo hasta recargar la pantalla.
+watch([() => props.leagueUuid, canSeeGrade], loadGrade, { immediate: true })
 
 defineExpose({ reload: loadGrade })
 </script>

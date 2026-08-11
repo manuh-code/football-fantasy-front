@@ -5,6 +5,24 @@ import { LoginResponse } from "@/interfaces/login/LoginResponse";
 import { useUserStore } from "../user/useUserStore";
 import { usePushNotifications } from "@/composables/usePushNotifications";
 
+/**
+ * Import dinámico, no estático: el store de premium arrastra su servicio y con
+ * él `useApiFantasy` → `router` → este mismo store. Cargarlo dentro de la
+ * acción rompe el ciclo, igual que hace el guard del router con CatalogService.
+ */
+const withPremiumStore = async <T>(
+  run: (store: ReturnType<typeof import("@/store/billing/usePremiumStore").usePremiumStore>) => T,
+): Promise<void> => {
+  const { usePremiumStore } = await import("@/store/billing/usePremiumStore");
+  run(usePremiumStore());
+};
+
+/** Lo desbloqueado depende de quién entró: se recarga en cada inicio de sesión. */
+const loadPremium = () => withPremiumStore((store) => store.fetch(true));
+
+/** Al cerrar sesión (o al caducar el token) no puede quedar premium de nadie. */
+const resetPremium = () => withPremiumStore((store) => store.reset());
+
 export const useAuthStore = defineStore("auth", {
   state: () => {
     return {
@@ -18,6 +36,7 @@ export const useAuthStore = defineStore("auth", {
       const userStore = useUserStore();
       this.token = null;
       userStore.clearUserData();
+      void resetPremium();
     },
 
     setToken(token: string) {
@@ -42,6 +61,10 @@ export const useAuthStore = defineStore("auth", {
       // fire-and-forget left a window where a uuid-dependent feature could
       // read a stale/null currentUserUuid right after logging in.
       await userStore.setUserDataFromApi();
+      // Esperado, no disparado y olvidado: la pantalla a la que se redirige
+      // tras entrar ya decide qué pinta con candado, y llegar sin esto le haría
+      // enseñar la app como si nadie fuera premium durante un instante.
+      await loadPremium();
       await claimTokensForUser();
       return response;
     },
@@ -61,6 +84,7 @@ export const useAuthStore = defineStore("auth", {
       const { claimTokensForUser } = usePushNotifications();
       this.setToken(response.token);
       await userStore.setUserDataFromApi();
+      await loadPremium();
       await claimTokensForUser();
     },
 

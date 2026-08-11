@@ -107,13 +107,16 @@
             @error="onLogoError"
           />
           <span class="flex-1 min-w-0">
-            <span
-              class="block truncate text-callout"
-              :class="league.uuid === selectedUuid
-                ? 'font-bold text-emerald-700 dark:text-emerald-400'
-                : 'font-semibold text-gray-900 dark:text-white'"
-            >
-              {{ league.name }}
+            <span class="flex items-center gap-1.5 min-w-0">
+              <span
+                class="truncate text-callout"
+                :class="league.uuid === selectedUuid
+                  ? 'font-bold text-emerald-700 dark:text-emerald-400'
+                  : 'font-semibold text-gray-900 dark:text-white'"
+              >
+                {{ league.name }}
+              </span>
+              <PremiumBadge v-if="league.premium" class="shrink-0" />
             </span>
             <span
               v-if="league.current_season?.name"
@@ -129,6 +132,13 @@
             name="hi-solid-check-circle"
             class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0"
           />
+          <!-- Bloqueada: se deja visible y pulsable a propósito. Tocarla abre la
+               hoja que explica qué desbloquea, que es donde se vende. -->
+          <v-icon
+            v-else-if="isLocked(league)"
+            name="hi-solid-lock-closed"
+            class="w-4 h-4 text-amber-500 shrink-0"
+          />
         </button>
       </li>
     </ul>
@@ -138,8 +148,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
+import PremiumBadge from '@/components/premium/PremiumBadge.vue'
 import catalogService from '@/services/catalog/CatalogService'
+import { usePremium } from '@/composables/usePremium'
 import type { FootballLeagueResponse } from '@/interfaces/football/league/FootballLeagueResponse'
+import type { PremiumFeature } from '@/interfaces/user/billing/EntitlementsResponse'
 
 const props = withDefaults(
   defineProps<{
@@ -153,11 +166,23 @@ const props = withDefaults(
      * siempre se abre.
      */
     zIndex?: number
+    /**
+     * Candado que aplica a elegir una liga de pago desde aquí. Lo pone quien
+     * abre la hoja porque cambia según el juego: la misma Premier League es
+     * `fantasy.premium_leagues` desde el formulario de liga fantasy y
+     * `pool.premium_leagues` desde el de quiniela, y el motivo que lee el
+     * usuario tiene que nombrar lo que estaba intentando hacer.
+     *
+     * Sin este prop no se bloquea nada: el selector sigue sirviendo para
+     * pantallas que sólo consultan.
+     */
+    premiumFeature?: PremiumFeature
   }>(),
   {
     selectedUuid: '',
     accent: 'emerald',
     zIndex: 130,
+    premiumFeature: undefined,
   },
 )
 
@@ -199,7 +224,23 @@ const load = async (force = false) => {
   }
 }
 
+const { requirePremium, can } = usePremium()
+
+const isLocked = (league: FootballLeagueResponse): boolean =>
+  Boolean(league.premium && props.premiumFeature && !can(props.premiumFeature))
+
+/**
+ * Elegir liga. Si es de pago y el usuario no la tiene, en vez de seleccionarla
+ * se abre la hoja de venta: mejor decirlo aquí que dejarle rellenar el
+ * formulario entero para que falle al enviarlo.
+ */
 const choose = (league: FootballLeagueResponse) => {
+  if (isLocked(league)) {
+    requirePremium(props.premiumFeature!)
+
+    return
+  }
+
   emit('select', league)
   emit('close')
 }

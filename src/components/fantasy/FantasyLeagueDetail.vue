@@ -519,6 +519,7 @@
       invitable-type="fantasy_league"
       :invitable-uuid="league.uuid"
       :spots-left="spotsLeft"
+      :requires-premium="league.football_league?.premium === true"
       @close="isInviteOpen = false"
     />
   </div>

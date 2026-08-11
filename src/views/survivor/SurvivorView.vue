@@ -28,7 +28,10 @@
               class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-5 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 dark:border-gray-700 group"
               @click="openCreate"
             >
-              <span class="text-sm font-semibold">{{ $t('survivor.create.title') }}</span>
+              <span class="text-sm font-semibold flex items-center gap-1.5">
+                {{ $t('survivor.create.title') }}
+                <PremiumBadge v-if="!canCreateSurvivor" />
+              </span>
               <div class="w-10 h-10 bg-gradient-to-br from-rose-500 to-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <v-icon name="hi-solid-plus-circle" class="w-5 h-5 text-white" />
               </div>
@@ -73,6 +76,9 @@ import SurvivorCreateModal from "@/components/survivor/SurvivorCreateModal.vue";
 import SurvivorJoinModal from "@/components/survivor/SurvivorJoinModal.vue";
 import HomeMenu from "@/components/home/HomeMenu.vue";
 import TabsBar from "@/components/ui/TabsBar.vue";
+import PremiumBadge from "@/components/premium/PremiumBadge.vue";
+import { usePremium } from "@/composables/usePremium";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import type { SurvivorResponse } from "@/interfaces/survivor/SurvivorResponse";
 
@@ -105,8 +111,21 @@ const toggleFabMenu = () => {
   isFabMenuOpen.value = !isFabMenuOpen.value;
 };
 
+const { requirePremium, can } = usePremium();
+
+// El survivor propio es de pago en cualquier liga, así que el candado va en la
+// acción y no en el selector de liga: da igual cuál elija.
+const canCreateSurvivor = computed(() => can(PREMIUM_FEATURES.survivorCustomPools));
+
 const openCreate = () => {
   isFabMenuOpen.value = false;
+
+  // Sin premium no se abre el formulario: se abre la hoja que lo vende. Dejarle
+  // configurar reglas y cupo para fallar al enviar sería la peor versión.
+  if (!requirePremium(PREMIUM_FEATURES.survivorCustomPools)) {
+    return;
+  }
+
   isCreateOpen.value = true;
 };
 

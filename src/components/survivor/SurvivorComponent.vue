@@ -63,8 +63,11 @@
           <div
             v-for="survivor in visibleSurvivors"
             :key="survivor.uuid"
-            class="survivor-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60 overflow-hidden transition-all duration-200 cursor-pointer active:scale-[0.98] hover:shadow-md"
-            @click="goToSurvivor(survivor.uuid)"
+            class="survivor-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm border overflow-hidden transition-all duration-200 cursor-pointer active:scale-[0.98] hover:shadow-md"
+            :class="isLocked(survivor)
+              ? 'border-amber-200 dark:border-amber-500/30'
+              : 'border-gray-100 dark:border-gray-700/60'"
+            @click="openSurvivor(survivor)"
           >
             <div class="p-4">
               <!-- Cabecera: escudo de la liga + nombre + estado -->
@@ -89,8 +92,9 @@
                     <h3 class="text-callout font-semibold text-gray-900 dark:text-white leading-tight truncate">
                       {{ survivor.name }}
                     </h3>
+                    <PremiumBadge v-if="isLocked(survivor)" class="shrink-0 mt-0.5" />
                     <span
-                      v-if="participantBadge(survivor)"
+                      v-else-if="participantBadge(survivor)"
                       :class="[
                         'inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold shrink-0',
                         participantBadge(survivor)!.classes,
@@ -112,7 +116,15 @@
               <div
                 class="flex items-center flex-wrap gap-x-3 gap-y-1.5 mt-3 pt-3 border-t border-gray-50 dark:border-gray-700/40"
               >
-                <div class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 shrink-0">
+                <div
+                  v-if="isLocked(survivor)"
+                  class="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 shrink-0"
+                >
+                  <v-icon name="hi-solid-lock-closed" class="w-3.5 h-3.5" />
+                  <span>{{ $t('premium.locked') }}</span>
+                </div>
+
+                <div v-else class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 shrink-0">
                   <v-icon name="hi-solid-heart" class="w-3.5 h-3.5 text-rose-400" />
                   <span>{{ livesLabel(survivor) }}</span>
                 </div>
@@ -177,10 +189,14 @@ import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { survivorService } from "@/services/survivor/SurvivorServive";
 import { useToast } from "@/composables/useToast";
+import PremiumBadge from "@/components/premium/PremiumBadge.vue";
+import { usePremium } from "@/composables/usePremium";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import SurvivorListSkeleton from "@/components/survivor/SurvivorListSkeleton.vue";
 import type { SurvivorResponse } from "@/interfaces/survivor/SurvivorResponse";
 
 const router = useRouter();
+const { requirePremium } = usePremium();
 const { t } = useI18n();
 const toast = useToast();
 
@@ -203,6 +219,26 @@ const tabs = computed(() => [
   { key: "official" as const, label: t("survivor.list.tabOfficial"), count: officialSurvivors.value.length },
   { key: "mine" as const, label: t("survivor.list.tabMine"), count: mineSurvivors.value.length },
 ]);
+
+/**
+ * Un survivor oficial de liga de pago al que no se pertenece.
+ *
+ * El API los manda en el listado aunque no se esté dentro (con `is_member`
+ * false) justo para poder enseñarlos así: si se filtraran, el usuario nunca
+ * sabría que existen y no habría nada que vender.
+ */
+const isLocked = (survivor: SurvivorResponse): boolean =>
+  survivor.requires_premium === true && survivor.is_member === false;
+
+const openSurvivor = (survivor: SurvivorResponse) => {
+  if (isLocked(survivor)) {
+    requirePremium(PREMIUM_FEATURES.survivorPremiumLeagues);
+
+    return;
+  }
+
+  goToSurvivor(survivor.uuid);
+};
 
 const goToSurvivor = (uuid: string) => {
   router.push({ name: "survivorDetail", params: { uuid } });

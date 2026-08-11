@@ -36,8 +36,16 @@
           class="w-full h-11 pl-3 pr-9 text-sm font-medium rounded-xl appearance-none bg-none bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500 transition-colors"
         >
           <option :value="null">{{ $t('fantasy.mockDraft.setup.presetNone') }}</option>
-          <option v-for="league in leagues" :key="league.uuid" :value="league.uuid">
-            {{ league.name }}
+          <!-- Un preset de liga europea arrastra sus jugadores, así que hereda
+               el candado. Se deshabilita en vez de esconderse: el usuario tiene
+               esa liga y debe ver por qué no puede ensayar con ella. -->
+          <option
+            v-for="league in leagues"
+            :key="league.uuid"
+            :value="league.uuid"
+            :disabled="isLeagueLocked(league)"
+          >
+            {{ league.name }}{{ isLeagueLocked(league) ? ` · ${$t('premium.badge')}` : '' }}
           </option>
         </select>
         <v-icon
@@ -351,6 +359,8 @@ import { useI18n } from 'vue-i18n'
 import { ButtonComponent } from '@/components/ui'
 import type { MockDraftCreatePayload, MockDraftOptions } from '@/interfaces/fantasy/mockDraft/MockDraftResponse'
 import type { FantasyLeaguesResponse } from '@/interfaces/fantasy/leagues/FantasyLeaguesResponse'
+import { usePremium } from '@/composables/usePremium'
+import { PREMIUM_FEATURES } from '@/interfaces/user/billing/EntitlementsResponse'
 
 const props = defineProps<{
   options: MockDraftOptions
@@ -376,6 +386,12 @@ const form = reactive<Required<Omit<MockDraftCreatePayload, 'football_league_uui
 
 /** Con preset, el nº de equipos lo manda la liga: se muestra pero no se edita. */
 const usesPreset = computed(() => !!form.fantasy_league_uuid)
+
+const { can } = usePremium()
+
+/** El mock hereda la liga de futbol del preset, y con ella si es de pago. */
+const isLeagueLocked = (league: FantasyLeaguesResponse): boolean =>
+  league.football_league?.premium === true && !can(PREMIUM_FEATURES.fantasyMockDraft)
 
 const slotOptions = computed(() => Array.from({ length: form.teams_count }, (_, index) => index))
 

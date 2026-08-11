@@ -8,4 +8,6 @@ export interface FootballLeagueSummary {
   uuid: string;
   name: string;
   image_path: string | null;
+  /** Para la insignia PRO en la tarjeta. */
+  premium?: boolean;
 }

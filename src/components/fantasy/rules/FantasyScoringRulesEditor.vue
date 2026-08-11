@@ -40,9 +40,31 @@
     </div>
 
     <template v-else-if="editor">
+      <!-- Bajo candado por suscripción. Se enseña el editor entero en solo
+           lectura y no una pantalla vacía: ver cuánto paga cada jugada es lo
+           que hace querer ajustarlo. -->
+      <button
+        v-if="editor.requires_premium"
+        type="button"
+        class="w-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-4 flex items-start gap-3 text-left active:scale-[0.99] transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+        @click="requirePremium(PREMIUM_FEATURES.fantasyScoringRules)"
+      >
+        <v-icon name="hi-solid-lock-closed" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+        <div class="min-w-0 flex-1">
+          <p class="flex items-center gap-1.5 text-footnote font-semibold text-amber-900 dark:text-amber-200">
+            {{ $t('fantasy.scoringEditor.title') }}
+            <PremiumBadge />
+          </p>
+          <p class="text-2xs text-amber-700 dark:text-amber-300/90 leading-relaxed mt-0.5">
+            {{ $t('premium.features.fantasy.scoring_rules') }}
+          </p>
+        </div>
+        <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+      </button>
+
       <!-- Locked: the rules are frozen, so everything below is read-only -->
       <div
-        v-if="!editor.is_editable"
+        v-else-if="!editor.is_editable"
         class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-4 flex items-start gap-3"
       >
         <v-icon name="hi-solid-lock-closed" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
@@ -74,7 +96,7 @@
               v-for="preset in editor.presets"
               :key="preset.code"
               type="button"
-              :disabled="!editor.is_editable"
+              :disabled="!canEdit"
               @click="applyPreset(preset)"
               class="w-56 sm:w-auto shrink-0 text-left rounded-xl border p-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
               :class="selectedPreset === preset.code
@@ -235,7 +257,7 @@
                   type="button"
                   role="switch"
                   :aria-checked="rule.is_enabled"
-                  :disabled="!editor.is_editable"
+                  :disabled="!canEdit"
                   @click="toggleRule(rule)"
                   class="w-11 h-11 grid place-items-center rounded-xl disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
                   :aria-label="$t('fantasy.scoringEditor.toggleAria', { name: statLabel(rule.type?.developer_name, rule.type?.name) })"
@@ -259,7 +281,7 @@
 
       <!-- Back to the shared default set -->
       <button
-        v-if="editor.is_custom && editor.is_editable"
+        v-if="editor.is_custom && canEdit"
         type="button"
         :disabled="isResetting || isSaving"
         @click="resetToDefault"
@@ -316,6 +338,9 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
+import PremiumBadge from "@/components/premium/PremiumBadge.vue";
+import { usePremium } from "@/composables/usePremium";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import { useScoringRuleMeta, type PositionMeta } from "@/composables/fantasy/useScoringRuleMeta";
 import type {
   ScoringEditorResponse,
@@ -424,7 +449,16 @@ const changeCount = computed(() => {
   return count;
 });
 
-const canEditRule = (rule: EditableRule): boolean => !!editor.value?.is_editable && rule.is_enabled;
+/**
+ * Editable de verdad: sin el draft empezado **y** con la suscripción. Los dos
+ * motivos se enseñan por separado arriba, pero para bloquear controles da igual
+ * cuál sea.
+ */
+const { requirePremium } = usePremium();
+
+const canEdit = computed(() => !!editor.value?.is_editable && !editor.value.requires_premium);
+
+const canEditRule = (rule: EditableRule): boolean => canEdit.value && rule.is_enabled;
 
 const pointsTone = (rule: EditableRule): string => {
   if (!rule.is_enabled) return "text-gray-400 dark:text-gray-500";
@@ -502,7 +536,7 @@ const selectedPreset = computed<string | null>(() => {
 });
 
 const applyPreset = (preset: ScoringPresetResponse) => {
-  if (!editor.value?.is_editable) return;
+  if (!canEdit.value) return;
 
   const next = { ...draft.value };
   for (const group of groups.value) {

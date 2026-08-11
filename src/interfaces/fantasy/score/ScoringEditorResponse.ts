@@ -36,6 +36,8 @@ export interface ScoringEditorPositionResponse {
 
 export interface ScoringEditorResponse {
     is_editable: boolean;
+    /** Congelado sólo por no pagar. Motivo distinto de `is_editable`, que habla del draft. */
+    requires_premium: boolean;
     locked_reason: ScoringLockReason | null;
     /** La liga ya tiene su propio set, distinto del compartido. */
     is_custom: boolean;

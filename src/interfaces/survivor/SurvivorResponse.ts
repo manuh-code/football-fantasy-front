@@ -13,6 +13,15 @@ export interface SurvivorResponse {
   /** Quien pregunta lo administra. Siempre false en los oficiales. */
   is_admin: boolean;
 
+  /**
+   * Si quien pregunta está dentro. Los oficiales de ligas de pago llegan en el
+   * listado aunque no se pertenezca a ellos, para poder enseñarlos con candado
+   * en lugar de esconderlos.
+   */
+  is_member: boolean;
+  /** Jugarlo exige suscripción, porque su liga de futbol es de pago. */
+  requires_premium: boolean;
+
   /** Cómo le va a quien pregunta. Null si por lo que sea no tiene ficha. */
   lives_remaining: number | null;
   participant_status: string | null;

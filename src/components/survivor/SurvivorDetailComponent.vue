@@ -77,6 +77,7 @@
       invitable-type="survivor_pool"
       :invitable-uuid="survivorUuid"
       :spots-left="spotsLeft"
+      :requires-premium="survivor?.requires_premium === true"
       @close="isInviteOpen = false"
     />
 

@@ -1,8 +1,8 @@
 {
   "subscription": {
     "badge": "Premium",
-    "headline": "Juega los dos torneos completos",
-    "subheadline": "Ligas sin límite, estadísticas a fondo y las herramientas de draft, todo el año.",
+    "headline": "Las cuatro grandes de Europa",
+    "subheadline": "Premier League, LaLiga, Serie A y Bundesliga en fantasy, quinielas y survivor. La Liga MX sigue siendo gratis.",
     "selectorLabel": "Elige tu plan",
     "perMonth": "/ mes",
     "billedMonthly": "Se renueva cada mes.",
@@ -11,19 +11,14 @@
     "cancelAnytime": "Cancela cuando quieras. Conservas Premium hasta el final del periodo pagado.",
     "loadError": "No pudimos cargar los planes.",
     "features": [
-      "Ligas de fantasy ilimitadas",
-      "Sistemas de puntuación personalizados",
-      "Estadísticas avanzadas de jugadores y equipos",
-      "Quinielas y survivor sin límite",
-      "Herramienta de cambios entre equipos",
-      "Historial completo de temporadas anteriores",
-      "Sin anuncios"
+      "Ligas fantasy en Premier League, LaLiga, Serie A y Bundesliga",
+      "Quinielas y survivor oficiales de esas mismas ligas",
+      "Tu propio survivor, con tus vidas, empates y castigos",
+      "Puntuación a tu medida en tu liga fantasy",
+      "Cupo y puntos por acierto de tu quiniela",
+      "Mock drafts con jugadores de las ligas de Europa",
+      "La calificación de tu plantilla, toda la temporada"
     ],
-    "tournaments": {
-      "apertura": "Apertura",
-      "clausura": "Clausura",
-      "note": "Un solo pago te cubre los dos torneos de la Liga MX."
-    },
     "plans": {
       "monthly": {
         "name": "Mensual"

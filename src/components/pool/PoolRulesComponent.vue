@@ -105,8 +105,19 @@
         <div class="flex items-center gap-2 mb-1">
           <v-icon name="hi-solid-clipboard-list" class="w-4 h-4 text-emerald-500 shrink-0" />
           <h2 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('pool.group.scoringRules') }}</h2>
+          <!-- Admin, quiniela sin arrancar y aun así en solo lectura: lo único
+               que falta es la suscripción, así que se dice y se ofrece. -->
+          <button
+            v-if="scoringNeedsPremium"
+            type="button"
+            class="ml-auto shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-full"
+            :aria-label="$t('premium.locked')"
+            @click="requirePremium(PREMIUM_FEATURES.poolScoringRules)"
+          >
+            <PremiumBadge size="sm" />
+          </button>
           <span
-            v-if="settings.is_custom"
+            v-else-if="settings.is_custom"
             class="ml-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-2xs font-semibold bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 shrink-0"
           >
             <v-icon name="hi-solid-adjustments" class="w-3 h-3" />
@@ -153,7 +164,7 @@
 
             <!-- Stepper for the admin before kickoff; a plain badge for everyone else -->
             <div
-              v-if="canEdit"
+              v-if="canEditScoring"
               class="flex items-center h-11 rounded-xl bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden shrink-0 ml-auto"
             >
               <button
@@ -196,7 +207,7 @@
 
         <!-- Back to the shared default set -->
         <button
-          v-if="settings.is_custom && canEdit"
+          v-if="settings.is_custom && canEditScoring"
           type="button"
           :disabled="isResetting || isSaving"
           @click="resetToDefault"
@@ -217,6 +228,15 @@
         <div class="flex items-center gap-2 mb-3">
           <v-icon name="hi-solid-users" class="w-4 h-4 text-emerald-500 shrink-0" />
           <h2 class="text-callout font-semibold text-gray-900 dark:text-white">{{ $t('pool.settings.capacityTitle') }}</h2>
+          <button
+            v-if="participantsNeedsPremium"
+            type="button"
+            class="ml-auto shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-full"
+            :aria-label="$t('premium.locked')"
+            @click="requirePremium(PREMIUM_FEATURES.poolMaxParticipants)"
+          >
+            <PremiumBadge size="sm" />
+          </button>
         </div>
 
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2.5 bg-gray-50 dark:bg-gray-900/40 rounded-xl px-3 py-2.5">
@@ -230,7 +250,7 @@
           </div>
 
           <div
-            v-if="canEdit"
+            v-if="canEditParticipants"
             class="flex items-center h-11 rounded-xl bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden shrink-0 ml-auto"
           >
             <button
@@ -270,7 +290,7 @@
           </span>
         </div>
 
-        <p v-if="canEdit" class="text-2xs text-gray-400 dark:text-gray-500 leading-relaxed mt-2">
+        <p v-if="canEditParticipants" class="text-2xs text-gray-400 dark:text-gray-500 leading-relaxed mt-2">
           {{ $t('pool.settings.capacityFloor', { min: settings.participants_min }) }}
         </p>
       </div>
@@ -312,6 +332,9 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { poolService } from "@/services/pool/poolService";
 import { useToast } from "@/composables/useToast";
+import PremiumBadge from "@/components/premium/PremiumBadge.vue";
+import { usePremium } from "@/composables/usePremium";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import type {
   PoolScoringCode,
   PoolSettingsResponse,
@@ -353,7 +376,29 @@ const resetDraft = (data: PoolSettingsResponse) => {
 
 /** Editar exige ser admin **y** que la quiniela no haya arrancado; el API ya
  *  resolvió ambas en una sola bandera. */
-const canEdit = computed(() => !!settings.value?.is_editable);
+/**
+ * Se separa en dos porque los candados son distintos: tocar los puntos y tocar
+ * el cupo son funciones premium independientes, y además el admin puede tener
+ * una y no la otra si algún día hay más de un plan. `is_editable` (admin + la
+ * quiniela sin arrancar) sigue siendo condición previa de las dos.
+ */
+const { requirePremium } = usePremium();
+
+const canEditScoring = computed(
+  () => !!settings.value?.is_editable && settings.value.can_edit_scoring,
+);
+const canEditParticipants = computed(
+  () => !!settings.value?.is_editable && settings.value.can_edit_participants,
+);
+const canEdit = computed(() => canEditScoring.value || canEditParticipants.value);
+
+/** Bloqueado sólo por no pagar (siendo admin y con la quiniela sin arrancar). */
+const scoringNeedsPremium = computed(
+  () => !!settings.value?.is_editable && !settings.value.can_edit_scoring,
+);
+const participantsNeedsPremium = computed(
+  () => !!settings.value?.is_editable && !settings.value.can_edit_participants,
+);
 
 /** Reglas tal como se pintan: catálogo del servidor + valor en edición. */
 const rules = computed(() =>

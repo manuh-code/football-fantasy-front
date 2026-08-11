@@ -168,6 +168,7 @@
   <LeaguePickerSheet
     :is-visible="isLeaguePickerOpen"
     :selected-uuid="selectedLeague?.uuid"
+    :premium-feature="PREMIUM_FEATURES.survivorPremiumLeagues"
     accent="red"
     @close="isLeaguePickerOpen = false"
     @select="chooseLeague"
@@ -179,6 +180,7 @@ import { computed, ref, watch } from "vue";
 import BottomSheet from "@/components/ui/BottomSheet.vue";
 import StepperInput from "@/components/ui/StepperInput.vue";
 import LeaguePickerSheet from "@/components/football/leagues/LeaguePickerSheet.vue";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import SurvivorRuleFields from "@/components/survivor/SurvivorRuleFields.vue";
 import { FormInput } from "@/components/ui";
 import { survivorService } from "@/services/survivor/SurvivorServive";

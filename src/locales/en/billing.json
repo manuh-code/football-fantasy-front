@@ -1,8 +1,8 @@
 {
   "subscription": {
     "badge": "Premium",
-    "headline": "Play both tournaments in full",
-    "subheadline": "Unlimited leagues, deep stats and the draft tools, all year round.",
+    "headline": "Europe's big four",
+    "subheadline": "The Premier League, LaLiga, Serie A and Bundesliga in fantasy, pools and survivor. Liga MX stays free.",
     "selectorLabel": "Choose your plan",
     "perMonth": "/ month",
     "billedMonthly": "Renews every month.",
@@ -11,19 +11,14 @@
     "cancelAnytime": "Cancel anytime. You keep Premium until the end of the period you paid for.",
     "loadError": "We couldn't load the plans.",
     "features": [
-      "Unlimited fantasy leagues",
-      "Custom scoring systems",
-      "Advanced player and team stats",
-      "Unlimited pools and survivor games",
-      "Team-to-team trade tools",
-      "Full history of past seasons",
-      "No ads"
+      "Fantasy leagues in the Premier League, LaLiga, Serie A and Bundesliga",
+      "Official pools and survivor games for those same leagues",
+      "Your own survivor pool, with your lives, draws and penalties",
+      "Custom scoring in your fantasy league",
+      "Your pool's size and points per correct pick",
+      "Mock drafts with players from the European leagues",
+      "Your roster grade, all season long"
     ],
-    "tournaments": {
-      "apertura": "Apertura",
-      "clausura": "Clausura",
-      "note": "One payment covers both Liga MX tournaments."
-    },
     "plans": {
       "monthly": {
         "name": "Monthly"

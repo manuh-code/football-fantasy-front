@@ -10,6 +10,19 @@
     autofocus
     @close="close"
   >
+    <!-- Aviso antes de escribir, no después de fallar: en una liga de pago sólo
+         entra quien ya tiene cuenta Premium, así que invitar a un correo suelto
+         no va a funcionar y más vale decirlo aquí. -->
+    <div
+      v-if="requiresPremium"
+      class="mb-4 flex items-start gap-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 px-3.5 py-3"
+    >
+      <v-icon name="hi-solid-lock-closed" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500" />
+      <p class="text-2xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
+        {{ $t('premium.invitation.premiumOnly') }}
+      </p>
+    </div>
+
     <form class="space-y-4" @submit.prevent="submit">
       <div>
         <label
@@ -140,6 +153,12 @@ const props = defineProps<{
   invitableUuid: string;
   /** Lugares libres, para avisar antes de gastar una invitación. */
   spotsLeft?: number;
+  /**
+   * La liga de futbol de este contenido es de pago. Cambia a quién se puede
+   * invitar: sólo cuentas Premium que ya existan, mientras que en una liga
+   * gratuita vale cualquier correo, tenga cuenta o no.
+   */
+  requiresPremium?: boolean;
 }>();
 
 const emit = defineEmits<{ close: []; sent: [invitation: Invitation] }>();
