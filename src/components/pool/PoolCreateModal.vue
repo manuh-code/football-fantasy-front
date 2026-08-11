@@ -46,21 +46,31 @@
       <!-- Participants — how many people fit in the pool. Editable later from
            the Rules tab, but only until the first match kicks off. -->
       <div class="flex flex-col gap-1.5">
-        <label for="pool-participants" class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+        <label for="pool-participants" class="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300">
           {{ $t('pool.create.participantsLabel') }}
+          <PremiumBadge v-if="!canSetParticipants" />
         </label>
 
-        <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-2 pl-3.5">
+        <!-- Sin premium el cupo es el de fábrica: el control se deja a la vista
+             pero no se toca, y al pulsarlo se abre la hoja que lo explica. -->
+        <div
+          class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-2 pl-3.5"
+          :class="{ 'cursor-pointer': !canSetParticipants }"
+          @click="!canSetParticipants && requirePremium(PREMIUM_FEATURES.poolMaxParticipants)"
+        >
           <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-gray-900 dark:text-white">
               {{ $t('pool.create.participantsValue', { count: maxParticipants }, maxParticipants) }}
             </p>
             <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-              {{ $t('pool.create.participantsHint') }}
+              {{ canSetParticipants ? $t('pool.create.participantsHint') : $t('premium.locked') }}
             </p>
           </div>
 
-          <div class="flex items-center h-11 rounded-xl bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden shrink-0">
+          <div
+            class="flex items-center h-11 rounded-xl bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden shrink-0"
+            :class="{ 'opacity-50 pointer-events-none': !canSetParticipants }"
+          >
             <button
               type="button"
               :disabled="isLoading || maxParticipants <= PARTICIPANTS_MIN"
@@ -199,6 +209,7 @@
   <LeaguePickerSheet
     :is-visible="isLeaguePickerOpen"
     :selected-uuid="selectedLeague?.uuid"
+    :premium-feature="PREMIUM_FEATURES.poolPremiumLeagues"
     @close="isLeaguePickerOpen = false"
     @select="chooseLeague"
   />
@@ -208,6 +219,9 @@
 import { computed, ref, watch } from "vue";
 import BottomSheet from "@/components/ui/BottomSheet.vue";
 import LeaguePickerSheet from "@/components/football/leagues/LeaguePickerSheet.vue";
+import PremiumBadge from "@/components/premium/PremiumBadge.vue";
+import { usePremium } from "@/composables/usePremium";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import { FormInput } from "@/components/ui";
 import { poolService } from "@/services/pool/poolService";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
@@ -227,6 +241,10 @@ const emit = defineEmits<{
 
 const validationStore = useValidationStore();
 const footballLeagueStore = useFootballLeagueStore();
+const { requirePremium, can } = usePremium();
+
+/** Mover el cupo es de pago; sin premium la quiniela nace con el de fábrica. */
+const canSetParticipants = computed(() => can(PREMIUM_FEATURES.poolMaxParticipants));
 
 /** Mismas cotas que valida el API (config `pool.participants`). */
 const PARTICIPANTS_MIN = 2;

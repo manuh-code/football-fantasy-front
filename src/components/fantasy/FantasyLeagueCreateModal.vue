@@ -202,6 +202,7 @@
   <LeaguePickerSheet
     :is-visible="isLeaguePickerOpen"
     :selected-uuid="selectedLeague?.uuid"
+    :premium-feature="PREMIUM_FEATURES.fantasyPremiumLeagues"
     @close="isLeaguePickerOpen = false"
     @select="chooseLeague"
   />
@@ -212,6 +213,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import BottomSheet from "@/components/ui/BottomSheet.vue";
 import LeaguePickerSheet from "@/components/football/leagues/LeaguePickerSheet.vue";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 import { FormInput } from "@/components/ui";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";

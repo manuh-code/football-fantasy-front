@@ -1,0 +1,45 @@
+{
+  "badge": "PRO",
+  "locked": "Disponible con Premium",
+  "features": {
+    "fantasy": {
+      "premium_leagues": "Las ligas fantasy de Premier League, LaLiga, Serie A y Bundesliga son parte de Premium.",
+      "mock_draft": "Practicar drafts con jugadores de las ligas de Europa es parte de Premium.",
+      "scoring_rules": "Ajustar cuánto paga cada jugada en tu liga es parte de Premium.",
+      "roster_grade": "La calificación de tu plantilla durante la temporada es parte de Premium."
+    },
+    "pool": {
+      "premium_leagues": "Las quinielas de Premier League, LaLiga, Serie A y Bundesliga son parte de Premium.",
+      "max_participants": "Cambiar el cupo de tu quiniela es parte de Premium.",
+      "scoring_rules": "Cambiar los puntos por acierto de tu quiniela es parte de Premium."
+    },
+    "survivor": {
+      "custom_pools": "Crear tu propio survivor con tus reglas es parte de Premium.",
+      "premium_leagues": "Los survivor de Premier League, LaLiga, Serie A y Bundesliga son parte de Premium."
+    }
+  },
+  "upsell": {
+    "title": "Desbloquea Premium",
+    "subtitle": "Esta función es parte de Premium.",
+    "freeNote": "La Liga MX sigue siendo gratis, siempre.",
+    "cta": "Ver planes",
+    "dismiss": "Ahora no",
+    "benefits": {
+      "leagues": {
+        "title": "Las cuatro grandes de Europa",
+        "detail": "Fantasy, quinielas y survivor en Premier, LaLiga, Serie A y Bundesliga."
+      },
+      "rules": {
+        "title": "Tus reglas, tu torneo",
+        "detail": "Puntuación a tu medida, cupo de la quiniela y survivor personalizados."
+      },
+      "tools": {
+        "title": "Herramientas de manager",
+        "detail": "Mock drafts en cualquier liga y la calificación de tu plantilla toda la temporada."
+      }
+    }
+  },
+  "invitation": {
+    "premiumOnly": "Esta liga es Premium: sólo puedes invitar a personas que ya tengan una cuenta Premium."
+  }
+}

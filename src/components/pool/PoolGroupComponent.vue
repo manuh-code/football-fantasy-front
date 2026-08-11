@@ -328,6 +328,7 @@
       invitable-type="pool_group"
       :invitable-uuid="pool.uuid"
       :spots-left="spotsLeft"
+      :requires-premium="pool.football_league?.premium === true"
       @close="isInviteOpen = false"
     />
   </div>

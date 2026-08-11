@@ -5,6 +5,8 @@ import { useValidationStore } from '@/store/validation/useValidationStore'
 import { useLocaleStore } from '@/store/locale'
 import { t } from '@/i18n'
 import router from '@/router'
+import { openPremiumUpsell } from '@/composables/usePremiumUpsell'
+import type { PremiumRequiredPayload } from '@/interfaces/user/billing/EntitlementsResponse'
 
 
 export interface ApiError {
@@ -121,6 +123,26 @@ export function useApiFantasy() {
                         }
                         errorTitle = t('errors.422.title')
                         errorMessage = error.response.data?.message || t('errors.422.message')
+                        break
+                    }
+                    case 402: {
+                        // Muro de pago. El API manda el código de la función en
+                        // `data.feature`, así que en vez de un aviso de error se
+                        // abre la hoja que explica qué desbloquea y lleva a los
+                        // planes. Vale también para candados que esta versión
+                        // del front no conociera: el servidor es el que decide.
+                        const payload = error.response.data?.data as PremiumRequiredPayload | undefined
+                        if (payload?.reason === 'premium_required') {
+                            // `_silent` significa "el fallo lo manejo yo": una
+                            // pantalla que sondea en segundo plano no debe hacerle
+                            // aparecer al usuario una hoja de venta que no pidió.
+                            if (!isSilent) {
+                                openPremiumUpsell(payload.feature)
+                            }
+                            return Promise.reject(apiError)
+                        }
+                        errorTitle = t('errors.generic.title')
+                        errorMessage = error.response.data?.message || t('errors.generic.message')
                         break
                     }
                     case 400:

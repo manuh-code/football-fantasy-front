@@ -66,6 +66,10 @@
          La actualización es invisible (usePwaAutoUpdate), sin modal. -->
     <PwaInstallBanner />
     <PushPermissionModal />
+
+    <!-- Muro de pago. Único en toda la app: lo abre cualquier pantalla con
+         `requirePremium()`, y también el interceptor cuando el API contesta 402. -->
+    <PremiumUpsellSheet />
   </div>
 </template>
 
@@ -84,6 +88,9 @@ import { usePwaAutoUpdate } from "@/composables/usePwaAutoUpdate";
 import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
 import PushPermissionModal from "@/components/pwa/PushPermissionModal.vue";
 import AppFooter from "@/components/AppFooter.vue";
+import PremiumUpsellSheet from "@/components/premium/PremiumUpsellSheet.vue";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { usePremiumStore } from "@/store/billing/usePremiumStore";
 
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -133,6 +140,14 @@ onMounted(async () => {
   FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
   // Initialize theme on app mount
   themeStore.initTheme();
+
+  // Lo desbloqueado no se persiste (un `true` viejo repartiría Premium que el
+  // API no respalda), así que al recargar con sesión abierta hay que volver a
+  // pedirlo. Sin `await`: ninguna pantalla depende de esto para su primer
+  // render, sólo para saber dónde pintar el candado.
+  if (useAuthStore().getToken()) {
+    void usePremiumStore().fetch();
+  }
 
   // Push: en el arranque SOLO revalidamos el token si el usuario ya concedió
   // el permiso antes. Pedir el permiso (Notification.requestPermission) debe

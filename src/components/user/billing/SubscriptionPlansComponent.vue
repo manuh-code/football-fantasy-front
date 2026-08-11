@@ -102,24 +102,6 @@
             </p>
             <p class="mt-3 text-sm text-gray-700 dark:text-gray-300">{{ billingNote }}</p>
           </div>
-
-          <!-- Only the annual plan gets this: it is the one whose span maps onto
-               something the reader already keeps in their head. -->
-          <div v-if="isAnnual" class="mt-6">
-            <div class="flex gap-1.5" aria-hidden="true">
-              <div class="flex-1 h-1.5 rounded-full bg-emerald-500" />
-              <div class="flex-1 h-1.5 rounded-full bg-emerald-500" />
-            </div>
-            <div
-              class="mt-2 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400"
-            >
-              <span>{{ $t('billing.subscription.tournaments.apertura') }}</span>
-              <span>{{ $t('billing.subscription.tournaments.clausura') }}</span>
-            </div>
-            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-              {{ $t('billing.subscription.tournaments.note') }}
-            </p>
-          </div>
         </div>
 
         <!-- What you get -->

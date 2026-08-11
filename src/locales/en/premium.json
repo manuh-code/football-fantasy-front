@@ -1,0 +1,45 @@
+{
+  "badge": "PRO",
+  "locked": "Available with Premium",
+  "features": {
+    "fantasy": {
+      "premium_leagues": "Fantasy leagues in the Premier League, LaLiga, Serie A and Bundesliga are part of Premium.",
+      "mock_draft": "Practising drafts with players from the European leagues is part of Premium.",
+      "scoring_rules": "Tuning how much each play pays in your league is part of Premium.",
+      "roster_grade": "Your roster grade during the season is part of Premium."
+    },
+    "pool": {
+      "premium_leagues": "Pools for the Premier League, LaLiga, Serie A and Bundesliga are part of Premium.",
+      "max_participants": "Changing your pool size is part of Premium.",
+      "scoring_rules": "Changing the points per correct pick in your pool is part of Premium."
+    },
+    "survivor": {
+      "custom_pools": "Creating your own survivor with your own rules is part of Premium.",
+      "premium_leagues": "Survivor pools for the Premier League, LaLiga, Serie A and Bundesliga are part of Premium."
+    }
+  },
+  "upsell": {
+    "title": "Unlock Premium",
+    "subtitle": "This feature is part of Premium.",
+    "freeNote": "Liga MX stays free, always.",
+    "cta": "See plans",
+    "dismiss": "Not now",
+    "benefits": {
+      "leagues": {
+        "title": "Europe's big four",
+        "detail": "Fantasy, pools and survivor in the Premier League, LaLiga, Serie A and Bundesliga."
+      },
+      "rules": {
+        "title": "Your rules, your tournament",
+        "detail": "Custom scoring, pool size and your own survivor pools."
+      },
+      "tools": {
+        "title": "Manager tools",
+        "detail": "Mock drafts in any league and your roster grade all season long."
+      }
+    }
+  },
+  "invitation": {
+    "premiumOnly": "This league is Premium: you can only invite people who already have a Premium account."
+  }
+}

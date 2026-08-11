@@ -21,6 +21,7 @@ import esGuides from '@/locales/es/guides.json'
 import esBilling from '@/locales/es/billing.json'
 import esNotice from '@/locales/es/notice.json'
 import esInvitation from '@/locales/es/invitation.json'
+import esPremium from '@/locales/es/premium.json'
 
 import enCommon from '@/locales/en/common.json'
 import enErrors from '@/locales/en/errors.json'
@@ -41,6 +42,7 @@ import enGuides from '@/locales/en/guides.json'
 import enBilling from '@/locales/en/billing.json'
 import enNotice from '@/locales/en/notice.json'
 import enInvitation from '@/locales/en/invitation.json'
+import enPremium from '@/locales/en/premium.json'
 
 export const messages = {
   es: {
@@ -63,6 +65,7 @@ export const messages = {
     billing: esBilling,
     notice: esNotice,
     invitation: esInvitation,
+    premium: esPremium,
   },
   en: {
     common: enCommon,
@@ -84,5 +87,6 @@ export const messages = {
     billing: enBilling,
     notice: enNotice,
     invitation: enInvitation,
+    premium: enPremium,
   },
 } as const

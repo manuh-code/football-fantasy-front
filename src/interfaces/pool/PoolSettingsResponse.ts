@@ -21,6 +21,13 @@ export interface PoolSettingsResponse {
     /** Nunca por debajo de quienes ya entraron. */
     participants_min: number;
     participants_max: number;
+    /**
+     * Qué puede tocar de verdad quien pregunta: admin **y** con la función
+     * desbloqueada. Van por separado porque cambiar el cupo y cambiar los
+     * puntos son dos candados premium distintos.
+     */
+    can_edit_participants: boolean;
+    can_edit_scoring: boolean;
     points_min: number;
     points_max: number;
     rules: PoolScoringRuleResponse[];
