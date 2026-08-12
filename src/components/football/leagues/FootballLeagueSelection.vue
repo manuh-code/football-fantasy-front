@@ -83,18 +83,22 @@
           </div>
 
           <!-- Name -->
-          <span
-            :class="[
-              'flex-1 min-w-0 text-callout leading-tight truncate',
-              currentLeagueUuid === league.uuid
-                ? 'font-semibold text-gray-900 dark:text-white'
-                : 'font-medium text-gray-800 dark:text-gray-100',
-            ]"
-          >
-            {{ league.name }}
+          <span class="flex-1 min-w-0 flex items-center gap-1.5">
+            <span
+              :class="[
+                'min-w-0 text-callout leading-tight truncate',
+                currentLeagueUuid === league.uuid
+                  ? 'font-semibold text-gray-900 dark:text-white'
+                  : 'font-medium text-gray-800 dark:text-gray-100',
+              ]"
+            >
+              {{ league.name }}
+            </span>
+            <PremiumBadge v-if="league.premium" class="shrink-0" />
           </span>
 
-          <!-- Trailing accessory: spinner while saving, check if current, chevron otherwise -->
+          <!-- Trailing accessory: spinner while saving, check if current, lock if
+               premium and out of reach, chevron otherwise -->
           <div
             v-if="savingUuid === league.uuid"
             class="w-5 h-5 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin shrink-0"
@@ -103,6 +107,14 @@
             v-else-if="currentLeagueUuid === league.uuid"
             name="hi-solid-check"
             class="w-5 h-5 text-emerald-500 shrink-0"
+          />
+          <!-- Bloqueada: se deja visible y pulsable a propósito, igual que en
+               LeaguePickerSheet. Tocarla abre la hoja que explica qué
+               desbloquea en vez de cambiar de liga en silencio. -->
+          <v-icon
+            v-else-if="isLocked(league)"
+            name="hi-solid-lock-closed"
+            class="w-4 h-4 text-amber-500 shrink-0"
           />
           <v-icon
             v-else
@@ -125,10 +137,13 @@ import { useToast } from "@/composables/useToast";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useUserStore } from "@/store/user/useUserStore";
 import { useFootballLeagueStore } from "@/store/football/league/useFootballLeagueStore";
+import { usePremium } from "@/composables/usePremium";
 import { ButtonComponent } from "@/components/ui";
+import PremiumBadge from "@/components/premium/PremiumBadge.vue";
 import catalogService from "@/services/catalog/CatalogService";
 import type { FootballLeagueResponse } from "@/interfaces/football/league/FootballLeagueResponse";
 import { UserFootballLeaguePayload } from "@/interfaces/user/footballLeague/UserFootballLeaguePayload";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 
 const route = useRoute();
 const router = useRouter();
@@ -144,6 +159,14 @@ const savingUuid = ref<string | null>(null);
 const hasLeague = computed(() => store.existLeague());
 const currentLeagueUuid = computed(() => store.getFootballLeagueUuid());
 const isSaving = computed(() => savingUuid.value !== null);
+
+const { requirePremium, can } = usePremium();
+
+/** Sin Premium, una liga de pago sólo se puede seguir mirando (ya era tu
+ *  contexto); elegirla de nuevas queda cerrado. */
+function isLocked(league: FootballLeagueResponse): boolean {
+  return league.premium && !can(PREMIUM_FEATURES.footballPremiumLeagues);
+}
 
 async function loadLeagues() {
   loading.value = true;
@@ -165,8 +188,16 @@ async function selectLeague(league: FootballLeagueResponse) {
   if (isSaving.value) return;
 
   // Re-tapping the current league just leaves the gate without a redundant call.
+  // Checked before the lock: this is what lets someone keep the premium league
+  // they already had as their context after lapsing, without letting them pick
+  // a different (or the same, once left) premium league for free.
   if (league.uuid === currentLeagueUuid.value) {
     leaveGate();
+    return;
+  }
+
+  if (isLocked(league)) {
+    requirePremium(PREMIUM_FEATURES.footballPremiumLeagues);
     return;
   }
 

@@ -5,6 +5,8 @@ import {
   InvitableType,
   Invitation,
   InvitationCreatePayload,
+  InvitationGuestSeats,
+  PendingInvitations,
 } from "@/interfaces/invitation/Invitation";
 
 export class InvitationService {
@@ -27,16 +29,27 @@ export class InvitationService {
     throw new AxiosError("Failed to send invitation");
   }
 
+  /**
+   * Las pendientes y, si toca, el reparto de plazas para invitados sin Premium.
+   *
+   * `guest_seats` viaja al nivel del sobre y no dentro de `data` porque no
+   * describe a ninguna invitación concreta sino a la liga entera. Se pide junto
+   * con la lista porque se pintan en la misma hoja: separarlo sería una segunda
+   * llamada para dibujar lo mismo.
+   */
   async listPending(
     invitableType: InvitableType,
     invitableUuid: string,
-  ): Promise<Invitation[]> {
-    const response = await this.api.get<ApiResponse<Invitation[]>>(
-      `invitations/${invitableType}/${invitableUuid}`,
-    );
+  ): Promise<PendingInvitations> {
+    const response = await this.api.get<
+      ApiResponse<Invitation[]> & { guest_seats?: InvitationGuestSeats | null }
+    >(`invitations/${invitableType}/${invitableUuid}`);
 
     if (response.data.code === 200) {
-      return response.data.data;
+      return {
+        invitations: response.data.data,
+        guestSeats: response.data.guest_seats ?? null,
+      };
     }
     throw new AxiosError("Failed to fetch invitations");
   }

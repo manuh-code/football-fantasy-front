@@ -46,6 +46,7 @@
     "invalidTitle": "Este enlace ya no sirve",
     "invalidBody": "La invitación pudo vencer o el administrador la canceló. Pídele una nueva.",
     "goHome": "Ir al inicio",
-    "closed": "Esta liga o quiniela ya arrancó, la invitación puede que ya no se pueda aceptar."
+    "closed": "Esta liga o quiniela ya arrancó, la invitación puede que ya no se pueda aceptar.",
+    "someone": "quien te invitó"
   }
 }

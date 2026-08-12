@@ -1,7 +1,7 @@
 import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { SubscriptionPlanResponse } from "@/interfaces/user/billing/SubscriptionPlanResponse";
-import { SubscriptionStateResponse } from "@/interfaces/user/billing/SubscriptionStateResponse";
+import { CheckoutSessionResponse, SubscriptionStateResponse } from "@/interfaces/user/billing/SubscriptionStateResponse";
 import { AxiosError } from "axios";
 
 export class SubscriptionService {
@@ -31,6 +31,46 @@ export class SubscriptionService {
     }
 
     /**
+     * Abre el pago de la suscripción como una Checkout Session.
+     *
+     * Es la vía que Stripe recomienda y la que sustituye a `store()`: la sesión
+     * cobra, resuelve el 3DS y crea la suscripción, así que el navegador ya no
+     * tiene que encadenar intents a mano.
+     */
+    async checkout(price: string): Promise<CheckoutSessionResponse> {
+        const response = await this.api.post<ApiResponse<CheckoutSessionResponse>>(
+            'user/subscription/checkout',
+            { price },
+        );
+        if (response.data.code === 200 || response.data.code === 201) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to open the checkout session');
+    }
+
+    /**
+     * Cuenta al servidor que el pago terminó para que escriba la suscripción sin
+     * esperar al webhook.
+     *
+     * Contesta 202 cuando el cobro sigue en proceso (métodos de pago asíncronos):
+     * en ese caso Premium se activa solo al llegar el webhook, y no hay nada que
+     * reintentar desde aquí.
+     */
+    async syncCheckout(sessionId: string): Promise<SubscriptionStateResponse> {
+        const response = await this.api.post<ApiResponse<SubscriptionStateResponse>>(
+            'user/subscription/checkout/sync',
+            { session_id: sessionId },
+        );
+        if (response.data.code === 200 || response.data.code === 202) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to sync the checkout session');
+    }
+
+    /**
+     * Camino anterior (tarjeta guardada + PaymentIntent). Sigue vivo en el API
+     * como red de seguridad, pero el flujo de pago ya no pasa por aquí.
+     *
      * Start the subscription on `price`, charging `paymentMethod` (or the saved
      * default when omitted).
      *

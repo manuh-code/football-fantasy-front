@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import subscriptionService from '@/services/user/billing/SubscriptionService'
+import { usePremiumStore } from '@/store/billing/usePremiumStore'
 import { rememberPublishableKey } from '@/composables/useStripePaymentElement'
 import type { SubscriptionPlanResponse } from '@/interfaces/user/billing/SubscriptionPlanResponse'
 import type {
@@ -46,6 +47,10 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     isPremium.value = state.is_premium
     subscription.value = state.subscription
     isStateLoaded.value = true
+    // Suscribirse, cambiar de plan, cancelar o reanudar cambian lo que el
+    // usuario tiene desbloqueado. Se refresca aquí, que es el único punto por
+    // el que pasan los cuatro, en vez de recordarlo en cada pantalla.
+    void usePremiumStore().fetch(true)
     // Keeps 3DS on the account that actually issued the payment intent, even
     // when this session never went through the add-card flow.
     rememberPublishableKey(state.publishable_key)

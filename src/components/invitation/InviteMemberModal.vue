@@ -10,16 +10,39 @@
     autofocus
     @close="close"
   >
-    <!-- Aviso antes de escribir, no después de fallar: en una liga de pago sólo
-         entra quien ya tiene cuenta Premium, así que invitar a un correo suelto
-         no va a funcionar y más vale decirlo aquí. -->
+    <!-- Lo que el admin necesita saber antes de escribir, no después de fallar.
+         En una liga de pago sus invitados entran sin suscripción, pero sólo
+         hasta la mitad de los lugares: decirlo aquí evita gastar la invitación
+         y llevarse el rechazo. -->
     <div
-      v-if="requiresPremium"
+      v-if="guestSeats && guestSeats.available > 0"
+      class="mb-4 flex items-start gap-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 px-3.5 py-3"
+    >
+      <v-icon name="hi-solid-user-add" class="w-4 h-4 mt-0.5 shrink-0 text-blue-500" />
+      <p class="text-2xs text-blue-800 dark:text-blue-300/90 leading-relaxed">
+        {{ guestSeatsMessage }}
+      </p>
+    </div>
+
+    <div
+      v-else-if="guestSeats"
       class="mb-4 flex items-start gap-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 px-3.5 py-3"
     >
       <v-icon name="hi-solid-lock-closed" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500" />
       <p class="text-2xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
-        {{ $t('premium.invitation.premiumOnly') }}
+        {{ guestSeatsMessage }}
+      </p>
+    </div>
+
+    <!-- Quiniela o survivor de liga premium: no hay reparto que contar, pero
+         sí conviene decir que la invitación abre contenido de pago. -->
+    <div
+      v-else-if="requiresPremium"
+      class="mb-4 flex items-start gap-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 px-3.5 py-3"
+    >
+      <v-icon name="hi-solid-user-add" class="w-4 h-4 mt-0.5 shrink-0 text-blue-500" />
+      <p class="text-2xs text-blue-800 dark:text-blue-300/90 leading-relaxed">
+        {{ $t('premium.invitation.guestAccess') }}
       </p>
     </div>
 
@@ -145,6 +168,7 @@ import { useValidationStore } from "@/store";
 import {
   InvitableType,
   Invitation,
+  InvitationGuestSeats,
 } from "@/interfaces/invitation/Invitation";
 
 const props = defineProps<{
@@ -154,9 +178,9 @@ const props = defineProps<{
   /** Lugares libres, para avisar antes de gastar una invitación. */
   spotsLeft?: number;
   /**
-   * La liga de futbol de este contenido es de pago. Cambia a quién se puede
-   * invitar: sólo cuentas Premium que ya existan, mientras que en una liga
-   * gratuita vale cualquier correo, tenga cuenta o no.
+   * La liga de futbol de este contenido es de pago. Los invitados entran sin
+   * suscripción —eso es lo que concede la invitación de un Premium—, así que
+   * sirve para explicarlo, no para bloquear el formulario.
    */
   requiresPremium?: boolean;
 }>();
@@ -170,6 +194,7 @@ const email = ref("");
 const isSending = ref(false);
 const lastSentTo = ref("");
 const pending = ref<Invitation[]>([]);
+const guestSeats = ref<InvitationGuestSeats | null>(null);
 const isLoadingPending = ref(false);
 const cancellingUuid = ref("");
 const emailInput = ref<HTMLInputElement | null>(null);
@@ -194,6 +219,27 @@ const subtitle = computed(() => {
 });
 
 /**
+ * Cuántos lugares de invitado quedan, en una frase. Sale de un computed y no
+ * del template porque el plural necesita el tercer argumento de `t()`, que la
+ * forma `$t` de la plantilla no acepta.
+ */
+const guestSeatsMessage = computed(() => {
+  const seats = guestSeats.value;
+
+  if (!seats) return "";
+
+  if (seats.available <= 0) {
+    return t("premium.invitation.guestSeatsFull", { limit: seats.limit });
+  }
+
+  return t(
+    "premium.invitation.guestSeats",
+    { count: seats.available, limit: seats.limit },
+    seats.available,
+  );
+});
+
+/**
  * El backend valida sobre `email` o sobre `invitable_uuid` según el motivo
  * (correo ya invitado vs. liga cerrada). Los dos se enseñan bajo el campo: es
  * el único sitio donde el usuario está mirando.
@@ -212,6 +258,7 @@ watch(
 
     email.value = "";
     lastSentTo.value = "";
+    guestSeats.value = null;
     validationStore.clearValidatorError();
     await loadPending();
     await nextTick();
@@ -219,17 +266,28 @@ watch(
   },
 );
 
-async function loadPending(): Promise<void> {
-  isLoadingPending.value = true;
+/**
+ * `silent` es para las recargas de después de invitar o cancelar: la lista ya
+ * está en pantalla y ponerla en blanco un instante para volver a pintar lo
+ * mismo se ve como un parpadeo.
+ */
+async function loadPending(silent = false): Promise<void> {
+  if (!silent) isLoadingPending.value = true;
+
   try {
-    pending.value = await InvitationService.listPending(
+    const { invitations, guestSeats: seats } = await InvitationService.listPending(
       props.invitableType,
       props.invitableUuid,
     );
+    pending.value = invitations;
+    guestSeats.value = seats;
   } catch {
-    pending.value = [];
+    if (!silent) {
+      pending.value = [];
+      guestSeats.value = null;
+    }
   } finally {
-    isLoadingPending.value = false;
+    if (!silent) isLoadingPending.value = false;
   }
 }
 
@@ -251,6 +309,10 @@ async function submit(): Promise<void> {
     email.value = "";
     pending.value = [invitation, ...pending.value];
     emit("sent", invitation);
+
+    // El reparto se relee en vez de restarle uno: si el invitado ya tenía
+    // Premium no gastó plaza, y eso sólo lo sabe el servidor.
+    void loadPending(true);
   } catch {
     // El interceptor ya dejó el detalle en el store de validación y mostró el
     // toast; aquí sólo hay que no cerrar la hoja.
@@ -264,6 +326,7 @@ async function cancel(uuid: string): Promise<void> {
   try {
     await InvitationService.cancel(uuid);
     pending.value = pending.value.filter((item) => item.uuid !== uuid);
+    void loadPending(true);
   } finally {
     cancellingUuid.value = "";
   }

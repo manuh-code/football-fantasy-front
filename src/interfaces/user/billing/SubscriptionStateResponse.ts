@@ -36,3 +36,13 @@ export interface SubscriptionStateResponse {
     requires_action?: boolean;
     payment_intent_client_secret?: string;
 }
+
+// POST /user/subscription/checkout — lo que hace falta para montar el pago.
+export interface CheckoutSessionResponse {
+    // Id de la Checkout Session (`cs_...`). Se devuelve al servidor al terminar
+    // para que escriba la suscripción sin esperar al webhook.
+    session_id: string;
+    // Con esto arranca el Checkout en el navegador.
+    client_secret: string;
+    publishable_key: string;
+}
