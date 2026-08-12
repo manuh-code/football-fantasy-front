@@ -84,6 +84,22 @@
           >
             {{ invitable.description }}
           </p>
+
+          <!-- El momento en que el producto se explica solo: alguien sin
+               suscripción está a punto de entrar a contenido de pago porque
+               quien le invitó sí paga. Va en la cabecera para que se lea en
+               todos los estados (registrarse, iniciar sesión, aceptar). -->
+          <p
+            v-if="showsGuestPass"
+            class="mt-4 flex items-start gap-2 rounded-xl bg-white/70 dark:bg-gray-900/40 px-3 py-2.5 text-2xs leading-relaxed text-gray-700 dark:text-gray-300"
+          >
+            <v-icon
+              name="hi-solid-badge-check"
+              class="w-4 h-4 mt-px shrink-0 text-emerald-600 dark:text-emerald-400"
+              aria-hidden="true"
+            />
+            <span>{{ $t("premium.invitation.guestPass", { inviter: inviterName }) }}</span>
+          </p>
         </div>
 
         <div class="px-6 py-5">
@@ -237,6 +253,7 @@ import InvitationService from "@/services/invitation/InvitationService";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useUserStore } from "@/store";
 import { useNoticeStore } from "@/store/notice/useNoticeStore";
+import { usePremiumStore } from "@/store/billing/usePremiumStore";
 import { Invitation } from "@/interfaces/invitation/Invitation";
 
 const route = useRoute();
@@ -246,6 +263,7 @@ const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const noticeStore = useNoticeStore();
+const premiumStore = usePremiumStore();
 
 const token = String(route.params.token ?? "");
 
@@ -266,6 +284,26 @@ const eyebrow = computed(() =>
 );
 
 const currentEmail = computed(() => userStore.getUserData?.email ?? "");
+
+/**
+ * Contenido de pago al que se entra sin pagarlo. No se le enseña a quien ya
+ * tiene Premium: para esa persona la liga no tiene nada de excepcional, y el
+ * mensaje sonaría a que le están haciendo un favor que no necesita.
+ *
+ * Sin sesión el store dice "no premium", que es justo lo que hay que asumir de
+ * alguien a quien están invitando.
+ */
+const showsGuestPass = computed(
+  () => invitable.value?.requires_premium === true && !premiumStore.isPremium,
+);
+
+// `trim` porque el nombre llega concatenado del API y arrastra un espacio
+// cuando falta el apellido: sin esto la frase sale con un hueco antes del
+// signo de puntuación que la sigue.
+const inviterName = computed(
+  () =>
+    invitation.value?.inviter.name?.trim() || t("invitation.accept.someone"),
+);
 
 /** Sólo se puede crear cuenta si nadie ocupa ese correo todavía. */
 const needsAccount = computed(

@@ -2,6 +2,9 @@
   "badge": "PRO",
   "locked": "Disponible con Premium",
   "features": {
+    "football": {
+      "premium_leagues": "Seguir la Premier League, LaLiga, Serie A y Bundesliga —sus partidos, tabla y estadísticas— es parte de Premium."
+    },
     "fantasy": {
       "premium_leagues": "Las ligas fantasy de Premier League, LaLiga, Serie A y Bundesliga son parte de Premium.",
       "mock_draft": "Practicar drafts con jugadores de las ligas de Europa es parte de Premium.",
@@ -40,6 +43,9 @@
     }
   },
   "invitation": {
-    "premiumOnly": "Esta liga es Premium: sólo puedes invitar a personas que ya tengan una cuenta Premium."
+    "guestSeats": "Hasta {limit} de tus participantes pueden entrar sin Premium: queda 1 lugar. | Hasta {limit} de tus participantes pueden entrar sin Premium: quedan {count} lugares.",
+    "guestSeatsFull": "Los {limit} lugares para invitados sin Premium ya están ocupados. Quien entre ahora necesita su propia cuenta Premium.",
+    "guestAccess": "Tus invitados entran a este contenido Premium aunque no tengan suscripción.",
+    "guestPass": "Entras invitado por {inviter}: esta liga es Premium y su suscripción te abre la puerta."
   }
 }

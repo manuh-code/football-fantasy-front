@@ -46,6 +46,7 @@
     "invalidTitle": "This link no longer works",
     "invalidBody": "The invitation may have expired or the admin cancelled it. Ask them for a new one.",
     "goHome": "Go home",
-    "closed": "This league or pool already started, so the invitation may no longer be acceptable."
+    "closed": "This league or pool already started, so the invitation may no longer be acceptable.",
+    "someone": "whoever invited you"
   }
 }

@@ -4,6 +4,7 @@
  * que el front no sabría pintarlo.
  */
 export const PREMIUM_FEATURES = {
+  footballPremiumLeagues: "football.premium_leagues",
   fantasyPremiumLeagues: "fantasy.premium_leagues",
   fantasyMockDraft: "fantasy.mock_draft",
   fantasyScoringRules: "fantasy.scoring_rules",

@@ -42,31 +42,26 @@
         </div>
       </div>
 
-      <!-- Which card. Changing it here beats sending the user to another screen
-           and losing the flow. -->
-      <div class="mt-3 flex items-center gap-3 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-3">
-        <CardBrandMark
-          v-if="paymentMethod"
-          :brand="paymentMethod.brand"
-          :type="paymentMethod.type"
-          :label="paymentMethodLabel(paymentMethod)"
-          size="sm"
-        />
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-            {{ paymentMethod ? paymentMethodLabel(paymentMethod) : $t('billing.subscription.confirm.noCard') }}
-          </p>
-          <p v-if="paymentMethod" class="text-xs text-gray-500 dark:text-gray-400">
-            {{ $t('billing.subscription.confirm.chargedTo') }}
-          </p>
+      <!-- El formulario de pago lo monta Checkout: dentro salen ya las tarjetas
+           guardadas del cliente y los demás métodos activos en el panel, así que
+           no hace falta mandar a nadie a otra pantalla a dar de alta una tarjeta
+           antes de poder suscribirse. -->
+      <div class="mt-3">
+        <div v-if="isMounting" class="space-y-2" aria-busy="true">
+          <div class="h-11 rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse" />
+          <div class="h-11 rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse" />
         </div>
+
+        <div v-show="!isMounting" id="subscription-payment-element" />
+
         <button
-          v-if="canChangeCard"
+          v-if="mountError"
           type="button"
-          class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded px-1.5 py-1 flex-shrink-0"
-          @click="emit('changeCard')"
+          class="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded px-1.5 py-1"
+          @click="openCheckout"
         >
-          {{ $t('billing.subscription.confirm.useAnotherCard') }}
+          <v-icon name="hi-solid-refresh" class="w-4 h-4" />
+          {{ $t('common.actions.retry') }}
         </button>
       </div>
 
@@ -103,7 +98,7 @@
         size="md"
         :text="isSubmitting ? $t('billing.subscription.confirm.submitting') : submitLabel"
         :loading="isSubmitting"
-        :disabled="isSubmitting || !paymentMethod"
+        :disabled="isSubmitting || !isReady"
         :always-full-width="true"
         icon="hi-solid-lock-closed"
         @click="submit"
@@ -113,29 +108,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import { ButtonComponent } from '@/components/ui'
-import CardBrandMark from '@/components/user/billing/CardBrandMark.vue'
 import subscriptionService from '@/services/user/billing/SubscriptionService'
-import { loadConfiguredStripe } from '@/composables/useStripePaymentElement'
-import { paymentMethodLabel } from '@/utils/paymentMethod'
+import { useStripeCheckout } from '@/composables/useStripeCheckout'
 import { formatMoney } from '@/utils/currency'
-import type { PaymentMethodResponse } from '@/interfaces/user/billing/PaymentMethodResponse'
 import type { SubscriptionPlanResponse } from '@/interfaces/user/billing/SubscriptionPlanResponse'
 import type { SubscriptionStateResponse } from '@/interfaces/user/billing/SubscriptionStateResponse'
 
 const props = defineProps<{
   isVisible: boolean
   plan: SubscriptionPlanResponse | null
-  paymentMethod: PaymentMethodResponse | null
-  canChangeCard: boolean
 }>()
 
 const emit = defineEmits<{
   close: []
-  changeCard: []
   // Fired once the user leaves the success panel, carrying the state the API
   // answered so the caller never has to re-fetch. Deliberately not fired the
   // moment the API returns: the caller swaps this sheet out on `is_premium`.
@@ -149,6 +138,47 @@ const succeeded = ref(false)
 const errorMessage = ref<string | null>(null)
 const errorRef = ref<HTMLElement | null>(null)
 const resultState = ref<SubscriptionStateResponse | null>(null)
+
+const { isReady, isMounting, mountError, mount, confirm, destroy } = useStripeCheckout()
+
+// Id de la sesión abierta, para contarle al servidor que el cobro terminó.
+const sessionId = ref<string | null>(null)
+
+/**
+ * Abre la sesión de pago y monta el formulario.
+ *
+ * El secreto se le pasa a Stripe como promesa a propósito: así el SDK empieza a
+ * cargar su iframe mientras el backend todavía está creando la sesión, en vez de
+ * encadenar las dos esperas.
+ */
+async function openCheckout(): Promise<void> {
+  if (!props.plan) {
+    return
+  }
+
+  errorMessage.value = null
+
+  const opening = subscriptionService.checkout(props.plan.id)
+  const secret = opening.then((session) => {
+    sessionId.value = session.session_id
+
+    return session.client_secret
+  })
+
+  // Sin esto, un fallo al abrir la sesión quedaría como un rechazo sin gestionar.
+  secret.catch(() => {})
+
+  const key = await opening.then((session) => session.publishable_key).catch(() => null)
+
+  if (key === null) {
+    errorMessage.value = t('billing.subscription.confirm.genericError')
+    await revealError()
+
+    return
+  }
+
+  await mount(secret, '#subscription-payment-element', key)
+}
 
 function finish() {
   if (resultState.value) {
@@ -182,7 +212,7 @@ const submitLabel = computed(() =>
 )
 
 async function submit() {
-  if (isSubmitting.value || !props.plan) {
+  if (isSubmitting.value || !isReady.value) {
     return
   }
 
@@ -190,54 +220,41 @@ async function submit() {
   errorMessage.value = null
 
   try {
-    let state = await subscriptionService.store(props.plan.id, props.paymentMethod?.id)
+    // Checkout se encarga del cobro y del 3DS. Un rechazo del banco vuelve como
+    // mensaje, no como excepción: el usuario puede probar otra tarjeta sin salir.
+    const failure = await confirm()
 
-    // The bank wants 3DS. The subscription row already exists at this point, so
-    // the challenge is finished in place rather than starting over.
-    if (state.requires_action && state.payment_intent_client_secret) {
-      const confirmed = await confirmAuthentication(state.payment_intent_client_secret)
-      if (!confirmed) {
-        return
-      }
-      state = await subscriptionService.show()
+    if (failure) {
+      errorMessage.value = failure
+      await revealError()
+
+      return
     }
 
+    // La suscripción la crea Stripe; esto sólo adelanta la escritura local para
+    // que la app no se quede bloqueada los segundos que tarda el webhook.
+    const state = sessionId.value
+      ? await subscriptionService.syncCheckout(sessionId.value)
+      : await subscriptionService.show()
+
     if (!state.is_premium) {
-      errorMessage.value = t('billing.subscription.confirm.notActivated')
+      // Pago aceptado pero aún procesando (métodos asíncronos). No es un fallo:
+      // el webhook lo activará, así que se dice y no se pide reintentar.
+      errorMessage.value = t('billing.subscription.confirm.processing')
       await revealError()
+
       return
     }
 
     resultState.value = state
     succeeded.value = true
   } catch {
-    // The axios interceptor already surfaced the API's own message.
+    // El interceptor de axios ya enseñó el mensaje del API.
     errorMessage.value = t('billing.subscription.confirm.genericError')
     await revealError()
   } finally {
     isSubmitting.value = false
   }
-}
-
-/** Runs the 3DS challenge. False when it failed or was dismissed. */
-async function confirmAuthentication(clientSecret: string): Promise<boolean> {
-  const stripe = await loadConfiguredStripe()
-
-  if (!stripe) {
-    errorMessage.value = t('billing.subscription.confirm.genericError')
-    await revealError()
-    return false
-  }
-
-  const { error } = await stripe.confirmCardPayment(clientSecret)
-
-  if (error) {
-    errorMessage.value = error.message ?? t('billing.subscription.confirm.genericError')
-    await revealError()
-    return false
-  }
-
-  return true
 }
 
 async function revealError() {
@@ -247,15 +264,29 @@ async function revealError() {
 
 watch(
   () => props.isVisible,
-  (visible) => {
-    if (visible) {
-      succeeded.value = false
-      errorMessage.value = null
-      isSubmitting.value = false
-      resultState.value = null
+  async (visible) => {
+    if (!visible) {
+      // Cada apertura estrena sesión de pago, así que el formulario anterior no
+      // puede quedarse montado apuntando a un secreto ya consumido.
+      destroy()
+      sessionId.value = null
+
+      return
     }
+
+    succeeded.value = false
+    errorMessage.value = null
+    isSubmitting.value = false
+    resultState.value = null
+
+    // El elemento se monta sobre un contenedor que tiene que existir y medir:
+    // Stripe calcula el ancho del iframe al montarlo.
+    await nextTick()
+    await openCheckout()
   },
 )
+
+onBeforeUnmount(destroy)
 </script>
 
 <style scoped>

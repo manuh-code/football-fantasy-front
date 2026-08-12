@@ -48,7 +48,8 @@
         "detail": "Tu suscripción está activa. Disfruta todas las funciones sin límite.",
         "done": "Empezar"
       },
-      "useAnotherCard": "Usar otra tarjeta"
+      "useAnotherCard": "Usar otra tarjeta",
+      "processing": "Tu pago se está procesando. En cuanto se confirme, Premium se activa solo."
     },
     "manage": {
       "title": "Premium activo",

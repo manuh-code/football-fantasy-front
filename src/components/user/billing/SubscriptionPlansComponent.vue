@@ -127,8 +127,7 @@
             size="lg"
             :text="ctaLabel"
             :always-full-width="true"
-            :loading="isPreparing"
-            :disabled="isPreparing || !selectedPlan"
+            :disabled="!selectedPlan"
             icon="hi-solid-sparkles"
             @click="startCheckout"
           />
@@ -144,22 +143,10 @@
       </div>
     </template>
 
-    <!-- No card on file yet: the existing add-card flow runs first, then the
-         confirmation picks up where it left off. -->
-    <AddPaymentMethodSheet
-      :is-visible="isAddCardOpen"
-      :has-existing-methods="paymentMethods.length > 0"
-      @close="isAddCardOpen = false"
-      @saved="handleCardSaved"
-    />
-
     <ConfirmSubscriptionSheet
       :is-visible="isConfirmOpen"
       :plan="selectedPlan"
-      :payment-method="activePaymentMethod"
-      :can-change-card="!!activePaymentMethod"
       @close="isConfirmOpen = false"
-      @change-card="openAddCard"
       @completed="handleCompleted"
     />
   </div>
@@ -169,31 +156,21 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ButtonComponent } from '@/components/ui'
-import AddPaymentMethodSheet from '@/components/user/billing/AddPaymentMethodSheet.vue'
 import ConfirmSubscriptionSheet from '@/components/user/billing/ConfirmSubscriptionSheet.vue'
 import { useSubscriptionStore } from '@/store/billing/useSubscriptionStore'
-import paymentMethodService from '@/services/user/billing/PaymentMethodService'
 import { currencySymbol, formatMoney } from '@/utils/currency'
-import type { PaymentMethodResponse } from '@/interfaces/user/billing/PaymentMethodResponse'
 import type { SubscriptionStateResponse } from '@/interfaces/user/billing/SubscriptionStateResponse'
 
 const emit = defineEmits<{
   subscribed: [state: SubscriptionStateResponse]
 }>()
 
-// Matches BottomSheet's leave transition, with a little slack.
-const SHEET_LEAVE_MS = 260
-
 const { t, locale, tm, rt } = useI18n()
 const subscriptionStore = useSubscriptionStore()
 
-const paymentMethods = ref<PaymentMethodResponse[]>([])
 const selectedPlanId = ref<string | null>(null)
-const selectedPaymentMethodId = ref<string | null>(null)
 const isLoading = ref(true)
 const loadFailed = ref(false)
-const isPreparing = ref(false)
-const isAddCardOpen = ref(false)
 const isConfirmOpen = ref(false)
 
 const intlLocale = computed(() => (locale.value === 'en' ? 'en-US' : 'es-MX'))
@@ -257,16 +234,6 @@ const features = computed(() => {
 
   return Array.isArray(list) ? list.map((entry) => rt(entry as never)) : []
 })
-
-// The card the charge will land on: whatever the user last added in this flow,
-// otherwise their default.
-const activePaymentMethod = computed(
-  () =>
-    paymentMethods.value.find((method) => method.id === selectedPaymentMethodId.value) ??
-    paymentMethods.value.find((method) => method.is_default) ??
-    paymentMethods.value[0] ??
-    null,
-)
 
 /* ------------------------------------------------------------------ *
  * Animated price
@@ -340,11 +307,9 @@ async function load() {
   loadFailed.value = false
 
   try {
-    const [, methods] = await Promise.all([
-      subscriptionStore.fetchPlans(true),
-      paymentMethodService.index(),
-    ])
-    paymentMethods.value = methods
+    // Sólo los planes: el método de pago lo pide la propia sesión de Checkout,
+    // así que esta pantalla ya no necesita saber qué tarjetas hay guardadas.
+    await subscriptionStore.fetchPlans(true)
 
     // Annual leads: it is the better deal, and defaulting to it frames the
     // monthly price as the trade-off rather than the other way round.
@@ -363,64 +328,10 @@ async function startCheckout() {
     return
   }
 
-  // A subscription needs a card; sending the user to the confirmation without
-  // one would only dead-end there.
-  if (!activePaymentMethod.value) {
-    openAddCard()
-    return
-  }
-
+  // Ya no hace falta tener tarjeta guardada antes de llegar aquí: la sesión de
+  // Checkout pide el método de pago dentro de la propia hoja, y las tarjetas ya
+  // guardadas del cliente le aparecen ahí como opción.
   isConfirmOpen.value = true
-}
-
-/**
- * Hands over from one sheet to the next.
- *
- * Both sheets lock body scroll while open, and toggling them in the same tick
- * makes the closing one's unlock run after the opening one's lock — leaving the
- * page scrolling behind an open sheet. Letting the first finish leaving keeps
- * the two in order, and reads better than a cross-fade besides.
- */
-function handOff(close: () => void, open: () => void): Promise<void> {
-  close()
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      open()
-      resolve()
-    }, SHEET_LEAVE_MS)
-  })
-}
-
-function openAddCard() {
-  void handOff(
-    () => (isConfirmOpen.value = false),
-    () => (isAddCardOpen.value = true),
-  )
-}
-
-async function handleCardSaved(paymentMethod: PaymentMethodResponse) {
-  isPreparing.value = true
-
-  // The card they just entered is the one they meant to pay with, whether or
-  // not they also made it their account default.
-  selectedPaymentMethodId.value = paymentMethod.id
-
-  try {
-    const [methods] = await Promise.all([
-      paymentMethodService.index(),
-      handOff(
-        () => (isAddCardOpen.value = false),
-        () => {},
-      ),
-    ])
-    paymentMethods.value = methods
-    isConfirmOpen.value = true
-  } catch {
-    // Interceptor reported it; the user can tap the CTA again.
-  } finally {
-    isPreparing.value = false
-  }
 }
 
 /**

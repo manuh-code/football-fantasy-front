@@ -100,6 +100,16 @@ export function loadConfiguredStripe(): Promise<Stripe | null> {
     return getStripe(key)
 }
 
+/**
+ * La apariencia que le toca al tema activo.
+ *
+ * Exportada para que el flujo de Checkout Sessions pinte igual que el de
+ * guardar tarjeta sin duplicar la paleta.
+ */
+export function resolveAppearance(): Appearance {
+    return buildAppearance(useThemeStore().currentTheme === 'dark')
+}
+
 function buildAppearance(isDark: boolean): Appearance {
     return {
         theme: isDark ? 'night' : 'stripe',
