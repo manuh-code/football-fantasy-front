@@ -33,6 +33,7 @@ const readJson = (p) => JSON.parse(readFileSync(resolve(root, p), 'utf8'))
 const guides = readJson('src/locales/es/guides.json')
 const landing = readJson('src/locales/es/landing.json')
 const about = readJson('src/locales/es/ui.json').about
+const premium = readJson('src/locales/es/premium.json').landing
 
 // Slugs/keys desde guides.ts (única fuente de verdad de las URLs).
 const guidesTs = readFileSync(resolve(root, 'src/views/guides/guides.ts'), 'utf8')
@@ -40,7 +41,13 @@ const GUIDES = [...guidesTs.matchAll(/\{\s*key:\s*'([^']+)',\s*slug:\s*'([^']+)'
   .map(([, key, slug, minRead]) => ({ key, slug, minRead: Number(minRead) }))
 if (GUIDES.length === 0) throw new Error('prerender: no pude leer las guías desde guides.ts')
 
-const LEAGUES = ['Liga MX', 'Premier League', 'LaLiga', 'Serie A', 'Bundesliga']
+const LEAGUES = [
+  { name: 'Liga MX', tier: 'Gratis' },
+  { name: 'Premier League', tier: 'Premium' },
+  { name: 'LaLiga', tier: 'Premium' },
+  { name: 'Serie A', tier: 'Premium' },
+  { name: 'Bundesliga', tier: 'Premium' },
+]
 
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -69,6 +76,8 @@ html.dark .pr .pr-note{background:rgba(5,150,105,.12)}
 html.dark .pr .pr-lead{color:#9ca3af}
 .pr .pr-chips{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
 .pr .pr-chips li{border:1px solid #d1d5db;border-radius:999px;padding:4px 12px;font-size:.8rem;font-weight:700;margin:0}
+.pr .pr-tier{font-weight:600;font-size:.72rem;color:#6b7280;margin-left:4px}
+html.dark .pr .pr-tier{color:#9ca3af}
 html.dark .pr .pr-chips li{border-color:#4b5563}
 .pr footer{margin-top:40px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:.85rem;color:#6b7280}
 html.dark .pr footer{border-color:#374151}
@@ -81,6 +90,7 @@ const NAV = `<header class="pr-nav">
     <a href="/">Inicio</a>
     <a href="/liga">Resultados</a>
     <a href="/guias">Guías y reglas</a>
+    <a href="/premium/planes">Premium</a>
     <a href="/about">Acerca de</a>
     <a href="/landingpage">Qué es Fantasy MX</a>
   </nav>
@@ -88,11 +98,14 @@ const NAV = `<header class="pr-nav">
 
 const FOOTER = `<footer>
   <p>Fantasy MX — futbol en vivo, fantasy con draft, quinielas y Survivor para
-  Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Gratis.</p>
+  Liga MX, Premier League, LaLiga, Serie A y Bundesliga. La Liga MX, gratis.</p>
   <p><a href="/guias">Guías</a> · <a href="/about">Acerca de</a> · <a href="/privacy">Aviso de privacidad</a></p>
 </footer>`
 
-const chips = () => `<ul class="pr-chips">${LEAGUES.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`
+const chips = () =>
+  `<ul class="pr-chips">${LEAGUES.map(
+    (l) => `<li>${esc(l.name)} <span class="pr-tier">${esc(l.tier)}</span></li>`
+  ).join('')}</ul>`
 
 // ── Constructores de contenido por ruta ─────────────────────────────────────
 
@@ -145,11 +158,13 @@ const gamingPage = () => {
     canonical: '/',
     title: 'Juegos — Fantasy, quinielas y Survivor | Fantasy MX',
     description:
-      'Los tres modos de juego de Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación. Gratis, en las 5 grandes ligas.',
+      'Los tres modos de juego de Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación. La Liga MX gratis; Europa con Premium.',
     body: `
       <h1>Modos de juego</h1>
       <p class="pr-lead">Tres formas de competir con tus amigos durante toda la temporada,
       en Liga MX, Premier League, LaLiga, Serie A y Bundesliga.</p>
+      <p>Los tres modos se juegan completos en la Liga MX sin pagar nada. Las cuatro
+      competencias europeas forman parte de Premium.</p>
       ${chips()}
       ${modes
         .map((m) => {
@@ -160,8 +175,53 @@ const gamingPage = () => {
         })
         .join('')}
       <h2>Empieza a jugar</h2>
-      <p>Todos los modos son gratuitos y se juegan desde el navegador o instalando la app.
-      <a href="/guias">Consulta las guías</a> para aprender las reglas antes de tu primera jornada.</p>`,
+      <p>Se juega desde el navegador o instalando la app, y la Liga MX no pide tarjeta ni
+      suscripción. <a href="/guias">Consulta las guías</a> para aprender las reglas antes de
+      tu primera jornada, o revisa
+      <a href="/guias/preguntas-frecuentes">qué incluye Premium</a> si quieres las ligas de Europa.</p>`,
+  }
+}
+
+// Landing pública de Premium.
+//
+// A propósito SIN precios: el catálogo vive en Stripe y esta página se genera en
+// el build, así que hornear una cifra aquí dejaría publicado un precio viejo en
+// cuanto se cambie en el panel — y un precio equivocado en una página indexada
+// es peor que no enseñar ninguno. La versión viva los pide a
+// `catalog/subscription/plans` y los pinta al montar; lo estático se queda con
+// lo que no caduca: qué incluye, la comparativa y las dudas.
+const premiumPage = () => {
+  const rows = premium.compare.rows
+  const includeKeys = ['leagues', 'scoring', 'capacity', 'survivor', 'tools', 'guests']
+  return {
+    path: '/premium/planes',
+    title: premium.meta.title,
+    description: premium.meta.description,
+    body: `
+      <h1>${esc(premium.heading)}</h1>
+      <p class="pr-lead">${esc(premium.subheading)}</p>
+      ${chips()}
+      <h2>${esc(premium.includes.heading)}</h2>
+      <p>${esc(premium.includes.subheading)}</p>
+      <ul>${includeKeys
+        .map((k) => {
+          const item = premium.includes.items[k]
+          return `<li><strong>${esc(item.title)}</strong> — ${esc(item.detail)}</li>`
+        })
+        .join('')}</ul>
+      <h2>${esc(premium.compare.heading)}</h2>
+      <ul>${rows
+        .map(
+          (r) =>
+            `<li><strong>${esc(r.feature)}</strong> — ${esc(premium.compare.free)}: ${esc(r.free)} · ${esc(premium.compare.premium)}: ${esc(r.premium)}</li>`
+        )
+        .join('')}</ul>
+      <h2>${esc(premium.plans.heading)}</h2>
+      <p>${esc(premium.plans.subheading)} ${esc(premium.plans.note)}</p>
+      <h2>${esc(premium.faq.heading)}</h2>
+      ${premium.faq.items.map((i) => `<h3>${esc(i.q)}</h3><p>${esc(i.a)}</p>`).join('')}
+      <p class="pr-note">${esc(premium.subheading)}
+      <a href="/guias/preguntas-frecuentes">Más preguntas frecuentes</a>.</p>`,
   }
 }
 
@@ -203,12 +263,12 @@ const aboutPage = () => {
       <ul>${feats.map((f) => `<li><strong>${esc(about.features[f].title)}</strong> — ${esc(about.features[f].desc)}</li>`).join('')}</ul>
       <h2>${esc(about.responsible.heading)}</h2>
       <p>${esc(about.responsible.text)}</p>
-      <p><a href="/guias">Lee nuestras guías y aprende a jugar</a> · <a href="/privacy">Aviso de privacidad</a></p>`,
+      <p><a href="/guias">Lee nuestras guías y aprende a jugar</a> · <a href="/premium/planes">${esc(about.premiumLink)}</a> · <a href="/privacy">Aviso de privacidad</a></p>`,
   }
 }
 
 const landingPage = () => {
-  const featKeys = ['live', 'fantasy', 'pools', 'survivor', 'versus', 'pwa']
+  const featKeys = ['live', 'fantasy', 'pools', 'survivor', 'versus', 'pwa', 'premium']
   const stepKeys = ['one', 'two', 'three']
   const statKeys = ['leagues', 'modes', 'free']
   return {
@@ -295,6 +355,7 @@ const pages = [
   landingPage(),
   aboutPage(),
   gamingPage(),
+  premiumPage(),
   guidesHub(),
   ...GUIDES.map(guidePage),
   privacyPage(),
@@ -370,6 +431,7 @@ const PRIORITY = {
   '/': '1.0',
   '/guias': '0.9',
   '/liga': '0.9',
+  '/premium/planes': '0.8',
   '/about': '0.6',
   '/privacy': '0.3',
 }

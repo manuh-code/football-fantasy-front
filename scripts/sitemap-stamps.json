@@ -1,19 +1,19 @@
 {
   "/": {
-    "hash": "cdacb8aa770870ee",
-    "date": "2026-08-04"
+    "hash": "47fb236b0d641912",
+    "date": "2026-08-13"
   },
   "/landingpage": {
-    "hash": "3405f24a83450733",
-    "date": "2026-08-03"
+    "hash": "a71124f7c76a9762",
+    "date": "2026-08-13"
   },
   "/about": {
-    "hash": "358eda839d0ece5e",
-    "date": "2026-07-17"
+    "hash": "69732441846357a8",
+    "date": "2026-08-13"
   },
   "/guias": {
-    "hash": "4bba07c4c07629b6",
-    "date": "2026-07-17"
+    "hash": "a4475fc800a35310",
+    "date": "2026-08-13"
   },
   "/guias/como-jugar-fantasy": {
     "hash": "6ca938a665b0d253",
@@ -40,8 +40,8 @@
     "date": "2026-07-17"
   },
   "/guias/que-liga-elegir": {
-    "hash": "b30075f731db8b6d",
-    "date": "2026-07-17"
+    "hash": "6e96fe05ba9011d8",
+    "date": "2026-08-13"
   },
   "/guias/consejos-quiniela": {
     "hash": "501b8d7a7429613f",
@@ -52,19 +52,23 @@
     "date": "2026-07-17"
   },
   "/guias/preguntas-frecuentes": {
-    "hash": "97890dbd6f9bf8a7",
-    "date": "2026-07-17"
+    "hash": "b426c4a309a3ce96",
+    "date": "2026-08-13"
   },
   "/privacy": {
-    "hash": "de75f9f5ed7f3c19",
-    "date": "2026-07-17"
+    "hash": "cdd14a16f2845ff9",
+    "date": "2026-08-13"
   },
   "/gaming": {
     "hash": "4f256111fbec16a4",
     "date": "2026-08-03"
   },
   "/liga": {
-    "hash": "f7b3b7fa7a9c041b",
-    "date": "2026-08-03"
+    "hash": "c3040abf13fc8433",
+    "date": "2026-08-07"
+  },
+  "/premium/planes": {
+    "hash": "a5b35fab169381a4",
+    "date": "2026-08-13"
   }
 }

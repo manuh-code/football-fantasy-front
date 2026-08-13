@@ -2,7 +2,7 @@
   "hub": {
     "badge": "Guides",
     "title": "Fantasy MX guides and rules",
-    "subtitle": "Learn how to play every mode in the app: fantasy with a live draft, exact-score pools and Survivor with lives. Available for Liga MX, Premier League, LaLiga, Serie A and Bundesliga.",
+    "subtitle": "Learn how to play every mode in the app: fantasy with a live draft, exact-score pools and Survivor with lives. All of Liga MX is free; the Premier League, LaLiga, Serie A and Bundesliga unlock with Premium.",
     "read": "Read guide",
     "minRead": "min read"
   },
@@ -380,7 +380,8 @@
         },
         {
           "h": "Why not all of them?",
-          "p": "You can join leagues, pools and Survivors in different competitions at the same time. Many people play fantasy with friends in a European league and the family pool in Liga MX: each group picks its competition when it's created."
+          "p": "You can join leagues, pools and Survivors in different competitions at the same time. Many people play fantasy with friends in a European league and the family pool in Liga MX: each group picks its competition when it's created.",
+          "note": "Liga MX is open to everyone. The four European leagues are part of Premium, so if you're unsure where to start, Liga MX lets you try all three modes in full without paying anything."
         }
       ]
     },
@@ -574,12 +575,39 @@
     },
     "faq": {
       "title": "Frequently asked questions about Fantasy MX",
-      "excerpt": "What everyone asks before starting: accounts, leagues, drafts, locks and devices.",
+      "excerpt": "What everyone asks before starting: what's free, what Premium includes, accounts, leagues, drafts and deadlines.",
       "intro": "Straight answers to the most common questions about Fantasy MX. If yours isn't here, the guides for each mode go into full detail.",
       "sections": [
         {
           "h": "Is Fantasy MX free?",
-          "p": "Yes, completely. Every mode — fantasy, pools and Survivor — is free, with no subscriptions or in-app payments. The project is supported by discreet advertising on content screens."
+          "p": "Liga MX is — entirely and forever: following it live and playing fantasy, pools and Survivor on it costs nothing, and we don't ask for a card to sign up. The other four competitions — the Premier League, LaLiga, Serie A and Bundesliga — and some advanced features are part of Premium, an optional subscription. Content screens also show discreet advertising."
+        },
+        {
+          "h": "What does Premium include?",
+          "p": "Premium unlocks what free Liga MX doesn't cover:",
+          "list": [
+            {
+              "t": "Europe's big four",
+              "d": "Following the Premier League, LaLiga, Serie A and Bundesliga — fixtures, table and stats — and playing fantasy, pools and Survivor on them."
+            },
+            {
+              "t": "Your rules",
+              "d": "Changing how much each play pays in your fantasy league and the points per correct pick in your pool, instead of the default scoring."
+            },
+            {
+              "t": "Bigger pools",
+              "d": "Raising your pool size up to 100 players; without Premium pools are created with the standard 10."
+            },
+            {
+              "t": "Custom Survivor",
+              "d": "Creating your own Survivor with your own rules and lives, in any league, on top of the official ones."
+            },
+            {
+              "t": "Manager tools",
+              "d": "Practising mock drafts and seeing your roster grade all season long."
+            }
+          ],
+          "note": "You can cancel any time: you keep Premium until the period you already paid for ends, and after that you carry on playing what you already had."
         },
         {
           "h": "Do I need an account to use the app?",
@@ -587,11 +615,11 @@
         },
         {
           "h": "Which leagues can I follow?",
-          "p": "Liga MX, Premier League, LaLiga, Serie A and Bundesliga. Every fantasy league, pool or Survivor is created on one of these competitions, and you can play in several at once."
+          "p": "Liga MX, the Premier League, LaLiga, Serie A and the Bundesliga. Liga MX is open to everyone; the other four need Premium, both to follow them and to create fantasy leagues, pools or Survivors on them. You can take part in several competitions at once."
         },
         {
           "h": "How many people do I need to play?",
-          "p": "Pools and Survivor work with very small groups. In fantasy leagues, whoever creates the league sets the number of participants: the more there are, the more contested the draft, but a handful of friends is plenty of competition."
+          "p": "Pools and Survivor work with very small groups. In fantasy leagues, whoever creates the league sets the number of players: the more there are, the more contested the draft, but a handful of friends is already plenty of competition. Pools are created with room for 10 people; with Premium you can raise that to 100."
         },
         {
           "h": "What if I can't make it to the draft?",
@@ -603,7 +631,11 @@
         },
         {
           "h": "How do I invite my friends?",
-          "p": "Every league, pool or Survivor has an access code and an invite link to share. Whoever receives it lands straight in your group, no extra steps."
+          "p": "Every league, pool or Survivor has an access code and an invitation link to share. You can also invite by email from the group screen, whether or not the other person has an account: the email walks them through creating one and the invitation is accepted right after."
+        },
+        {
+          "h": "Can I invite someone without Premium?",
+          "p": "Yes. If you have Premium, your guests join your fantasy league, pool or Survivor in a European competition even if they don't pay: your subscription opens that door for them. That access is only for the group you invited them to, not for the rest of the app. Fantasy leagues have a split: at most half the spots can be people without Premium, and the rest have to bring their own subscription."
         },
         {
           "h": "What devices does it work on?",

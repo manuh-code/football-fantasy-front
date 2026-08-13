@@ -47,5 +47,118 @@
     "guestSeatsFull": "All {limit} guest spots are taken. Anyone joining now needs their own Premium account.",
     "guestAccess": "Your guests get into this Premium content even without a subscription.",
     "guestPass": "{inviter} is bringing you in: this league is Premium and their subscription opens the door."
+  },
+  "landing": {
+    "meta": {
+      "title": "Premium — Fantasy and pools for the Premier League, LaLiga, Serie A and Bundesliga | Fantasy MX",
+      "description": "With Premium you play fantasy, pools and Survivor in the Premier League, LaLiga, Serie A and the Bundesliga, set your own rules and invite friends even if they don't pay. Liga MX stays free."
+    },
+    "badge": "Fantasy MX Premium",
+    "heading": "European football, with your friends",
+    "subheading": "All of Liga MX is free and always will be. Premium adds Europe's big four and the tools to run your tournament your way.",
+    "ctaPrimary": "Get Premium",
+    "ctaSecondary": "Stay free with Liga MX",
+    "manage": "Manage my subscription",
+    "plans": {
+      "heading": "Pick your plan",
+      "subheading": "The same Premium in both; the yearly one works out cheaper per month.",
+      "perMonth": "per month",
+      "perYear": "per year",
+      "equivalent": "Works out to {amount} a month",
+      "save": "Save {percent}%",
+      "popular": "Most popular",
+      "loading": "Loading plans…",
+      "error": "We couldn't load the plans.",
+      "retry": "Retry",
+      "note": "Cancel any time from the app. You keep Premium until the period you already paid for ends."
+    },
+    "includes": {
+      "heading": "What Premium includes",
+      "subheading": "All of this comes on top of what you already play in Liga MX.",
+      "items": {
+        "leagues": {
+          "title": "Europe's big four",
+          "detail": "Follow the Premier League, LaLiga, Serie A and the Bundesliga — fixtures, table and stats — and play fantasy, pools and Survivor on them."
+        },
+        "scoring": {
+          "title": "Your scoring rules",
+          "detail": "Decide how much each play pays in your fantasy league and how many points each correct pick is worth in your pool, instead of the default scoring."
+        },
+        "capacity": {
+          "title": "Pools of up to 100",
+          "detail": "Raise your pool size up to 100 players. Without Premium pools are created with the standard 10."
+        },
+        "survivor": {
+          "title": "Custom Survivor",
+          "detail": "Create your own Survivor with your own rules and lives, in any league, on top of the official ones."
+        },
+        "tools": {
+          "title": "Manager tools",
+          "detail": "Practise mock drafts before draft day and check your roster grade all season long."
+        },
+        "guests": {
+          "title": "Bring your friends",
+          "detail": "Invite people without Premium to your European leagues, pools and Survivors: your subscription opens the door for them. In fantasy leagues, up to half the spots."
+        }
+      }
+    },
+    "compare": {
+      "heading": "Free vs Premium",
+      "free": "Free",
+      "premium": "Premium",
+      "rows": [
+        {
+          "feature": "Liga MX: follow it and play all three modes",
+          "free": "Yes",
+          "premium": "Yes"
+        },
+        {
+          "feature": "Premier League, LaLiga, Serie A and Bundesliga",
+          "free": "No",
+          "premium": "Yes"
+        },
+        {
+          "feature": "Pool size",
+          "free": "10",
+          "premium": "Up to 100"
+        },
+        {
+          "feature": "Custom scoring",
+          "free": "No",
+          "premium": "Yes"
+        },
+        {
+          "feature": "Your own Survivor",
+          "free": "No",
+          "premium": "Yes"
+        },
+        {
+          "feature": "Mock draft and roster grade",
+          "free": "No",
+          "premium": "Yes"
+        }
+      ]
+    },
+    "faq": {
+      "heading": "Common questions",
+      "items": [
+        {
+          "q": "Is Liga MX becoming paid?",
+          "a": "No. Following it live and playing fantasy, pools and Survivor on Liga MX is free and will stay that way. Premium only adds things on top."
+        },
+        {
+          "q": "What happens if I cancel?",
+          "a": "You keep Premium until the period you already paid for ends. After that you carry on playing what you already had — your leagues, lineups and predictions are untouched — but you can no longer create or join content in the European leagues."
+        },
+        {
+          "q": "Do my friends have to pay too?",
+          "a": "Not necessarily. If you have Premium you can invite them to your European leagues, pools and Survivors even if they don't pay. Fantasy leagues have a split: up to half the spots can be people without Premium."
+        },
+        {
+          "q": "How is it charged?",
+          "a": "Payments are processed by Stripe. Your card details are captured in their forms and never pass through our servers."
+        }
+      ]
+    }
   }
 }

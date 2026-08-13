@@ -47,5 +47,118 @@
     "guestSeatsFull": "Los {limit} lugares para invitados sin Premium ya están ocupados. Quien entre ahora necesita su propia cuenta Premium.",
     "guestAccess": "Tus invitados entran a este contenido Premium aunque no tengan suscripción.",
     "guestPass": "Entras invitado por {inviter}: esta liga es Premium y su suscripción te abre la puerta."
+  },
+  "landing": {
+    "meta": {
+      "title": "Premium — Fantasy y quinielas de Premier, LaLiga, Serie A y Bundesliga | Fantasy MX",
+      "description": "Con Premium juegas fantasy, quinielas y Survivor en la Premier League, LaLiga, la Serie A y la Bundesliga, pones tus propias reglas e invitas a tus amigos aunque ellos no paguen. La Liga MX sigue gratis."
+    },
+    "badge": "Fantasy MX Premium",
+    "heading": "El futbol de Europa, con tus amigos",
+    "subheading": "La Liga MX completa es y será gratis. Premium añade las cuatro grandes de Europa y las herramientas para llevar tu torneo a tu manera.",
+    "ctaPrimary": "Empezar con Premium",
+    "ctaSecondary": "Seguir gratis con Liga MX",
+    "manage": "Gestionar mi suscripción",
+    "plans": {
+      "heading": "Elige tu plan",
+      "subheading": "El mismo Premium en los dos; el anual sale más barato por mes.",
+      "perMonth": "por mes",
+      "perYear": "por año",
+      "equivalent": "Equivale a {amount} al mes",
+      "save": "Ahorras {percent}%",
+      "popular": "El más elegido",
+      "loading": "Cargando planes…",
+      "error": "No pudimos cargar los planes.",
+      "retry": "Reintentar",
+      "note": "Cancela cuando quieras desde la app. Conservas Premium hasta que termine el periodo que ya pagaste."
+    },
+    "includes": {
+      "heading": "Qué incluye Premium",
+      "subheading": "Todo esto se suma a lo que ya juegas en la Liga MX.",
+      "items": {
+        "leagues": {
+          "title": "Las cuatro grandes de Europa",
+          "detail": "Sigue la Premier League, LaLiga, la Serie A y la Bundesliga —partidos, tabla y estadísticas— y juega fantasy, quinielas y Survivor sobre ellas."
+        },
+        "scoring": {
+          "title": "Tus reglas de puntuación",
+          "detail": "Decide cuánto paga cada jugada en tu liga fantasy y cuántos puntos vale cada acierto en tu quiniela, en vez de quedarte con la puntuación de fábrica."
+        },
+        "capacity": {
+          "title": "Quinielas de hasta 100",
+          "detail": "Sube el cupo de tu quiniela hasta 100 participantes. Sin Premium se crean con el cupo estándar de 10."
+        },
+        "survivor": {
+          "title": "Survivor a tu medida",
+          "detail": "Crea tu propio Survivor con tus reglas y tus vidas, en cualquier liga, además de los oficiales."
+        },
+        "tools": {
+          "title": "Herramientas de manager",
+          "detail": "Practica mock drafts antes del día del draft y consulta la calificación de tu plantilla durante toda la temporada."
+        },
+        "guests": {
+          "title": "Trae a tus amigos",
+          "detail": "Invita a gente sin Premium a tus ligas, quinielas y Survivors de Europa: tu suscripción les abre la puerta. En la liga fantasy, hasta la mitad de los lugares."
+        }
+      }
+    },
+    "compare": {
+      "heading": "Gratis contra Premium",
+      "free": "Gratis",
+      "premium": "Premium",
+      "rows": [
+        {
+          "feature": "Liga MX: seguirla y jugar los tres modos",
+          "free": "Sí",
+          "premium": "Sí"
+        },
+        {
+          "feature": "Premier, LaLiga, Serie A y Bundesliga",
+          "free": "No",
+          "premium": "Sí"
+        },
+        {
+          "feature": "Cupo de la quiniela",
+          "free": "10",
+          "premium": "Hasta 100"
+        },
+        {
+          "feature": "Puntuación personalizada",
+          "free": "No",
+          "premium": "Sí"
+        },
+        {
+          "feature": "Survivor propio",
+          "free": "No",
+          "premium": "Sí"
+        },
+        {
+          "feature": "Mock draft y calificación de plantilla",
+          "free": "No",
+          "premium": "Sí"
+        }
+      ]
+    },
+    "faq": {
+      "heading": "Dudas frecuentes",
+      "items": [
+        {
+          "q": "¿La Liga MX se vuelve de pago?",
+          "a": "No. Seguirla en vivo y jugar fantasy, quinielas y Survivor sobre la Liga MX es gratis y va a seguir siéndolo. Premium sólo añade cosas encima."
+        },
+        {
+          "q": "¿Qué pasa si cancelo?",
+          "a": "Conservas Premium hasta que termine el periodo que ya pagaste. Después sigues jugando lo que ya tenías —tus ligas, tus alineaciones y tus pronósticos no se tocan—, pero ya no puedes crear ni unirte a contenido de las ligas europeas."
+        },
+        {
+          "q": "¿Mis amigos también tienen que pagar?",
+          "a": "No necesariamente. Si tú tienes Premium puedes invitarlos a tus ligas, quinielas y Survivors de Europa aunque ellos no paguen. En las ligas fantasy hay un reparto: hasta la mitad de los lugares puede ser gente sin Premium."
+        },
+        {
+          "q": "¿Cómo se cobra?",
+          "a": "El cobro lo procesa Stripe. Los datos de tu tarjeta se capturan en sus formularios y nunca pasan por nuestros servidores."
+        }
+      ]
+    }
   }
 }

@@ -47,6 +47,9 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'about',
   'guides',
   'guideDetail',
+  // La landing de Premium es una página de captación: quien llega de una
+  // búsqueda no puede toparse antes con el selector de liga.
+  'premiumPlans',
   // La invitación llega por correo, muchas veces antes de tener cuenta: no
   // puede pasar por la selección de liga antes de dejarse ver.
   'invitation',
@@ -417,6 +420,19 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Aviso de Privacidad - Football Fantasy',
       description: 'Aviso de privacidad de Football Fantasy conforme a la LFPDPPP',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/premium/planes',
+    name: 'premiumPlans',
+    // Landing pública de Premium. Aparte de `/premium` (name: subscription), que
+    // es la pantalla de gestión y exige sesión: esta tiene que poder verse desde
+    // Google, sin cuenta y sin liga seleccionada.
+    component: () => import(/* webpackChunkName: "premium-plans" */ '@/views/premium/PremiumPlansView.vue'),
+    meta: {
+      title: 'Premium — Fantasy y quinielas de Premier, LaLiga, Serie A y Bundesliga | Fantasy MX',
+      description: 'Con Premium juegas fantasy, quinielas y Survivor en la Premier League, LaLiga, la Serie A y la Bundesliga, pones tus propias reglas e invitas a tus amigos aunque ellos no paguen. La Liga MX sigue gratis.',
       requiresAuth: false
     }
   },
