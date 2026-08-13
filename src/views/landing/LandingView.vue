@@ -373,6 +373,11 @@
                 </router-link>
               </li>
               <li>
+                <router-link :to="{ name: 'premiumPlans' }" class="hover:text-primary-500 transition-colors">
+                  {{ $t('landing.footer.premium') }}
+                </router-link>
+              </li>
+              <li>
                 <router-link :to="{ name: 'about' }" class="hover:text-primary-500 transition-colors">
                   {{ $t('landing.footer.about') }}
                 </router-link>
@@ -444,6 +449,10 @@ const features = [
   { key: "survivor", icon: "hi-solid-fire" },
   { key: "versus", icon: "md-comparearrows-round" },
   { key: "pwa", icon: "hi-solid-download" },
+  // Va al final a propósito: la página vende primero el producto y sólo
+  // después lo que cuesta dinero. Ponerlo arriba convierte la portada en un
+  // muro de pago cuando la Liga MX entera sigue siendo gratis.
+  { key: "premium", icon: "hi-solid-sparkles" },
 ] as const;
 
 // "How it works" steps: text comes from landing.how.steps.<key>.

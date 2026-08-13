@@ -103,6 +103,13 @@
             perfil, conforme a los permisos que autorices y a las políticas de privacidad de
             dichos terceros.
           </li>
+          <li>
+            <strong>Datos de la suscripción Premium (solo si contratas):</strong> el estado de tu
+            suscripción, el plan elegido, las fechas de cobro y renovación, y los identificadores
+            que nos devuelve nuestro procesador de pagos ({{ company.paymentProvider }}). Los datos
+            de tu tarjeta se capturan directamente en los formularios de dicho procesador y
+            <strong>nunca pasan por nuestros servidores ni los almacenamos</strong>.
+          </li>
         </ul>
         <p>
           Recabamos tus datos: (i) <strong>directamente</strong>, cuando los proporcionas al
@@ -116,8 +123,13 @@
           No solicitamos ni tratamos datos personales sensibles (aquellos que puedan revelar
           origen racial o étnico, estado de salud, información genética, creencias religiosas,
           filosóficas o morales, afiliación sindical, opiniones políticas o preferencia sexual).
-          Tampoco recabamos datos financieros o de medios de pago, ya que la aplicación no procesa
-          pagos.
+        </p>
+        <p>
+          La aplicación ofrece una suscripción de pago opcional (Premium). El cobro lo procesa
+          íntegramente {{ company.paymentProvider }}: los datos de tu tarjeta se capturan en sus
+          formularios y <strong>nosotros no los recabamos, no los vemos ni los
+          almacenamos</strong>. De nuestro lado solo conservamos el estado de tu suscripción y los
+          identificadores necesarios para saber si tu cuenta tiene Premium activo.
         </p>
 
         <h2 id="privacidad-4">4. Finalidades del tratamiento</h2>
@@ -136,6 +148,12 @@
             funcionamiento del servicio, partidos, resultados y tu actividad.
           </li>
           <li>Brindar soporte, atención y dar seguimiento a tus solicitudes.</li>
+          <li>
+            Gestionar tu suscripción Premium en caso de que la contrates: procesar el cobro a
+            través de nuestro procesador de pagos, habilitar el contenido y las funciones que
+            incluye, atender renovaciones y cancelaciones, y emitir los comprobantes que
+            correspondan.
+          </li>
           <li>Prevenir fraudes y usos indebidos, y cumplir obligaciones legales aplicables.</li>
         </ul>
 
@@ -178,6 +196,11 @@
           <li>Proveedor de analítica web ({{ company.analyticsProvider }}).</li>
           <li>Proveedor de publicidad ({{ company.adsProvider }}), en caso de mostrarse anuncios dentro de la aplicación.</li>
           <li>Proveedores de autenticación / inicio de sesión social (Google, Facebook).</li>
+          <li>
+            Procesador de pagos ({{ company.paymentProvider }}), únicamente si contratas la
+            suscripción Premium. Actúa como responsable independiente respecto de los datos de tu
+            medio de pago, conforme a su propia política de privacidad.
+          </li>
         </ul>
         <p>
           Algunos de estos proveedores pueden ubicarse fuera de México; en todos los casos exigimos
@@ -341,8 +364,9 @@ const company = {
   pushProvider: "[Firebase Cloud Messaging]",
   analyticsProvider: "[Google Analytics]",
   adsProvider: "[Google AdSense]",
+  paymentProvider: "[Stripe]",
   minAge: "18",
-  lastUpdated: "[17 de julio de 2026]",
+  lastUpdated: "[12 de agosto de 2026]",
 };
 
 // Índice: un título por sección, en el mismo orden que los <h2 id="privacidad-N">.

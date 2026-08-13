@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fantasy MX — Fantasy de Liga MX gratis, quinielas y Survivor",
-    "description": "Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. También Premier, LaLiga, Serie A y Bundesliga."
+    "description": "Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. Premier, LaLiga, Serie A y Bundesliga con Premium."
   },
   "brand": "Football Fantasy",
   "nav": {
@@ -14,10 +14,10 @@
     "badge": "Fantasy · Quiniela · Survivor",
     "titleLine1": "Vive tu liga.",
     "titleLine2": "Reta a tus amigos.",
-    "subtitle": "Sigue cinco grandes ligas en vivo, arma tu equipo fantasy con draft en tiempo real, predice marcadores en quinielas y sobrevive jornada a jornada en Survivor. Todo en un solo lugar, totalmente gratis.",
+    "subtitle": "Arma tu equipo fantasy con draft en tiempo real, predice marcadores en quinielas y sobrevive jornada a jornada en Survivor. Toda la Liga MX gratis; las cuatro grandes de Europa con Premium.",
     "ctaPrimary": "Crear cuenta gratis",
     "ctaSecondary": "Explorar la app",
-    "note": "Sin costo · Sin tarjeta · Instálala en tu móvil",
+    "note": "Liga MX gratis · Sin tarjeta para empezar · Instálala en tu móvil",
     "leaguesLabel": "Disponible para"
   },
   "preview": {
@@ -38,8 +38,8 @@
       "label": "Fantasy, quinielas y Survivor con tus amigos"
     },
     "free": {
-      "value": "100% gratis",
-      "label": "Sin pagos ni suscripciones"
+      "value": "Liga MX gratis",
+      "label": "Siempre, sin tarjeta. Europa con Premium."
     }
   },
   "features": {
@@ -48,7 +48,7 @@
     "items": {
       "live": {
         "title": "Cinco ligas en vivo",
-        "body": "Posiciones, resultados, calendario y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga."
+        "body": "Posiciones, resultados, calendario y estadísticas. Liga MX gratis; Premier, LaLiga, Serie A y Bundesliga con Premium."
       },
       "fantasy": {
         "title": "Fantasy con draft en vivo",
@@ -69,6 +69,10 @@
       "pwa": {
         "title": "Instálala como app",
         "body": "Funciona en tu móvil como una app nativa, con notificaciones de tu draft y tus ligas."
+      },
+      "premium": {
+        "title": "Premium cuando lo quieras",
+        "body": "Las cuatro grandes de Europa, puntuación a tu medida, mock drafts y la calificación de tu plantilla. Invita a tus amigos aunque ellos no paguen."
       }
     }
   },
@@ -82,7 +86,7 @@
       },
       "two": {
         "title": "Elige tu liga",
-        "body": "Liga MX, Premier League, LaLiga, Serie A o Bundesliga: tú decides qué futbol seguir."
+        "body": "Empieza con la Liga MX sin pagar nada. Cuando quieras Premier, LaLiga, Serie A o Bundesliga, actívalas con Premium."
       },
       "three": {
         "title": "Elige tu modo de juego",
@@ -110,6 +114,7 @@
     "signup": "Crear cuenta",
     "legal": "Legal",
     "privacy": "Aviso de privacidad",
-    "rights": "Todos los derechos reservados."
+    "rights": "Todos los derechos reservados.",
+    "premium": "Premium y planes"
   }
 }

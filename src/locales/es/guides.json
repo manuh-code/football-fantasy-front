@@ -2,7 +2,7 @@
   "hub": {
     "badge": "Guías",
     "title": "Guías y reglas de Fantasy MX",
-    "subtitle": "Aprende a jugar cada modo de la app: fantasy con draft en vivo, quinielas de marcador exacto y Survivor con vidas. Disponible para Liga MX, Premier League, LaLiga, Serie A y Bundesliga.",
+    "subtitle": "Aprende a jugar cada modo de la app: fantasy con draft en vivo, quinielas de marcador exacto y Survivor con vidas. Toda la Liga MX es gratis; Premier League, LaLiga, Serie A y Bundesliga se activan con Premium.",
     "read": "Leer guía",
     "minRead": "min de lectura"
   },
@@ -380,7 +380,8 @@
         },
         {
           "h": "¿Y por qué no todas?",
-          "p": "Puedes participar en ligas, quinielas y Survivors de competencias distintas a la vez. Muchos juegan el fantasy con amigos en una liga europea y la quiniela familiar en la Liga MX: cada grupo elige su competencia al momento de crearse."
+          "p": "Puedes participar en ligas, quinielas y Survivors de competencias distintas a la vez. Muchos juegan el fantasy con amigos en una liga europea y la quiniela familiar en la Liga MX: cada grupo elige su competencia al momento de crearse.",
+          "note": "La Liga MX está abierta para todos. Las cuatro europeas forman parte de Premium, así que si dudas por dónde empezar, la Liga MX te deja probar los tres modos completos sin pagar nada."
         }
       ]
     },
@@ -574,12 +575,39 @@
     },
     "faq": {
       "title": "Preguntas frecuentes sobre Fantasy MX",
-      "excerpt": "Lo que todos preguntan antes de empezar: cuentas, ligas, draft, cierres y dispositivos.",
+      "excerpt": "Lo que todos preguntan antes de empezar: qué es gratis, qué incluye Premium, cuentas, ligas, draft y cierres.",
       "intro": "Respuestas directas a las dudas más comunes sobre Fantasy MX. Si la tuya no está aquí, las guías de cada modo entran en todo el detalle.",
       "sections": [
         {
           "h": "¿Fantasy MX es gratis?",
-          "p": "Sí, completamente. Todos los modos —fantasy, quinielas y Survivor— son gratuitos, sin suscripciones ni pagos dentro de la app. El proyecto se sostiene con publicidad discreta en las pantallas de contenido."
+          "p": "La Liga MX sí, completa y para siempre: seguirla en vivo y jugar fantasy, quinielas y Survivor sobre ella no cuesta nada y no pedimos tarjeta para registrarte. Las otras cuatro competencias —Premier League, LaLiga, Serie A y Bundesliga— y algunas funciones avanzadas forman parte de Premium, una suscripción opcional. Las pantallas de contenido también muestran publicidad discreta."
+        },
+        {
+          "h": "¿Qué incluye Premium?",
+          "p": "Premium desbloquea lo que la Liga MX gratuita no cubre:",
+          "list": [
+            {
+              "t": "Las cuatro grandes de Europa",
+              "d": "Seguir Premier League, LaLiga, Serie A y Bundesliga —partidos, tabla y estadísticas— y jugar fantasy, quinielas y Survivor sobre ellas."
+            },
+            {
+              "t": "Tus reglas",
+              "d": "Cambiar cuánto paga cada jugada en tu liga fantasy y los puntos por acierto de tu quiniela, en vez de quedarte con la puntuación de fábrica."
+            },
+            {
+              "t": "Quinielas más grandes",
+              "d": "Subir el cupo de tu quiniela hasta 100 participantes; sin Premium se crean con el cupo estándar de 10."
+            },
+            {
+              "t": "Survivor a tu medida",
+              "d": "Crear tu propio Survivor con tus reglas y vidas, en cualquier liga, además de los oficiales."
+            },
+            {
+              "t": "Herramientas de manager",
+              "d": "Practicar mock drafts y ver la calificación de tu plantilla durante toda la temporada."
+            }
+          ],
+          "note": "Puedes cancelar cuando quieras: conservas Premium hasta que termine el periodo que ya pagaste, y después sigues jugando lo que ya tenías."
         },
         {
           "h": "¿Necesito cuenta para usar la app?",
@@ -587,11 +615,11 @@
         },
         {
           "h": "¿Qué ligas puedo seguir?",
-          "p": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Cada liga fantasy, quiniela o Survivor se crea sobre una de estas competencias, y puedes participar en varias a la vez."
+          "p": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga. La Liga MX está abierta para todos; las otras cuatro requieren Premium, tanto para seguirlas como para crear ligas fantasy, quinielas o Survivor sobre ellas. Puedes participar en varias competencias a la vez."
         },
         {
           "h": "¿Cuánta gente necesito para jugar?",
-          "p": "Las quinielas y el Survivor funcionan desde grupos muy pequeños. En las ligas fantasy, quien crea la liga define el número de participantes: mientras más sean, más disputado el draft, pero con un puñado de amigos ya hay competencia de sobra."
+          "p": "Las quinielas y el Survivor funcionan desde grupos muy pequeños. En las ligas fantasy, quien crea la liga define el número de participantes: mientras más sean, más disputado el draft, pero con un puñado de amigos ya hay competencia de sobra. Las quinielas se crean con cupo para 10 personas; con Premium puedes subirlo hasta 100."
         },
         {
           "h": "¿Qué pasa si no puedo conectarme al draft?",
@@ -603,7 +631,11 @@
         },
         {
           "h": "¿Cómo invito a mis amigos?",
-          "p": "Cada liga, quiniela o Survivor tiene un código de acceso y un enlace de invitación para compartir. Quien lo reciba entra directo a tu grupo, sin pasos extra."
+          "p": "Cada liga, quiniela o Survivor tiene un código de acceso y un enlace de invitación para compartir. También puedes invitar por correo desde la pantalla del grupo, tenga la otra persona cuenta o no: el correo la guía para crearla y la invitación queda aceptada al terminar."
+        },
+        {
+          "h": "¿Puedo invitar a alguien que no tiene Premium?",
+          "p": "Sí. Si tú tienes Premium, tus invitados entran a tu liga fantasy, quiniela o Survivor de una competencia europea aunque ellos no paguen: tu suscripción les abre esa puerta. Ese acceso es sólo para el grupo al que los invitaste, no para el resto de la app. En las ligas fantasy hay un reparto: como mucho la mitad de los lugares puede ser gente sin Premium, y el resto tienen que traer su propia suscripción."
         },
         {
           "h": "¿En qué dispositivos funciona?",

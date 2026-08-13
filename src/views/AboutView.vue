@@ -183,13 +183,22 @@
             <p class="mt-2 text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
               {{ $t('ui.about.responsible.text') }}
             </p>
-            <router-link
-              :to="{ name: 'privacy' }"
-              class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline"
-            >
-              <v-icon name="hi-solid-document-text" class="w-4 h-4" />
-              {{ $t('ui.about.privacyLink') }}
-            </router-link>
+            <div class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <router-link
+                :to="{ name: 'privacy' }"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                <v-icon name="hi-solid-document-text" class="w-4 h-4" />
+                {{ $t('ui.about.privacyLink') }}
+              </router-link>
+              <router-link
+                :to="{ name: 'premiumPlans' }"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 dark:text-amber-400 hover:underline"
+              >
+                <v-icon name="hi-solid-sparkles" class="w-4 h-4" />
+                {{ $t('ui.about.premiumLink') }}
+              </router-link>
+            </div>
           </div>
         </div>
       </div>

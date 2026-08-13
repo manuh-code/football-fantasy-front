@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fantasy MX — Free Liga MX fantasy, pools and Survivor",
-    "description": "Play Liga MX fantasy for free: live draft, exact-score pools and Survivor with your friends. Premier League, LaLiga, Serie A and Bundesliga too."
+    "description": "Play Liga MX fantasy for free: live draft, exact-score pools and Survivor with your friends. Premier League, LaLiga, Serie A and Bundesliga with Premium."
   },
   "brand": "Football Fantasy",
   "nav": {
@@ -14,10 +14,10 @@
     "badge": "Fantasy · Pools · Survivor",
     "titleLine1": "Live your league.",
     "titleLine2": "Challenge your friends.",
-    "subtitle": "Follow five top leagues live, build your fantasy team with a real-time draft, predict scores in pools and survive matchday after matchday in Survivor. All in one place, completely free.",
+    "subtitle": "Build your fantasy team with a real-time draft, predict scores in pools and survive matchday after matchday in Survivor. All of Liga MX free; Europe's big four with Premium.",
     "ctaPrimary": "Create free account",
     "ctaSecondary": "Explore the app",
-    "note": "No cost · No card · Install it on your phone",
+    "note": "Liga MX free · No card to start · Install it on your phone",
     "leaguesLabel": "Available for"
   },
   "preview": {
@@ -38,8 +38,8 @@
       "label": "Fantasy, pools and Survivor with your friends"
     },
     "free": {
-      "value": "100% free",
-      "label": "No payments, no subscriptions"
+      "value": "Liga MX free",
+      "label": "Always, no card. Europe with Premium."
     }
   },
   "features": {
@@ -48,7 +48,7 @@
     "items": {
       "live": {
         "title": "Five leagues live",
-        "body": "Standings, results, fixtures and stats for Liga MX, Premier League, LaLiga, Serie A and Bundesliga."
+        "body": "Standings, results, fixtures and stats. Liga MX free; Premier League, LaLiga, Serie A and Bundesliga with Premium."
       },
       "fantasy": {
         "title": "Fantasy with a live draft",
@@ -69,6 +69,10 @@
       "pwa": {
         "title": "Install it as an app",
         "body": "Works on your phone like a native app, with notifications for your draft and your leagues."
+      },
+      "premium": {
+        "title": "Premium whenever you want",
+        "body": "Europe's big four, custom scoring, mock drafts and your roster grade. Invite your friends even if they don't pay."
       }
     }
   },
@@ -82,7 +86,7 @@
       },
       "two": {
         "title": "Pick your league",
-        "body": "Liga MX, Premier League, LaLiga, Serie A or Bundesliga: you decide which football to follow."
+        "body": "Start with Liga MX without paying anything. When you want the Premier League, LaLiga, Serie A or Bundesliga, unlock them with Premium."
       },
       "three": {
         "title": "Pick your game mode",
@@ -110,6 +114,7 @@
     "signup": "Sign up",
     "legal": "Legal",
     "privacy": "Privacy notice",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "premium": "Premium and plans"
   }
 }

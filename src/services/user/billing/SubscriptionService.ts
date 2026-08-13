@@ -2,7 +2,7 @@ import { useApiFantasy } from "@/composables/useApiFantasy";
 import { ApiResponse } from "@/interfaces/api/ApiResponse";
 import { SubscriptionPlanResponse } from "@/interfaces/user/billing/SubscriptionPlanResponse";
 import { CheckoutSessionResponse, SubscriptionStateResponse } from "@/interfaces/user/billing/SubscriptionStateResponse";
-import { AxiosError } from "axios";
+import { AxiosError, type AxiosRequestConfig } from "axios";
 
 export class SubscriptionService {
     private readonly api;
@@ -20,6 +20,28 @@ export class SubscriptionService {
             return response.data.data;
         }
         throw new AxiosError('Failed to fetch subscription plans');
+    }
+
+    /**
+     * Los mismos precios, sin sesión: es lo que consume la landing pública de
+     * Premium, que tiene que decir cuánto cuesta antes de pedirle una cuenta a
+     * nadie.
+     *
+     * `is_current` vuelve siempre en false porque sin sesión no hay suscripción
+     * con la que comparar; la pantalla de gestión sigue usando `plans()`.
+     *
+     * Va silenciosa: la página dibuja su propio estado de error con un botón de
+     * reintentar, y un toast encima sólo estorbaría.
+     */
+    async publicPlans(): Promise<SubscriptionPlanResponse[]> {
+        const response = await this.api.get<ApiResponse<SubscriptionPlanResponse[]>>(
+            'catalog/subscription/plans',
+            { _silent: true } as AxiosRequestConfig & { _silent?: boolean },
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new AxiosError('Failed to fetch public subscription plans');
     }
 
     async show(): Promise<SubscriptionStateResponse> {
