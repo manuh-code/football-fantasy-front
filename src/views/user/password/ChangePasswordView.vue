@@ -13,7 +13,7 @@
 import ChangePasswordComponent from '@/components/password/ChangePasswordComponent.vue'
 
 // Set page title
-document.title = 'Change Password - Football Fantasy'
+document.title = 'Change Password - Pro Fantasy'
 </script>
 
 <style scoped>

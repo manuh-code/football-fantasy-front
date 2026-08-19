@@ -27,7 +27,7 @@ import { useSubscriptionStore } from '@/store/billing/useSubscriptionStore'
 import { preloadStripe } from '@/composables/useStripePaymentElement'
 import subscriptionService from '@/services/user/billing/SubscriptionService'
 
-document.title = 'Premium - Football Fantasy'
+document.title = 'Premium - Pro Fantasy'
 
 const subscriptionStore = useSubscriptionStore()
 const route = useRoute()

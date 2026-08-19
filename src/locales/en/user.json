@@ -88,7 +88,7 @@
   "profile": {
     "title": "Profile Information",
     "subtitle": "Update your personal information and avatar",
-    "playerRole": "Football Fantasy Player",
+    "playerRole": "Pro Fantasy Player",
     "fields": {
       "firstName": {
         "label": "First Name",

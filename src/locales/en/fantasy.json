@@ -194,7 +194,7 @@
     "loadError": "Failed to load your fantasy leagues. Please try again later.",
     "emptyTitle": "No Leagues Yet",
     "emptyBody": "Create your own league or join an existing one to start playing.",
-    "pageTitle": "My Fantasy Leagues - Football Fantasy",
+    "pageTitle": "My Fantasy Leagues - Pro Fantasy",
     "navAria": "Fantasy leagues navigation",
     "fabQuickActions": "Quick actions",
     "fabClose": "Close menu",
@@ -744,7 +744,7 @@
     },
     "shareText": {
       "title": "Join \"{name}\"",
-      "text": "Join my Fantasy league \"{name}\" on Football Fantasy. Access code: {code}"
+      "text": "Join my Fantasy league \"{name}\" on Pro Fantasy. Access code: {code}"
     }
   },
   "myTeam": {
@@ -759,7 +759,7 @@
     "comingSoonBadge": "Soon",
     "tradesComingSoonTitle": "Trades",
     "tradesComingSoonBody": "Team trades will be available soon.",
-    "pageTitle": "My Fantasy Team - Football Fantasy"
+    "pageTitle": "My Fantasy Team - Pro Fantasy"
   },
   "search": {
     "playerPlaceholder": "Search player...",

@@ -48,7 +48,7 @@
       "aria": "Pool panels",
       "back": "Back to my pools"
     },
-    "docTitle": "Pool Group - Football Fantasy",
+    "docTitle": "Pool Group - Pro Fantasy",
     "tabs": {
       "info": "Info",
       "predictions": "Predictions",
@@ -121,7 +121,7 @@
     },
     "share": {
       "title": "Join \"{name}\"",
-      "text": "Join my pool \"{name}\" on Football Fantasy. Access code: {code}"
+      "text": "Join my pool \"{name}\" on Pro Fantasy. Access code: {code}"
     }
   },
   "prediction": {

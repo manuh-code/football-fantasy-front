@@ -44,12 +44,12 @@
   },
   "about": {
     "title": "Acerca de",
-    "badge": "Conoce Fantasy MX",
+    "badge": "Conoce Pro Fantasy",
     "heading": "Tu futbol, tus amigos, cinco grandes ligas",
-    "subtitle": "Fantasy MX es la plataforma donde sigues en vivo la Liga MX, la Premier League, LaLiga, la Serie A y la Bundesliga, armas tu equipo fantasy con draft en tiempo real y compites contra tus amigos en quinielas y Survivor. Toda la Liga MX es gratis; las ligas de Europa se activan con Premium.",
+    "subtitle": "Pro Fantasy es la plataforma donde sigues en vivo la Liga MX, la Premier League, LaLiga, la Serie A y la Bundesliga, armas tu equipo fantasy con draft en tiempo real y compites contra tus amigos en quinielas y Survivor. Toda la Liga MX es gratis; las ligas de Europa se activan con Premium.",
     "intro": {
-      "heading": "¿Qué es Fantasy MX?",
-      "p1": "Fantasy MX nace de la afición por el futbol. Reunimos en un solo lugar todo lo que un aficionado quiere: tablas de posiciones, calendarios, resultados en vivo y estadísticas de equipos y jugadores de cinco grandes ligas: Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Todo con un diseño rápido, claro y pensado para el móvil.",
+      "heading": "¿Qué es Pro Fantasy?",
+      "p1": "Pro Fantasy nace de la afición por el futbol. Reunimos en un solo lugar todo lo que un aficionado quiere: tablas de posiciones, calendarios, resultados en vivo y estadísticas de equipos y jugadores de cinco grandes ligas: Liga MX, Premier League, LaLiga, Serie A y Bundesliga. Todo con un diseño rápido, claro y pensado para el móvil.",
       "p2": "Pero no nos quedamos en seguir los partidos: convertimos cada jornada en un juego. Forma tu equipo fantasy y enfrenta a tus amigos en duelos cara a cara, predice marcadores exactos en quinielas privadas y administra tus vidas jornada a jornada en el modo Survivor. La Liga MX completa —seguirla y jugar los tres modos— es gratis y siempre lo será; Premium añade las cuatro grandes de Europa y las herramientas para llevar tu torneo a tu manera."
     },
     "modes": {
@@ -88,7 +88,7 @@
       }
     },
     "features": {
-      "heading": "Por qué Fantasy MX",
+      "heading": "Por qué Pro Fantasy",
       "free": {
         "title": "La Liga MX, gratis siempre",
         "desc": "Seguirla y jugar fantasy, quinielas y Survivor en la Liga MX no cuesta nada ni lo costará. Premium es opcional y sólo añade las ligas de Europa y las reglas a tu medida."
@@ -108,7 +108,7 @@
     },
     "responsible": {
       "heading": "Juego para aficionados",
-      "text": "Fantasy MX es una plataforma de entretenimiento y competencia entre amigos. Las quinielas, ligas fantasy y Survivor son juegos de habilidad y conocimiento futbolístico pensados para pasarla bien: no se apuesta dinero ni se reparten premios en efectivo, y la suscripción Premium sólo desbloquea contenido y funciones dentro de la app. Cuidamos tus datos conforme a la legislación mexicana; puedes revisar cómo los tratamos en nuestro aviso de privacidad."
+      "text": "Pro Fantasy es una plataforma de entretenimiento y competencia entre amigos. Las quinielas, ligas fantasy y Survivor son juegos de habilidad y conocimiento futbolístico pensados para pasarla bien: no se apuesta dinero ni se reparten premios en efectivo, y la suscripción Premium sólo desbloquea contenido y funciones dentro de la app. Cuidamos tus datos conforme a la legislación mexicana; puedes revisar cómo los tratamos en nuestro aviso de privacidad."
     },
     "cta": {
       "heading": "¿Listo para jugar?",
@@ -124,7 +124,7 @@
     "navLabel": "Enlaces del sitio",
     "tagline": "Fantasy, quinielas y Survivor de futbol.",
     "links": {
-      "landing": "Qué es Fantasy MX",
+      "landing": "Qué es Pro Fantasy",
       "guides": "Guías y reglas",
       "about": "Acerca de",
       "privacy": "Aviso de privacidad"

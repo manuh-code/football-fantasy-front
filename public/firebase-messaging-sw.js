@@ -21,7 +21,7 @@ const messaging = firebase.messaging()
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Background message received:', payload)
 
-  const notificationTitle = payload.notification?.title || 'Fantasy MX'
+  const notificationTitle = payload.notification?.title || 'Pro Fantasy'
   const notificationOptions = {
     body: payload.notification?.body || 'Tienes una nueva notificación',
     icon: payload.notification?.icon || '/img/icons/android-chrome-192x192.png',

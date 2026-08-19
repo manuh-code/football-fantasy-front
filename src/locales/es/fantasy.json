@@ -194,7 +194,7 @@
     "loadError": "No se pudieron cargar tus ligas Fantasy. Inténtalo de nuevo más tarde.",
     "emptyTitle": "Aún no tienes ligas",
     "emptyBody": "Crea tu propia liga o únete a una existente para empezar a jugar.",
-    "pageTitle": "Mis Ligas Fantasy - Football Fantasy",
+    "pageTitle": "Mis Ligas Fantasy - Pro Fantasy",
     "navAria": "Navegación de ligas fantasy",
     "fabQuickActions": "Acciones rápidas",
     "fabClose": "Cerrar menú",
@@ -744,7 +744,7 @@
     },
     "shareText": {
       "title": "Únete a \"{name}\"",
-      "text": "Únete a mi liga Fantasy \"{name}\" en Football Fantasy. Código de acceso: {code}"
+      "text": "Únete a mi liga Fantasy \"{name}\" en Pro Fantasy. Código de acceso: {code}"
     }
   },
   "myTeam": {
@@ -759,7 +759,7 @@
     "comingSoonBadge": "Pronto",
     "tradesComingSoonTitle": "Cambios",
     "tradesComingSoonBody": "Los cambios entre equipos estarán disponibles pronto.",
-    "pageTitle": "Mi Equipo Fantasy - Football Fantasy"
+    "pageTitle": "Mi Equipo Fantasy - Pro Fantasy"
   },
   "search": {
     "playerPlaceholder": "Buscar jugador...",

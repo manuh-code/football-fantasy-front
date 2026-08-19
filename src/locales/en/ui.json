@@ -44,12 +44,12 @@
   },
   "about": {
     "title": "About",
-    "badge": "Meet Fantasy MX",
+    "badge": "Meet Pro Fantasy",
     "heading": "Your football, your friends, five top leagues",
-    "subtitle": "Fantasy MX is the platform where you follow Liga MX, the Premier League, LaLiga, Serie A and the Bundesliga live, build your fantasy team with a real-time draft and compete against your friends in pools and Survivor. All of Liga MX is free; the European leagues unlock with Premium.",
+    "subtitle": "Pro Fantasy is the platform where you follow Liga MX, the Premier League, LaLiga, Serie A and the Bundesliga live, build your fantasy team with a real-time draft and compete against your friends in pools and Survivor. All of Liga MX is free; the European leagues unlock with Premium.",
     "intro": {
-      "heading": "What is Fantasy MX?",
-      "p1": "Fantasy MX was born out of a passion for football. We bring together everything a fan wants in one place: standings, fixtures, live results, and team and player stats for five top leagues: Liga MX, Premier League, LaLiga, Serie A and Bundesliga. All in a fast, clean design built for mobile.",
+      "heading": "What is Pro Fantasy?",
+      "p1": "Pro Fantasy was born out of a passion for football. We bring together everything a fan wants in one place: standings, fixtures, live results, and team and player stats for five top leagues: Liga MX, Premier League, LaLiga, Serie A and Bundesliga. All in a fast, clean design built for mobile.",
       "p2": "But we don't stop at following matches: we turn every matchday into a game. Build your fantasy team and face your friends head to head, predict exact scores in private pools and manage your lives matchday after matchday in Survivor. All of Liga MX — following it and playing all three modes — is free and always will be; Premium adds Europe's big four and the tools to run your tournament your way."
     },
     "modes": {
@@ -88,7 +88,7 @@
       }
     },
     "features": {
-      "heading": "Why Fantasy MX",
+      "heading": "Why Pro Fantasy",
       "free": {
         "title": "Liga MX, free always",
         "desc": "Following it and playing fantasy, pools and Survivor in Liga MX costs nothing and never will. Premium is optional and only adds the European leagues and custom rules."
@@ -108,7 +108,7 @@
     },
     "responsible": {
       "heading": "A game for fans",
-      "text": "Fantasy MX is an entertainment and friendly-competition platform. Pools, fantasy leagues and Survivor are games of skill and football knowledge meant for fun: no money is wagered and no cash prizes are awarded, and the Premium subscription only unlocks content and features inside the app. We look after your data under Mexican law; you can review how we handle it in our privacy notice."
+      "text": "Pro Fantasy is an entertainment and friendly-competition platform. Pools, fantasy leagues and Survivor are games of skill and football knowledge meant for fun: no money is wagered and no cash prizes are awarded, and the Premium subscription only unlocks content and features inside the app. We look after your data under Mexican law; you can review how we handle it in our privacy notice."
     },
     "cta": {
       "heading": "Ready to play?",
@@ -124,7 +124,7 @@
     "navLabel": "Site links",
     "tagline": "Football fantasy, pools and Survivor",
     "links": {
-      "landing": "What is Fantasy MX",
+      "landing": "What is Pro Fantasy",
       "guides": "Guides and rules",
       "about": "About",
       "privacy": "Privacy notice"

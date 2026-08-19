@@ -75,7 +75,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/HomeView.vue'),
     meta: {
-      title: 'Fantasy MX — Juega fantasy, quinielas y Survivor gratis',
+      title: 'Pro Fantasy — Juega fantasy, quinielas y Survivor gratis',
       description: 'Juega gratis con tus amigos: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación, en Liga MX, Premier League, LaLiga, Serie A y Bundesliga.',
       requiresAuth: false
     }
@@ -89,7 +89,7 @@ const routes: Array<RouteRecordRaw> = [
     // tenía en "posiciones y resultados en vivo".
     component: () => import(/* webpackChunkName: "league-overview" */ '@/views/football/LeagueOverviewView.vue'),
     meta: {
-      title: 'Fantasy MX — Posiciones, resultados y estadísticas en vivo',
+      title: 'Pro Fantasy — Posiciones, resultados y estadísticas en vivo',
       description: 'Sigue en vivo las posiciones, resultados y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, y juega fantasy, quinielas y Survivor gratis.',
       requiresAuth: false
     }
@@ -104,7 +104,7 @@ const routes: Array<RouteRecordRaw> = [
     // otro al montar la app. Si divergen, Google ve un título antes de ejecutar
     // el JS y otro después.
     meta: {
-      title: 'Fantasy MX — Fantasy de Liga MX gratis, quinielas y Survivor',
+      title: 'Pro Fantasy — Liga MX gratis: fantasy, quinielas y Survivor',
       description: 'Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. También Premier, LaLiga, Serie A y Bundesliga.',
       requiresAuth: false
     }
@@ -115,8 +115,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "about" */ '@/views/AboutView.vue'),
     meta: {
-      title: 'Acerca de Fantasy MX — Fantasy, quinielas y Survivor de 5 grandes ligas',
-      description: 'Conoce Fantasy MX: sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, arma tu fantasy con draft en tiempo real, crea quinielas y juega Survivor. Gratis.',
+      title: 'Acerca de Pro Fantasy — Fantasy, quinielas y Survivor de 5 grandes ligas',
+      description: 'Conoce Pro Fantasy: sigue en vivo la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, arma tu fantasy con draft en tiempo real, crea quinielas y juega Survivor. Gratis.',
       requiresAuth: false
     }
   },
@@ -126,8 +126,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "login" */ '@/views/login/LoginView.vue'),
     meta: {
-      title: 'Sign In - Football Fantasy',
-      description: 'Sign in to your Football Fantasy account',
+      title: 'Sign In - Pro Fantasy',
+      description: 'Sign in to your Pro Fantasy account',
       requiresAuth: false
     }
   },
@@ -142,8 +142,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "register" */ '@/views/user/store/UserStoreView.vue'),
     meta: {
-      title: 'Create Account - Football Fantasy',
-      description: 'Create your Football Fantasy account',
+      title: 'Create Account - Pro Fantasy',
+      description: 'Create your Pro Fantasy account',
       requiresAuth: false
     }
   },
@@ -153,8 +153,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/DashboardView.vue'),
     meta: {
-      title: 'Dashboard - Football Fantasy',
-      description: 'Football Fantasy dashboard with your team overview and statistics',
+      title: 'Dashboard - Pro Fantasy',
+      description: 'Pro Fantasy dashboard with your team overview and statistics',
       requiresAuth: true
     }
   },
@@ -164,8 +164,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "profile" */ '@/views/user/ProfileView.vue'),
     meta: {
-      title: 'Profile - Football Fantasy',
-      description: 'View and manage your Football Fantasy profile information',
+      title: 'Profile - Pro Fantasy',
+      description: 'View and manage your Pro Fantasy profile information',
       requiresAuth: true
     }
   },
@@ -174,7 +174,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'userSettings',
     component: () => import(/* webpackChunkName: "user-settings" */ '@/views/user/settings/UserSettingsView.vue'),
     meta: {
-      title: 'Settings - Football Fantasy',
+      title: 'Settings - Pro Fantasy',
       description: 'Manage your account settings',
       requiresAuth: true
     }
@@ -184,7 +184,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'system-settings',
     component: () => import(/* webpackChunkName: "system-settings" */ '@/views/user/settings/SystemSettingsView.vue'),
     meta: {
-      title: 'System Settings - Football Fantasy',
+      title: 'System Settings - Pro Fantasy',
       description: 'Customize appearance and system preferences',
       requiresAuth: true
     }
@@ -194,8 +194,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'subscription',
     component: () => import(/* webpackChunkName: "subscription" */ '@/views/user/billing/SubscriptionView.vue'),
     meta: {
-      title: 'Premium - Football Fantasy',
-      description: 'Subscribe to Football Fantasy Premium',
+      title: 'Premium - Pro Fantasy',
+      description: 'Subscribe to Pro Fantasy Premium',
       requiresAuth: true
     }
   },
@@ -204,8 +204,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'payment-methods',
     component: () => import(/* webpackChunkName: "payment-methods" */ '@/views/user/billing/PaymentMethodsView.vue'),
     meta: {
-      title: 'Payment Methods - Football Fantasy',
-      description: 'Manage the cards saved in your Football Fantasy account',
+      title: 'Payment Methods - Pro Fantasy',
+      description: 'Manage the cards saved in your Pro Fantasy account',
       requiresAuth: true
     }
   },
@@ -216,7 +216,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'payment-methods-callback',
     component: () => import(/* webpackChunkName: "payment-methods-callback" */ '@/views/user/billing/PaymentMethodCallbackView.vue'),
     meta: {
-      title: 'Payment Methods - Football Fantasy',
+      title: 'Payment Methods - Pro Fantasy',
       description: 'Confirming your payment method',
       requiresAuth: true
     }
@@ -227,7 +227,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "change-password" */ '@/views/user/password/ChangePasswordView.vue'),
     meta: {
-      title: 'Change Password - Football Fantasy',
+      title: 'Change Password - Pro Fantasy',
       description: 'Update your account password',
       requiresAuth: true
     }
@@ -238,7 +238,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "favorite-team" */ '@/views/user/favoriteTeam/FavoriteTeamView.vue'),
     meta: {
-      title: 'Favorite Football Team - Football Fantasy',
+      title: 'Favorite Football Team - Pro Fantasy',
       description: 'Select your favorite football team',
       requiresAuth: true
     }
@@ -248,7 +248,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'notices',
     component: () => import(/* webpackChunkName: "notices" */ '@/views/notice/NoticesView.vue'),
     meta: {
-      title: 'Avisos - Fantasy MX',
+      title: 'Avisos - Pro Fantasy',
       description: 'Invitaciones y novedades de tus ligas y quinielas',
       requiresAuth: true
     }
@@ -260,7 +260,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'invitation',
     component: () => import(/* webpackChunkName: "invitation" */ '@/views/invitation/InvitationView.vue'),
     meta: {
-      title: 'Invitación - Fantasy MX',
+      title: 'Invitación - Pro Fantasy',
       description: 'Acepta tu invitación a una liga fantasy o quiniela',
       requiresAuth: false
     }
@@ -271,7 +271,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "user-fantasy-leagues" */ '@/views/user/fantasy/UserFantasyLeagueView.vue'),
     meta: {
-      title: 'My Fantasy Leagues - Football Fantasy',
+      title: 'My Fantasy Leagues - Pro Fantasy',
       description: 'View and manage your fantasy football leagues',
       requiresAuth: true
     }
@@ -282,7 +282,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "fantasy-league-detail" */ '@/views/fantasy/FantasyLeagueDetailView.vue'),
     meta: {
-      title: 'Fantasy League Details - Football Fantasy',
+      title: 'Fantasy League Details - Pro Fantasy',
       description: 'View detailed information about a fantasy football league',
       requiresAuth: true
     }
@@ -299,7 +299,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'fantasyTeamCreate',
     component: () => import(/* webpackChunkName: "fantasy-team-create" */ '@/views/fantasy/FantasyTeamUserView.vue'),
     meta: {
-      title: 'Create Team - Football Fantasy',
+      title: 'Create Team - Pro Fantasy',
       description: 'Create your fantasy team with a custom shield',
       requiresAuth: true
     }
@@ -310,7 +310,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "players-to-draft" */ '@/views/user/fantasy/PlayersToDraftView.vue'),
     meta: {
-      title: 'Draft Players - Football Fantasy',
+      title: 'Draft Players - Pro Fantasy',
       description: 'Select players to build your fantasy team',
       requiresAuth: true
     }
@@ -320,7 +320,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'mockDraftSetup',
     component: () => import(/* webpackChunkName: "mock-draft-setup" */ '@/views/user/fantasy/MockDraftSetupView.vue'),
     meta: {
-      title: 'Mock Draft - Football Fantasy',
+      title: 'Mock Draft - Pro Fantasy',
       description: 'Ensaya tu draft fantasy contra bots: prueba estrategias, descubre el valor de cada jugador y ve qué se queda disponible en cada ronda.',
       requiresAuth: true
     }
@@ -330,7 +330,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'mockDraftRoom',
     component: () => import(/* webpackChunkName: "mock-draft-room" */ '@/views/user/fantasy/MockDraftRoomView.vue'),
     meta: {
-      title: 'Mock Draft - Football Fantasy',
+      title: 'Mock Draft - Pro Fantasy',
       description: 'Sala de mock draft: practica tus selecciones contra equipos automáticos.',
       requiresAuth: true
     }
@@ -340,7 +340,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'searchPlayerFantasy',
     component: () => import(/* webpackChunkName: "search-player-fantasy" */ '@/views/user/fantasy/SearchPlayerFantasyView.vue'),
     meta: {
-      title: 'Search Players - Football Fantasy',
+      title: 'Search Players - Pro Fantasy',
       description: 'Search and add players to your fantasy team',
       requiresAuth: true
     }
@@ -351,7 +351,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "football-leagues" */ '@/views/football/leagues/FootballLeagueSelectionView.vue'),
     meta: {
-      title: 'Select League - Football Fantasy',
+      title: 'Select League - Pro Fantasy',
       description: 'Select the football league you want to follow',
       requiresAuth: false
     }
@@ -362,7 +362,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "pools" */ '@/views/pool/PoolView.vue'),
     meta: {
-      title: 'Pools - Football Fantasy',
+      title: 'Pools - Pro Fantasy',
       description: 'View the pools you are participating in',
       requiresAuth: true
     }
@@ -373,7 +373,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "pool-group" */ '@/views/pool/PoolGroupView.vue'),
     meta: {
-      title: 'Pool Group - Football Fantasy',
+      title: 'Pool Group - Pro Fantasy',
       description: 'View your pool group details, predictions and standings',
       requiresAuth: true
     }
@@ -384,7 +384,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "survivor" */ '@/views/survivor/SurvivorView.vue'),
     meta: {
-      title: 'Survivor - Football Fantasy',
+      title: 'Survivor - Pro Fantasy',
       description: 'View the Survivor games you are participating in',
       requiresAuth: true
     }
@@ -395,7 +395,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "survivor-detail" */ '@/views/survivor/SurvivorDetailView.vue'),
     meta: {
-      title: 'Survivor - Football Fantasy',
+      title: 'Survivor - Pro Fantasy',
       description: 'View your Survivor picks round by round',
       requiresAuth: true
     }
@@ -406,7 +406,7 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "football-player-statistics" */ '@/views/football/player/FootballPlayerStatisticsView.vue'),
     meta: {
-      title: 'Football Player Statistics - Football Fantasy',
+      title: 'Football Player Statistics - Pro Fantasy',
       description: 'View detailed statistics for football players',
       // Fantasy-league-scoped tool (needs a fantasyLeagueUuid); not public content.
       requiresAuth: true
@@ -418,8 +418,8 @@ const routes: Array<RouteRecordRaw> = [
     // Route level code-splitting for better performance
     component: () => import(/* webpackChunkName: "privacy" */ '@/views/legal/PrivacyView.vue'),
     meta: {
-      title: 'Aviso de Privacidad - Football Fantasy',
-      description: 'Aviso de privacidad de Football Fantasy conforme a la LFPDPPP',
+      title: 'Aviso de Privacidad - Pro Fantasy',
+      description: 'Aviso de privacidad de Pro Fantasy conforme a la LFPDPPP',
       requiresAuth: false
     }
   },
@@ -431,7 +431,7 @@ const routes: Array<RouteRecordRaw> = [
     // Google, sin cuenta y sin liga seleccionada.
     component: () => import(/* webpackChunkName: "premium-plans" */ '@/views/premium/PremiumPlansView.vue'),
     meta: {
-      title: 'Premium — Fantasy y quinielas de Premier, LaLiga, Serie A y Bundesliga | Fantasy MX',
+      title: 'Premium — Fantasy y quinielas de Premier, LaLiga, Serie A y Bundesliga | Pro Fantasy',
       description: 'Con Premium juegas fantasy, quinielas y Survivor en la Premier League, LaLiga, la Serie A y la Bundesliga, pones tus propias reglas e invitas a tus amigos aunque ellos no paguen. La Liga MX sigue gratis.',
       requiresAuth: false
     }
@@ -442,8 +442,8 @@ const routes: Array<RouteRecordRaw> = [
     // Public content hub: original guides that explain how to play each mode.
     component: () => import(/* webpackChunkName: "guides" */ '@/views/guides/GuidesView.vue'),
     meta: {
-      title: 'Guías y reglas — Fantasy MX',
-      description: 'Aprende a jugar Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto, Survivor con vidas y el sistema de puntos. Paso a paso y gratis.',
+      title: 'Guías y reglas — Pro Fantasy',
+      description: 'Aprende a jugar Pro Fantasy: fantasy con draft en vivo, quinielas de marcador exacto, Survivor con vidas y el sistema de puntos. Paso a paso y gratis.',
       requiresAuth: false
     }
   },
@@ -453,8 +453,8 @@ const routes: Array<RouteRecordRaw> = [
     // Individual guide. Title/description are refined per-slug inside the view.
     component: () => import(/* webpackChunkName: "guide-detail" */ '@/views/guides/GuideDetailView.vue'),
     meta: {
-      title: 'Guía — Fantasy MX',
-      description: 'Guía de Fantasy MX: aprende a jugar y a competir con tus amigos.',
+      title: 'Guía — Pro Fantasy',
+      description: 'Guía de Pro Fantasy: aprende a jugar y a competir con tus amigos.',
       requiresAuth: false
     }
   },
@@ -464,8 +464,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'not-found',
     component: () => import(/* webpackChunkName: "not-found" */ '@/views/NotFoundView.vue'),
     meta: {
-      title: 'Página no encontrada — Fantasy MX',
-      description: 'La página que buscas no existe o cambió de dirección. Vuelve al inicio de Fantasy MX o consulta las guías.'
+      title: 'Página no encontrada — Pro Fantasy',
+      description: 'La página que buscas no existe o cambió de dirección. Vuelve al inicio de Pro Fantasy o consulta las guías.'
     }
   }
 ]

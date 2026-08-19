@@ -232,7 +232,7 @@
 </template>
 
 <script setup lang="ts">
-// About page: original, publicly reachable content describing Fantasy MX and its
+// About page: original, publicly reachable content describing Pro Fantasy and its
 // game modes. Copy lives in i18n (ui.about.*) for es/en.
 
 // Proper nouns, identical in every locale, so they live here instead of i18n.

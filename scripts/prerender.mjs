@@ -85,19 +85,19 @@ html.dark .pr footer{border-color:#374151}
 </style>`
 
 const NAV = `<header class="pr-nav">
-  <a class="pr-brand" href="/">Fantasy MX</a>
+  <a class="pr-brand" href="/">Pro Fantasy</a>
   <nav aria-label="Secciones">
     <a href="/">Inicio</a>
     <a href="/liga">Resultados</a>
     <a href="/guias">Guías y reglas</a>
     <a href="/premium/planes">Premium</a>
     <a href="/about">Acerca de</a>
-    <a href="/landingpage">Qué es Fantasy MX</a>
+    <a href="/landingpage">Qué es Pro Fantasy</a>
   </nav>
 </header>`
 
 const FOOTER = `<footer>
-  <p>Fantasy MX — futbol en vivo, fantasy con draft, quinielas y Survivor para
+  <p>Pro Fantasy — futbol en vivo, fantasy con draft, quinielas y Survivor para
   Liga MX, Premier League, LaLiga, Serie A y Bundesliga. La Liga MX, gratis.</p>
   <p><a href="/guias">Guías</a> · <a href="/about">Acerca de</a> · <a href="/privacy">Aviso de privacidad</a></p>
 </footer>`
@@ -122,7 +122,7 @@ const guidePage = (g) => {
   const related = GUIDES.filter((o) => o.key !== g.key)
   return {
     path: `/guias/${g.slug}`,
-    title: `${item.title} — Fantasy MX`,
+    title: `${item.title} — Pro Fantasy`,
     description: item.excerpt,
     body: `
       <p><a href="/guias">← Volver a las guías</a></p>
@@ -156,9 +156,9 @@ const gamingPage = () => {
   return {
     path: '/gaming',
     canonical: '/',
-    title: 'Juegos — Fantasy, quinielas y Survivor | Fantasy MX',
+    title: 'Juegos — Fantasy, quinielas y Survivor | Pro Fantasy',
     description:
-      'Los tres modos de juego de Fantasy MX: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación. La Liga MX gratis; Europa con Premium.',
+      'Los tres modos de juego de Pro Fantasy: fantasy con draft en vivo, quinielas de marcador exacto y Survivor por eliminación. La Liga MX gratis; Europa con Premium.',
     body: `
       <h1>Modos de juego</h1>
       <p class="pr-lead">Tres formas de competir con tus amigos durante toda la temporada,
@@ -227,7 +227,7 @@ const premiumPage = () => {
 
 const guidesHub = () => ({
   path: '/guias',
-  title: 'Guías y reglas — Fantasy MX',
+  title: 'Guías y reglas — Pro Fantasy',
   description: guides.hub.subtitle,
   body: `
     <h1>${esc(guides.hub.title)}</h1>
@@ -245,7 +245,7 @@ const aboutPage = () => {
   const steps = ['step1', 'step2', 'step3']
   return {
     path: '/about',
-    title: 'Acerca de Fantasy MX — Fantasy, quinielas y Survivor de 5 grandes ligas',
+    title: 'Acerca de Pro Fantasy — Fantasy, quinielas y Survivor de 5 grandes ligas',
     description: about.subtitle,
     body: `
       <h1>${esc(about.heading)}</h1>
@@ -307,8 +307,8 @@ const privacyPage = () => {
   const article = articleMatch[1].replace(/\{\{\s*company\.(\w+)\s*\}\}/g, (_, k) => esc(company[k] ?? ''))
   return {
     path: '/privacy',
-    title: 'Aviso de Privacidad — Fantasy MX',
-    description: 'Aviso de privacidad de Fantasy MX conforme a la LFPDPPP: qué datos recabamos, para qué los usamos y cómo ejercer tus derechos ARCO.',
+    title: 'Aviso de Privacidad — Pro Fantasy',
+    description: 'Aviso de privacidad de Pro Fantasy conforme a la LFPDPPP: qué datos recabamos, para qué los usamos y cómo ejercer tus derechos ARCO.',
     body: `<h1>Aviso de Privacidad</h1>
       <p class="pr-lead">Última actualización: ${esc(company.lastUpdated ?? '')}</p>
       ${article}`,

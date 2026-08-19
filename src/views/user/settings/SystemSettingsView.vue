@@ -11,5 +11,5 @@
 <script setup lang="ts">
 import SystemSettingsComponent from '@/components/user/settings/SystemSettingsComponent.vue'
 
-document.title = 'System Settings - Football Fantasy'
+document.title = 'System Settings - Pro Fantasy'
 </script>

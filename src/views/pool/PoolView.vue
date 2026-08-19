@@ -80,7 +80,7 @@ import type { BottomNavItem } from "@/components/ui/BottomNavBar.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 
 // Set page title
-document.title = "Pools - Football Fantasy";
+document.title = "Pools - Pro Fantasy";
 
 const { t } = useI18n();
 const { success } = useToast();

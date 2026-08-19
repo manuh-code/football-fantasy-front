@@ -11,5 +11,5 @@
 <script setup lang="ts">
 import ProfileComponent from '@/components/user/ProfileComponent.vue'
 
-document.title = 'Profile - Football Fantasy'
+document.title = 'Profile - Pro Fantasy'
 </script>

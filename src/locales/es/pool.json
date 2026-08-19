@@ -47,7 +47,7 @@
       "aria": "Paneles de la quiniela",
       "back": "Volver a mis quinielas"
     },
-    "docTitle": "Grupo de quiniela - Football Fantasy",
+    "docTitle": "Grupo de quiniela - Pro Fantasy",
     "tabs": {
       "info": "Info",
       "predictions": "Predicciones",
@@ -120,7 +120,7 @@
     },
     "share": {
       "title": "Únete a \"{name}\"",
-      "text": "Únete a mi quiniela \"{name}\" en Football Fantasy. Código de acceso: {code}"
+      "text": "Únete a mi quiniela \"{name}\" en Pro Fantasy. Código de acceso: {code}"
     }
   },
   "prediction": {
