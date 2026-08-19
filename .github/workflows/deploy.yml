@@ -28,10 +28,10 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/fantasymx-front:latest
           # ⚠️ IMPORTANTE: Pasar las variables de entorno como build arguments
           build-args: |
-            VITE_APP_TITLE=Football Fantasy
+            VITE_APP_TITLE=Pro Fantasy
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
-            VITE_APP_NAME=Football Fantasy
-            VITE_APP_SHORT_NAME=FootballFantasy
+            VITE_APP_NAME=Pro Fantasy
+            VITE_APP_SHORT_NAME=ProFantasy
             VITE_ABLY_KEY=${{ secrets.VITE_ABLY_KEY }}
             VITE_ABLY_CLUSTER=mt1
             VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}

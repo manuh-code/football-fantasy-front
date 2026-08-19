@@ -29,7 +29,7 @@ const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 
-document.title = 'Payment Methods - Football Fantasy'
+document.title = 'Payment Methods - Pro Fantasy'
 
 /**
  * Landing spot for Stripe's `return_url`. When a card requires 3DS, Stripe takes

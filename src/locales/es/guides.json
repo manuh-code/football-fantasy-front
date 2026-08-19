@@ -1,7 +1,7 @@
 {
   "hub": {
     "badge": "Guías",
-    "title": "Guías y reglas de Fantasy MX",
+    "title": "Guías y reglas de Pro Fantasy",
     "subtitle": "Aprende a jugar cada modo de la app: fantasy con draft en vivo, quinielas de marcador exacto y Survivor con vidas. Toda la Liga MX es gratis; Premier League, LaLiga, Serie A y Bundesliga se activan con Premium.",
     "read": "Leer guía",
     "minRead": "min de lectura"
@@ -15,13 +15,13 @@
   },
   "items": {
     "fantasy": {
-      "title": "Cómo jugar Fantasy en Fantasy MX",
+      "title": "Cómo jugar Fantasy en Pro Fantasy",
       "excerpt": "Crea tu liga, haz el draft, arma tu alineación y gana tus enfrentamientos semanales cara a cara.",
       "intro": "El modo Fantasy convierte cada jornada en una competencia entre tú y tus amigos. Armas un equipo con jugadores reales de la liga que elijas —Liga MX, Premier League, LaLiga, Serie A o Bundesliga— y cada semana te enfrentas cara a cara contra otro equipo de tu liga. Gana quien más puntos suma con sus titulares.",
       "sections": [
         {
           "h": "¿Qué es una liga fantasy?",
-          "p": "Una liga fantasy es un grupo donde cada participante dirige su propio equipo. Tus jugadores reales puntúan por ti: si tu delantero marca, sumas; si tu portero deja el arco en cero, también. La diferencia de Fantasy MX es que no solo acumulas puntos en una tabla: cada jornada juegas un enfrentamiento directo contra otro participante, como en una liga de verdad."
+          "p": "Una liga fantasy es un grupo donde cada participante dirige su propio equipo. Tus jugadores reales puntúan por ti: si tu delantero marca, sumas; si tu portero deja el arco en cero, también. La diferencia de Pro Fantasy es que no solo acumulas puntos en una tabla: cada jornada juegas un enfrentamiento directo contra otro participante, como en una liga de verdad."
         },
         {
           "h": "Crea o únete a una liga",
@@ -81,7 +81,7 @@
     "draft": {
       "title": "Cómo funciona el draft en vivo",
       "excerpt": "Turnos en tiempo real, cronómetro por elección y auto-pick para que el draft nunca se detenga.",
-      "intro": "El draft es el momento en que se reparten los jugadores entre todos los participantes de una liga fantasy. En Fantasy MX es un evento en vivo: todos conectados a la vez, eligiendo por turnos, con cronómetro para cada selección y actualizaciones al instante.",
+      "intro": "El draft es el momento en que se reparten los jugadores entre todos los participantes de una liga fantasy. En Pro Fantasy es un evento en vivo: todos conectados a la vez, eligiendo por turnos, con cronómetro para cada selección y actualizaciones al instante.",
       "sections": [
         {
           "h": "Qué es el draft",
@@ -136,7 +136,7 @@
     "quiniela": {
       "title": "Cómo jugar la quiniela",
       "excerpt": "Predice el marcador exacto de cada partido y compite con tu grupo jornada a jornada.",
-      "intro": "La quiniela es el modo más rápido y social de Fantasy MX. Cada jornada pronosticas el marcador exacto de los partidos y compites con tus amigos por ver quién le atina más. No necesitas draft ni gestionar un equipo: solo tu conocimiento del futbol.",
+      "intro": "La quiniela es el modo más rápido y social de Pro Fantasy. Cada jornada pronosticas el marcador exacto de los partidos y compites con tus amigos por ver quién le atina más. No necesitas draft ni gestionar un equipo: solo tu conocimiento del futbol.",
       "sections": [
         {
           "h": "Qué es una quiniela",
@@ -178,7 +178,7 @@
     "survivor": {
       "title": "Cómo funciona el Survivor",
       "excerpt": "Elige un ganador por jornada sin repetir equipo. Administra tus vidas y sé el último en pie.",
-      "intro": "El Survivor es el modo de eliminación de Fantasy MX. Cada jornada eliges un equipo que crees que va a ganar. Si gana, sigues con vida; si pierde, pierdes una vida. Cuando te quedas sin vidas, estás fuera. El último en pie gana.",
+      "intro": "El Survivor es el modo de eliminación de Pro Fantasy. Cada jornada eliges un equipo que crees que va a ganar. Si gana, sigues con vida; si pierde, pierdes una vida. Cuando te quedas sin vidas, estás fuera. El último en pie gana.",
       "sections": [
         {
           "h": "La regla de oro",
@@ -232,7 +232,7 @@
       "sections": [
         {
           "h": "Puntos basados en el rendimiento real",
-          "p": "Después de cada partido, Fantasy MX toma las estadísticas reales de tus jugadores —goles, asistencias, minutos, portería a cero, tarjetas y más— y las convierte en puntos para tu equipo. Da igual si tu liga es de la Liga MX, la Premier League, LaLiga, la Serie A o la Bundesliga: el mecanismo es el mismo."
+          "p": "Después de cada partido, Pro Fantasy toma las estadísticas reales de tus jugadores —goles, asistencias, minutos, portería a cero, tarjetas y más— y las convierte en puntos para tu equipo. Da igual si tu liga es de la Liga MX, la Premier League, LaLiga, la Serie A o la Bundesliga: el mecanismo es el mismo."
         },
         {
           "h": "Cada acción vale puntos",
@@ -330,7 +330,7 @@
     "ligas": {
       "title": "¿Qué liga elegir para tu fantasy? Guía de las 5 competencias",
       "excerpt": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga: qué cambia al jugar fantasy, quiniela o Survivor en cada una.",
-      "intro": "En Fantasy MX todos los modos se juegan igual en cualquier competencia, pero cada liga tiene su propio ritmo: formato, cantidad de jornadas, horarios y estilo de juego. Elegir bien hace tu temporada más divertida y tus predicciones más certeras.",
+      "intro": "En Pro Fantasy todos los modos se juegan igual en cualquier competencia, pero cada liga tiene su propio ritmo: formato, cantidad de jornadas, horarios y estilo de juego. Elegir bien hace tu temporada más divertida y tus predicciones más certeras.",
       "sections": [
         {
           "h": "Las reglas no cambian, el futbol sí",
@@ -408,7 +408,7 @@
         },
         {
           "h": "Usa los datos que ya tienes en la app",
-          "p": "No hace falta salir de Fantasy MX para investigar:",
+          "p": "No hace falta salir de Pro Fantasy para investigar:",
           "list": [
             {
               "t": "Tabla de posiciones",
@@ -439,9 +439,9 @@
       ]
     },
     "glosario": {
-      "title": "Glosario de Fantasy MX: habla el idioma del juego",
+      "title": "Glosario de Pro Fantasy: habla el idioma del juego",
       "excerpt": "Draft, FLEX, pick, vidas, marcador exacto… todos los términos de la app explicados en corto.",
-      "intro": "¿Primera vez en un fantasy o en un Survivor? Aquí está el vocabulario que verás en Fantasy MX, agrupado por modo de juego, para que ninguna palabra te agarre fuera de lugar.",
+      "intro": "¿Primera vez en un fantasy o en un Survivor? Aquí está el vocabulario que verás en Pro Fantasy, agrupado por modo de juego, para que ninguna palabra te agarre fuera de lugar.",
       "sections": [
         {
           "h": "Términos del fantasy",
@@ -574,12 +574,12 @@
       ]
     },
     "faq": {
-      "title": "Preguntas frecuentes sobre Fantasy MX",
+      "title": "Preguntas frecuentes sobre Pro Fantasy",
       "excerpt": "Lo que todos preguntan antes de empezar: qué es gratis, qué incluye Premium, cuentas, ligas, draft y cierres.",
-      "intro": "Respuestas directas a las dudas más comunes sobre Fantasy MX. Si la tuya no está aquí, las guías de cada modo entran en todo el detalle.",
+      "intro": "Respuestas directas a las dudas más comunes sobre Pro Fantasy. Si la tuya no está aquí, las guías de cada modo entran en todo el detalle.",
       "sections": [
         {
-          "h": "¿Fantasy MX es gratis?",
+          "h": "¿Pro Fantasy es gratis?",
           "p": "La Liga MX sí, completa y para siempre: seguirla en vivo y jugar fantasy, quinielas y Survivor sobre ella no cuesta nada y no pedimos tarjeta para registrarte. Las otras cuatro competencias —Premier League, LaLiga, Serie A y Bundesliga— y algunas funciones avanzadas forman parte de Premium, una suscripción opcional. Las pantallas de contenido también muestran publicidad discreta."
         },
         {

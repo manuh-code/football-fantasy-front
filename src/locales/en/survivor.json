@@ -12,7 +12,7 @@
     "rules": "Rules",
     "standings": "Standings"
   },
-  "docTitle": "Survivor - Football Fantasy",
+  "docTitle": "Survivor - Pro Fantasy",
   "list": {
     "title": "My Survivor",
     "countOne": "{count} survivor",
@@ -40,7 +40,7 @@
   "emptyBody": "Once you join a Survivor, it will show up here so you can follow it.",
   "loadError": "Couldn't load your Survivor. Please try again later.",
   "detail": {
-    "docTitle": "Survivor Detail - Football Fantasy",
+    "docTitle": "Survivor Detail - Pro Fantasy",
     "yourPick": "Your pick",
     "noPick": "No pick",
     "roundsError": "Couldn't load the rounds.",

@@ -12,10 +12,10 @@ CMD ["npm", "run", "dev", "--", "--host"]
 FROM development AS build
 
 # Variables de entorno para el build de producción
-ARG VITE_APP_TITLE="Football Fantasy"
+ARG VITE_APP_TITLE="Pro Fantasy"
 ARG VITE_API_BASE_URL
-ARG VITE_APP_NAME="Football Fantasy"
-ARG VITE_APP_SHORT_NAME="FootballFantasy"
+ARG VITE_APP_NAME="Pro Fantasy"
+ARG VITE_APP_SHORT_NAME="ProFantasy"
 ARG VITE_ABLY_KEY=
 ARG VITE_ABLY_CLUSTER="mt1"
 

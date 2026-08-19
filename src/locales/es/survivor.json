@@ -12,7 +12,7 @@
     "rules": "Reglas",
     "standings": "Posiciones"
   },
-  "docTitle": "Survivor - Football Fantasy",
+  "docTitle": "Survivor - Pro Fantasy",
   "list": {
     "title": "Mis Survivor",
     "countOne": "{count} survivor",
@@ -40,7 +40,7 @@
   "emptyBody": "Cuando te unas a un Survivor, aparecerá aquí para que puedas seguirlo.",
   "loadError": "No se pudieron cargar tus Survivor. Inténtalo de nuevo más tarde.",
   "detail": {
-    "docTitle": "Detalle Survivor - Football Fantasy",
+    "docTitle": "Detalle Survivor - Pro Fantasy",
     "yourPick": "Tu selección",
     "noPick": "Sin selección",
     "roundsError": "No se pudieron cargar las jornadas.",

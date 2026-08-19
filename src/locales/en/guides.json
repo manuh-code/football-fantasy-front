@@ -1,7 +1,7 @@
 {
   "hub": {
     "badge": "Guides",
-    "title": "Fantasy MX guides and rules",
+    "title": "Pro Fantasy guides and rules",
     "subtitle": "Learn how to play every mode in the app: fantasy with a live draft, exact-score pools and Survivor with lives. All of Liga MX is free; the Premier League, LaLiga, Serie A and Bundesliga unlock with Premium.",
     "read": "Read guide",
     "minRead": "min read"
@@ -15,13 +15,13 @@
   },
   "items": {
     "fantasy": {
-      "title": "How to play Fantasy on Fantasy MX",
+      "title": "How to play Fantasy on Pro Fantasy",
       "excerpt": "Create your league, run the draft, set your lineup and win your weekly head-to-head matchups.",
       "intro": "Fantasy mode turns every matchday into a competition between you and your friends. You build a team with real players from the league of your choice — Liga MX, Premier League, LaLiga, Serie A or Bundesliga — and every week you face another team from your league head to head. Whoever scores more points with their starters wins.",
       "sections": [
         {
           "h": "What is a fantasy league?",
-          "p": "A fantasy league is a group where each participant manages their own team. Your real players score for you: if your striker scores, you earn points; if your keeper keeps a clean sheet, you do too. What makes Fantasy MX different is that you don't just pile up points in a table: every matchday you play a direct matchup against another participant, just like a real league."
+          "p": "A fantasy league is a group where each participant manages their own team. Your real players score for you: if your striker scores, you earn points; if your keeper keeps a clean sheet, you do too. What makes Pro Fantasy different is that you don't just pile up points in a table: every matchday you play a direct matchup against another participant, just like a real league."
         },
         {
           "h": "Create or join a league",
@@ -81,7 +81,7 @@
     "draft": {
       "title": "How the live draft works",
       "excerpt": "Real-time turns, a pick timer and auto-pick so the draft never stalls.",
-      "intro": "The draft is the moment when players get distributed among all the participants of a fantasy league. On Fantasy MX it's a live event: everyone connected at once, picking in turns, with a timer for every selection and instant updates.",
+      "intro": "The draft is the moment when players get distributed among all the participants of a fantasy league. On Pro Fantasy it's a live event: everyone connected at once, picking in turns, with a timer for every selection and instant updates.",
       "sections": [
         {
           "h": "What the draft is",
@@ -136,7 +136,7 @@
     "quiniela": {
       "title": "How to play the pool",
       "excerpt": "Predict the exact score of every match and compete with your group matchday after matchday.",
-      "intro": "The pool is the fastest, most social mode on Fantasy MX. Every matchday you predict the exact score of the matches and compete with your friends to see who gets the most right. No draft, no team management: just your football knowledge.",
+      "intro": "The pool is the fastest, most social mode on Pro Fantasy. Every matchday you predict the exact score of the matches and compete with your friends to see who gets the most right. No draft, no team management: just your football knowledge.",
       "sections": [
         {
           "h": "What a pool is",
@@ -178,7 +178,7 @@
     "survivor": {
       "title": "How Survivor works",
       "excerpt": "Pick one winner per matchday without repeating teams. Manage your lives and be the last one standing.",
-      "intro": "Survivor is Fantasy MX's elimination mode. Every matchday you pick one team you think will win. If it wins, you stay alive; if it loses, you lose a life. When you run out of lives, you're out. The last one standing wins.",
+      "intro": "Survivor is Pro Fantasy's elimination mode. Every matchday you pick one team you think will win. If it wins, you stay alive; if it loses, you lose a life. When you run out of lives, you're out. The last one standing wins.",
       "sections": [
         {
           "h": "The golden rule",
@@ -232,7 +232,7 @@
       "sections": [
         {
           "h": "Points based on real performance",
-          "p": "After every match, Fantasy MX takes your players' real stats — goals, assists, minutes, clean sheets, cards and more — and turns them into points for your team. It works the same whether your league runs on Liga MX, the Premier League, LaLiga, Serie A or the Bundesliga."
+          "p": "After every match, Pro Fantasy takes your players' real stats — goals, assists, minutes, clean sheets, cards and more — and turns them into points for your team. It works the same whether your league runs on Liga MX, the Premier League, LaLiga, Serie A or the Bundesliga."
         },
         {
           "h": "Every action is worth points",
@@ -330,7 +330,7 @@
     "ligas": {
       "title": "Which league should you pick for fantasy? A guide to all 5",
       "excerpt": "Liga MX, Premier League, LaLiga, Serie A and Bundesliga: what changes when you play fantasy, pools or Survivor in each one.",
-      "intro": "On Fantasy MX every mode plays the same in any competition, but each league has its own rhythm: format, number of matchdays, kickoff times and style of play. Choosing well makes your season more fun and your predictions sharper.",
+      "intro": "On Pro Fantasy every mode plays the same in any competition, but each league has its own rhythm: format, number of matchdays, kickoff times and style of play. Choosing well makes your season more fun and your predictions sharper.",
       "sections": [
         {
           "h": "The rules don't change — the football does",
@@ -408,7 +408,7 @@
         },
         {
           "h": "Use the data already in the app",
-          "p": "You don't need to leave Fantasy MX to do your homework:",
+          "p": "You don't need to leave Pro Fantasy to do your homework:",
           "list": [
             {
               "t": "Standings",
@@ -439,9 +439,9 @@
       ]
     },
     "glosario": {
-      "title": "Fantasy MX glossary: speak the language of the game",
+      "title": "Pro Fantasy glossary: speak the language of the game",
       "excerpt": "Draft, FLEX, pick, lives, exact score… every term in the app explained briefly.",
-      "intro": "First time in a fantasy league or a Survivor? Here's the vocabulary you'll see across Fantasy MX, grouped by game mode, so no word catches you offside.",
+      "intro": "First time in a fantasy league or a Survivor? Here's the vocabulary you'll see across Pro Fantasy, grouped by game mode, so no word catches you offside.",
       "sections": [
         {
           "h": "Fantasy terms",
@@ -574,12 +574,12 @@
       ]
     },
     "faq": {
-      "title": "Frequently asked questions about Fantasy MX",
+      "title": "Frequently asked questions about Pro Fantasy",
       "excerpt": "What everyone asks before starting: what's free, what Premium includes, accounts, leagues, drafts and deadlines.",
-      "intro": "Straight answers to the most common questions about Fantasy MX. If yours isn't here, the guides for each mode go into full detail.",
+      "intro": "Straight answers to the most common questions about Pro Fantasy. If yours isn't here, the guides for each mode go into full detail.",
       "sections": [
         {
-          "h": "Is Fantasy MX free?",
+          "h": "Is Pro Fantasy free?",
           "p": "Liga MX is — entirely and forever: following it live and playing fantasy, pools and Survivor on it costs nothing, and we don't ask for a card to sign up. The other four competitions — the Premier League, LaLiga, Serie A and Bundesliga — and some advanced features are part of Premium, an optional subscription. Content screens also show discreet advertising."
         },
         {

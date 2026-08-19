@@ -51,12 +51,12 @@ export default defineConfig({
         lang: 'es',
         dir: 'ltr',
         // Es el nombre que sale bajo el icono en el lanzador: debe ser la marca
-        // real ("Fantasy MX"), no el nombre del repo. `short_name` se trunca por
-        // encima de ~12 caracteres en Android.
-        name: 'Fantasy MX',
-        short_name: 'Fantasy MX',
+        // real ("Pro Fantasy"), no el nombre del repo. `short_name` se trunca
+        // por encima de ~12 caracteres en Android.
+        name: 'Pro Fantasy',
+        short_name: 'Pro Fantasy',
         description: 'Fantasy football de la Liga MX: arma tu equipo, compite en drafts en vivo, quinielas y survivor con tus amigos.',
-        theme_color: '#059669',
+        theme_color: '#01229B',
         // Matches the inline #app-splash background in index.html so Android's
         // native (manifest-driven) splash blends into the HTML splash instead of
         // flashing white → gray on launch.

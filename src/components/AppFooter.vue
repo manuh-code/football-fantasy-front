@@ -14,7 +14,7 @@
  *
  * Los enlaces son `router-link` reales (no botones con `router.push`) para que
  * salgan como <a href> en el DOM y los rastreadores los sigan. El texto es
- * descriptivo a propósito: "Qué es Fantasy MX" transmite más que "Más info".
+ * descriptivo a propósito: "Qué es Pro Fantasy" transmite más que "Más info".
  */
 import { useI18n } from 'vue-i18n'
 
@@ -49,7 +49,7 @@ const year = new Date().getFullYear()
     </nav>
 
     <p class="mt-6 text-center text-xs text-gray-500 dark:text-gray-500">
-      &copy; {{ year }} Fantasy MX · {{ t('ui.footer.tagline') }}
+      &copy; {{ year }} Pro Fantasy · {{ t('ui.footer.tagline') }}
     </p>
   </footer>
 </template>

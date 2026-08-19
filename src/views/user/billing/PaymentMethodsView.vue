@@ -12,7 +12,7 @@
 import PaymentMethodsComponent from '@/components/user/billing/PaymentMethodsComponent.vue'
 import { preloadStripe } from '@/composables/useStripePaymentElement'
 
-document.title = 'Payment Methods - Football Fantasy'
+document.title = 'Payment Methods - Pro Fantasy'
 
 // The card form is one tap away from here, and this also covers users who signed
 // in during this session (the boot-time preload only sees a restored token).

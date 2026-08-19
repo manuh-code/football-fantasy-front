@@ -173,7 +173,7 @@ const related = computed(() => GUIDES.filter((g) => g.key !== meta.value?.key))
 watchEffect(() => {
   if (!base.value) return
   const guideTitle = t(`${base.value}.title`)
-  document.title = `${guideTitle} — Fantasy MX`
+  document.title = `${guideTitle} — Pro Fantasy`
   const desc = document.querySelector('meta[name="description"]')
   if (desc) desc.setAttribute('content', t(`${base.value}.excerpt`))
 })

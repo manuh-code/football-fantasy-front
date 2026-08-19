@@ -357,7 +357,7 @@ const router = useRouter();
 // ⚠️ Reemplaza estos valores con la información real del Responsable antes de publicar.
 const company = {
   legalName: "[Razón social o nombre del Responsable]",
-  appName: "Football Fantasy",
+  appName: "Pro Fantasy",
   address: "[Opalo, 142a, Colinas de plata, Leon, Guanajuato, 37210, México]",
   contactEmail: "[hola@fantasymx.cloud]",
   website: "[https://fantasymx.cloud]",
