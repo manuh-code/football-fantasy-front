@@ -83,6 +83,26 @@
       "subtitle": "Información de la versión instalada",
       "label": "Versión",
       "releaseDate": "Actualizada el {date}"
+    },
+    "deleteAccount": {
+      "title": "Borrar mi cuenta",
+      "menuSubtitle": "Elimina tu cuenta y tus datos personales",
+      "subtitle": "Esta acción no se puede deshacer",
+      "warning": "Al borrar tu cuenta perderás el acceso de forma permanente. No podremos recuperarla.",
+      "consequences": {
+        "profile": "Se eliminan tu nombre, tu correo, tu teléfono y tu foto.",
+        "subscription": "Se cancela tu suscripción y se borran tus métodos de pago.",
+        "leagues": "Dejas de administrar tus ligas y quinielas: pasan al miembro más antiguo.",
+        "irreversible": "Tus partidas jugadas se conservan sin tu nombre, para no romper las de los demás."
+      },
+      "passwordLabel": "Contraseña actual",
+      "passwordPlaceholder": "Confirma que eres tú",
+      "confirmWord": "BORRAR",
+      "confirmLabel": "Escribe {word} para confirmar",
+      "confirmAction": "Borrar cuenta",
+      "successTitle": "Cuenta eliminada",
+      "successMessage": "Tu cuenta y tus datos personales se han borrado.",
+      "genericError": "No se pudo borrar la cuenta. Inténtalo de nuevo."
     }
   },
   "profile": {

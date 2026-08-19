@@ -178,6 +178,35 @@
       </button>
     </div>
 
+    <!-- Delete account. En su propia tarjeta y separada de cerrar sesión: las
+         dos son rojas y una es reversible, así que pegarlas invita a
+         confundirlas. -->
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <button
+        @click="isDeleteOpen = true"
+        class="w-full flex items-center gap-4 px-5 py-4 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors duration-150"
+      >
+        <div class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+          <v-icon name="hi-solid-trash" class="w-5 h-5 text-red-600 dark:text-red-400" />
+        </div>
+        <div class="flex-1 text-left min-w-0">
+          <p class="text-sm font-medium text-red-600 dark:text-red-400">
+            {{ $t('user.settings.deleteAccount.title') }}
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ $t('user.settings.deleteAccount.menuSubtitle') }}
+          </p>
+        </div>
+        <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+      </button>
+    </div>
+
+    <DeleteAccountSheet
+      :is-visible="isDeleteOpen"
+      @close="isDeleteOpen = false"
+      @deleted="handleAccountDeleted"
+    />
+
     <!-- Per-event notifications for the selected favorite team -->
     <TeamNotificationsDrawer
       :is-open="isNotificationsOpen"
@@ -197,6 +226,7 @@ import { useToast } from '@/composables/useToast'
 import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTeamResponse'
 import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import TeamNotificationsDrawer from '@/components/football/team/TeamNotificationsDrawer.vue'
+import DeleteAccountSheet from '@/components/user/settings/DeleteAccountSheet.vue'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -205,6 +235,7 @@ const authStore = useAuthStore()
 const toast = useToast()
 
 const isLoggingOut = ref(false)
+const isDeleteOpen = ref(false)
 
 // ── Favorite teams → per-event notifications ──
 const favoriteTeams = computed<FootballTeamResponse[]>(() => userStore.getFavoriteTeam ?? [])
@@ -242,6 +273,30 @@ const userInitials = computed(() => {
 
 function navigateTo(routeName: string) {
   router.push({ name: routeName })
+}
+
+/**
+ * Después de borrar, la sesión local todavía guarda un token que el API ya
+ * revocó. Se limpia por el mismo camino que el cierre de sesión normal para no
+ * tener dos formas distintas de dejar la app sin usuario.
+ *
+ * `logout()` puede fallar —está llamando a un endpoint con un token muerto— y
+ * eso no puede impedir salir de aquí: de ahí el catch vacío a propósito.
+ */
+async function handleAccountDeleted() {
+  isDeleteOpen.value = false
+  toast.success(
+    t('user.settings.deleteAccount.successTitle'),
+    t('user.settings.deleteAccount.successMessage')
+  )
+
+  try {
+    await authStore.logout()
+  } catch {
+    // Da igual: la cuenta ya no existe y lo que importa es el estado local.
+  }
+
+  router.push({ name: 'home' })
 }
 
 async function handleLogout() {

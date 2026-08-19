@@ -83,6 +83,26 @@
       "subtitle": "Information about the installed version",
       "label": "Version",
       "releaseDate": "Updated on {date}"
+    },
+    "deleteAccount": {
+      "title": "Delete my account",
+      "menuSubtitle": "Remove your account and personal data",
+      "subtitle": "This cannot be undone",
+      "warning": "Deleting your account removes your access permanently. We will not be able to restore it.",
+      "consequences": {
+        "profile": "Your name, email, phone and photo are deleted.",
+        "subscription": "Your subscription is cancelled and your payment methods removed.",
+        "leagues": "You stop administering your leagues and pools: the longest-standing member takes over.",
+        "irreversible": "Games you played are kept without your name, so other people's leagues stay intact."
+      },
+      "passwordLabel": "Current password",
+      "passwordPlaceholder": "Confirm it is you",
+      "confirmWord": "DELETE",
+      "confirmLabel": "Type {word} to confirm",
+      "confirmAction": "Delete account",
+      "successTitle": "Account deleted",
+      "successMessage": "Your account and personal data have been deleted.",
+      "genericError": "We could not delete the account. Please try again."
     }
   },
   "profile": {

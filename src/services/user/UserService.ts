@@ -3,6 +3,7 @@ import { useApiFantasy } from "@/composables/useApiFantasy";
 import { UserDataInterface } from "@/interfaces/user/userInterface";
 import { UserPayload } from "@/interfaces/user/userPayload";
 import { ChangePasswordPayload } from "@/interfaces/user/password/ChangePasswordPayload";
+import { DeleteAccountPayload } from "@/interfaces/user/delete/DeleteAccountPayload";
 import { FavoriteTeamPayload } from "@/interfaces/user/favoriteTeam/FavoriteTeamPayload";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
@@ -69,6 +70,29 @@ export class UserService {
             return response.data.data;
         }
         throw new AxiosError('Failed to change password');
+    }
+
+    /**
+     * Borra la cuenta del usuario autenticado.
+     *
+     * El API exige reautenticación: la contraseña actual si la cuenta tiene, o
+     * un `id_token` de Google si entró por ahí y no tiene contraseña. En la web
+     * siempre es lo primero, porque el login de Google del front pasa por
+     * redirección y no devuelve un id_token que reenviar.
+     *
+     * Ojo con el `data`: en Axios un DELETE lleva el cuerpo dentro de la
+     * configuración, no como segundo argumento — pasarlo como en un `post` lo
+     * enviaría como config y el API recibiría la petición vacía.
+     *
+     * No devuelve datos: la respuesta es sólo un mensaje. Quien llama tiene que
+     * cerrar la sesión después, porque el token que acaba de usar ya no vale.
+     */
+    async deleteAccount(payload: DeleteAccountPayload): Promise<void> {
+        const response = await this.api.delete<ApiResponse<null>>('user', { data: payload });
+        if (response.data.code === 200) {
+            return;
+        }
+        throw new AxiosError('Failed to delete account');
     }
 
     async updateFavoriteTeam(payload: FavoriteTeamPayload): Promise<UserDataInterface> {
