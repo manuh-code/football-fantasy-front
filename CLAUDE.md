@@ -63,6 +63,34 @@ Firebase Cloud Messaging is configured in [src/firebase/config.ts](src/firebase/
 
 Google AdSense config in [src/config/ads.ts](src/config/ads.ts). **Do not enable AdSense "Auto ads"** — only manual `<AdUnit>` components placed inside content-rich screens are allowed. A slot whose id still starts with `[` is intentionally disabled and renders nothing (safe to ship before real ids exist).
 
+## Account deletion
+
+Store-required: App Store Guideline 5.1.1 v and Google Play both demand in-app account deletion
+for any app that allows sign-up. The row lives at the bottom of
+[`UserSettingsComponent.vue`](src/components/user/settings/UserSettingsComponent.vue), separate
+from logout in its own card — the two are both red and one is reversible, so keeping them apart
+matters. [`DeleteAccountSheet.vue`](src/components/user/settings/DeleteAccountSheet.vue) is the
+confirmation: **two locks that check different things** — the password field is required by the
+API and proves *who* is asking; typing the confirm word (`user.settings.deleteAccount.confirmWord`,
+localized: "BORRAR"/"DELETE") is client-only and proves *the warning was actually read*. Neither
+substitutes for the other.
+
+`UserService.deleteAccount()` calls `DELETE /api/user`. **Axios quirk to remember**: a DELETE's
+body goes in the request config (`{ data: payload }`), not as a second positional argument like a
+`post` — passing it positionally sends it as config instead of a body, and the API sees an empty
+request. The payload only ever carries `current_password` here; the API also accepts an `id_token`
+path for Google-only accounts with no password, which mobile uses (Sign in with Google returns a
+token to resend) but the web login goes through redirect and never has one available.
+
+The 422 for a wrong password bypasses the `ApiResponse` envelope (Laravel's raw
+`{ message, errors }` shape) — see the `AxiosError` handling in the sheet's `catch` block, same
+pattern as the rest of the app's validation-store handling.
+
+After a successful delete there is no dedicated success screen: the sheet emits `deleted`,
+`UserSettingsComponent` shows a toast, calls `authStore.logout()` to drop the now-revoked local
+token (wrapped in `try`/`catch` — it can 401 and that must not block navigating away), and redirects
+home.
+
 ## Environment variables
 
 All client vars are prefixed `VITE_`. See `.env.example`:
