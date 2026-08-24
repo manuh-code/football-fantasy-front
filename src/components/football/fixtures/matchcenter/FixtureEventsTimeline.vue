@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import type { FootballEventResponse } from "@/interfaces/football/event/FootballEventResponse";
 import type { FootballEventFilterResponse } from "@/interfaces/football/event/FootballEventFilterResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
@@ -14,6 +15,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const { t } = useI18n();
 
 // Whitelist of types we know how to render in the timeline.
 // Extended to cover every type the backend may return (see /matchcenter API).
@@ -132,7 +135,7 @@ const groupedByPeriod = computed<PeriodGroup[]>(() => {
   const groups = new Map<string, PeriodGroup>();
   for (const event of filteredEvents.value) {
     const periodDev = event.period?.type?.developer_name ?? "OTHER";
-    const periodLabel = event.period?.type?.name ?? "Other";
+    const periodLabel = event.period?.type?.name ?? t('football.matchCenter.otherPeriod');
     if (!groups.has(periodDev)) {
       groups.set(periodDev, { key: periodDev, label: periodLabel, events: [] });
     }

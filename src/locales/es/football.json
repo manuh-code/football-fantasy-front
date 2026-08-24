@@ -16,6 +16,7 @@
     "live": "En vivo",
     "team": "Equipo",
     "teams": "Equipos",
+    "league": "Liga",
     "player": "Jugador",
     "players": "Jugadores",
     "position": "Posición",
@@ -308,7 +309,8 @@
     "assist": "Asistencia: {player}",
     "subbedOff": "Sale: {player}",
     "allEvents": "Todos",
-    "clearFilters": "Quitar filtros"
+    "clearFilters": "Quitar filtros",
+    "otherPeriod": "Otro"
   },
   "stats": {
     "possession": "Posesión",
