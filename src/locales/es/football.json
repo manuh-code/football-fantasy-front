@@ -287,7 +287,28 @@
       "lineups": "Alineaciones",
       "players": "Jugadores",
       "head2head": "H2H"
-    }
+    },
+    "eventTypes": {
+      "goal": "Gol",
+      "penalty": "Gol de penal",
+      "ownGoal": "Gol en propia",
+      "missedPenalty": "Penal fallado",
+      "shootoutGoal": "Penal anotado",
+      "shootoutMiss": "Penal fallado",
+      "yellowCard": "Tarjeta amarilla",
+      "redCard": "Tarjeta roja",
+      "secondYellow": "Doble amarilla",
+      "varCard": "Tarjeta VAR",
+      "substitution": "Cambio",
+      "var": "VAR",
+      "varCancelled": "VAR — Anulado",
+      "highlight": "Jugada destacada",
+      "fallback": "Evento"
+    },
+    "assist": "Asistencia: {player}",
+    "subbedOff": "Sale: {player}",
+    "allEvents": "Todos",
+    "clearFilters": "Quitar filtros"
   },
   "stats": {
     "possession": "Posesión",

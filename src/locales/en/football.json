@@ -287,7 +287,28 @@
       "lineups": "Lineups",
       "players": "Players",
       "head2head": "H2H"
-    }
+    },
+    "eventTypes": {
+      "goal": "Goal",
+      "penalty": "Penalty",
+      "ownGoal": "Own Goal",
+      "missedPenalty": "Missed Penalty",
+      "shootoutGoal": "Shootout Goal",
+      "shootoutMiss": "Shootout Miss",
+      "yellowCard": "Yellow Card",
+      "redCard": "Red Card",
+      "secondYellow": "Second Yellow",
+      "varCard": "VAR Card",
+      "substitution": "Substitution",
+      "var": "VAR",
+      "varCancelled": "VAR — Cancelled",
+      "highlight": "Highlight",
+      "fallback": "Event"
+    },
+    "assist": "Assist: {player}",
+    "subbedOff": "Off: {player}",
+    "allEvents": "All",
+    "clearFilters": "Clear filters"
   },
   "stats": {
     "possession": "Possession",

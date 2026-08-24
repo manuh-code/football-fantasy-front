@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import type { FootballEventResponse } from "@/interfaces/football/event/FootballEventResponse";
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const { t } = useI18n();
 
 const developerName = computed(() => props.event.type?.developer_name ?? "");
 
@@ -70,39 +73,58 @@ const isCancelledPenalty = computed(() => {
   return addition.includes("cancelled") || addition.includes("penalty");
 });
 
+// Event names, by `developer_name`. These used to be written in English inside
+// this component, so a Spanish reader got "Yellow Card" under the player's name
+// while the rest of the card was translated.
+//
+// The fallback is the API's own `type.name`, which arrives already translated by
+// Accept-Language: a type this map doesn't know still reads correctly, and only
+// a type with no name at all reaches the generic label.
+const EVENT_TITLE_KEYS: Record<string, string> = {
+  GOAL: "goal",
+  PENALTY: "penalty",
+  OWNGOAL: "ownGoal",
+  MISSED_PENALTY: "missedPenalty",
+  PENALTY_SHOOTOUT_GOAL: "shootoutGoal",
+  PENALTY_SHOOTOUT_MISS: "shootoutMiss",
+  YELLOWCARD: "yellowCard",
+  REDCARD: "redCard",
+  YELLOWREDCARD: "secondYellow",
+  VAR_CARD: "varCard",
+  SUBSTITUTION: "substitution",
+  HIGHLIGHT: "highlight",
+};
+
 const eventTitle = computed(() => {
-  switch (developerName.value) {
-    case "GOAL":
-      return "Goal";
-    case "PENALTY":
-      return "Penalty";
-    case "OWNGOAL":
-      return "Own Goal";
-    case "YELLOWCARD":
-      return "Yellow Card";
-    case "REDCARD":
-      return "Red Card";
-    case "YELLOWREDCARD":
-      return "Second Yellow";
-    case "SUBSTITUTION":
-      return "Substitution";
-    case "VAR":
-      return isCancelledPenalty.value ? "VAR — Cancelled" : "VAR";
-    default:
-      return props.event.type?.name ?? "Event";
+  // VAR carries its outcome in free text, not in the type, so it needs the extra
+  // branch — see isCancelledPenalty.
+  if (developerName.value === "VAR") {
+    return t(`football.matchCenter.eventTypes.${isCancelledPenalty.value ? "varCancelled" : "var"}`);
   }
+
+  const key = EVENT_TITLE_KEYS[developerName.value];
+  if (key) return t(`football.matchCenter.eventTypes.${key}`);
+
+  return props.event.type?.name ?? t("football.matchCenter.eventTypes.fallback");
 });
 
 const secondaryLine = computed<string | null>(() => {
   const dev = developerName.value;
   if (dev === "GOAL" || dev === "PENALTY") {
     const parts: string[] = [];
-    if (props.event.related_player_name) parts.push(`Assist: ${props.event.related_player_name}`);
+    if (props.event.related_player_name) {
+      parts.push(t("football.matchCenter.assist", { player: props.event.related_player_name }));
+    }
+    // `info` is free text from SportMonks ("Right foot shot") and arrives
+    // untranslated. Shown as-is because there is no catalogue to translate it
+    // against, not because it was overlooked.
     if (props.event.info) parts.push(props.event.info);
     return parts.length ? parts.join(" • ") : null;
   }
   if (dev === "SUBSTITUTION") {
-    return props.event.related_player_name ? `Off: ${props.event.related_player_name}` : null;
+    return props.event.related_player_name
+      ? t("football.matchCenter.subbedOff", { player: props.event.related_player_name })
+      : null;
   }
   if (isCard.value) {
     return props.event.info ?? null;

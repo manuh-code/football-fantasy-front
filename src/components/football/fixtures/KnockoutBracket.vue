@@ -60,9 +60,13 @@ const loadBracket = async (parentStageUuid: string) => {
   loadError.value = null;
   columns.value = [];
   try {
-    const stages = await catalogService.getKnockoutStageByStage(parentStageUuid);
-    // Bracket flows left → right in play order (sort_order ascending).
-    const ordered = [...stages].sort((a, b) => a.sort_order - b.sort_order);
+    // Bracket flows left → right in play order, which is the order the endpoint
+    // already returns. Do NOT re-sort by `sort_order`: that field is not the
+    // play order. Measured against production (Liga MX, Apertura 2025/2026),
+    // Reclasificación carries sort_order 6 against the Final's 5 despite being
+    // played three weeks earlier (Nov 21 vs Dec 12), so sorting by it puts the
+    // tournament's first round after its final.
+    const ordered = await catalogService.getKnockoutStageByStage(parentStageUuid);
 
     const fixturesPerStage = await Promise.all(
       ordered.map((s) => footballFixtureService.getAllFixturesByStage(s.uuid)),
@@ -71,7 +75,10 @@ const loadBracket = async (parentStageUuid: string) => {
     columns.value = ordered
       .map((stage, i) => {
         const fixtures = fixturesPerStage[i] ?? [];
-        return { stage, fixtures, ties: buildTies(fixtures) };
+        // Teams still playing in ANY later round, not just the next one — see
+        // tieWinnerSmId for why the distinction isn't cosmetic.
+        const laterRoundTeams = participantSmIds(fixturesPerStage.slice(i + 1).flat());
+        return { stage, fixtures, ties: buildTies(fixtures, laterRoundTeams) };
       })
       // Drop rounds that have no fixtures so the tree stays tight.
       .filter((c) => c.ties.length > 0);
@@ -176,35 +183,109 @@ const goalsForTeam = (
   return p?.current_score?.score ?? null;
 };
 
-// Team that advanced: provider aggregate first, then result_info (which names
-// the winning team), then a plain aggregate-goals fallback.
+// Every team playing these fixtures, by SportMonks id. Placeholder fixtures are
+// skipped: they are bracket slots with no opponent drawn yet, so their
+// participants are stand-ins and do not mean anyone advanced.
+const participantSmIds = (fixtures: FootballFixtureResponse[]): Set<number> => {
+  const ids = new Set<number>();
+  for (const fixture of fixtures) {
+    if (fixture.placeholder) continue;
+    for (const participant of fixture.participants ?? []) {
+      if (participant.sm_id != null) ids.add(participant.sm_id);
+    }
+  }
+  return ids;
+};
+
+// The team named by a result_info string ("Toluca won after penalties."). It
+// arrives untranslated from SportMonks with the team name inside. Longest match
+// wins so "América" can't take "América de Cali"'s place.
+//
+// Deliberately does NOT match on short_code: three letters inside a free-text
+// sentence collide by accident far too easily ("TOL" inside "Toluca" is
+// harmless, but "PUE"/"PUEbla" style overlaps across the two teams are not).
+const teamNamedIn = (
+  info: string,
+  teams: (FootballTeamResponse | undefined)[],
+): number | null => {
+  const haystack = info.toLowerCase();
+
+  const matches = teams.filter((team): team is FootballTeamResponse => {
+    const name = team?.name?.toLowerCase();
+    return !!name && haystack.includes(name);
+  });
+
+  if (matches.length === 0) return null;
+
+  return matches.reduce((longest, team) =>
+    (team.name?.length ?? 0) > (longest.name?.length ?? 0) ? team : longest,
+  ).sm_id ?? null;
+};
+
+// Team that won the tie. The order of these checks is measured against the whole
+// Apertura 2025/2026 bracket, and all four are needed: each resolves ties the
+// next one cannot.
+//
+//  1. The provider's aggregate. Verified against production on 2026-08-23:
+//     `aggregate` comes back null on every knockout fixture, so this never
+//     fires today — but it is the contract and it is the good datum.
+//  2. Aggregate goals, when they differ. It is the tie's own result, so it goes
+//     before any heuristic. Resolves 7 of the 10 ties.
+//  3. The result_info of the LAST leg, which names the tie winner when it is
+//     decided on the pitch or on penalties.
+//  4. Teams that keep playing afterwards — and only when the opponent never
+//     appears in any later round.
+//
+// Check 3 reads the LAST leg, not the first, and that is the whole point. This
+// function used to take the first result_info it could find — which describes
+// *that match*, not the tie. In the Apertura 2025/2026 semi-final the first leg
+// ended "Monterrey won after full-time." and the second "Toluca won after
+// full-time."; the aggregate was 3-3 and the team that played the final was
+// Toluca. With the old order the bracket crowned Monterrey — the eliminated side.
+//
+// Check 4 requires the opponent to vanish, and that qualifier is the easy thing
+// to get wrong. "Played the next round, therefore advanced" is false in Liga MX:
+// Reclasificación is a repechage and the loser gets another go. Tijuana beat
+// Juárez 3-1 and it was *Juárez* who played the Play In. Demanding that the
+// opponent never reappears leaves that case to check 2 (where the score settles
+// it) while keeping the one case where check 4 is indispensable: a level tie
+// settled on penalties where no result_info names anybody — Cruz Azul 2-2
+// Tigres, both legs reading "Game ended in draw."
 const tieWinnerSmId = (
   legs: FootballFixtureResponse[],
   teamA: FootballTeamResponse | undefined,
   teamB: FootballTeamResponse | undefined,
   aggA: number | null,
   aggB: number | null,
+  laterRoundTeams: Set<number>,
 ): number | null => {
   const withWinner = legs.map((l) => l.aggregate).find((a) => a?.winner_participant_sm_id);
   if (withWinner?.winner_participant_sm_id) return withWinner.winner_participant_sm_id;
 
-  const info = legs.map((l) => l.result_info).find((s) => !!s)?.toLowerCase();
-  if (info) {
-    for (const team of [teamA, teamB]) {
-      if (!team) continue;
-      const name = team.name?.toLowerCase();
-      const code = team.short_code?.toLowerCase();
-      if ((name && info.includes(name)) || (code && code.length > 1 && info.includes(code))) {
-        return team.sm_id;
-      }
-    }
-  }
-
-  // Last resort — ignores away-goals / penalties, so only used when nothing
-  // above resolved the tie.
   if (aggA !== null && aggB !== null && aggA !== aggB) {
     return aggA > aggB ? teamA?.sm_id ?? null : teamB?.sm_id ?? null;
   }
+
+  const lastInfo = legs[legs.length - 1]?.result_info;
+  if (lastInfo) {
+    const named = teamNamedIn(lastInfo, [teamA, teamB]);
+    if (named !== null) return named;
+  }
+
+  if (laterRoundTeams.size > 0) {
+    const stillPlaying = (team: FootballTeamResponse | undefined): boolean => {
+      const id = team?.sm_id;
+      return id != null && laterRoundTeams.has(id);
+    };
+
+    // One carries on and the other never plays again: only then does this mean
+    // anything. With both still playing — the repechage — it says nothing.
+    const a = stillPlaying(teamA);
+    const b = stillPlaying(teamB);
+    if (a && !b) return teamA?.sm_id ?? null;
+    if (b && !a) return teamB?.sm_id ?? null;
+  }
+
   return null;
 };
 
@@ -219,7 +300,10 @@ const primaryLeg = (legs: FootballFixtureResponse[]): FootballFixtureResponse =>
   return legs[legs.length - 1];
 };
 
-const makeTie = (legs: FootballFixtureResponse[]): BracketTie => {
+const makeTie = (
+  legs: FootballFixtureResponse[],
+  laterRoundTeams: Set<number>,
+): BracketTie => {
   const ordered = [...legs].sort(
     (a, b) => legNumber(a) - legNumber(b) || a.starting_at_timestamp - b.starting_at_timestamp,
   );
@@ -249,14 +333,19 @@ const makeTie = (legs: FootballFixtureResponse[]): BracketTie => {
     teamB,
     aggA,
     aggB,
-    winnerSmId: twoLegged ? tieWinnerSmId(ordered, teamA, teamB, aggA, aggB) : null,
+    winnerSmId: twoLegged
+      ? tieWinnerSmId(ordered, teamA, teamB, aggA, aggB, laterRoundTeams)
+      : null,
     primary: primaryLeg(ordered),
   };
 };
 
 // Fold a round's fixtures into ties. Single matches pass through 1:1; two-legged
 // matches group by the `aggregate` include, or pair by teams when it's null.
-const buildTies = (fixtures: FootballFixtureResponse[]): BracketTie[] => {
+const buildTies = (
+  fixtures: FootballFixtureResponse[],
+  laterRoundTeams: Set<number>,
+): BracketTie[] => {
   const ties: BracketTie[] = [];
   const used = new Set<string>();
 
@@ -265,7 +354,7 @@ const buildTies = (fixtures: FootballFixtureResponse[]): BracketTie[] => {
 
     if (isSingleLeg(fx)) {
       used.add(fx.uuid);
-      ties.push(makeTie([fx]));
+      ties.push(makeTie([fx], laterRoundTeams));
       continue;
     }
 
@@ -286,7 +375,7 @@ const buildTies = (fixtures: FootballFixtureResponse[]): BracketTie[] => {
     if (group.length === 0) group = [fx];
 
     group.forEach((f) => used.add(f.uuid));
-    ties.push(makeTie(group));
+    ties.push(makeTie(group, laterRoundTeams));
   }
 
   return ties;
