@@ -282,7 +282,7 @@ const fallbackSides = computed(() => {
               <img
                 v-if="p.player?.image_path"
                 :src="p.player.image_path"
-                :alt="p.player_name ?? 'Player'"
+                :alt="p.player_name ?? $t('football.common.player')"
                 class="w-7 h-7 rounded-full object-cover bg-gray-100 dark:bg-gray-700 shrink-0"
               />
               <div
@@ -292,7 +292,7 @@ const fallbackSides = computed(() => {
                 <v-icon name="hi-solid-user" class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
               </div>
               <span class="text-xs font-medium text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">
-                {{ p.player?.display_name ?? p.player_name ?? "Player" }}
+                {{ p.player?.display_name ?? p.player_name ?? $t('football.common.player') }}
               </span>
               <span
                 v-if="p.position?.name || p.detailed_position?.name"
@@ -328,7 +328,7 @@ const fallbackSides = computed(() => {
                 {{ p.jersey_number ?? "-" }}
               </span>
               <span class="text-xs font-medium text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">
-                {{ p.player?.display_name ?? p.player_name ?? "Player" }}
+                {{ p.player?.display_name ?? p.player_name ?? $t('football.common.player') }}
               </span>
               <span
                 v-if="p.position?.name"

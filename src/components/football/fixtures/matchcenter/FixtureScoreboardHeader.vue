@@ -127,7 +127,7 @@ const formattedKickoff = computed(() => {
   return `${dateStr} • ${timeStr}`;
 });
 
-const teamName = (team?: FootballTeamResponse): string => team?.name ?? "TBD";
+const teamName = (team?: FootballTeamResponse): string => team?.name ?? t('football.team.tbd');
 const shortCode = (team?: FootballTeamResponse): string =>
   team?.short_code ?? teamName(team).substring(0, 3).toUpperCase();
 
@@ -153,11 +153,11 @@ const awayWinner = computed(() => awayTeam.value?.meta?.winner === true);
           class="w-4 h-4 object-contain shrink-0"
         />
         <span class="text-2xs font-medium text-gray-500 dark:text-gray-400 truncate">
-          {{ fixture.league?.name ?? "League" }}
+          {{ fixture.league?.name ?? $t('football.common.league') }}
         </span>
         <span v-if="fixture.round?.name" class="text-2xs text-gray-300 dark:text-gray-600">•</span>
         <span v-if="fixture.round?.name" class="text-2xs text-gray-500 dark:text-gray-400">
-          Round {{ fixture.round.name }}
+          {{ $t('football.rounds.round', { name: fixture.round.name }) }}
         </span>
       </div>
     </div>

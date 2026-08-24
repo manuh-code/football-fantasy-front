@@ -374,7 +374,7 @@ const handleSwipe = () => {
 };
 
 const getTeamName = (team: FootballTeamResponse | undefined): string => {
-  return team?.name || "TBD";
+  return team?.name || t('football.team.tbd');
 };
 
 const hasScores = (fixture: FootballFixtureResponse): boolean => {
