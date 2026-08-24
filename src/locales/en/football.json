@@ -16,6 +16,7 @@
     "live": "Live",
     "team": "Team",
     "teams": "Teams",
+    "league": "League",
     "player": "Player",
     "players": "Players",
     "position": "Position",
@@ -308,7 +309,8 @@
     "assist": "Assist: {player}",
     "subbedOff": "Off: {player}",
     "allEvents": "All",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "otherPeriod": "Other"
   },
   "stats": {
     "possession": "Possession",

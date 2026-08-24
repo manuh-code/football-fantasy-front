@@ -130,7 +130,7 @@ const getHomeParticipant = (fixture: FootballFixtureResponse): FootballTeamRespo
 const getAwayParticipant = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === "away");
 
-const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || "TBD";
+const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || t('football.team.tbd');
 
 const hasScores = (fixture: FootballFixtureResponse): boolean => {
   const home = getHomeParticipant(fixture);

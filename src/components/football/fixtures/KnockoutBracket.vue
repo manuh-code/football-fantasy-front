@@ -111,7 +111,7 @@ const homeTeam = (fx: FootballFixtureResponse): FootballTeamResponse | undefined
 const awayTeam = (fx: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fx.participants?.find((p) => p.meta?.location === "away");
 
-const teamName = (team: FootballTeamResponse | undefined): string => team?.name || "TBD";
+const teamName = (team: FootballTeamResponse | undefined): string => team?.name || t('football.team.tbd');
 
 const hasScores = (fx: FootballFixtureResponse): boolean => {
   const h = homeTeam(fx);

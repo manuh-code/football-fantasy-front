@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import type { FootballFixtureResponse } from "@/interfaces/football/fixture/FootballFixtureResponse";
 import type { FootballTeamResponse } from "@/interfaces/football/team/FootballTeamResponse";
 import TeamLogo from "@/components/football/ui/TeamLogo.vue";
@@ -18,6 +19,8 @@ const emit = defineEmits<{
   "fixture-selected": [fixture: FootballFixtureResponse];
   retry: [];
 }>();
+
+const { t } = useI18n();
 
 // Group fixtures by their kickoff date so the list reads as day sections. The
 // `starting_date` string is used verbatim as the group key AND header — the API
@@ -46,7 +49,7 @@ const getHomeParticipant = (fixture: FootballFixtureResponse): FootballTeamRespo
 const getAwayParticipant = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === "away");
 
-const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || "TBD";
+const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || t('football.team.tbd');
 
 // Read a participant's goals, preferring the participant-level current_score and
 // falling back to the fixture-level scores[] array. The API populates one or the

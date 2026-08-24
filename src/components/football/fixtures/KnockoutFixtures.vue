@@ -354,6 +354,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+import { useI18n } from "vue-i18n";
 import { catalogService } from "@/services/catalog/CatalogService";
 import { footballFixtureService } from "@/services/football/fixture/FootballFixtureService";
 import type { FootballStageResponse } from "@/interfaces/football/stage/FootballStageResponse";
@@ -367,6 +368,8 @@ import FixtureMatchCenter from "./FixtureMatchCenter.vue";
 const props = defineProps<{
   stageUuid: string;
 }>();
+
+const { t } = useI18n();
 
 // ── State ──
 const knockoutStages = ref<FootballStageResponse[]>([]);
@@ -558,7 +561,7 @@ const getHomeParticipant = (fixture: FootballFixtureResponse): FootballTeamRespo
 const getAwayParticipant = (fixture: FootballFixtureResponse): FootballTeamResponse | undefined =>
   fixture.participants?.find((p) => p.meta?.location === "away");
 
-const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || "TBD";
+const getTeamName = (team: FootballTeamResponse | undefined): string => team?.name || t('football.team.tbd');
 
 const hasScores = (fixture: FootballFixtureResponse): boolean => {
   const home = getHomeParticipant(fixture);

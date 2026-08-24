@@ -115,13 +115,13 @@
                       fixture.participants[0]?.image_path ||
                       '/img/default-avatar.svg'
                     "
-                    :alt="fixture.participants[0]?.name || 'Team 1'"
+                    :alt="fixture.participants[0]?.name || $t('football.team.tbd')"
                     class="w-12 h-12 rounded-full border-2 border-gray-200 dark:border-gray-700"
                   />
                   <span
                     :class="resultClass(fixture, 0)"
                     class="mt-2 text-footnote text-center max-w-[90px] truncate"
-                    >{{ fixture.participants[0]?.name || "Team 1" }}</span
+                    >{{ fixture.participants[0]?.name || $t('football.team.tbd') }}</span
                   >
                 </div>
                 <div class="flex flex-col items-center min-w-[60px]">
@@ -146,13 +146,13 @@
                       fixture.participants[1]?.image_path ||
                       '/img/default-avatar.svg'
                     "
-                    :alt="fixture.participants[1]?.name || 'Team 2'"
+                    :alt="fixture.participants[1]?.name || $t('football.team.tbd')"
                     class="w-12 h-12 rounded-full border-2 border-gray-200 dark:border-gray-700"
                   />
                   <span
                     :class="resultClass(fixture, 1)"
                     class="mt-2 text-footnote text-center max-w-[90px] truncate"
-                    >{{ fixture.participants[1]?.name || "Team 2" }}</span
+                    >{{ fixture.participants[1]?.name || $t('football.team.tbd') }}</span
                   >
                 </div>
               </div>

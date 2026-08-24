@@ -493,7 +493,7 @@ const getAwayParticipant = (fixture: FootballFixtureResponse): FootballTeamRespo
 };
 
 const getTeamName = (team: FootballTeamResponse | undefined): string => {
-  return team?.name || "TBD";
+  return team?.name || t('football.team.tbd');
 };
 
 // ── Score helpers ──

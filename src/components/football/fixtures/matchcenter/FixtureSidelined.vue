@@ -30,10 +30,10 @@ defineProps<Props>();
         </div>
         <div class="min-w-0 flex-1">
           <p class="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">
-            {{ s.player?.display_name ?? "Player" }}
+            {{ s.player?.display_name ?? $t('football.common.player') }}
           </p>
           <p class="text-2xs text-red-500 dark:text-red-400 truncate">
-            {{ s.type?.name ?? "Injured" }}
+            {{ s.type?.name ?? $t('football.team.sidelinedFallback') }}
           </p>
         </div>
       </div>
