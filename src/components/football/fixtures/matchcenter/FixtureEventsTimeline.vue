@@ -63,12 +63,18 @@ const styleFor = (developerName: string): FilterStyle =>
 
 // ── Filter state ──
 // Source of truth for the filter chips:
-//   1. Use `eventFilters.eventTypes` from the API when present.
-//   2. Otherwise derive the unique event types from the events array, so
-//      the bar still appears even when the backend doesn't send eventFilters.
+//   1. Use `eventFilters` from the API when present. It is a BARE ARRAY of
+//      types — see FootballEventFilterResponse. This used to read
+//      `eventFilters?.eventTypes`, which never resolved, so the fallback below
+//      was doing all the work and the API's own list was ignored.
+//   2. Otherwise derive the unique event types from the events array, so the
+//      bar still appears when the backend sends nothing.
 const availableFilters = computed<TypeResponse[]>(() => {
-  const fromApi = (props.eventFilters?.eventTypes ?? []).filter(
-    (t) => !!t?.developer_name,
+  // Narrowed to TIMELINE_TYPES like the fallback below, and for the same reason:
+  // the API lists every type the fixture has, including ones the timeline drops,
+  // and a chip for one of those filters down to an empty list.
+  const fromApi = (props.eventFilters ?? []).filter(
+    (t) => !!t?.developer_name && TIMELINE_TYPES.has(t.developer_name),
   );
   if (fromApi.length > 0) return fromApi;
 
@@ -183,7 +189,7 @@ const showEmptyMatchingFilters = computed(
           ? 'bg-emerald-500 text-white shadow-sm'
           : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
       >
-        All
+        {{ $t('football.matchCenter.allEvents') }}
       </button>
 
       <!-- Type chips -->
@@ -262,7 +268,7 @@ const showEmptyMatchingFilters = computed(
         @click="clearFilters"
         class="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
       >
-        Clear filters
+        {{ $t('football.matchCenter.clearFilters') }}
       </button>
     </div>
 
