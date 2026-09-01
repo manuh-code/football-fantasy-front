@@ -127,6 +127,8 @@ export function usePushNotifications() {
       if (token === notificationsStore.fcmToken && notificationsStore.isTokenRegistered) {
         console.log('FCM token unchanged, skipping backend registration')
       } else {
+        const previousToken = notificationsStore.fcmToken
+
         await apiFantasyInstance.post('fcm-token', {
           token,
           device_uuid: getDeviceUuid(),
@@ -134,6 +136,19 @@ export function usePushNotifications() {
         })
         notificationsStore.setToken(token)
         console.log('FCM token registered successfully')
+
+        // Si había un token anterior (rotación), lo borramos del backend
+        // para no dejarlo acumulado recibiendo pushes duplicados en este
+        // mismo dispositivo.
+        if (previousToken && previousToken !== token) {
+          try {
+            await apiFantasyInstance.delete('fcm-token', {
+              data: { token: previousToken, device_uuid: getDeviceUuid() },
+            })
+          } catch (error) {
+            console.error('Error removing previous FCM token:', error)
+          }
+        }
 
         // Si el usuario ya está autenticado y el token cambió (p. ej. rotación),
         // revincular el nuevo token a su cuenta. En el login el claim ya ocurre
