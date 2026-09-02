@@ -23,6 +23,10 @@
     "title": "No encontrado",
     "message": "No encontrado: el recurso no existe"
   },
+  "409": {
+    "title": "No disponible",
+    "message": "Ese movimiento ya no es posible: alguien se te adelantó."
+  },
   "notFound": {
     "badge": "Error 404",
     "title": "Fuera de juego",

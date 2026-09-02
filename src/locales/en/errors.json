@@ -23,6 +23,10 @@
     "title": "Not Found",
     "message": "Not Found - Resource not found"
   },
+  "409": {
+    "title": "No longer available",
+    "message": "That move is no longer possible: someone got there first."
+  },
   "notFound": {
     "badge": "Error 404",
     "title": "Offside",

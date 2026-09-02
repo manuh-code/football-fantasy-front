@@ -157,6 +157,18 @@ export function useApiFantasy() {
                         errorTitle = t('errors.404.title')
                         errorMessage = error.response.data?.message || t('errors.404.message')
                         break
+                    case 409: {
+                        // Conflicto: el estado del servidor ya no es el que
+                        // tenia la pantalla cuando se pinto. Hoy lo emite el
+                        // alta de un jugador que otro manager ya ficho, y el
+                        // mensaje del servidor —ya traducido— dice exactamente
+                        // cual, asi que se muestra tal cual bajo un titulo que
+                        // no lo llame "error": no lo es, es una carrera que
+                        // alguien tenia que perder.
+                        errorTitle = t('errors.409.title')
+                        errorMessage = error.response.data?.message || t('errors.409.message')
+                        break
+                    }
                     case 500:
                         errorTitle = t('errors.500.title')
                         errorMessage = error.response.data?.message || t('errors.500.message')

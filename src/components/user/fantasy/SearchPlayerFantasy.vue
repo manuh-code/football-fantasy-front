@@ -1069,6 +1069,24 @@ function handleFilterChange(position: string) {
 /**
  * Add or pick a player depending on the current mode.
  */
+/**
+ * Un 409 al fichar significa "ese jugador ya tiene dueño".
+ *
+ * La lista de agentes libres es una foto: el servidor excluye a los fichados
+ * al construirla, pero entre que se pinta y se pulsa "+" pueden pasar minutos
+ * — y en ese hueco cabe que otro manager lo fiche, o que tú mismo lo hagas
+ * desde otro dispositivo. Antes eso creaba una plantilla duplicada en
+ * silencio; ahora el servidor lo rechaza, y aquí solo queda contarlo y sacar
+ * al jugador de la lista, que es la parte que la pantalla puede arreglar.
+ *
+ * El aviso ya lo pinta el interceptor de `useApiFantasy` con el mensaje que
+ * manda el servidor, asi que aqui no se repite: dos toasts para un mismo
+ * fallo se tapan el uno al otro.
+ */
+function isAlreadyTakenError(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { status?: number }).status === 409;
+}
+
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   if (props.disabled || !canAddPlayer.value || !contextUuid.value || isAddingPlayer(player.player.uuid))
     return;
@@ -1106,6 +1124,10 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
       removePlayerFromList(player);
       emit("player-added", player);
     } catch (err: unknown) {
+      if (isAlreadyTakenError(err)) {
+        removePlayerFromList(player);
+        return;
+      }
       const errorMessage =
         err instanceof Error ? err.message : t("fantasy.search.errorAddingPlayer");
       toast.error(t("errors.generic.title"), errorMessage);
@@ -1164,6 +1186,10 @@ async function addPlayerToLineup(
     removePlayerFromList(player);
     emit("player-added", player);
   } catch (err: unknown) {
+    if (isAlreadyTakenError(err)) {
+      removePlayerFromList(player);
+      return;
+    }
     const errorMessage =
       err instanceof Error ? err.message : t("fantasy.search.errorAddingPlayer");
     toast.error(t("errors.generic.title"), errorMessage);
