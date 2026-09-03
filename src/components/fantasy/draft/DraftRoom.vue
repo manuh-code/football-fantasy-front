@@ -412,6 +412,18 @@ function handleVisibility() {
 }
 
 let presenceSyncTimeout: ReturnType<typeof setTimeout> | null = null;
+/**
+ * Repregunta periódica de la presencia.
+ *
+ * Era lo único de la sala sin red debajo: se leía una vez al montar y después
+ * solo cuando llegaba un evento de presencia. Si esa primera lectura corre
+ * antes de que el canal termine de sincronizar, o si el evento no llega, la
+ * lista de conectados se queda congelada para siempre — y lo que se ve es
+ * "estoy yo solo" en una sala llena. El realtime es best-effort por diseño;
+ * el snapshot es el que manda.
+ */
+let presenceHeartbeat: ReturnType<typeof setInterval> | null = null;
+const PRESENCE_HEARTBEAT_MS = 20_000;
 
 // La presencia de Ably es POR CONEXIÓN, no por usuario: un mismo uuid puede tener
 // varias conexiones (varias pestañas o dispositivos con el mismo clientId). Por eso
@@ -453,6 +465,15 @@ function syncMembersFromPresence() {
     );
     // Incluirme siempre: mi propio enter puede no venir aún en el snapshot.
     add(presencePayload());
+
+    // Las dos cifras que hacen falta para saber si la presencia funciona:
+    // cuántas conexiones ve Ably y en cuántas personas se quedan tras
+    // deduplicar por uuid. Si son distintas, alguien tiene la sala abierta dos
+    // veces (y esa segunda conexión es la que impide que su reloj baje).
+    console.debug(
+      `[draft] presencia: ${members?.length ?? 0} conexión(es) -> ${next.length} persona(s)`,
+      next.map((u) => u.uuid),
+    );
 
     announcePresenceChange(membersDraftRoom.value, next);
     membersDraftRoom.value = next;
@@ -598,6 +619,7 @@ onMounted(async () => {
   await subscribeToDraftRoom();
   enterPresence();
   syncMembersFromPresence();
+  presenceHeartbeat = setInterval(syncMembersFromPresence, PRESENCE_HEARTBEAT_MS);
 
   // Re-sincroniza presencia y turno en cada (re)conexión para que sobrevivan
   // los cortes de red en lugar de quedar obsoletos.
@@ -682,6 +704,10 @@ onUnmounted(() => {
   if (presenceSyncTimeout) {
     clearTimeout(presenceSyncTimeout);
     presenceSyncTimeout = null;
+  }
+  if (presenceHeartbeat) {
+    clearInterval(presenceHeartbeat);
+    presenceHeartbeat = null;
   }
   document.removeEventListener("visibilitychange", handleVisibility);
   ably.connection.off("connected", handleReconnect);
