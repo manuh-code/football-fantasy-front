@@ -3,15 +3,52 @@ import * as Ably from 'ably';
 
 // ── Singleton: una sola conexión Ably para toda la aplicación ───
 let ablyInstance: Ably.Realtime | null = null;
+/** Con qué `clientId` se construyó `ablyInstance`. Ver `getAblyInstance`. */
+let ablyClientId: string | null = null;
 
+/**
+ * El cliente Ably de la app, **atado a quién es el usuario ahora mismo**.
+ *
+ * El `clientId` se fija al construir el cliente y Ably **no deja cambiarlo en
+ * caliente**. Y este singleton lo creaba el primer componente que pidiera un
+ * canal — los carruseles de partidos de la portada, entre otros —, que corren
+ * antes de que la sesión esté hidratada. El cliente se quedaba con
+ * `clientId: 'anonymous'` para el resto de la sesión, incluso después de
+ * iniciar sesión.
+ *
+ * No era cosmético. El servidor decide quién está en la sala del draft
+ * comparando el `clientId` del presence set contra el uuid del usuario
+ * (`DraftPresenceService::inspectRoom`). Con `anonymous` no casa nunca, así
+ * que a quien tenía el turno se le daba por ausente **estando dentro**: se le
+ * recortaba el reloj a 30 segundos y se fichaba por él. La lista de la sala no
+ * lo delataba, porque esa se pinta con el `data` de cada miembro, que sí lleva
+ * el uuid bueno — de ahí que se viera "4 de 4 conectados" y "No está en la
+ * sala" a la vez.
+ *
+ * Rehacer el cliente es la única salida posible, y es lo mismo que hace el
+ * cliente móvil al cambiar de identidad (`RealtimeTransport.shutdown`). El
+ * coste: los canales que otro componente ya tuviera en la mano quedan mudos
+ * hasta que se remonte. En la práctica la identidad solo cambia al entrar o
+ * salir de la sesión, y las dos cosas cambian de ruta.
+ */
 function getAblyInstance(): Ably.Realtime {
     const userStore = useUserStore();
     const userUuid = userStore.getUserData?.uuid ?? 'anonymous';
-    
-    ablyInstance ??= new Ably.Realtime({
-        key: import.meta.env.VITE_ABLY_KEY,
-        clientId: userUuid,
-    });
+
+    if (ablyInstance && ablyClientId !== userUuid) {
+        console.debug(`[ably] la identidad cambió (${ablyClientId} -> ${userUuid}): se rehace el cliente`);
+        ablyInstance.close();
+        ablyInstance = null;
+    }
+
+    if (!ablyInstance) {
+        ablyClientId = userUuid;
+        ablyInstance = new Ably.Realtime({
+            key: import.meta.env.VITE_ABLY_KEY,
+            clientId: userUuid,
+        });
+    }
+
     return ablyInstance;
 }
 
