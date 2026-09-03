@@ -16,10 +16,22 @@
           <p class="text-2xs text-gray-500 dark:text-gray-400 truncate">
             {{ $t('fantasy.draft.board.progress', { picks: picksMade, total: totalPicks }) }}
             <span v-if="snakeOrder"> · {{ $t('fantasy.draft.board.snake') }}</span>
-            <span v-if="onlineCount !== null">
-              · <span class="text-green-500">{{ onlineCount }}</span>/{{ contenders.length }}
-              {{ $t('fantasy.draft.order.online') }}
-            </span>
+            <!-- El contador de conectados abre la lista de quién está en la
+                 sala: es donde el usuario ya estaba mirando ese dato. Va como
+                 `button` para que sea alcanzable con teclado y se anuncie como
+                 control, no como texto suelto. -->
+            <template v-if="onlineCount !== null">
+              ·
+              <button
+                type="button"
+                class="rounded px-0.5 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                :aria-label="$t('fantasy.draft.presence.summary', { online: onlineCount, total: contenders.length })"
+                @click="emit('show-roster')"
+              >
+                <span class="text-green-500">{{ onlineCount }}</span>/{{ contenders.length }}
+                {{ $t('fantasy.draft.order.online') }}
+              </button>
+            </template>
           </p>
         </div>
       </div>
@@ -168,6 +180,8 @@ const props = withDefaults(
   }>(),
   { snakeOrder: true, onlineCount: null, showLiveDot: false },
 )
+
+const emit = defineEmits<{ (e: 'show-roster'): void }>()
 
 const carouselRef = ref<HTMLElement | null>(null)
 const viewRound = ref(1)

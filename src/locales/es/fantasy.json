@@ -236,6 +236,20 @@
       "online": "en línea",
       "userFallback": "Usuario"
     },
+    "presence": {
+      "title": "En la sala",
+      "connected": "Conectado",
+      "disconnected": "Desconectado",
+      "onTheClock": "En el reloj",
+      "you": "Tú",
+      "summary": "{online} de {total} conectados",
+      "userLeft": "{name} salió de la sala",
+      "userJoined": "{name} entró a la sala",
+      "usersLeft": "{count} participantes salieron de la sala",
+      "usersJoined": "{count} participantes entraron a la sala",
+      "onTheClockLeft": "{name} salió de la sala. Su turno baja a {seconds} s",
+      "onTheClockReturned": "{name} volvió. Su turno recupera el tiempo completo"
+    },
     "timer": {
       "yourTurn": "¡Tu turno!",
       "userTurn": "Turno de {name}",
