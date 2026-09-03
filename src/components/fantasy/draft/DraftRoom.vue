@@ -379,6 +379,25 @@ function presencePayload(): UserDataInterface {
   };
 }
 
+/**
+ * Avisa si la conexión anuncia un `clientId` que no soy yo.
+ *
+ * **El servidor decide si estás en la sala por el `clientId` de la conexión,
+ * no por el `data` que se publica.** Si no coinciden, te da por ausente
+ * estando dentro: te recorta el turno a 30 segundos y ficha por ti, mientras
+ * la lista de la sala te sigue pintando conectado — porque esa se construye
+ * con el `data`. Es un fallo mudo salvo por esta línea.
+ */
+function warnOnClientIdMismatch() {
+  const mine = userStore.getUserData?.uuid;
+  const connected = ably.auth.clientId;
+  if (mine && connected !== mine) {
+    console.error(
+      `[draft] el clientId de Ably (${connected}) no es el del usuario (${mine}): el servidor te dará por ausente en la sala.`,
+    );
+  }
+}
+
 // Anuncia mi presencia con callback de error: si el enter falla ya no es
 // fire-and-forget silencioso.
 function enterPresence() {
@@ -617,6 +636,7 @@ onMounted(async () => {
   await loadPicks();
   await fetchAutoPickStatus();
   await subscribeToDraftRoom();
+  warnOnClientIdMismatch();
   enterPresence();
   syncMembersFromPresence();
   presenceHeartbeat = setInterval(syncMembersFromPresence, PRESENCE_HEARTBEAT_MS);
