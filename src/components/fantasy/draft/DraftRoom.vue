@@ -74,6 +74,13 @@
         :current-pick="turnStarted?.pick ?? null"
         :online-count="membersDraftRoom.length"
         show-live-dot
+        @show-roster="showRoster = true"
+      />
+
+      <DraftRoomRosterSheet
+        v-model="showRoster"
+        :contenders="contenders"
+        :on-the-clock-key="turnStarted?.user?.uuid ?? null"
       />
 
       <!-- My Turn indicator bar -->
@@ -142,6 +149,7 @@
 <script lang="ts" setup>
 import DraftCompleted from "@/components/fantasy/draft/DraftCompleted.vue";
 import DraftBoardStrip from "@/components/fantasy/draft/shared/DraftBoardStrip.vue";
+import DraftRoomRosterSheet from "@/components/fantasy/draft/DraftRoomRosterSheet.vue";
 import DraftResultsCard from "@/components/fantasy/draft/shared/DraftResultsCard.vue";
 import DraftTeamDrawer from "@/components/fantasy/draft/DraftTeamDrawer.vue";
 import DraftTimerCard from "@/components/fantasy/draft/shared/DraftTimerCard.vue";
@@ -182,6 +190,13 @@ const userStore = useUserStore();
 const draftWishlistStore = useDraftWishlistStore();
 
 const membersDraftRoom = ref<UserDataInterface[]>([]);
+/**
+ * Si ya llegó una primera foto de presencia. Distinto de "la lista está
+ * vacía": una sala realmente vacía también empieza vacía, y sin esta bandera
+ * el primer snapshot se leería como "acaban de entrar todos".
+ */
+const hasPresenceSnapshot = ref(false);
+const showRoster = ref(false);
 const turnStarted = ref<FantasyDraftTurnStarted | null>(null);
 const searchPlayerRef = ref<InstanceType<typeof SearchPlayerFantasy> | null>(null);
 const toast = useToast();
@@ -439,8 +454,96 @@ function syncMembersFromPresence() {
     // Incluirme siempre: mi propio enter puede no venir aún en el snapshot.
     add(presencePayload());
 
+    announcePresenceChange(membersDraftRoom.value, next);
     membersDraftRoom.value = next;
+    hasPresenceSnapshot.value = true;
   });
+}
+
+/**
+ * "Fulano salió de la sala".
+ *
+ * Dos reglas que parecen detalles y no lo son:
+ *
+ * - **La primera foto no anuncia nada.** Es la que llega al entrar en la sala;
+ *   tratarla como un cambio anunciaría la entrada de los seis que ya estaban
+ *   dentro, de golpe, a quien acaba de abrir la pantalla. De ahí
+ *   `hasPresenceSnapshot`, que no es lo mismo que "la lista está vacía": una
+ *   sala realmente vacía también empieza vacía.
+ * - **Uno no se anuncia a sí mismo.** Ni la propia salida (que ya sabes) ni la
+ *   propia entrada, que llegaría en el peor momento: justo al abrir la sala.
+ *
+ * **No dice nada del reloj**, aunque la salida de quien tiene el turno lo
+ * acorte: ese número lo decide el servidor y llega en el `turn.started` que
+ * viene detrás, con la duración ya calculada. Lo cuenta `announceAbsenceChange`
+ * con el dato bueno.
+ */
+function announcePresenceChange(
+  previous: UserDataInterface[],
+  next: UserDataInterface[],
+) {
+  if (!hasPresenceSnapshot.value) return;
+
+  const me = userStore.getUserData?.uuid;
+  const before = new Set(previous.map((u) => u.uuid));
+  const after = new Set(next.map((u) => u.uuid));
+  const mine = (u: UserDataInterface) => !!u.uuid && u.uuid !== me;
+
+  const left = previous.filter((u) => mine(u) && !after.has(u.uuid));
+  const joined = next.filter((u) => mine(u) && !before.has(u.uuid));
+
+  const nameOf = (u: UserDataInterface) =>
+    `${u.firstname ?? ""} ${u.lastname ?? ""}`.trim() ||
+    t("fantasy.draft.order.userFallback");
+
+  // Las salidas primero: es lo único que tiene consecuencia sobre el draft. Si
+  // en la misma foto entra alguien y sale alguien, lo que hay que contar es la
+  // salida; la lista de la sala enseña el resto.
+  if (left.length === 1) {
+    toast.info(t("fantasy.draft.presence.userLeft", { name: nameOf(left[0]) }));
+  } else if (left.length > 1) {
+    toast.info(t("fantasy.draft.presence.usersLeft", { count: left.length }));
+  } else if (joined.length === 1) {
+    toast.info(t("fantasy.draft.presence.userJoined", { name: nameOf(joined[0]) }));
+  } else if (joined.length > 1) {
+    toast.info(t("fantasy.draft.presence.usersJoined", { count: joined.length }));
+  }
+}
+
+/**
+ * Quien tiene el turno se fue —o volvió— con su turno ya empezado.
+ *
+ * Se anuncia aparte de `announcePresenceChange` porque es lo único que explica
+ * por qué el reloj que estás mirando acaba de encogerse a la mitad. Los
+ * segundos salen del propio `turn.started`, que es quien manda: el cliente no
+ * conoce `absent_pick_timer`.
+ *
+ * Solo dentro del MISMO turno. Con el pick cambiado no es que alguien se haya
+ * ido, es que le toca a otro, y eso ya se cuenta solo.
+ */
+function announceAbsenceChange(
+  previous: FantasyDraftTurnStarted | null,
+  incoming: FantasyDraftTurnStarted,
+) {
+  if (!previous?.pick || previous.pick !== incoming.pick) return;
+  if (!!previous.absent === !!incoming.absent) return;
+
+  const name =
+    `${incoming.user?.firstname ?? ""} ${incoming.user?.lastname ?? ""}`.trim() ||
+    t("fantasy.draft.order.userFallback");
+
+  if (incoming.absent && incoming.duration_seconds) {
+    toast.info(
+      t("fantasy.draft.presence.onTheClockLeft", {
+        name,
+        seconds: incoming.duration_seconds,
+      }),
+    );
+  } else if (incoming.absent) {
+    toast.info(t("fantasy.draft.presence.userLeft", { name }));
+  } else {
+    toast.info(t("fantasy.draft.presence.onTheClockReturned", { name }));
+  }
 }
 
 async function getTurnInfo() {
@@ -507,6 +610,7 @@ onMounted(async () => {
     // No retroceder el turno ante un turn.started viejo o reenviado por Ably:
     // ignora eventos cuyo pick sea anterior al que ya mostramos.
     if ((data.pick ?? 0) < (turnStarted.value?.pick ?? -1)) return;
+    announceAbsenceChange(turnStarted.value, data);
     turnStarted.value = data;
   });
 

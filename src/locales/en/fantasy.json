@@ -236,6 +236,20 @@
       "online": "online",
       "userFallback": "User"
     },
+    "presence": {
+      "title": "In the room",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "onTheClock": "On the clock",
+      "you": "You",
+      "summary": "{online} of {total} connected",
+      "userLeft": "{name} left the room",
+      "userJoined": "{name} joined the room",
+      "usersLeft": "{count} managers left the room",
+      "usersJoined": "{count} managers joined the room",
+      "onTheClockLeft": "{name} left the room. Their turn drops to {seconds}s",
+      "onTheClockReturned": "{name} is back. Their turn is restored"
+    },
     "timer": {
       "yourTurn": "Your turn!",
       "userTurn": "{name}'s turn",
