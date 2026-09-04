@@ -1,5 +1,6 @@
 // Firebase Messaging Service Worker
-// Este archivo maneja las notificaciones push cuando la app está en background
+// Este archivo maneja el click de las notificaciones push y registra el SDK,
+// que es quien las pinta cuando la app está en background.
 // NOTA: Los Service Workers NO tienen acceso a import.meta.env de Vite,
 // por eso la config de Firebase se hardcodea aquí (son valores públicos).
 
@@ -15,50 +16,39 @@ firebase.initializeApp({
   appId: '1:1029023891951:web:359e674a8d4a413315f61a',
 })
 
-const messaging = firebase.messaging()
+// Clave bajo la que el SDK guarda el mensaje original dentro de
+// `notification.data` cuando es él quien pinta el aviso.
+const FCM_MSG = 'FCM_MSG'
 
-// Handle background messages
-messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Background message received:', payload)
+/**
+ * El `data` que mandó el backend, venga como venga.
+ *
+ * Si el aviso lo pintó el SDK, lo que hay en `notification.data` es el mensaje
+ * entero envuelto bajo `FCM_MSG`; si lo pintó alguien más, es el `data` a
+ * secas. Se leen los dos para no depender de quién lo haya creado.
+ */
+function readNotificationData(notification) {
+  const raw = notification?.data ?? {}
 
-  const notificationTitle = payload.notification?.title || 'Pro Fantasy'
-  const notificationOptions = {
-    body: payload.notification?.body || 'Tienes una nueva notificación',
-    icon: payload.notification?.icon || '/img/icons/android-chrome-192x192.png',
-    // Android aplasta el badge a una silueta desde el canal alfa, así que NO
-    // puede ser el icono normal: al ser opaco saldría como un cuadrado macizo.
-    // Este archivo es el monograma blanco sobre transparente.
-    badge: '/img/icons/notification-badge-96x96.png',
-    tag: payload.data?.type || 'general',
-    data: payload.data || {},
-    actions: [],
-    vibrate: [200, 100, 200],
-    requireInteraction: true,
-  }
+  return raw[FCM_MSG]?.data ?? raw
+}
 
-  // Agregar acciones según el tipo de notificación
-  if (payload.data?.type === 'draft_activated') {
-    notificationOptions.actions = [
-      { action: 'enter_draft', title: '🎯 Entrar al Draft' },
-      { action: 'dismiss', title: 'Después' },
-    ]
-  }
-
-  self.registration.showNotification(notificationTitle, notificationOptions)
-})
-
-// Handle notification click
+/**
+ * OJO AL ORDEN: este listener se registra ANTES de `firebase.messaging()`.
+ *
+ * El SDK registra el suyo propio al crear la instancia, y lo primero que hace
+ * al recibir un click es `stopImmediatePropagation()` — o sea, mata a todos los
+ * listeners registrados después del suyo. Poniéndolo antes, corremos primero y
+ * somos nosotros quienes cortamos: si dejáramos actuar también al del SDK,
+ * abriría o enfocaría la ventana por su cuenta y mandaría al cliente un mensaje
+ * con otra forma, que `App.vue` no entiende.
+ */
 self.addEventListener('notificationclick', (event) => {
+  event.stopImmediatePropagation()
   event.notification.close()
 
-  const data = event.notification.data || {}
-  let url = '/'
-
-  if (event.action === 'enter_draft' && data.league_uuid) {
-    url = `/fantasy/league/${data.league_uuid}/draft`
-  } else if (data.url) {
-    url = data.url
-  }
+  const data = readNotificationData(event.notification)
+  const url = data.url || '/'
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
@@ -75,3 +65,16 @@ self.addEventListener('notificationclick', (event) => {
     })
   )
 })
+
+/**
+ * Y aquí se registra el listener de `push` del SDK, que es quien pinta el aviso
+ * en background a partir del bloque `webpush.notification` que manda el backend
+ * (título, cuerpo, icono, badge, tag, vibración).
+ *
+ * NO se registra `onBackgroundMessage`. El SDK pinta el aviso Y ADEMÁS llama a
+ * ese handler, así que pintar también ahí —como se hacía antes— daba dos
+ * notificaciones por cada push: la del SDK, sin tag, apilándose, y la nuestra.
+ * Lo que el service worker añadía a mano vive ahora en `FirebasePushService`
+ * del backend, que es el único sitio desde el que se puede controlar.
+ */
+firebase.messaging()
