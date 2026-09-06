@@ -39,9 +39,7 @@
           variant="bench"
           :active="addingPlayerPosition != null"
           :label="addingPlayerPosition != null ? $t('fantasy.lineup.placeOnBench') : $t('fantasy.lineup.addBench')"
-          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
           @add="$emit('draftByPosition', 'BENCH')"
-          @open-swap="openSwapDrawer(null)"
         />
       </template>
     </div>
@@ -59,6 +57,7 @@
     :league-uuid="leagueUuid"
     :fantasy-round-uuid="fantasyRoundUuid"
     @lineup-updated="emit('lineupUpdated')"
+    @search-players="emit('draftByPosition', 'BENCH')"
   />
 
   <!-- Player Score Detail Drawer -->
@@ -141,10 +140,10 @@ function openScoreDrawer(player: FantasyFootballPlayer) {
   scoreDrawerOpen.value = true;
 }
 
-function openSwapDrawer(targetPlayer: FantasyFootballPlayer | null = null) {
+function openSwapDrawer(targetPlayer: FantasyFootballPlayer) {
   swapTargetPlayer.value = targetPlayer;
   // Use the bench player's actual position so the drawer filters correctly
-  swapSlotPosition.value = targetPlayer?.position?.developer_name ?? 'BENCH';
+  swapSlotPosition.value = targetPlayer.position?.developer_name ?? 'BENCH';
   swapDrawerOpen.value = true;
 }
 

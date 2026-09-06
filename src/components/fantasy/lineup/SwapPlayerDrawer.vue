@@ -47,7 +47,9 @@
               :candidates="candidatePlayers"
               :is-loading="isUpdating"
               :swapping-uuid="swappingUuid"
+              :can-search="canSearch"
               @select="handleSwap"
+              @search="handleSearch"
             />
           </div>
         </div>
@@ -138,7 +140,9 @@
             :candidates="candidatePlayers"
             :is-loading="isUpdating"
             :swapping-uuid="swappingUuid"
+            :can-search="canSearch"
             @select="handleSwap"
+            @search="handleSearch"
           />
         </div>
       </div>
@@ -154,6 +158,7 @@ import { getUserService } from "@/services/user/UserService";
 import { useToast } from "@/composables/useToast";
 import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import SwapPlayerList from "@/components/fantasy/lineup/SwapPlayerList.vue";
+import { benchCandidatesFor } from "@/components/fantasy/lineup/lineupSlots";
 
 // ==================== Constants ====================
 type SheetState = "peek" | "half" | "full";
@@ -230,6 +235,8 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
   "lineup-updated": [];
+  /** El hueco no se llena con nadie de la plantilla: al buscador de fichajes. */
+  "search-players": [];
 }>();
 
 const { isMobile } = useBreakpoints();
@@ -261,15 +268,7 @@ const positionLabel = computed(() => {
 const candidatePlayers = computed<FantasyFootballPlayer[]>(() => {
   if (props.slotIsStarter || props.slotIsFlex) {
     // Looking for bench players to promote to starter
-    return props.players.filter((p) => {
-      if (p.in_play) return false;
-      if (!p.is_starter && !p.is_flex) {
-        // bench player — must match position or slot is FLEX
-        if (props.slotIsFlex) return p.position.developer_name !== "GOALKEEPER";
-        return p.position.developer_name === props.slotPosition;
-      }
-      return false;
-    });
+    return benchCandidatesFor(props.players, props.slotPosition, props.slotIsFlex);
   } else {
     // bench player selected: show starters/flex of same position + flex players
     return props.players.filter((p) => {
@@ -285,6 +284,20 @@ const candidatePlayers = computed<FantasyFootballPlayer[]>(() => {
     });
   }
 });
+
+/**
+ * Si este hueco puede mandar al buscador de agentes libres.
+ *
+ * Solo un hueco vacío: con alguien dentro la acción es cambiarlo de sitio, y
+ * fichar sería otra cosa (una sustitución) que se pide desde la tarjeta del
+ * jugador, no desde aquí.
+ */
+const canSearch = computed(() => props.targetPlayer === null);
+
+function handleSearch() {
+  close();
+  emit("search-players");
+}
 
 // ==================== Swap action ====================
 type LineupEntry = { football_player_uuid: string; is_starter: boolean; is_flex: boolean };

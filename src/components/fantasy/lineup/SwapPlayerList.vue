@@ -91,6 +91,28 @@
         />
       </div>
     </button>
+
+    <!-- Fichar para este hueco: la salida cuando la plantilla no da más de sí.
+         Sin esto, un hueco con un solo suplente mediocre no tenía ninguna vía
+         hacia el buscador de agentes libres. -->
+    <button
+      v-if="canSearch"
+      class="w-full flex items-center gap-3 px-3 py-2.5 mt-1 rounded-xl border border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/60 dark:bg-emerald-900/10 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 active:scale-[0.98] transition-all text-left"
+      @click="$emit('search')"
+    >
+      <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 shrink-0">
+        <v-icon name="hi-solid-user-add" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+      </span>
+      <span class="flex-1 min-w-0">
+        <span class="block text-footnote font-medium text-emerald-700 dark:text-emerald-300">
+          {{ $t('fantasy.lineup.searchPlayersCta') }}
+        </span>
+        <span class="block text-2xs text-emerald-600/80 dark:text-emerald-400/80">
+          {{ $t('fantasy.lineup.searchPlayersHint') }}
+        </span>
+      </span>
+      <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
+    </button>
   </div>
 </template>
 
@@ -107,14 +129,18 @@ interface Props {
   isLoading: boolean;
   /** UUID of the candidate whose swap is in flight — only that row spins. */
   swappingUuid?: string | null;
+  /** Muestra el acceso al buscador de agentes libres para este hueco. */
+  canSearch?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   swappingUuid: null,
+  canSearch: false,
 });
 
 defineEmits<{
   select: [player: FantasyFootballPlayer];
+  search: [];
 }>();
 
 const { t } = useI18n();

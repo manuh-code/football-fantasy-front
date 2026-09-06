@@ -627,7 +627,12 @@
     "undo": "Deshacer",
     "swapInAria": "Cambiar por {name}",
     "expand": "Expandir",
-    "collapse": "Colapsar"
+    "collapse": "Colapsar",
+    "searchPlayersCta": "Buscar jugadores libres",
+    "searchPlayersHint": "¿Ninguno te convence? Ficha a alguien nuevo para este hueco.",
+    "rosterFullTitle": "Plantilla llena",
+    "rosterFullBody": "Ya tienes todos los huecos ocupados. Toca un jugador para sustituirlo, o libera a alguien primero.",
+    "rosterFullReplaceHint": "Tu plantilla está llena: al fichar tendrás que elegir a quién sustituyes."
   },
   "playerScore": {
     "title": "Detalle de puntos",

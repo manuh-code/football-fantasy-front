@@ -23,24 +23,12 @@
       class="text-xs"
       :class="active ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-gray-400 dark:text-gray-500'"
     >{{ label }}</p>
-
-    <button
-      v-if="showSwap"
-      :aria-label="$t('fantasy.lineup.swapAction')"
-      class="ml-auto w-7 h-7 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-blue-500/50 dark:focus-visible:ring-offset-gray-800"
-      :class="swapButtonClass"
-      @click.stop="emit('openSwap')"
-    >
-      <v-icon name="hi-solid-switch-horizontal" class="w-3.5 h-3.5" :class="swapIconClass" />
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import {
-  SWAP_BUTTON,
-  SWAP_ICON,
   SLOT_BADGE_ACTIVE,
   SLOT_BADGE_IDLE,
   SLOT_TINT,
@@ -54,24 +42,23 @@ interface Props {
   active?: boolean;
   /** Localized call-to-action text ("Add goalkeeper" / "Place here"). */
   label: string;
-  /** Show the quick-swap button (round context and not drafting). */
-  showSwap?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   active: false,
-  showSwap: false,
 });
 
+/**
+ * Una sola acción: llenar el hueco. Quién lo llena —un suplente o un fichaje—
+ * lo decide `StartersTable`, que es quien conoce la plantilla; aquí el botón
+ * de cambio aparte solo repetía la mitad de eso en un icono que no se leía.
+ */
 const emit = defineEmits<{
   add: [];
-  openSwap: [];
 }>();
 
 const code = computed(() => SLOT_CODE[props.variant]);
 const tintClass = computed(() => SLOT_TINT[props.variant]);
 const badgeActiveClass = computed(() => SLOT_BADGE_ACTIVE[props.variant]);
 const badgeIdleClass = computed(() => SLOT_BADGE_IDLE[props.variant]);
-const swapButtonClass = computed(() => SWAP_BUTTON[props.variant]);
-const swapIconClass = computed(() => SWAP_ICON[props.variant]);
 </script>

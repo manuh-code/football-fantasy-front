@@ -40,9 +40,7 @@
           variant="goalkeeper"
           :active="addingPlayerPosition === 'GOALKEEPER'"
           :label="addingPlayerPosition === 'GOALKEEPER' ? $t('fantasy.lineup.placeHere') : $t('fantasy.lineup.addGoalkeeper')"
-          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
-          @add="$emit('draftByPosition', 'GOALKEEPER')"
-          @open-swap="openSwapDrawer('GOALKEEPER', true, false, null)"
+          @add="onEmptySlot('GOALKEEPER', true, false)"
         />
       </template>
 
@@ -71,9 +69,7 @@
           variant="defender"
           :active="addingPlayerPosition === 'DEFENDER'"
           :label="addingPlayerPosition === 'DEFENDER' ? $t('fantasy.lineup.placeHere') : $t('fantasy.lineup.addDefender')"
-          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
-          @add="$emit('draftByPosition', 'DEFENDER')"
-          @open-swap="openSwapDrawer('DEFENDER', true, false, null)"
+          @add="onEmptySlot('DEFENDER', true, false)"
         />
       </template>
 
@@ -102,9 +98,7 @@
           variant="midfielder"
           :active="addingPlayerPosition === 'MIDFIELDER'"
           :label="addingPlayerPosition === 'MIDFIELDER' ? $t('fantasy.lineup.placeHere') : $t('fantasy.lineup.addMidfielder')"
-          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
-          @add="$emit('draftByPosition', 'MIDFIELDER')"
-          @open-swap="openSwapDrawer('MIDFIELDER', true, false, null)"
+          @add="onEmptySlot('MIDFIELDER', true, false)"
         />
       </template>
 
@@ -133,9 +127,7 @@
           variant="attacker"
           :active="addingPlayerPosition === 'ATTACKER'"
           :label="addingPlayerPosition === 'ATTACKER' ? $t('fantasy.lineup.placeHere') : $t('fantasy.lineup.addForward')"
-          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
-          @add="$emit('draftByPosition', 'ATTACKER')"
-          @open-swap="openSwapDrawer('ATTACKER', true, false, null)"
+          @add="onEmptySlot('ATTACKER', true, false)"
         />
       </template>
 
@@ -164,9 +156,7 @@
           variant="flex"
           :active="addingPlayerPosition != null"
           :label="addingPlayerPosition != null ? $t('fantasy.lineup.placeHereFlex') : $t('fantasy.lineup.addFlex')"
-          :show-swap="!addingPlayerPosition && !!fantasyRoundUuid"
-          @add="$emit('draftByPosition', 'FLEX')"
-          @open-swap="openSwapDrawer('FLEX', true, true, null)"
+          @add="onEmptySlot('FLEX', true, true)"
         />
       </template>
     </div>
@@ -184,6 +174,7 @@
     :league-uuid="leagueUuid"
     :fantasy-round-uuid="fantasyRoundUuid"
     @lineup-updated="emit('lineupUpdated')"
+    @search-players="emit('draftByPosition', swapSlotPosition)"
   />
 
   <!-- Player Score Detail Drawer -->
@@ -204,6 +195,7 @@ import LineupPlayerRow from "@/components/fantasy/lineup/LineupPlayerRow.vue";
 import LineupEmptySlot from "@/components/fantasy/lineup/LineupEmptySlot.vue";
 import SwapPlayerDrawer from "@/components/fantasy/lineup/SwapPlayerDrawer.vue";
 import PlayerFantasyScoreDrawer from "@/components/fantasy/lineup/PlayerFantasyScoreDrawer.vue";
+import { benchCandidatesFor } from "@/components/fantasy/lineup/lineupSlots";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import { useToast } from "@/composables/useToast";
 
@@ -266,6 +258,36 @@ function openScoreDrawer(player: FantasyFootballPlayer) {
   if (!canViewScore.value) return;
   scorePlayer.value = player;
   scoreDrawerOpen.value = true;
+}
+
+/**
+ * Un hueco vacío se llena, y el primer sitio donde buscar es la propia banca.
+ *
+ * Antes este toque iba derecho al buscador de agentes libres aunque tuvieras en
+ * el banquillo justo al jugador de esa posición — fichar era el único camino, y
+ * el drawer de suplentes solo se abría desde un botón aparte que casi nadie
+ * encontraba. Ahora el toque decide: si hay suplentes que puedan ocupar el
+ * hueco se abren en el drawer, y si no los hay se va a fichar directamente, sin
+ * pasar por una lista vacía. (El drawer, además, lleva su propio enlace a
+ * fichar por si ninguno de los suplentes convence.)
+ *
+ * Dos contextos se saltan esto y siguen emitiendo el evento tal cual:
+ * colocar un jugador que se está fichando (`addingPlayerPosition`), y el
+ * `LineupDrawer`, que no pasa jornada — sin ella no hay con qué guardar un
+ * cambio de alineación, y su plantilla ni siquiera es editable ahí.
+ */
+function onEmptySlot(position: string, isStarter: boolean, isFlex: boolean) {
+  if (props.addingPlayerPosition || !props.fantasyRoundUuid) {
+    emit("draftByPosition", position);
+    return;
+  }
+
+  if (benchCandidatesFor(props.players, position, isFlex).length === 0) {
+    emit("draftByPosition", position);
+    return;
+  }
+
+  openSwapDrawer(position, isStarter, isFlex, null);
 }
 
 function openSwapDrawer(
