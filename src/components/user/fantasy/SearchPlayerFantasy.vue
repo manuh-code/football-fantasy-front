@@ -10,6 +10,25 @@
       @swap-player="handleSwapPlayer"
     />
 
+    <!-- Plantilla llena: no se bloquea el fichaje, se avisa de lo que implica.
+         Con todos los huecos ocupados, el "+" ya no añade sin más — abre el
+         selector para elegir a quién sustituye, que es la única alta que el
+         API acepta con la formación completa. -->
+    <div
+      v-if="rosterFull"
+      class="mb-3 flex items-start gap-2.5 px-3.5 py-3 rounded-2xl bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-700/40"
+    >
+      <v-icon name="hi-solid-information-circle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+      <div class="min-w-0">
+        <p class="text-footnote font-semibold text-amber-800 dark:text-amber-300">
+          {{ $t('fantasy.lineup.rosterFullTitle') }}
+        </p>
+        <p class="text-xs text-amber-700/90 dark:text-amber-400/90">
+          {{ $t('fantasy.lineup.rosterFullReplaceHint') }}
+        </p>
+      </div>
+    </div>
+
     <!-- Loading Skeleton State (only on the very first load, never on re-searches) -->
     <div
       v-if="isLoading && !initialLoadComplete"
@@ -664,6 +683,10 @@ import { mockDraftService } from "@/services/fantasy/mockDraft/MockDraftService"
 import type { SearchFormation } from "@/components/user/fantasy/searchFormation";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
 import type { LineupSlotSelection } from "@/components/fantasy/lineup/LineupDrawer.vue";
+import { getUserService } from "@/services/user/UserService";
+import { useFantasyRounds } from "@/composables/useFantasyRounds";
+import { hasRoomForSlot, isRosterFull } from "@/components/fantasy/lineup/lineupSlots";
+import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 
 interface Props {
   fantasyLeagueUuid?: string;
@@ -749,6 +772,16 @@ const animateRemoval = ref(false);
 const showLineupDrawer = ref(false);
 const pendingPlayer = ref<FantasyPlayerDraftResponse | null>(null);
 const positionUuidQuery = ref<string | null>(null);
+/**
+ * La plantilla propia en la jornada vigente.
+ *
+ * Esta pantalla fichaba sin saber cómo estaba el equipo: mandaba el hueco que
+ * traía la URL y confiaba. Con la plantilla a mano puede avisar de que está
+ * llena y, sobre todo, reencauzar al selector cuando el hueco del que se vino
+ * ya se llenó por otro camino — un alta a ciegas ahí es justo la que el API
+ * rechaza ahora.
+ */
+const lineupPlayers = ref<FantasyFootballPlayer[]>([]);
 let observer: IntersectionObserver | null = null;
 
 // Computed
@@ -766,6 +799,41 @@ const searchFormation = computed<SearchFormation | null>(() =>
 const participants = computed<UserDataInterface[]>(
   () => league.value?.participants ?? [],
 );
+
+// La jornada vigente, para pedir la alineación con la que se decide el hueco.
+const { selectedRoundUuid, loadRounds } = useFantasyRounds(() => leagueUuid.value);
+
+/** Todos los huecos ocupados: fichar solo puede ser ya una sustitución. */
+const rosterFull = computed(() =>
+  props.mode === "add" &&
+  lineupPlayers.value.length > 0 &&
+  isRosterFull(lineupPlayers.value, league.value?.formation ?? null),
+);
+
+/**
+ * Trae la alineación de la jornada vigente. Solo en modo 'add': el draft ficha
+ * por turnos con sus propias reglas y el mock ni siquiera tiene liga.
+ */
+async function loadLineup() {
+  const uuid = leagueUuid.value;
+  if (props.mode !== "add" || isMockSource.value || !uuid) return;
+
+  try {
+    if (!selectedRoundUuid.value) await loadRounds();
+    const roundUuid = selectedRoundUuid.value;
+    if (!roundUuid) return;
+
+    const response = await getUserService().getFantasyFootballPlayersByLeagueUuid(
+      uuid,
+      { fantasy_round_uuid: roundUuid },
+    );
+    lineupPlayers.value = response.players ?? [];
+  } catch {
+    // Sin plantilla se sigue pudiendo fichar: el selector de hueco la carga por
+    // su cuenta y el API tiene la última palabra. Solo se pierde el aviso.
+    lineupPlayers.value = [];
+  }
+}
 
 /** In 'add' mode, only allow adding players when the draft is COMPLETED */
 const isDraftCompleted = computed(() =>
@@ -1087,6 +1155,18 @@ function isAlreadyTakenError(err: unknown): boolean {
   return typeof err === "object" && err !== null && (err as { status?: number }).status === 409;
 }
 
+/**
+ * Un 422 al fichar es el servidor diciendo "ahí ya no cabe nadie".
+ *
+ * Mismo trato que el 409 y por el mismo motivo: el interceptor de
+ * `useApiFantasy` ya pinta el aviso con el mensaje del servidor —que dice cuál
+ * de los tres límites se alcanzó, si el once, el flex o la banca— así que
+ * repetirlo aquí solo taparía el bueno con uno genérico.
+ */
+function isRosterFullError(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { status?: number }).status === 422;
+}
+
 async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
   if (props.disabled || !canAddPlayer.value || !contextUuid.value || isAddingPlayer(player.player.uuid))
     return;
@@ -1140,14 +1220,39 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
     const hasSlotFromProps = props.isStarter !== null && props.isStarter !== undefined;
     const hasSlotFromQuery = !!route.query.slotType;
 
-    if (hasSlotFromProps || hasSlotFromQuery) {
+    if ((hasSlotFromProps || hasSlotFromQuery) && slotHasRoomFor(player)) {
       await addPlayerToLineup(player);
     } else {
-      // No slot info — show LineupDrawer to choose
+      // Sin hueco resuelto —o con el que traía la URL ya ocupado— lo elige el
+      // usuario en el selector, donde además puede sustituir a alguien.
       pendingPlayer.value = player;
       showLineupDrawer.value = true;
     }
   }
+}
+
+/**
+ * Si todavía cabe un jugador en el hueco con el que se llegó a esta pantalla.
+ *
+ * La URL lleva el hueco desde el que se pulsó ("titular defensa"), pero eso es
+ * una foto: entre venir aquí y pulsar "+" ese hueco puede haberse llenado desde
+ * otra pestaña, o el manager puede haber llegado por un enlace viejo. Sin
+ * plantilla cargada se responde que sí y decide el API — es un aviso, no la
+ * comprobación de verdad.
+ */
+function slotHasRoomFor(player: FantasyPlayerDraftResponse): boolean {
+  const formation = league.value?.formation ?? null;
+  if (!formation || lineupPlayers.value.length === 0) return true;
+
+  const isFlex = props.isFlex ?? slotType.value === "FLEX";
+  const isStarter = props.isStarter ?? slotType.value !== "BENCH";
+  const queryPosition = route.query.position as string | undefined;
+  const position =
+    queryPosition && queryPosition !== "ALL"
+      ? queryPosition
+      : (player.position?.developer_name ?? null);
+
+  return hasRoomForSlot(lineupPlayers.value, formation, { isStarter, isFlex, position });
 }
 
 /**
@@ -1185,9 +1290,16 @@ async function addPlayerToLineup(
 
     removePlayerFromList(player);
     emit("player-added", player);
+    await loadLineup();
   } catch (err: unknown) {
     if (isAlreadyTakenError(err)) {
       removePlayerFromList(player);
+      return;
+    }
+    if (isRosterFullError(err)) {
+      // La plantilla del cliente estaba vieja: por eso se ofrecio un hueco que
+      // ya no existia. Recargarla deja el aviso y el selector en su sitio.
+      await loadLineup();
       return;
     }
     const errorMessage =
@@ -1361,6 +1473,7 @@ watch(contextUuid, async (newVal) => {
   if (newVal) {
     await loadLeague();
     await loadTeams();
+    await loadLineup();
     await loadPlayers();
   }
 });
@@ -1369,6 +1482,7 @@ watch(contextUuid, async (newVal) => {
 onMounted(async () => {
   await loadLeague();
   await loadTeams();
+  await loadLineup();
 
   // Check if there's a position filter in query params
   const positionFromQuery = route.query.position as string;
