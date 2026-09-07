@@ -634,7 +634,8 @@
     "rosterFullBody": "Every slot is taken. Tap a player to replace them, or release someone first.",
     "rosterFullReplaceHint": "Your roster is full: signing someone means picking who they replace.",
     "playerLockedTitle": "Match under way",
-    "playerLockedMsg": "{name}'s match has already started: you can no longer move them or drop them from your lineup."
+    "playerLockedMsg": "{name}'s match has already started: you can no longer move them or drop them from your lineup.",
+    "lockedHint": "Their match has already started"
   },
   "playerScore": {
     "title": "Points breakdown",

@@ -634,7 +634,8 @@
     "rosterFullBody": "Ya tienes todos los huecos ocupados. Toca un jugador para sustituirlo, o libera a alguien primero.",
     "rosterFullReplaceHint": "Tu plantilla está llena: al fichar tendrás que elegir a quién sustituyes.",
     "playerLockedTitle": "Partido en marcha",
-    "playerLockedMsg": "El partido de {name} ya comenzó: ya no puedes moverlo ni sacarlo de tu alineación."
+    "playerLockedMsg": "El partido de {name} ya comenzó: ya no puedes moverlo ni sacarlo de tu alineación.",
+    "lockedHint": "Su partido ya comenzó"
   },
   "playerScore": {
     "title": "Detalle de puntos",
