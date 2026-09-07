@@ -632,7 +632,9 @@
     "searchPlayersHint": "¿Ninguno te convence? Ficha a alguien nuevo para este hueco.",
     "rosterFullTitle": "Plantilla llena",
     "rosterFullBody": "Ya tienes todos los huecos ocupados. Toca un jugador para sustituirlo, o libera a alguien primero.",
-    "rosterFullReplaceHint": "Tu plantilla está llena: al fichar tendrás que elegir a quién sustituyes."
+    "rosterFullReplaceHint": "Tu plantilla está llena: al fichar tendrás que elegir a quién sustituyes.",
+    "playerLockedTitle": "Partido en marcha",
+    "playerLockedMsg": "El partido de {name} ya comenzó: ya no puedes moverlo ni sacarlo de tu alineación."
   },
   "playerScore": {
     "title": "Detalle de puntos",

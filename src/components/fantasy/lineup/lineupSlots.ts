@@ -24,12 +24,26 @@ function isBenched(player: FantasyFootballPlayer): boolean {
 }
 
 /**
+ * Si al jugador todavía se le puede tocar.
+ *
+ * **El partido manda, no los puntos.** Desde el pitido inicial de SU encuentro
+ * —y para siempre después, también con el partido terminado— ese jugador no
+ * entra al once, no baja al banquillo y no sale de la plantilla: sus puntos ya
+ * están hechos o haciéndose, así que moverlo después sería alinear sabiendo el
+ * resultado. Eso es lo que significa `in_play` en el API (su helper devuelve
+ * `true` tanto para un partido en juego como para uno acabado), no "está
+ * rodando ahora mismo".
+ */
+export function canMoveInLineup(player: FantasyFootballPlayer): boolean {
+    return !player.in_play;
+}
+
+/**
  * Quién puede subir de la banca a un hueco del once.
  *
  * El flex admite todo menos porteros —regla clásica del fantasy, y la que
- * aplica el API— y una línea solo admite su posición. Un jugador cuyo partido
- * ya arrancó (`in_play`) no se mueve: es la misma regla que bloquea el swap y
- * la baja en `LineupPlayerRow.vue`.
+ * aplica el API— y una línea solo admite su posición. Los que ya tienen el
+ * partido empezado quedan fuera (ver [canMoveInLineup]).
  */
 export function benchCandidatesFor(
     players: FantasyFootballPlayer[],
@@ -37,11 +51,33 @@ export function benchCandidatesFor(
     slotIsFlex = false,
 ): FantasyFootballPlayer[] {
     return players.filter((player) => {
-        if (player.in_play || !isBenched(player)) return false;
+        if (!canMoveInLineup(player) || !isBenched(player)) return false;
         if (slotIsFlex || slotPosition === FLEX) {
             return player.position?.developer_name !== "GOALKEEPER";
         }
         return player.position?.developer_name === slotPosition;
+    });
+}
+
+/**
+ * Quién puede ocupar un hueco del banquillo: los titulares de esa posición, más
+ * cualquier flex.
+ *
+ * Es el gesto de sentar a alguien, y por eso solo lo pelean titulares: traer a
+ * otro suplente no cambiaría nada. `BENCH` sin posición (un hueco sin contexto)
+ * los admite a todos.
+ */
+export function starterCandidatesForBench(
+    players: FantasyFootballPlayer[],
+    slotPosition: string,
+    targetPlayer: FantasyFootballPlayer | null,
+): FantasyFootballPlayer[] {
+    return players.filter((player) => {
+        if (!canMoveInLineup(player)) return false;
+        if (!player.is_starter && !player.is_flex) return false;
+        if (targetPlayer && player.football_player?.uuid === targetPlayer.football_player?.uuid) return false;
+        if (slotPosition === BENCH) return true;
+        return player.position?.developer_name === slotPosition || player.is_flex;
     });
 }
 
