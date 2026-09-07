@@ -158,7 +158,11 @@ import { getUserService } from "@/services/user/UserService";
 import { useToast } from "@/composables/useToast";
 import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import SwapPlayerList from "@/components/fantasy/lineup/SwapPlayerList.vue";
-import { benchCandidatesFor } from "@/components/fantasy/lineup/lineupSlots";
+import {
+  benchCandidatesFor,
+  canMoveInLineup,
+  starterCandidatesForBench,
+} from "@/components/fantasy/lineup/lineupSlots";
 
 // ==================== Constants ====================
 type SheetState = "peek" | "half" | "full";
@@ -267,22 +271,12 @@ const positionLabel = computed(() => {
  */
 const candidatePlayers = computed<FantasyFootballPlayer[]>(() => {
   if (props.slotIsStarter || props.slotIsFlex) {
-    // Looking for bench players to promote to starter
+    // Un hueco del once solo lo pelean los suplentes.
     return benchCandidatesFor(props.players, props.slotPosition, props.slotIsFlex);
-  } else {
-    // bench player selected: show starters/flex of same position + flex players
-    return props.players.filter((p) => {
-      if (p.in_play) return false;
-      if (props.targetPlayer && p.football_player.uuid === props.targetPlayer.football_player.uuid) return false;
-      if (p.is_starter || p.is_flex) {
-        // BENCH fallback: show all (e.g. empty bench slot with no position context)
-        if (props.slotPosition === "BENCH") return true;
-        // Show starters/flex that match the bench player's position, plus any flex player
-        return p.position.developer_name === props.slotPosition || p.is_flex;
-      }
-      return false;
-    });
   }
+
+  // Un hueco del banquillo solo lo pelean los titulares: es sentar a alguien.
+  return starterCandidatesForBench(props.players, props.slotPosition, props.targetPlayer);
 });
 
 /**
@@ -317,6 +311,27 @@ function snapshotLineup(): LineupEntry[] {
 
 async function handleSwap(candidate: FantasyFootballPlayer) {
   if (isUpdating.value) return;
+
+  // Un cambio mueve a dos jugadores, así que basta con que uno de los dos tenga
+  // el partido empezado para que el cambio entero no valga. La lista ya deja
+  // fuera a los bloqueados, pero puede llevar minutos pintada: el partido
+  // arranca mientras el drawer está abierto y el candidato de hace un momento
+  // ya no lo es. El servidor lo rechaza igual (422); esto evita el viaje y el
+  // parpadeo de una alineación que se revierte sola.
+  if (!canMoveInLineup(candidate) || (props.targetPlayer && !canMoveInLineup(props.targetPlayer))) {
+    const locked = !canMoveInLineup(candidate) ? candidate : props.targetPlayer!;
+    addToast({
+      type: "error",
+      title: t("fantasy.lineup.playerLockedTitle"),
+      message: t("fantasy.lineup.playerLockedMsg", {
+        name: locked.football_player.display_name,
+      }),
+    });
+    emit("lineup-updated");
+    close();
+    return;
+  }
+
   isUpdating.value = true;
   swappingUuid.value = candidate.football_player.uuid;
 
@@ -365,7 +380,17 @@ async function handleSwap(candidate: FantasyFootballPlayer) {
 
     emit("lineup-updated");
     close();
-  } catch {
+  } catch (err: unknown) {
+    // Un 422 aquí es el servidor diciendo que ese jugador ya no se puede mover
+    // (su partido arrancó). El interceptor de `useApiFantasy` ya pintó el aviso
+    // con el mensaje bueno —dice de quién se trata— así que repetirlo con uno
+    // genérico solo lo taparía; lo que sí hace falta es recargar la alineación,
+    // porque la que tenía la pantalla estaba vieja.
+    if (isPlayerLockedError(err)) {
+      emit("lineup-updated");
+      close();
+      return;
+    }
     addToast({
       type: "error",
       title: t("fantasy.lineup.swapErrorTitle"),
@@ -375,6 +400,11 @@ async function handleSwap(candidate: FantasyFootballPlayer) {
     isUpdating.value = false;
     swappingUuid.value = null;
   }
+}
+
+/** Ver el `catch` de [handleSwap]. */
+function isPlayerLockedError(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { status?: number }).status === 422;
 }
 
 /** Revert to the pre-swap lineup (from the success toast's Undo action). */

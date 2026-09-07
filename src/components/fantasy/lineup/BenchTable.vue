@@ -28,7 +28,7 @@
           :removing="removingPlayer === player.football_player.uuid"
           :disable-remove="disableRemove"
           @select="$emit('swapPlayer', player.football_player.uuid, 'BENCH')"
-          @remove="removePlayer(player.football_player.uuid, player.football_player.display_name)"
+          @remove="removePlayer(player)"
           @open-swap="openSwapDrawer(player)"
           @open-score="openScoreDrawer(player)"
         />
@@ -149,8 +149,25 @@ function openSwapDrawer(targetPlayer: FantasyFootballPlayer) {
 
 const removingPlayer = ref<string | null>(null);
 
-async function removePlayer(playerUuid: string, playerName: string) {
+async function removePlayer(player: FantasyFootballPlayer) {
   if (removingPlayer.value) return;
+
+  const playerUuid = player.football_player.uuid;
+  const playerName = player.football_player.display_name;
+
+  // Su partido ya arrancó: la baja borra sus filas de todas las jornadas sin
+  // jugar, así que soltarlo ahora le quitaría al equipo los puntos que ya hizo.
+  // La fila no ofrece el gesto, pero puede llevar minutos pintada.
+  if (!canMoveInLineup(player)) {
+    addToast({
+      type: 'error',
+      title: t('fantasy.lineup.playerLockedTitle'),
+      message: t('fantasy.lineup.playerLockedMsg', { name: playerName }),
+    });
+    emit('lineupUpdated');
+    return;
+  }
+
   removingPlayer.value = playerUuid;
   try {
     await fantasyLeagueService.lineupPlayerRemove({
@@ -163,7 +180,14 @@ async function removePlayer(playerUuid: string, playerName: string) {
       message: t('fantasy.lineup.playerRemovedMsg', { name: playerName }),
     });
     emit('playerRemoved', playerUuid);
-  } catch {
+  } catch (err: unknown) {
+    // 422: el servidor dice que ese jugador ya no se puede soltar. El aviso ya
+    // lo pintó el interceptor con el mensaje bueno; aquí solo toca recargar,
+    // que es lo que deja la fila bloqueada como corresponde.
+    if (typeof err === 'object' && err !== null && (err as { status?: number }).status === 422) {
+      emit('lineupUpdated');
+      return;
+    }
     addToast({
       type: 'error',
       title: t('fantasy.lineup.removeErrorTitle'),
