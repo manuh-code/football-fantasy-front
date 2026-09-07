@@ -35,7 +35,20 @@ function isSelected(playerUuid: string): boolean {
   return props.modelValue.includes(playerUuid)
 }
 
+/**
+ * Un jugador con el partido de esta jornada ya empezado no entra en un cambio:
+ * aceptarlo movería su fila de la jornada en curso y los puntos que ya hizo
+ * desaparecerían del equipo que los ganó. El servidor lo rechaza al proponer y
+ * al aceptar; aquí solo se evita ofrecerlo.
+ */
+function isLocked(player: FantasyPlayerDraftResponse): boolean {
+  return player.in_play
+}
+
 function toggle(playerUuid: string) {
+  const player = props.players.find((p) => p.player.uuid === playerUuid)
+  if (player && isLocked(player)) return
+
   emit(
     'update:modelValue',
     isSelected(playerUuid)
@@ -97,13 +110,19 @@ function positionColorClass(developerName: string): string {
       <label
         v-for="p in players"
         :key="p.player.uuid"
-        class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl cursor-pointer transition-colors"
-        :class="isSelected(p.player.uuid) ? accentClasses.row : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'"
+        class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl transition-colors"
+        :class="[
+          isLocked(p)
+            ? 'opacity-50 cursor-not-allowed'
+            : 'cursor-pointer',
+          isSelected(p.player.uuid) ? accentClasses.row : (isLocked(p) ? '' : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'),
+        ]"
       >
         <input
           type="checkbox"
           class="sr-only"
           :checked="isSelected(p.player.uuid)"
+          :disabled="isLocked(p)"
           @change="toggle(p.player.uuid)"
         />
         <span
@@ -119,7 +138,12 @@ function positionColorClass(developerName: string): string {
         />
         <div class="flex-1 min-w-0">
           <p class="text-footnote font-medium text-gray-900 dark:text-white truncate">{{ p.player.display_name }}</p>
-          <p class="text-2xs text-gray-400 dark:text-gray-500 truncate">{{ p.team.short_code }}</p>
+          <p
+            class="text-2xs truncate"
+            :class="isLocked(p) ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500'"
+          >
+            {{ isLocked(p) ? $t('fantasy.lineup.lockedHint') : p.team.short_code }}
+          </p>
         </div>
         <span
           class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-2xs font-bold shrink-0"

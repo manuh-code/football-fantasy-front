@@ -62,6 +62,14 @@ export function useDraftPick(
       )
       return true
     } catch (err: unknown) {
+      // Un 422 al elegir es el servidor rechazando el pick con un motivo que
+      // sabe explicar —hoy, que el partido de ese jugador en esta jornada ya
+      // empezó— y el interceptor de `useApiFantasy` ya lo pintó tal cual.
+      // Taparlo con un "no se pudo agregar" genérico deja al manager sin saber
+      // por qué su pick no entró, con el reloj del turno corriendo.
+      if (typeof err === 'object' && err !== null && (err as { status?: number }).status === 422) {
+        return false
+      }
       const errorMessage =
         err instanceof Error ? err.message : t('fantasy.search.errorAddingPlayer')
       toast.error(t('errors.generic.title'), errorMessage)

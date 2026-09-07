@@ -199,6 +199,11 @@ async function submit() {
     )
     emit('proposed', trade)
   } catch (e) {
+    // Un 422 aquí es el servidor rechazando el cambio con un motivo que sabe
+    // explicar —hoy, que el partido de uno de los jugadores ya empezó— y el
+    // interceptor de `useApiFantasy` ya lo pintó tal cual. Repetirlo con un
+    // "no se pudo" genérico taparía el único mensaje que dice qué pasó.
+    if (typeof e === 'object' && e !== null && (e as { status?: number }).status === 422) return
     toast.error(
       t('fantasy.trades.proposeErrorTitle'),
       e instanceof Error ? e.message : t('fantasy.trades.proposeErrorBody'),

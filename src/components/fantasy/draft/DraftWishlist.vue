@@ -128,7 +128,7 @@
           <!-- Draft / pick -->
           <button
             type="button"
-            :disabled="!isMyTurn || isPicking(player.player.uuid)"
+            :disabled="!isMyTurn || isPicking(player.player.uuid) || player.in_play"
             :aria-label="$t('fantasy.draft.wishlist.draftAria', { name: player.player.display_name })"
             class="flex items-center justify-center gap-1 h-8 px-3 rounded-xl text-2xs font-bold text-white bg-emerald-500 dark:bg-emerald-600 active:scale-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
             @click="draftPlayer(player)"

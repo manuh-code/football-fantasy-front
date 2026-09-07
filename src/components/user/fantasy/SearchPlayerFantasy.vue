@@ -329,7 +329,7 @@
                   v-for="player in players"
                   :key="player.player.uuid"
                   class="active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
-                  :class="{ 'opacity-50': props.mode === 'add' && player.in_play }"
+                  :class="{ 'opacity-50': player.in_play }"
                 >
                   <!-- Player Info — the name wraps instead of truncating -->
                   <td class="px-3 py-2.5">
@@ -437,7 +437,7 @@
                         v-if="player.is_available"
                         @click="handleAddPlayer(player)"
                         :disabled="
-                          props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
+                          props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || player.in_play
                         "
                         :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
@@ -489,7 +489,7 @@
               class="px-3 py-3 border-l-2 active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
               :class="[
                 getPositionRailClass(player.position.developer_name),
-                { 'opacity-50': props.mode === 'add' && player.in_play },
+                { 'opacity-50': player.in_play },
               ]"
             >
               <div class="flex items-center gap-3">
@@ -563,7 +563,7 @@
                     v-if="player.is_available"
                     @click="handleAddPlayer(player)"
                     :disabled="
-                      props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || (props.mode === 'add' && player.in_play)
+                      props.disabled || !canAddPlayer || isAddingPlayer(player.player.uuid) || player.in_play
                     "
                     :aria-label="$t('fantasy.search.selectAria', { name: player.player.display_name })"
                     class="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-500 dark:bg-blue-600 text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
@@ -1179,7 +1179,11 @@ async function handleAddPlayer(player: FantasyPlayerDraftResponse) {
     return;
   }
 
-  if (props.mode === 'add' && player.in_play) return;
+  // Su partido de esta jornada ya empezo: fichar (o draftear) a alguien con
+  // los puntos ya hechos es lo mismo que subirlo del banquillo a media jornada,
+  // y el servidor lo rechaza igual en los dos caminos. El mock draft no entra
+  // aqui: su pool siempre viaja con `in_play` en false.
+  if (player.in_play) return;
 
   if (props.mode === "draft") {
     addingPlayers.value.add(player.player.uuid);
