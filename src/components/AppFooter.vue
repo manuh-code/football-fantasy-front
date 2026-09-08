@@ -25,6 +25,9 @@ const LINKS = [
   { key: 'guides', to: { name: 'guides' } },
   { key: 'about', to: { name: 'about' } },
   { key: 'privacy', to: { name: 'privacy' } },
+  // Google Play exige que el enlace de borrado de cuenta sea alcanzable desde
+  // el sitio, no solo desde la ficha de la tienda.
+  { key: 'deleteAccount', to: { name: 'deleteAccount' } },
 ] as const
 
 const year = new Date().getFullYear()

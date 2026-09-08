@@ -127,7 +127,8 @@
       "landing": "Qué es Pro Fantasy",
       "guides": "Guías y reglas",
       "about": "Acerca de",
-      "privacy": "Aviso de privacidad"
+      "privacy": "Aviso de privacidad",
+      "deleteAccount": "Borrar tu cuenta"
     }
   },
   "dateTimePicker": {

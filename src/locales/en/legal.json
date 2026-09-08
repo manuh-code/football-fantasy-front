@@ -3,5 +3,10 @@
     "title": "Privacy Notice",
     "lastUpdated": "Last updated: {date}",
     "docTitle": "Privacy Notice - Pro Fantasy"
+  },
+  "deleteAccount": {
+    "title": "Delete your account",
+    "lastUpdated": "Last updated: {date}",
+    "docTitle": "Delete your account - Pro Fantasy"
   }
 }

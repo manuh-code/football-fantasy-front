@@ -1,7 +1,7 @@
 {
   "/": {
-    "hash": "76d8b64660c7b6ae",
-    "date": "2026-09-03"
+    "hash": "eac01e1395ab4388",
+    "date": "2026-09-08"
   },
   "/landingpage": {
     "hash": "a8fe9daf09a5e461",
@@ -70,5 +70,9 @@
   "/premium/planes": {
     "hash": "f371a40c0ce74582",
     "date": "2026-08-19"
+  },
+  "/eliminar-cuenta": {
+    "hash": "6fcbe7d644a2a116",
+    "date": "2026-09-08"
   }
 }

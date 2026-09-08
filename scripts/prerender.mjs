@@ -15,7 +15,7 @@
 //   así que no engordan el service worker.
 //
 // Rutas generadas: /landingpage, /about, /guias, /guias/<slug> (todas las
-// guías declaradas en src/views/guides/guides.ts) y /privacy.
+// guías declaradas en src/views/guides/guides.ts), /privacy y /eliminar-cuenta.
 //
 // Al final también escribe dist/sitemap.xml a partir de esas mismas rutas.
 
@@ -99,7 +99,7 @@ const NAV = `<header class="pr-nav">
 const FOOTER = `<footer>
   <p>Pro Fantasy — futbol en vivo, fantasy con draft, quinielas y Survivor para
   Liga MX, Premier League, LaLiga, Serie A y Bundesliga. La Liga MX, gratis.</p>
-  <p><a href="/guias">Guías</a> · <a href="/about">Acerca de</a> · <a href="/privacy">Aviso de privacidad</a></p>
+  <p><a href="/guias">Guías</a> · <a href="/about">Acerca de</a> · <a href="/privacy">Aviso de privacidad</a> · <a href="/eliminar-cuenta">Borrar tu cuenta</a></p>
 </footer>`
 
 const chips = () =>
@@ -315,6 +315,31 @@ const privacyPage = () => {
   }
 }
 
+// La página de borrado de cuenta se extrae igual que el aviso de privacidad:
+// mismo <article> de HTML plano y mismo bloque `company`. Se prerenderiza porque
+// es la URL que Google Play publica en la ficha, y el revisor puede abrirla con
+// un cliente que no ejecuta JavaScript: sin esto vería el <div id="app"> vacío.
+const deleteAccountPage = () => {
+  const sfc = readFileSync(resolve(root, 'src/views/legal/DeleteAccountView.vue'), 'utf8')
+  const articleMatch = sfc.match(/<article[^>]*>([\s\S]*?)<\/article>/)
+  const companyMatch = sfc.match(/const company = \{([\s\S]*?)\};/)
+  if (!articleMatch || !companyMatch) throw new Error('prerender: no pude extraer la página de borrado de cuenta')
+  const company = Object.fromEntries(
+    [...companyMatch[1].matchAll(/(\w+):\s*"([^"]*)"/g)].map(([, k, v]) => [k, v])
+  )
+  const article = articleMatch[1].replace(/\{\{\s*company\.(\w+)\s*\}\}/g, (_, k) => esc(company[k] ?? ''))
+  const email = company.contactEmail ?? ''
+  return {
+    path: '/eliminar-cuenta',
+    title: 'Borrar tu cuenta — Pro Fantasy',
+    description: 'Solicita el borrado de tu cuenta de Pro Fantasy y de los datos asociados: qué se elimina, qué se conserva anonimizado y en qué plazos.',
+    body: `<h1>Borrar tu cuenta</h1>
+      <p class="pr-lead">Última actualización: ${esc(company.lastUpdated ?? '')}</p>
+      <p><a href="/settings">Borra tu cuenta desde Ajustes</a> · <a href="mailto:${esc(email)}?subject=Solicitud%20de%20borrado%20de%20cuenta">Solicítalo por correo a ${esc(email)}</a></p>
+      ${article}`,
+  }
+}
+
 // ── Generación ──────────────────────────────────────────────────────────────
 
 const template = readFileSync(resolve(dist, 'index.html'), 'utf8')
@@ -359,6 +384,7 @@ const pages = [
   guidesHub(),
   ...GUIDES.map(guidePage),
   privacyPage(),
+  deleteAccountPage(),
 ]
 
 for (const page of pages) {
@@ -434,6 +460,7 @@ const PRIORITY = {
   '/premium/planes': '0.8',
   '/about': '0.6',
   '/privacy': '0.3',
+  '/eliminar-cuenta': '0.3',
 }
 
 // El sello cubre title y description además del body: los tres son contenido
