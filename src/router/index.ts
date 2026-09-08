@@ -43,6 +43,9 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'not-found',
   'footballLeagues',
   'privacy',
+  // Es la URL que Google Play publica en la ficha: tiene que abrirse sin
+  // sesión y sin liga seleccionada, tal cual, o el revisor ve otra pantalla.
+  'deleteAccount',
   'landingpage',
   'about',
   'guides',
@@ -420,6 +423,22 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Aviso de Privacidad - Pro Fantasy',
       description: 'Aviso de privacidad de Pro Fantasy conforme a la LFPDPPP',
+      requiresAuth: false
+    }
+  },
+  {
+    // URL declarada en Google Play Console (Política de Datos del Usuario): la
+    // tienda exige un enlace público —sin sesión— donde pedir el borrado de la
+    // cuenta. El borrado real sigue estando en Ajustes; esta página es la
+    // puerta para quien ya no puede entrar. El alias en inglés existe porque es
+    // la forma en que la piden y enlazan otras tiendas y buscadores.
+    path: '/eliminar-cuenta',
+    alias: '/delete-account',
+    name: 'deleteAccount',
+    component: () => import(/* webpackChunkName: "delete-account" */ '@/views/legal/DeleteAccountView.vue'),
+    meta: {
+      title: 'Borrar tu cuenta - Pro Fantasy',
+      description: 'Cómo solicitar el borrado de tu cuenta de Pro Fantasy y de los datos asociados: qué se elimina, qué se conserva y en qué plazos.',
       requiresAuth: false
     }
   },

@@ -114,6 +114,7 @@ const FOOTER_ROUTES = new Set([
   "guideDetail",
   "about",
   "privacy",
+  "deleteAccount",
 ]);
 const showFooter = computed(() =>
   FOOTER_ROUTES.has(router.currentRoute.value.name as string)

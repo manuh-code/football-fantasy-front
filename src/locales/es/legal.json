@@ -3,5 +3,10 @@
     "title": "Aviso de Privacidad",
     "lastUpdated": "Última actualización: {date}",
     "docTitle": "Aviso de Privacidad - Pro Fantasy"
+  },
+  "deleteAccount": {
+    "title": "Borrar tu cuenta",
+    "lastUpdated": "Última actualización: {date}",
+    "docTitle": "Borrar tu cuenta - Pro Fantasy"
   }
 }
