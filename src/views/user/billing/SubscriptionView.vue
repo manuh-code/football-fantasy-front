@@ -10,6 +10,11 @@
           <div class="h-64 rounded-2xl bg-gray-200 dark:bg-gray-800 animate-pulse" />
         </div>
 
+        <!-- Premium comprado en una tienda: se dice dónde está y no se ofrece
+             pagar. Va ANTES de ManageSubscription porque ese componente vive de
+             la fila de Stripe, que aquí no existe, y se quedaría en blanco. -->
+        <StoreSubscriptionNotice v-else-if="subscriptionStore.isManagedOutsideWeb" />
+
         <ManageSubscriptionComponent v-else-if="subscriptionStore.isPremium" />
 
         <SubscriptionPlansComponent v-else />
@@ -23,6 +28,7 @@ import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SubscriptionPlansComponent from '@/components/user/billing/SubscriptionPlansComponent.vue'
 import ManageSubscriptionComponent from '@/components/user/billing/ManageSubscriptionComponent.vue'
+import StoreSubscriptionNotice from '@/components/user/billing/StoreSubscriptionNotice.vue'
 import { useSubscriptionStore } from '@/store/billing/useSubscriptionStore'
 import { preloadStripe } from '@/composables/useStripePaymentElement'
 import subscriptionService from '@/services/user/billing/SubscriptionService'

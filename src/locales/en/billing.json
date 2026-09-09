@@ -99,6 +99,12 @@
           "message": "You keep Premium until the end of the period you already paid for."
         }
       }
+    },
+    "managedInStore": {
+      "title": "Your Premium is active",
+      "appStore": "You subscribed through the App Store, so it's managed from your iPhone or iPad: Settings › your name › Subscriptions.",
+      "googlePlay": "You subscribed through Google Play, so it's managed from your Android phone: Play Store › Payments and subscriptions.",
+      "note": "We can't change or cancel it here: billing is handled by the store where you subscribed. Your access works the same on every device and on the web."
     }
   },
   "paymentMethods": {
