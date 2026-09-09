@@ -99,6 +99,12 @@
           "message": "Conservas Premium hasta el final del periodo que ya pagaste."
         }
       }
+    },
+    "managedInStore": {
+      "title": "Tu Premium está activo",
+      "appStore": "Contrataste la suscripción en la App Store, así que se gestiona desde tu iPhone o iPad: Ajustes › tu nombre › Suscripciones.",
+      "googlePlay": "Contrataste la suscripción en Google Play, así que se gestiona desde tu teléfono Android: Play Store › Pagos y suscripciones.",
+      "note": "Aquí no podemos cambiarla ni cancelarla: el cobro lo lleva la tienda donde te suscribiste. Tu acceso funciona igual en todos tus dispositivos y en la web."
     }
   },
   "paymentMethods": {

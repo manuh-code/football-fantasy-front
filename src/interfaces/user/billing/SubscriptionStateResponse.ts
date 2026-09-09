@@ -25,7 +25,22 @@ export interface SubscriptionResponse {
 // GET /user/subscription, and the payload every mutating subscription endpoint
 // answers with, so a caller never has to re-fetch to learn what it just did.
 export interface SubscriptionStateResponse {
+    // True whenever the user has Premium, **whatever paid for it** — Stripe,
+    // the App Store, Google Play or an admin grant. Deliberately NOT the same
+    // thing as `subscription !== null`: a subscription bought on a phone gives
+    // Premium here with no Stripe row to describe it.
     is_premium: boolean;
+    // Who grants it: stripe | app_store | google_play | admin_grant. Null when
+    // there is no Premium.
+    source: string | null;
+    // Where the user can cancel or change it: web | app_store | google_play.
+    // Null when there is nothing to manage. NOT interchangeable with `source`:
+    // this is the only field that says whether *this* client can do anything
+    // about the subscription.
+    manage_in: string | null;
+    // The Stripe row, and only the Stripe row. Null when Premium came from a
+    // store — there is no Stripe subscription to show, and inventing one would
+    // lie about where the money is charged.
     subscription: SubscriptionResponse | null;
     // Publishable key of the Stripe account and mode that owns these
     // subscriptions. Needed to run a 3DS challenge with a Stripe.js instance

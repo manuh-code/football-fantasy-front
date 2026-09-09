@@ -20,6 +20,8 @@ export const useSubscriptionStore = defineStore('subscription', () => {
   const plans = ref<SubscriptionPlanResponse[]>([])
   const subscription = ref<SubscriptionResponse | null>(null)
   const isPremium = ref(false)
+  const source = ref<string | null>(null)
+  const manageIn = ref<string | null>(null)
 
   const isLoadingPlans = ref(false)
   const isLoadingState = ref(false)
@@ -43,8 +45,21 @@ export const useSubscriptionStore = defineStore('subscription', () => {
   /** Stripe could not collect: the app should ask for a different card. */
   const isPastDue = computed(() => subscription.value?.is_past_due === true)
 
+  /**
+   * Premium comprado FUERA de la web — en la App Store o en Google Play.
+   *
+   * Es lo que separa "no tiene Premium" de "tiene Premium y aquí no se puede
+   * tocar". Sin esta distinción la pantalla sólo podía elegir entre venderle
+   * otra suscripción a quien ya paga, o quedarse en blanco.
+   */
+  const isManagedOutsideWeb = computed(
+    () => isPremium.value && manageIn.value !== null && manageIn.value !== 'web',
+  )
+
   function applyState(state: SubscriptionStateResponse): void {
     isPremium.value = state.is_premium
+    source.value = state.source ?? null
+    manageIn.value = state.manage_in ?? null
     subscription.value = state.subscription
     isStateLoaded.value = true
     // Suscribirse, cambiar de plan, cancelar o reanudar cambian lo que el
@@ -82,6 +97,8 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     plans.value = []
     subscription.value = null
     isPremium.value = false
+    source.value = null
+    manageIn.value = null
     isStateLoaded.value = false
   }
 
@@ -89,6 +106,9 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     plans,
     subscription,
     isPremium,
+    source,
+    manageIn,
+    isManagedOutsideWeb,
     isLoadingPlans,
     isLoadingState,
     isStateLoaded,
