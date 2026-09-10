@@ -4,6 +4,7 @@ import { getToken, onMessage, type MessagePayload } from 'firebase/messaging'
 import { getFirebaseMessaging } from '@/firebase/config'
 import { useApiFantasy } from '@/composables/useApiFantasy'
 import { getDeviceUuid } from '@/utils/deviceUuid'
+import { getDeviceInfo } from '@/utils/deviceInfo'
 import { useNotificationsStore } from '@/store/notifications'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 
@@ -129,10 +130,15 @@ export function usePushNotifications() {
       } else {
         const previousToken = notificationsStore.fcmToken
 
+        // El aparato se describe entero: `platform` + modelo + versión del
+        // sistema. Antes se mandaba `device_name: 'web'` fijo, que era la única
+        // pista que llegaba al backend y no servía ni para distinguir un móvil
+        // de un escritorio. Ver `utils/deviceInfo.ts` para por qué `platform`
+        // sigue siendo `'web'` aunque debajo haya un Android.
         await apiFantasyInstance.post('fcm-token', {
           token,
           device_uuid: getDeviceUuid(),
-          device_name: 'web',
+          ...(await getDeviceInfo()),
         })
         notificationsStore.setToken(token)
         console.log('FCM token registered successfully')
