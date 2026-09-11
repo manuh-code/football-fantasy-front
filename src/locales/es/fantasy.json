@@ -933,5 +933,10 @@
     "statStarters": "Tu once",
     "statAverage": "Media liga",
     "statBench": "Tu banca"
+  },
+  "rounds": {
+    "pendingFixtures": "Jornada incompleta · {count} partido pendiente",
+    "pendingFixturesPlural": "Jornada incompleta · {count} partidos pendientes",
+    "pendingFixturesHint": "Los puntos y el marcador se actualizarán cuando se jueguen."
   }
 }

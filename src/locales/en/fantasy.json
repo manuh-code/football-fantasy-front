@@ -933,5 +933,10 @@
     "statStarters": "Your eleven",
     "statAverage": "League avg.",
     "statBench": "Your bench"
+  },
+  "rounds": {
+    "pendingFixtures": "Incomplete round · {count} match still to play",
+    "pendingFixturesPlural": "Incomplete round · {count} matches still to play",
+    "pendingFixturesHint": "Points and the scoreline will update once they are played."
   }
 }
