@@ -121,6 +121,27 @@ const centerSelected = async () => {
   strip.scrollTo({ left: target, behavior: 'smooth' })
 }
 
+/**
+ * Aviso de jornada incompleta.
+ *
+ * Una jornada con partidos aplazados se cierra y se califica con lo que se jugó
+ * en su hueco del calendario —si no, la tabla de la liga se quedaría sin ella
+ * durante semanas— y se recalcula cuando los rezagados se juegan. Sin decirlo,
+ * el usuario ve una jornada "terminada" a la que le faltan puntos y no entiende
+ * por qué.
+ */
+const pendingNotice = computed(() => {
+  const round = props.rounds.find((r) => r.uuid === props.selectedRoundUuid)
+  const count = round?.pending_fixtures_count ?? 0
+
+  if (!round?.has_pending_fixtures || count < 1) return null
+
+  return t(
+    count === 1 ? 'fantasy.rounds.pendingFixtures' : 'fantasy.rounds.pendingFixturesPlural',
+    { count }
+  )
+})
+
 watch(() => props.selectedRoundUuid, centerSelected)
 watch(() => props.rounds, () => nextTick(centerSelected), { deep: false })
 onMounted(centerSelected)
@@ -180,6 +201,11 @@ export default { name: 'RoundSelector' }
         >
           {{ extractRoundLabel(round.round.name) }}
           <span
+            v-if="round.has_pending_fixtures && !round.is_current"
+            class="inline-flex w-2 h-2 rounded-full"
+            :class="round.uuid === selectedRoundUuid ? 'bg-white/80' : 'bg-amber-400'"
+          />
+          <span
             v-if="round.is_current"
             class="relative inline-flex w-2 h-2 rounded-full"
             :class="round.uuid === selectedRoundUuid ? 'bg-white' : 'bg-emerald-400'"
@@ -203,6 +229,20 @@ export default { name: 'RoundSelector' }
         <v-icon name="hi-solid-chevron-right" class="w-5 h-5" />
       </button>
     </div>
+
+    <!-- Jornada con partidos aplazados: cerrada, pero todavía puede moverse -->
+    <p
+      v-if="pendingNotice && !isLoadingRounds"
+      class="mt-1.5 px-1 flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400"
+    >
+      <span class="shrink-0 inline-flex w-1.5 h-1.5 rounded-full bg-amber-400" />
+      <span>
+        {{ pendingNotice }}
+        <span class="text-gray-500 dark:text-gray-400">
+          {{ $t('fantasy.rounds.pendingFixturesHint') }}
+        </span>
+      </span>
+    </p>
   </div>
 </template>
 
