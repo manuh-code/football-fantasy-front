@@ -108,6 +108,16 @@ export const buildComparison = (
 };
 
 // Common, meaningful metrics surfaced first on the radar when present.
+//
+// Written in snake_case, but the API sends stat codes in kebab-case
+// ("shots-total", "key-passes"), so `priorityIndex` normalizes the separator
+// before looking a key up. Without that step only the single-word entries ever
+// matched — a pair of forwards got "Shots Off Target" and "Penalties" on the
+// radar while "Shots On Target" and "Key Passes" fell through to API order.
+//
+// Two entries still miss, and not because of the separator: the API calls
+// `successful_passes_percentage` "accurate-passes-percentage" and `dribbles`
+// "dribble-attempts". Those are different names, not different formats.
 const RADAR_PRIORITY = [
   "rating",
   "goals",
@@ -140,8 +150,12 @@ export const buildRadarMetrics = (
   // Keep axes where at least one player has a positive value.
   const usable = all.filter((s) => (s.a ?? 0) > 0 || (s.b ?? 0) > 0);
 
+  // The API's codes are kebab-case and RADAR_PRIORITY is snake_case, so the
+  // separator is normalized before the lookup (see the note on that list). This
+  // also lets the `developer_name` fallback key ("SHOTS_TOTAL") match, which is
+  // what `flattenPlayerStats` uses when a type arrives without a `code`.
   const priorityIndex = (key: string): number => {
-    const idx = RADAR_PRIORITY.indexOf(key.toLowerCase());
+    const idx = RADAR_PRIORITY.indexOf(key.toLowerCase().replace(/-/g, "_"));
     return idx === -1 ? Number.MAX_SAFE_INTEGER : idx;
   };
   const ordered = [...usable].sort((a, b) => priorityIndex(a.key) - priorityIndex(b.key));
