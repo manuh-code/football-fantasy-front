@@ -155,7 +155,7 @@
             id="edit-team-initials"
             v-model="initials"
             type="text"
-            maxlength="4"
+            :maxlength="INITIALS_MAX_LENGTH"
             :placeholder="$t('fantasy.teamCreate.initialsPlaceholder')"
             class="flex-1 min-w-0 px-3.5 py-3 rounded-xl border text-base md:text-sm bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 uppercase tracking-[0.3em] font-bold text-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-800"
             :class="initialsError ? 'border-red-300 dark:border-red-500/60' : 'border-gray-200 dark:border-gray-700'"
@@ -240,6 +240,7 @@ import { useI18n } from 'vue-i18n'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import { useToast } from '@/composables/useToast'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
+import { INITIALS_MAX_LENGTH, autoInitials } from '@/components/fantasy/team/teamIdentity'
 import type { FantasyTeamData } from '@/interfaces/fantasy/team/FantasyUserTeamResponse'
 import type { FantasyUserTeamPayload } from '@/interfaces/fantasy/team/FantasyUserTeamPayload'
 
@@ -285,15 +286,6 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const initialName = ref('')
 const initialInitials = ref('')
 
-// FantasyTeamData carries no `initials` field, so we derive them from the name.
-const autoInitials = (name: string): string =>
-  name
-    .trim()
-    .split(/\s+/)
-    .map((w) => w[0]?.toUpperCase() || '')
-    .join('')
-    .slice(0, 4)
-
 function resetFromTeam() {
   revokePreview()
   imageFile.value = null
@@ -302,6 +294,7 @@ function resetFromTeam() {
   hasEditedInitials.value = false
   imageErrored.value = false
   teamName.value = props.team?.team_name ?? ''
+  // FantasyTeamData carries no `initials` field, so we derive them from the name.
   initials.value = autoInitials(props.team?.team_name ?? '')
   initialName.value = teamName.value
   initialInitials.value = initials.value
@@ -422,7 +415,7 @@ const nameError = computed(() => {
 
 const initialsError = computed(() => {
   const v = initials.value.trim()
-  if (v.length > 4) return t('common.validation.maxLength', { max: 4 })
+  if (v.length > INITIALS_MAX_LENGTH) return t('common.validation.maxLength', { max: INITIALS_MAX_LENGTH })
   return ''
 })
 
@@ -431,7 +424,7 @@ const isFormValid = computed(
     teamName.value.trim().length >= 3 &&
     teamName.value.trim().length <= 30 &&
     initials.value.trim().length >= 1 &&
-    initials.value.trim().length <= 4 &&
+    initials.value.trim().length <= INITIALS_MAX_LENGTH &&
     !nameError.value &&
     !initialsError.value,
 )

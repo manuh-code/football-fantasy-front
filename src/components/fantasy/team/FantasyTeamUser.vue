@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useToast } from '@/composables/useToast'
 import { fantasyLeagueService } from '@/services/fantasy/leagues/FantasyLeagueService'
+import { INITIALS_MAX_LENGTH, autoInitials } from '@/components/fantasy/team/teamIdentity'
 import type { FantasyUserTeamPayload } from '@/interfaces/fantasy/team/FantasyUserTeamPayload'
 
 // Props
@@ -84,7 +85,9 @@ const teamNameError = computed(() => {
 
 const initialsError = computed(() => {
   if (!initials.value.trim()) return ''
-  if (initials.value.trim().length > 4) return 'Maximum 4 characters'
+  if (initials.value.trim().length > INITIALS_MAX_LENGTH) {
+    return t('common.validation.maxLength', { max: INITIALS_MAX_LENGTH })
+  }
   return ''
 })
 
@@ -93,22 +96,13 @@ const isFormValid = computed(() => {
     teamName.value.trim().length >= 3 &&
     teamName.value.trim().length <= 30 &&
     initials.value.trim().length >= 1 &&
-    initials.value.trim().length <= 4 &&
+    initials.value.trim().length <= INITIALS_MAX_LENGTH &&
     !teamNameError.value &&
     !initialsError.value
   )
 })
 
 // ─── Auto-generate initials ─────────────────────────────────
-const autoInitials = (name: string): string => {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((w) => w[0]?.toUpperCase() || '')
-    .join('')
-    .slice(0, 4)
-}
-
 watch(teamName, () => {
   if (!hasEditedInitials.value) {
     initials.value = autoInitials(teamName.value)
@@ -304,7 +298,7 @@ const goBack = () => {
                       v-model="initials"
                       @input="onInitialsInput"
                       type="text"
-                      maxlength="4"
+                      :maxlength="INITIALS_MAX_LENGTH"
                       :placeholder="$t('fantasy.teamCreate.initialsPlaceholder')"
                       class="w-full px-4 py-3.5 rounded-xl border text-sm bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 uppercase tracking-[0.25em] font-bold text-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white dark:focus:bg-gray-700"
                       :class="initialsError

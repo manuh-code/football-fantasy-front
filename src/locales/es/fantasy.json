@@ -516,7 +516,7 @@
     "teamName": "Nombre del equipo",
     "teamNamePlaceholder": "ej. Thunder FC",
     "initialsLabel": "Iniciales del equipo",
-    "initialsHint": "(1-4 caracteres)",
+    "initialsHint": "(1-3 caracteres)",
     "initialsPlaceholder": "ej. TFC",
     "autoGenerate": "Generar automáticamente desde el nombre del equipo",
     "tipBody": "Sube el logo de tu equipo para un toque personalizado. Puedes cambiarlo cuando quieras desde la configuración de tu equipo.",
