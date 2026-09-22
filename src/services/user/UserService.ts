@@ -13,6 +13,7 @@ import { UserStorePayload } from "@/interfaces/user/store/userStorePayload";
 import { FantasyFootballPlayersResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import { FantasyFootballLineupPayload } from "@/interfaces/fantasy/leagues/FantasyFootballLineupPayload";
 import { LineupPlayerUpdatePayload } from "@/interfaces/fantasy/lineup/LineupPlayerUpdatePayload";
+import { LineupUpdateResponse } from "@/interfaces/fantasy/lineup/LineupUpdateResponse";
 import { FantasyFootballPlayerVersusResponse } from "@/interfaces/user/fantasy/FantasyFootballPlayerVersusResponse";
 import { FollowableTeamResponse, FollowableTeamsMeta, FollowableTeamsResult } from "@/interfaces/football/team/FollowableTeamResponse";
 
@@ -175,10 +176,10 @@ export class UserService {
         throw new AxiosError('Failed to fetch lineups versus data');
     }
 
-    async updatePlayerLineup(leagueUuid: string, payload: LineupPlayerUpdatePayload): Promise<null> {
-        const response = await this.api.put<ApiResponse<null>>(`user/fantasy/football/lineups/${leagueUuid}`, payload);
+    async updatePlayerLineup(leagueUuid: string, payload: LineupPlayerUpdatePayload): Promise<LineupUpdateResponse | null> {
+        const response = await this.api.put<ApiResponse<LineupUpdateResponse | null>>(`user/fantasy/football/lineups/${leagueUuid}`, payload);
         if (response.data.code === 200) {
-            return response.data.data;
+            return response.data.data ?? null;
         }
         throw new AxiosError('Failed to update player lineup');
     }

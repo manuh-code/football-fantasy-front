@@ -621,6 +621,7 @@
     "roleBench": "Bench",
     "swapSuccessTitle": "Lineup updated",
     "swapSuccessMsg": "{name} has been moved successfully.",
+    "swapSuccessCarriedMsg": "{name} was moved for this round and the next one. | {name} was moved for this round and the next {count}.",
     "swapErrorTitle": "Error",
     "swapErrorMsg": "Could not update lineup. Please try again.",
     "swapUndoneTitle": "Swap undone",

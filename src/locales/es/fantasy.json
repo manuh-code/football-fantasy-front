@@ -621,6 +621,7 @@
     "roleBench": "Suplente",
     "swapSuccessTitle": "Alineación actualizada",
     "swapSuccessMsg": "{name} se movió correctamente.",
+    "swapSuccessCarriedMsg": "{name} se movió en esta jornada y en la siguiente. | {name} se movió en esta jornada y en las {count} siguientes.",
     "swapErrorTitle": "Error",
     "swapErrorMsg": "No se pudo actualizar la alineación. Inténtalo de nuevo.",
     "swapUndoneTitle": "Cambio deshecho",
