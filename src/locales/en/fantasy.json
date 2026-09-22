@@ -516,7 +516,7 @@
     "teamName": "Team Name",
     "teamNamePlaceholder": "e.g. Thunder FC",
     "initialsLabel": "Team Initials",
-    "initialsHint": "(1-4 chars)",
+    "initialsHint": "(1-3 chars)",
     "initialsPlaceholder": "e.g. TFC",
     "autoGenerate": "Auto-generate from team name",
     "tipBody": "Upload your team's logo for a personalized look. You can change it anytime from your team settings.",
