@@ -365,15 +365,22 @@ async function handleSwap(candidate: FantasyFootballPlayer) {
       };
     });
 
-    await getUserService().updatePlayerLineup(props.leagueUuid, {
+    const result = await getUserService().updatePlayerLineup(props.leagueUuid, {
       fantasy_round_uuid: props.fantasyRoundUuid,
       lineup,
     });
 
+    // El servidor arrastra el cambio a las jornadas siguientes sin cerrar; se
+    // dice aquí para que nadie crea que tiene que repetirlo jornada a jornada.
+    const name = candidate.football_player.display_name;
+    const carried = result?.carried_over_round_uuids?.length ?? 0;
+
     addToast({
       type: "success",
       title: t("fantasy.lineup.swapSuccessTitle"),
-      message: t("fantasy.lineup.swapSuccessMsg", { name: candidate.football_player.display_name }),
+      message: carried > 0
+        ? t("fantasy.lineup.swapSuccessCarriedMsg", { name, count: carried }, carried)
+        : t("fantasy.lineup.swapSuccessMsg", { name }),
       duration: 6000,
       actions: [{ label: t("fantasy.lineup.undo"), action: () => undoSwap(previousLineup) }],
     });
