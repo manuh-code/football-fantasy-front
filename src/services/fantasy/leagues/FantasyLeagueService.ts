@@ -24,6 +24,7 @@ import { FantasyStandingResponse } from "@/interfaces/fantasy/standing/FantasySt
 import { FantasyTradePayload } from "@/interfaces/fantasy/trade/FantasyTradePayload";
 import { FantasyTradeResponse } from "@/interfaces/fantasy/trade/FantasyTradeResponse";
 import { PlayerFantasyScoreDetailResponse } from "@/interfaces/fantasy/score/PlayerFantasyScoreDetailResponse";
+import type { PlayerSeasonScoreResponse } from "@/interfaces/fantasy/score/PlayerSeasonScoreResponse";
 import { DraftResults } from "@/interfaces/fantasy/draft/DraftResults";
 import { FantasyPlayoffBracketResponse } from "@/interfaces/fantasy/playoffs/FantasyPlayoffBracketResponse";
 import { RosterGrade } from "@/interfaces/fantasy/team/RosterGrade";
@@ -391,6 +392,24 @@ export class FantasyLeagueService {
             return response.data.data;
         }
         throw new Error('Failed to fetch player fantasy score');
+    }
+
+    /**
+     * La temporada entera de un jugador con las reglas de la liga: el mismo
+     * total que su fila en Jugadores, jornada a jornada y por estadística.
+     * Alimenta el cajón de temporada (`PlayerSeasonScoreDrawer`).
+     */
+    async getPlayerSeasonScore(
+        fantasyLeagueUuid: string,
+        playerUuid: string,
+    ): Promise<PlayerSeasonScoreResponse> {
+        const response = await this.api.get<ApiResponse<PlayerSeasonScoreResponse>>(
+            `fantasy/leagues/statistics/${fantasyLeagueUuid}/player/${playerUuid}`,
+        );
+        if (response.data.code === 200) {
+            return response.data.data;
+        }
+        throw new Error('Failed to fetch player season score');
     }
 
     /**
