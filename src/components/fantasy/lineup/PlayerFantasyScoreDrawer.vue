@@ -7,6 +7,8 @@ import { usePositionShortCode } from "@/composables/usePositionShortCode";
 import { fantasyLeagueService } from "@/services/fantasy/leagues/FantasyLeagueService";
 import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
 import type { PlayerFantasyScoreDetailResponse } from "@/interfaces/fantasy/score/PlayerFantasyScoreDetailResponse";
+import PlayerSeasonScoreDrawer from "@/components/fantasy/score/PlayerSeasonScoreDrawer.vue";
+import { seedFromLineupPlayer } from "@/components/fantasy/score/playerSeasonSeed";
 
 interface Props {
   modelValue: boolean;
@@ -90,6 +92,19 @@ async function load() {
 
 function close() {
   emit("update:modelValue", false);
+}
+
+// ── De la jornada a la temporada ──
+// El cajón de temporada vive aquí dentro: el padre no se entera y la jornada
+// se cierra al abrirlo, así que nunca hay dos hojas apiladas. El jugador se
+// conserva porque el padre no lo limpia al cerrar.
+const showSeason = ref(false);
+const seasonSeed = computed(() => (props.player ? seedFromLineupPlayer(props.player) : null));
+
+function openSeason() {
+  if (!seasonSeed.value) return;
+  showSeason.value = true;
+  close();
 }
 
 // Fetch on open; clear on close so a reopened drawer never flashes stale data.
@@ -277,5 +292,25 @@ watch(
         </div>
       </div>
     </template>
+
+    <!-- Salto a la temporada: siempre visible, también sin datos en la jornada,
+         que es justo cuando más se quiere ver el resto. -->
+    <template v-if="seasonSeed" #footer>
+      <button
+        type="button"
+        class="w-full h-11 flex items-center justify-center gap-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-footnote font-semibold text-gray-800 dark:text-gray-100 active:scale-[0.98] transition-transform"
+        @click="openSeason"
+      >
+        <v-icon name="hi-solid-chart-bar" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+        {{ $t('fantasy.playerSeason.openSeason') }}
+        <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+      </button>
+    </template>
   </BottomSheet>
+
+  <PlayerSeasonScoreDrawer
+    v-model="showSeason"
+    :league-uuid="leagueUuid"
+    :player="seasonSeed"
+  />
 </template>

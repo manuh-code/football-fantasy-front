@@ -10,6 +10,15 @@
       @swap-player="handleSwapPlayer"
     />
 
+    <!-- La temporada del jugador: se abre tocando su fila. No en el mock, que
+         no tiene liga ni, por tanto, reglas con que puntuar. -->
+    <PlayerSeasonScoreDrawer
+      v-if="canOpenSeason"
+      v-model="showSeasonDrawer"
+      :league-uuid="leagueUuid ?? ''"
+      :player="seasonPlayer"
+    />
+
     <!-- Plantilla llena: no se bloquea el fichaje, se avisa de lo que implica.
          Con todos los huecos ocupados, el "+" ya no añade sin más — abre el
          selector para elegir a quién sustituye, que es la única alta que el
@@ -276,6 +285,14 @@
                 {{ $t('fantasy.search.availablePlayers') }}
               </h3>
             </div>
+            <!-- Una fila no enseña que se pueda tocar: se dice con palabras. -->
+            <p
+              v-if="canOpenSeason"
+              class="flex items-center gap-1 mt-1 text-2xs text-gray-400 dark:text-gray-500"
+            >
+              <v-icon name="hi-solid-chart-bar" class="w-3 h-3 shrink-0" />
+              {{ $t('fantasy.playerSeason.rowHint') }}
+            </p>
           </div>
 
           <!-- Desktop Table -->
@@ -329,11 +346,22 @@
                   v-for="player in players"
                   :key="player.player.uuid"
                   class="active:bg-gray-50 dark:active:bg-gray-700/50 transition-colors"
-                  :class="{ 'opacity-50': player.in_play }"
+                  :class="[
+                    { 'opacity-50': player.in_play },
+                    canOpenSeason ? 'cursor-pointer hover:bg-gray-50/80 dark:hover:bg-gray-700/30' : '',
+                  ]"
+                  @click="openSeason(player)"
                 >
-                  <!-- Player Info — the name wraps instead of truncating -->
+                  <!-- Player Info — the name wraps instead of truncating. El
+                       botón es la entrada de teclado a la temporada; con ratón
+                       vale toda la fila. -->
                   <td class="px-3 py-2.5">
-                    <div class="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      class="flex items-center gap-2.5 text-left rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 disabled:cursor-default"
+                      :disabled="!canOpenSeason"
+                      @click.stop="openSeason(player)"
+                    >
                       <img
                         :src="
                           player.player.image_path || '/img/default-avatar.svg'
@@ -356,7 +384,10 @@
                           <NationalityBadge :country="player.player.country" />
                         </div>
                       </div>
-                    </div>
+                      <span v-if="canOpenSeason" class="sr-only">
+                        {{ $t('fantasy.playerSeason.rowAria', { name: player.player.display_name }) }}
+                      </span>
+                    </button>
                   </td>
 
                   <!-- Team -->
@@ -414,8 +445,9 @@
                     </span>
                   </td>
 
-                  <!-- Actions — row end, consistent with mobile -->
-                  <td class="px-3 py-2.5">
+                  <!-- Actions — row end, consistent with mobile. `.stop`: fichar
+                       o marcar no abre además la temporada de la fila. -->
+                  <td class="px-3 py-2.5" @click.stop>
                     <div class="flex items-center justify-center gap-1.5">
                       <!-- Wishlist star (draft only) -->
                       <button
@@ -493,6 +525,15 @@
               ]"
             >
               <div class="flex items-center gap-3">
+                <!-- Identidad + cifras: tocarlas abre la temporada. Es un botón
+                     hermano de las acciones, no un contenedor de ellas, para
+                     que fichar nunca abra el cajón por el camino. -->
+                <button
+                  type="button"
+                  class="flex-1 min-w-0 flex items-center gap-3 -my-1 -ml-1 py-1 pl-1 rounded-xl text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 enabled:active:bg-gray-100 dark:enabled:active:bg-gray-700/60 disabled:cursor-default"
+                  :disabled="!canOpenSeason"
+                  @click="openSeason(player)"
+                >
                 <!-- Avatar -->
                 <img
                   :src="player.player.image_path || '/img/default-avatar.svg'"
@@ -540,6 +581,10 @@
                     </div>
                   </div>
                 </div>
+                <span v-if="canOpenSeason" class="sr-only">
+                  {{ $t('fantasy.playerSeason.rowAria', { name: player.player.display_name }) }}
+                </span>
+                </button>
 
                 <!-- Actions — row end, thumb-reachable -->
                 <div class="shrink-0 flex items-center gap-1.5">
@@ -687,6 +732,8 @@ import { getUserService } from "@/services/user/UserService";
 import { useFantasyRounds } from "@/composables/useFantasyRounds";
 import { hasRoomForSlot, isRosterFull } from "@/components/fantasy/lineup/lineupSlots";
 import type { FantasyFootballPlayer } from "@/interfaces/user/fantasy/FantasyFootballPlayersResponse";
+import PlayerSeasonScoreDrawer from "@/components/fantasy/score/PlayerSeasonScoreDrawer.vue";
+import { seedFromDraftPlayer, type PlayerSeasonSeed } from "@/components/fantasy/score/playerSeasonSeed";
 
 interface Props {
   fantasyLeagueUuid?: string;
@@ -786,6 +833,24 @@ let observer: IntersectionObserver | null = null;
 
 // Computed
 const leagueUuid = computed(() => props.fantasyLeagueUuid);
+
+// ── La temporada del jugador (cajón) ──
+const showSeasonDrawer = ref(false);
+const seasonPlayer = ref<PlayerSeasonSeed | null>(null);
+
+/**
+ * Hace falta una liga de verdad: sus reglas son las que puntúan. El mock draft
+ * no tiene, así que ahí las filas no se abren.
+ */
+const canOpenSeason = computed(() => !isMockSource.value && !!leagueUuid.value);
+
+function openSeason(player: FantasyPlayerDraftResponse) {
+  if (!canOpenSeason.value) return;
+  // La semilla lleva los mismos total, promedio y partidos de la fila: el
+  // cajón abre ya con ellos y la respuesta los confirma.
+  seasonPlayer.value = seedFromDraftPlayer(player);
+  showSeasonDrawer.value = true;
+}
 
 /**
  * Formación que alimenta los filtros por posición: la de la liga, o la que

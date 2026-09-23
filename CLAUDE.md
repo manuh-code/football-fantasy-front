@@ -91,6 +91,28 @@ After a successful delete there is no dedicated success screen: the sheet emits 
 token (wrapped in `try`/`catch` — it can 401 and that must not block navigating away), and redirects
 home.
 
+## Temporada del jugador (cajón)
+
+[`PlayerSeasonScoreDrawer.vue`](src/components/fantasy/score/PlayerSeasonScoreDrawer.vue) — la temporada fantasy
+de un jugador con las reglas de la liga: cifras de cabecera, gráfica de puntos por jornada, de dónde salen los
+puntos (por estadística) y el registro jornada a jornada. Endpoint `GET fantasy/leagues/statistics/{league}/player/{player}`
+(`fantasyLeagueService.getPlayerSeasonScore`). **Su total es el mismo que el de la fila de Jugadores**: el API usa
+la misma fuente (torneo en curso, o el anterior si aún no tiene puntos — `scope.is_fallback`, que el cajón avisa).
+
+- Se abre tocando una fila de `SearchPlayerFantasy.vue` — y como ese componente también es el pool del draft,
+  ahí también; **no** en el mock draft (`canOpenSeason`: sin liga no hay reglas). La fila de móvil es un botón
+  hermano de las acciones, y en la tabla de escritorio la celda de acciones lleva `@click.stop`: fichar nunca abre
+  el cajón. También desde el pie de `PlayerFantasyScoreDrawer.vue` ("Ver temporada completa"), que se cierra y
+  abre el de temporada (lo lleva dentro).
+- Recibe una `PlayerSeasonSeed` (`playerSeasonSeed.ts`), no ninguna de las tres formas de jugador: la fila de
+  Jugadores la trae con sus total/promedio/partidos, así que el cajón abre ya con esas cifras.
+- La aritmética de la gráfica vive en `playerSeasonChart.ts`, **espejo exacto de `PlayerSeasonChart` del móvil**
+  (tope de eje "redondo", el eje incluye el promedio, mejor jornada solo si sumó). La gráfica es HTML/CSS, no
+  chart.js: barras de 4px de extremo redondeado, una sola etiqueta directa (la mejor), promedio discontinuo; con
+  el dedo se puede arrastrar para recorrer las jornadas.
+- Verificado con ESLint, `vite build` y un arnés temporal con datos simulados (móvil y escritorio, claro/oscuro,
+  carga/error/vacío/torneo anterior), ya borrado. **El endpoint nunca se ha llamado de verdad.**
+
 ## Environment variables
 
 All client vars are prefixed `VITE_`. See `.env.example`:
