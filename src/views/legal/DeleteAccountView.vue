@@ -129,9 +129,10 @@
           </li>
         </ol>
         <p>
-          Si creaste la cuenta con <strong>Google</strong> o con <strong>Apple</strong> no tienes
-          contraseña que confirmar: hazlo desde la <strong>app móvil</strong>, que te vuelve a
-          identificar con ese mismo proveedor, o pídelo por correo como se explica más abajo.
+          Si creaste la cuenta con <strong>Google</strong>, <strong>Apple</strong> o
+          <strong>Facebook</strong> no tienes contraseña que confirmar: hazlo desde la
+          <strong>app móvil</strong>, que te vuelve a identificar con ese mismo proveedor, o pídelo
+          por correo como se explica más abajo.
         </p>
         <p>
           El borrado se ejecuta <strong>en ese momento</strong>: la sesión se cierra y la cuenta deja
@@ -151,7 +152,7 @@
         <p>Al completarse la solicitud se eliminan de forma permanente:</p>
         <ul>
           <li>Tu nombre, apellidos, correo electrónico, teléfono y fotografía o avatar.</li>
-          <li>Tu contraseña y las identidades vinculadas de Google y de Apple.</li>
+          <li>Tu contraseña y las identidades vinculadas de Google, Apple y Facebook.</li>
           <li>Todas las sesiones y tokens de acceso abiertos en cualquier dispositivo.</li>
           <li>
             Los tokens de notificaciones push y las suscripciones a avisos de equipos y partidos.

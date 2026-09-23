@@ -31,12 +31,21 @@
           size="md"
           icon="bi-google"
           :loading="isGoogleLoading"
-          :disabled="isLoginLoading"
+          :disabled="isLoginLoading || isFacebookLoading"
           :always-full-width="true"
           :text="isGoogleLoading ? $t('auth.login.googleConnecting') : $t('auth.login.continueGoogle')"
           @click="handleGoogleLogin"
         />
-        <!-- Add Facebook, Apple, etc. here once the backend supports them. -->
+        <ButtonComponent
+          variant="facebook"
+          size="md"
+          icon="bi-facebook"
+          :loading="isFacebookLoading"
+          :disabled="isLoginLoading || isGoogleLoading"
+          :always-full-width="true"
+          :text="isFacebookLoading ? $t('auth.login.facebookConnecting') : $t('auth.login.continueFacebook')"
+          @click="handleFacebookLogin"
+        />
       </div>
 
       <!-- Separator -->
@@ -165,6 +174,7 @@ const authStore = useAuthStore()
 
 const isLoginLoading: Ref<boolean> = ref(false);
 const isGoogleLoading: Ref<boolean> = ref(false);
+const isFacebookLoading: Ref<boolean> = ref(false);
 
 // Social login is the primary path; the email/password form stays collapsed
 // until the user explicitly chooses "Continue with email".
@@ -249,7 +259,7 @@ const handleGoogleLogin = async () => {
         const url = await authStore.fetchGoogleLoginUrl();
         // Preserve the post-login redirect across the Google OAuth round-trip: the
         // ?redirect= query param is gone once we navigate to Google's domain, so we
-        // stash it and the callback restores it (see GoogleCallback.vue).
+        // stash it and the callback restores it (see SocialCallback.vue).
         const redirect = route.query.redirect as string | undefined;
         if (redirect) sessionStorage.setItem('post_auth_redirect', redirect);
         window.location.href = url;
@@ -257,6 +267,22 @@ const handleGoogleLogin = async () => {
         console.error('Google login error:', error)
     } finally {
         isGoogleLoading.value = false
+    }
+}
+
+// Handle Facebook login — same redirect round-trip as Google.
+const handleFacebookLogin = async () => {
+    isFacebookLoading.value = true
+
+    try {
+        const url = await authStore.fetchFacebookLoginUrl();
+        const redirect = route.query.redirect as string | undefined;
+        if (redirect) sessionStorage.setItem('post_auth_redirect', redirect);
+        window.location.href = url;
+    } catch (error) {
+        console.error('Facebook login error:', error)
+    } finally {
+        isFacebookLoading.value = false
     }
 }
 </script>

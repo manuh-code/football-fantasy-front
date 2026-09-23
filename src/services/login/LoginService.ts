@@ -58,6 +58,22 @@ export class LoginService {
     throw new AxiosError('Google login failed');
   }
 
+  async fetchFacebookLoginUrl(): Promise<string> {
+    const response = await this.api.get<ApiResponse<{ url: string }>>('auth/facebook');
+    if (response.data.code === 200) {
+      return response.data.data.url;
+    }
+    throw new AxiosError('Failed to get Facebook auth URL');
+  }
+
+  async loginWithFacebook(queryParams: string): Promise<LoginResponse> {
+    const response = await this.api.get<ApiResponse<LoginResponse>>('auth/facebook/callback' + queryParams);
+    if (response.data.code === 200) {
+      return response.data.data;
+    }
+    throw new AxiosError('Facebook login failed');
+  }
+
   async logout(): Promise<ApiResponse<null>> {
     const response = await this.api.post<ApiResponse<null>>('auth/logout');
     return response.data;

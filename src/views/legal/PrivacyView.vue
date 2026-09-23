@@ -272,7 +272,7 @@
             aplicación y nuestros servidores.
           </li>
           <li>
-            El inicio de sesión se realiza mediante proveedores de autenticación externos (Google),
+            El inicio de sesión se realiza mediante proveedores de autenticación externos (Google, Apple, Facebook),
             por lo que no almacenamos contraseñas de acceso. En caso de habilitar el registro con
             contraseña, ésta se almacenaría cifrada (hash) y nunca en texto plano.
           </li>
