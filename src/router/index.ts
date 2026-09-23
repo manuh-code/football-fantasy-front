@@ -40,6 +40,7 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'login',
   'register',
   'GoogleCallback',
+  'FacebookCallback',
   'not-found',
   'footballLeagues',
   'privacy',
@@ -137,7 +138,16 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/auth/google/callback', // Debe coincidir con lo que pusiste en Google Cloud
     name: 'GoogleCallback',
-    component: () => import('../views/login/GoogleCallback.vue')
+    component: () => import('../views/login/SocialCallback.vue'),
+    props: { provider: 'google' }
+  },
+  {
+    // Debe coincidir con las "Valid OAuth Redirect URIs" de la app de Meta y
+    // con FACEBOOK_REDIRECT_URI del API.
+    path: '/auth/facebook/callback',
+    name: 'FacebookCallback',
+    component: () => import('../views/login/SocialCallback.vue'),
+    props: { provider: 'facebook' }
   },
   {
     path: '/register',
@@ -572,7 +582,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // `userStore.userData` is persisted separately from the auth token and is
-  // only ever populated by login()/loginWithGoogle() — nothing re-fetches it
+  // only ever populated by login()/loginWithGoogle()/loginWithFacebook() — nothing re-fetches it
   // on a resumed session. If it's ever missing while the token is valid (e.g.
   // a partial localStorage write survives on an iOS PWA that gets killed
   // mid-write while backgrounded), every feature that derives the current
@@ -599,7 +609,7 @@ router.beforeEach(async (to, from, next) => {
 
   // An already-authenticated user hitting login/register is sent into the app.
   // Honor an explicit ?redirect= target; otherwise land on the game hub at `/`
-  // (matches the post-login flows in LoginComponent / GoogleCallback). The old
+  // (matches the post-login flows in LoginComponent / SocialCallback). The old
   // /dashboard route is deprecated and must not be used here.
   if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
     const redirect = to.query.redirect as string | undefined;

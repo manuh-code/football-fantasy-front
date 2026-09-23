@@ -31,12 +31,21 @@
           size="md"
           icon="bi-google"
           :loading="isGoogleLoading"
-          :disabled="isLoading"
+          :disabled="isLoading || isFacebookLoading"
           :always-full-width="true"
           :text="isGoogleLoading ? $t('auth.login.googleConnecting') : $t('auth.login.continueGoogle')"
           @click="handleGoogleSignup"
         />
-        <!-- Add Facebook, Apple, etc. here once the backend supports them. -->
+        <ButtonComponent
+          variant="facebook"
+          size="md"
+          icon="bi-facebook"
+          :loading="isFacebookLoading"
+          :disabled="isLoading || isGoogleLoading"
+          :always-full-width="true"
+          :text="isFacebookLoading ? $t('auth.login.facebookConnecting') : $t('auth.login.continueFacebook')"
+          @click="handleFacebookSignup"
+        />
       </div>
 
       <!-- Separator -->
@@ -266,6 +275,7 @@ const isLoading: Ref<boolean> = ref(false);
 // Auth store (for social signup)
 const authStore = useAuthStore();
 const isGoogleLoading: Ref<boolean> = ref(false);
+const isFacebookLoading: Ref<boolean> = ref(false);
 
 // Social signup is the primary path; the email form stays collapsed until the
 // user explicitly chooses "Sign up with email".
@@ -466,7 +476,7 @@ const handleGoogleSignup = async () => {
     try {
         const url = await authStore.fetchGoogleLoginUrl();
         // Preserve any post-auth redirect across the Google OAuth round-trip
-        // (restored in GoogleCallback.vue).
+        // (restored in SocialCallback.vue).
         const redirect = route.query.redirect as string | undefined;
         if (redirect) sessionStorage.setItem('post_auth_redirect', redirect);
         window.location.href = url;
@@ -474,6 +484,22 @@ const handleGoogleSignup = async () => {
         console.error('Google signup error:', error);
     } finally {
         isGoogleLoading.value = false;
+    }
+};
+
+// Continue with Facebook — same as Google: the first sign-in creates the
+// account, and an email that already has one signs into it untouched.
+const handleFacebookSignup = async () => {
+    isFacebookLoading.value = true;
+    try {
+        const url = await authStore.fetchFacebookLoginUrl();
+        const redirect = route.query.redirect as string | undefined;
+        if (redirect) sessionStorage.setItem('post_auth_redirect', redirect);
+        window.location.href = url;
+    } catch (error) {
+        console.error('Facebook signup error:', error);
+    } finally {
+        isFacebookLoading.value = false;
     }
 };
 

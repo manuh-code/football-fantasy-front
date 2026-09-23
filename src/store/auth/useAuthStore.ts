@@ -28,6 +28,7 @@ export const useAuthStore = defineStore("auth", {
     return {
       token: null as string | null,
       googleUrl: null as string | null,
+      facebookUrl: null as string | null,
     };
   },
   getters: {},
@@ -81,6 +82,25 @@ export const useAuthStore = defineStore("auth", {
     async loginWithGoogle(queryParams: string): Promise<void> {
       const userStore = useUserStore();
       const response = await getLoginService().loginWithGoogle(queryParams);
+      const { claimTokensForUser } = usePushNotifications();
+      this.setToken(response.token);
+      await userStore.setUserDataFromApi();
+      await loadPremium();
+      await claimTokensForUser();
+    },
+
+    async fetchFacebookLoginUrl(): Promise<string> {
+      if (this.facebookUrl) {
+        return this.facebookUrl;
+      }
+      const url = await getLoginService().fetchFacebookLoginUrl();
+      this.facebookUrl = url;
+      return url;
+    },
+
+    async loginWithFacebook(queryParams: string): Promise<void> {
+      const userStore = useUserStore();
+      const response = await getLoginService().loginWithFacebook(queryParams);
       const { claimTokensForUser } = usePushNotifications();
       this.setToken(response.token);
       await userStore.setUserDataFromApi();

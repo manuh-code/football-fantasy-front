@@ -16,7 +16,7 @@
 import { computed, withDefaults, defineProps, defineEmits } from 'vue'
 
 interface Props {
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'cancel' | 'google'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'cancel' | 'google' | 'facebook'
     size?: 'sm' | 'md' | 'lg'
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
@@ -69,6 +69,11 @@ const buttonClasses = computed(() => {
             break
         case 'google':
             variantClasses = 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500 shadow-sm hover:shadow-md transition-shadow'
+            break
+        case 'facebook':
+            // Azul de marca de Facebook con texto blanco, como pide su guía de
+            // marca para el botón de login. Mismo azul en claro y en oscuro.
+            variantClasses = 'bg-[#1877F2] hover:bg-[#166FE5] text-white focus:ring-[#1877F2]/50 shadow-sm hover:shadow-md transition-shadow'
             break
         case 'outline':
             variantClasses = 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500'

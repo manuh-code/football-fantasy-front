@@ -1,20 +1,46 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/store';
 import { ButtonComponent } from '@/components/ui';
+
+/**
+ * Vuelta del login por redirección de Google o de Facebook. Los dos hacen lo
+ * mismo —reenviar al API la query que puso el proveedor y guardar el token—, así
+ * que la ruta de cada uno pasa su nombre y esta vista pinta y llama según eso.
+ */
+const props = defineProps<{
+  provider: 'google' | 'facebook';
+}>();
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 const hasError = ref(false);
 
+const providerName = computed(() => (props.provider === 'facebook' ? 'Facebook' : 'Google'));
+const providerIcon = computed(() => (props.provider === 'facebook' ? 'bi-facebook' : 'bi-google'));
+
 const authenticate = async () => {
   hasError.value = false;
+
+  // Quien cierra o rechaza el diálogo vuelve con `?error=access_denied` y sin
+  // `code`: no hay nada que canjear, así que ni se llama al API.
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('error') && !params.has('code')) {
+    sessionStorage.removeItem('post_auth_redirect');
+    hasError.value = true;
+    return;
+  }
+
   try {
-    // Only the query params Google appended (the OAuth code + state) are needed.
+    // Only the query params the provider appended (the OAuth code + state) are needed.
     const queryString = window.location.search;
-    await authStore.loginWithGoogle(queryString);
+    if (props.provider === 'facebook') {
+      await authStore.loginWithFacebook(queryString);
+    } else {
+      await authStore.loginWithGoogle(queryString);
+    }
 
     // Restore the page the user was headed to before the OAuth round-trip
     // (e.g. a shared invite link /pools?join=CODE). Falls back to the game hub.
@@ -47,7 +73,7 @@ onMounted(authenticate);
     >
       <!-- Loading state -->
       <div v-if="!hasError" class="flex flex-col items-center text-center">
-        <!-- Google badge wrapped in a spinning emerald ring -->
+        <!-- Provider badge wrapped in a spinning emerald ring -->
         <div class="relative w-20 h-20 mb-7 flex items-center justify-center">
           <div
             class="loader-ring absolute inset-0 rounded-full border-[3px] border-emerald-500/15 dark:border-emerald-400/10 border-t-emerald-500 dark:border-t-emerald-400"
@@ -55,15 +81,15 @@ onMounted(authenticate);
           <div
             class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/30"
           >
-            <v-icon name="bi-google" class="w-6 h-6 text-white" />
+            <v-icon :name="providerIcon" class="w-6 h-6 text-white" />
           </div>
         </div>
 
         <h1 class="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          {{ $t('auth.googleCallback.title') }}
+          {{ $t('auth.socialCallback.title', { provider: providerName }) }}
         </h1>
         <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400 max-w-xs">
-          {{ $t('auth.googleCallback.subtitle') }}
+          {{ $t('auth.socialCallback.subtitle') }}
         </p>
 
         <!-- Bouncing dots -->
@@ -86,10 +112,10 @@ onMounted(authenticate);
         </div>
 
         <h1 class="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          {{ $t('auth.googleCallback.errorTitle') }}
+          {{ $t('auth.socialCallback.errorTitle') }}
         </h1>
         <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400 max-w-xs">
-          {{ $t('auth.googleCallback.errorSubtitle') }}
+          {{ $t('auth.socialCallback.errorSubtitle', { provider: providerName }) }}
         </p>
 
         <div class="mt-7 w-full">
@@ -98,7 +124,7 @@ onMounted(authenticate);
             size="md"
             icon="hi-solid-arrow-left"
             :always-full-width="true"
-            :text="$t('auth.googleCallback.backToLogin')"
+            :text="$t('auth.socialCallback.backToLogin')"
             @click="goToLogin"
           />
         </div>
