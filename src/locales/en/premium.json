@@ -9,7 +9,8 @@
       "premium_leagues": "Fantasy leagues in the Premier League, LaLiga, Serie A and Bundesliga are part of Premium.",
       "mock_draft": "Practising drafts with players from the European leagues is part of Premium.",
       "scoring_rules": "Tuning how much each play pays in your league is part of Premium.",
-      "roster_grade": "Your roster grade during the season is part of Premium."
+      "roster_grade": "Your roster grade during the season is part of Premium.",
+      "player_season": "Each player's full season — their points round by round and where they come from — is part of Premium."
     },
     "pool": {
       "premium_leagues": "Pools for the Premier League, LaLiga, Serie A and Bundesliga are part of Premium.",
@@ -39,6 +40,10 @@
       "tools": {
         "title": "Manager tools",
         "detail": "Mock drafts in any league and your roster grade all season long."
+      },
+      "season": {
+        "title": "Every player's season",
+        "detail": "Their points round by round, where they come from and how each match went."
       }
     }
   },
@@ -99,6 +104,10 @@
         "guests": {
           "title": "Bring your friends",
           "detail": "Invite people without Premium to your European leagues, pools and Survivors: your subscription opens the door for them. In fantasy leagues, up to half the spots."
+        },
+        "season": {
+          "title": "Every player's full season",
+          "detail": "Open any player in your league and see their points round by round, which stat each one comes from and how every match went, under your league's rules. Without Premium you see their total, average and best round."
         }
       }
     },
@@ -136,6 +145,11 @@
           "feature": "Mock draft and roster grade",
           "free": "No",
           "premium": "Yes"
+        },
+        {
+          "feature": "Each player's season",
+          "free": "Summary",
+          "premium": "Full"
         }
       ]
     },

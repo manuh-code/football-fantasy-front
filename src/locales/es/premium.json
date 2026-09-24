@@ -9,7 +9,8 @@
       "premium_leagues": "Las ligas fantasy de Premier League, LaLiga, Serie A y Bundesliga son parte de Premium.",
       "mock_draft": "Practicar drafts con jugadores de las ligas de Europa es parte de Premium.",
       "scoring_rules": "Ajustar cuánto paga cada jugada en tu liga es parte de Premium.",
-      "roster_grade": "La calificación de tu plantilla durante la temporada es parte de Premium."
+      "roster_grade": "La calificación de tu plantilla durante la temporada es parte de Premium.",
+      "player_season": "La temporada completa de cada jugador —sus puntos jornada a jornada y de dónde salen— es parte de Premium."
     },
     "pool": {
       "premium_leagues": "Las quinielas de Premier League, LaLiga, Serie A y Bundesliga son parte de Premium.",
@@ -39,6 +40,10 @@
       "tools": {
         "title": "Herramientas de manager",
         "detail": "Mock drafts en cualquier liga y la calificación de tu plantilla toda la temporada."
+      },
+      "season": {
+        "title": "La temporada de cada jugador",
+        "detail": "Sus puntos jornada a jornada, de dónde salen y cómo le fue en cada partido."
       }
     }
   },
@@ -99,6 +104,10 @@
         "guests": {
           "title": "Trae a tus amigos",
           "detail": "Invita a gente sin Premium a tus ligas, quinielas y Survivors de Europa: tu suscripción les abre la puerta. En la liga fantasy, hasta la mitad de los lugares."
+        },
+        "season": {
+          "title": "La temporada completa de cada jugador",
+          "detail": "Abre a cualquier jugador de tu liga y mira sus puntos jornada a jornada, de qué estadística sale cada uno y cómo le fue en cada partido, con las reglas de tu liga. Sin Premium ves su total, su promedio y su mejor jornada."
         }
       }
     },
@@ -136,6 +145,11 @@
           "feature": "Mock draft y calificación de plantilla",
           "free": "No",
           "premium": "Sí"
+        },
+        {
+          "feature": "Temporada de cada jugador",
+          "free": "Resumen",
+          "premium": "Completa"
         }
       ]
     },

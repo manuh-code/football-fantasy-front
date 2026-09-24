@@ -605,6 +605,10 @@
             {
               "t": "Herramientas de manager",
               "d": "Practicar mock drafts y ver la calificación de tu plantilla durante toda la temporada."
+            },
+            {
+              "t": "La temporada de cada jugador",
+              "d": "Ver los puntos de cualquier jugador jornada a jornada, de qué estadística sale cada uno y cómo le fue en cada partido. Sin Premium ves su total, su promedio y su mejor jornada."
             }
           ],
           "note": "Puedes cancelar cuando quieras: conservas Premium hasta que termine el periodo que ya pagaste, y después sigues jugando lo que ya tenías."

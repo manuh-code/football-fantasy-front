@@ -94,6 +94,7 @@ const benefits = [
   { key: 'leagues', icon: 'hi-solid-globe-alt' },
   { key: 'rules', icon: 'hi-solid-adjustments' },
   { key: 'tools', icon: 'hi-solid-chart-bar' },
+  { key: 'season', icon: 'hi-solid-presentation-chart-line' },
 ]
 
 const goToPlans = () => {

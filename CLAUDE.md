@@ -112,6 +112,18 @@ la misma fuente (torneo en curso, o el anterior si aún no tiene puntos — `sco
   el dedo se puede arrastrar para recorrer las jornadas.
 - Verificado con ESLint, `vite build` y un arnés temporal con datos simulados (móvil y escritorio, claro/oscuro,
   carga/error/vacío/torneo anterior), ya borrado. **El endpoint nunca se ha llamado de verdad.**
+- **Premium (2026-09-24)**: cabecera y las tres cifras (promedio, partidos, mejor jornada) son de todos; gráfica,
+  desglose y registro son de Premium (`PREMIUM_FEATURES.fantasyPlayerSeason`). Quien recorta es el API: sin
+  suscripción manda `rounds`/`stats` vacíos con `requires_premium`, y el cajón pinta
+  [`PlayerSeasonLockedSections.vue`](src/components/fantasy/score/PlayerSeasonLockedSections.vue) — títulos nítidos,
+  una silueta de **formas, no datos** (`playerSeasonTeaser.ts`, espejo de `PlayerSeasonTeaser` del móvil)
+  difuminada, y la venta encima de la primera. Tocar cualquiera abre `openPremiumUpsell(fantasyPlayerSeason)`
+  **encima** del cajón (z 200 sobre 120; el bloqueo de scroll ya se cuenta por capas), así que quien no compra
+  vuelve al mismo jugador. "Sin puntos" se sigue decidiendo con `summary.rounds_played`: con candado `rounds`
+  siempre llega vacío. El velo del modo oscuro va con `.dark .locked-veil` y no `:global(.dark)`, que en
+  `scoped` se come el resto del selector. El beneficio está en las cuatro listas de Premium: hoja de venta
+  (`premium.upsell.benefits.season`), landing `/premium/planes` (7.ª tarjeta, a lo ancho para cerrar la rejilla, y
+  fila de la comparativa), `billing.subscription.features`, y los textos de `landing.json`/`guides.json`.
 
 ## Environment variables
 

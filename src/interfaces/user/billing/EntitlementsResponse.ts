@@ -9,6 +9,7 @@ export const PREMIUM_FEATURES = {
   fantasyMockDraft: "fantasy.mock_draft",
   fantasyScoringRules: "fantasy.scoring_rules",
   fantasyRosterGrade: "fantasy.roster_grade",
+  fantasyPlayerSeason: "fantasy.player_season",
   poolPremiumLeagues: "pool.premium_leagues",
   poolMaxParticipants: "pool.max_participants",
   poolScoringRules: "pool.scoring_rules",

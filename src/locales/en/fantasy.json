@@ -703,7 +703,11 @@
     "retry": "Retry",
     "openSeason": "See full season",
     "rowAria": "See {name}'s season",
-    "rowHint": "Tap a player to see their season"
+    "rowHint": "Tap a player to see their season",
+    "lockedTitle": "Unlock their full season",
+    "lockedBody": "Their points round by round, where they come from and how each match went.",
+    "lockedCta": "Go Premium",
+    "lockedAria": "{section}: available with Premium"
   },
   "rules": {
     "title": "Scoring rules",

@@ -170,18 +170,21 @@
             v-for="item in includes"
             :key="item.key"
             class="rounded-2xl bg-white dark:bg-gray-800 p-5 ring-1 ring-gray-200/70 dark:ring-gray-700/60"
+            :class="item.wide ? 'sm:col-span-2 lg:col-span-3 sm:flex sm:items-start sm:gap-4' : ''"
           >
             <div
-              class="grid place-items-center w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/15"
+              class="grid place-items-center w-11 h-11 shrink-0 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/15"
             >
               <v-icon :name="item.icon" class="w-5 h-5" />
             </div>
-            <h3 class="mt-4 font-bold">
-              {{ $t(`premium.landing.includes.items.${item.key}.title`) }}
-            </h3>
-            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              {{ $t(`premium.landing.includes.items.${item.key}.detail`) }}
-            </p>
+            <div class="mt-4" :class="item.wide ? 'sm:mt-0 sm:min-w-0' : ''">
+              <h3 class="font-bold">
+                {{ $t(`premium.landing.includes.items.${item.key}.title`) }}
+              </h3>
+              <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                {{ $t(`premium.landing.includes.items.${item.key}.detail`) }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -315,14 +318,19 @@ const leagues = [
   { name: 'Bundesliga', premium: true },
 ] as const
 
-const includes = [
+/**
+ * `wide`: la tarjeta ocupa la fila entera. La séptima la lleva para cerrar la
+ * rejilla (2 y 3 columnas) en vez de quedarse sola en una fila a medias.
+ */
+const includes: ReadonlyArray<{ key: string; icon: string; wide?: boolean }> = [
   { key: 'leagues', icon: 'hi-solid-globe-alt' },
   { key: 'scoring', icon: 'hi-solid-adjustments' },
   { key: 'capacity', icon: 'hi-solid-user-group' },
   { key: 'survivor', icon: 'hi-solid-fire' },
   { key: 'tools', icon: 'hi-solid-chart-bar' },
   { key: 'guests', icon: 'hi-solid-user-add' },
-] as const
+  { key: 'season', icon: 'hi-solid-presentation-chart-line', wide: true },
+]
 
 /**
  * `tm` y no `t`: son listas de objetos en el JSON, y `t` las devolvería como
