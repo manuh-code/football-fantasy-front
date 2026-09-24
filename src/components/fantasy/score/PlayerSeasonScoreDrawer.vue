@@ -14,6 +14,9 @@ import type {
 } from "@/interfaces/fantasy/score/PlayerSeasonScoreResponse";
 import type { PlayerSeasonSeed } from "@/components/fantasy/score/playerSeasonSeed";
 import { buildSeasonChart } from "@/components/fantasy/score/playerSeasonChart";
+import PlayerSeasonLockedSections from "@/components/fantasy/score/PlayerSeasonLockedSections.vue";
+import { openPremiumUpsell } from "@/composables/usePremiumUpsell";
+import { PREMIUM_FEATURES } from "@/interfaces/user/billing/EntitlementsResponse";
 
 /**
  * La temporada de un jugador con las reglas de la liga: el mismo total que su
@@ -25,6 +28,10 @@ import { buildSeasonChart } from "@/components/fantasy/score/playerSeasonChart";
  * Se abre desde Jugadores, desde el pool del draft y desde el detalle por
  * jornada de Mi equipo; por eso recibe una `PlayerSeasonSeed` y no ninguna de
  * las tres formas de jugador.
+ *
+ * La cabecera y las tres cifras son de todos; las tres secciones, de Premium.
+ * Sin suscripción el API las manda vacías con `requires_premium` y aquí se
+ * pintan difuminadas (`PlayerSeasonLockedSections`), con la venta encima.
  */
 interface Props {
   modelValue: boolean;
@@ -94,6 +101,8 @@ const rulesLabel = computed(() =>
 
 const rounds = computed<PlayerSeasonRound[]>(() => detail.value?.rounds ?? []);
 const hasPoints = computed(() => (summary.value?.rounds_played ?? 0) > 0);
+/** Sin Premium: llegan el resumen y las cifras, pero ni jornadas ni desglose. */
+const isLocked = computed(() => detail.value?.requires_premium === true);
 const chart = computed(() => buildSeasonChart(rounds.value, summary.value?.average_points ?? 0));
 const hasAbsent = computed(() => rounds.value.some((round) => round.status === "absent"));
 const hasPending = computed(() => rounds.value.some((round) => round.status === "pending"));
@@ -303,6 +312,15 @@ function onPlotPointerEnd(event: PointerEvent) {
   // El `click` del toque llega después de `pointerup`; si no llega (se soltó
   // fuera de una barra), la bandera no debe quedarse puesta para el siguiente.
   if (scrubbed) setTimeout(() => (scrubbed = false), 400);
+}
+
+/**
+ * La hoja de Premium se abre encima y el cajón se queda debajo: quien la cierra
+ * sin comprar vuelve al mismo jugador. Es la hoja de cualquier candado de la
+ * web, con el motivo de éste como subtítulo.
+ */
+function unlock() {
+  openPremiumUpsell(PREMIUM_FEATURES.fantasyPlayerSeason);
 }
 
 function toggleRound(index: number) {
@@ -530,6 +548,13 @@ watch(
           {{ t("fantasy.playerSeason.emptyBody") }}
         </p>
       </div>
+
+      <!-- Sin Premium: las mismas tres secciones, difuminadas y con la venta -->
+      <PlayerSeasonLockedSections
+        v-else-if="isLocked"
+        :rounds-count="summary?.rounds_count ?? 0"
+        @unlock="unlock"
+      />
 
       <div v-else class="space-y-4">
         <!-- ── Puntos por jornada ── -->

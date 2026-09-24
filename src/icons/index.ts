@@ -73,6 +73,7 @@ import {
   HiSolidBan,
   HiSolidCreditCard,
   HiSolidBadgeCheck,
+  HiSolidPresentationChartLine,
 } from 'oh-vue-icons/icons'
 
 // Theme icons
@@ -302,6 +303,7 @@ export const iconList = [
   HiSolidBan,
   HiSolidCreditCard,
   HiSolidBadgeCheck,
+  HiSolidPresentationChartLine,
 ]
 
 // Icon name mapping for easier usage

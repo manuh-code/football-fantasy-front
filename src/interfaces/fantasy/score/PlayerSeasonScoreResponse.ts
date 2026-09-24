@@ -27,6 +27,13 @@ export interface PlayerSeasonScoreResponse {
     rounds: PlayerSeasonRound[];
     /** Toda la temporada sumada por estadística, de más a menos puntos. */
     stats: PlayerSeasonStat[];
+    /**
+     * El detalle es de Premium (`PREMIUM_FEATURES.fantasyPlayerSeason`): en
+     * true, `rounds` y `stats` llegan vacíos por el candado y no porque no
+     * haya nada. `summary` viaja completo siempre, así que "sin puntos" se
+     * sigue decidiendo con `summary.rounds_played`.
+     */
+    requires_premium: boolean;
 }
 
 export interface PlayerSeasonTeamRef {

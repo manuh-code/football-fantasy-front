@@ -703,7 +703,11 @@
     "retry": "Reintentar",
     "openSeason": "Ver temporada completa",
     "rowAria": "Ver la temporada de {name}",
-    "rowHint": "Toca un jugador para ver su temporada"
+    "rowHint": "Toca un jugador para ver su temporada",
+    "lockedTitle": "Desbloquea su temporada completa",
+    "lockedBody": "Sus puntos jornada a jornada, de dónde salen y cómo le fue en cada partido.",
+    "lockedCta": "Hazte Premium",
+    "lockedAria": "{section}: disponible con Premium"
   },
   "rules": {
     "title": "Reglas de puntuación",
