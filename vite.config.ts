@@ -144,6 +144,10 @@ export default defineConfig({
         // navigator.serviceWorker.register() siempre resuelva contra el archivo
         // estático y lo desacopla del ciclo de vida del SW de la PWA.
         globIgnores: ['firebase-messaging-sw.js'],
+        // Archivos planos de la raíz (ads.txt, app-ads.txt, robots.txt, sitemap.xml…)
+        // deben llegar tal cual al navegador: sin esto el NavigationRoute del SW los
+        // reemplaza por el index.html del SPA y el router muestra la página 404.
+        navigateFallbackDenylist: [/^\/[^/]+\.(?:txt|xml)$/],
         // Al activarse un SW nuevo, borra los precaches de versiones anteriores.
         cleanupOutdatedCaches: true
       }
