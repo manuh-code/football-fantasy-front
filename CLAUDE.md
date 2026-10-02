@@ -123,7 +123,38 @@ la misma fuente (torneo en curso, o el anterior si aún no tiene puntos — `sco
   siempre llega vacío. El velo del modo oscuro va con `.dark .locked-veil` y no `:global(.dark)`, que en
   `scoped` se come el resto del selector. El beneficio está en las cuatro listas de Premium: hoja de venta
   (`premium.upsell.benefits.season`), landing `/premium/planes` (7.ª tarjeta, a lo ancho para cerrar la rejilla, y
-  fila de la comparativa), `billing.subscription.features`, y los textos de `landing.json`/`guides.json`.
+  fila de la comparativa), `billing.subscription.features`, y los textos de `guides.json` (`landing.json` ya no
+  lista beneficios de Premium: desde el rediseño de octubre de 2026 solo dice "Europa con Premium").
+
+## Landing de descarga (`/landingpage`)
+
+Reconstruida el 2026-10-02 para vender la **app de iOS**, no la web. Composición "la ficha viva": se lee como la
+ficha de la App Store (ícono, titular, insignia + QR + Google Play apagado, y el carrusel de capturas ya en la
+primera pantalla), siempre en oscuro con la paleta de marca del móvil y Montserrat. Contrato de diseño en
+`.impeccable/surfaces/src-views-landing-landingview-vue.md`; producto en `PRODUCT.md`.
+
+- Vista en [`LandingView.vue`](src/views/landing/LandingView.vue) (tokens `--lp-*` en `.landing`, independientes del
+  tema claro/oscuro de la web); piezas en `src/components/landing/`. **URLs, archivos y tiempos del video viven en
+  [`landingContent.ts`](src/views/landing/landingContent.ts)**, y `scripts/prerender.mjs` repite `APP_STORE.link` y el
+  id de la app (un `.mjs` no importa `.ts`): si cambian, cambian en los dos.
+- Cada enlace a la App Store lleva su campaña (`itsct`): insignia `apps_box_badge`, botones de texto
+  `apps_box_link` (`apple.co/3VlHTKi`), QR `apps_box_qrcode` (`apple.co/4z5qYu2`, va dentro de la imagen).
+- Las nueve capturas son las de la App Store **ya compuestas** (titular, teléfono, lupa): se muestran tal cual,
+  sin otro marco. La página sirve WebP de 600/900 px de `public/img/landing/shots/` y deja el PNG de R2 como el
+  candidato más grande del `srcset`. El video (R2) es la App Preview real; sus escenas (`DEMO_SCENES`) se copian de
+  `SCENES` en `marketing/app-store/fuente/preview-b.html` si se vuelve a montar.
+- **Video en pantallas táctiles (pendiente del usuario):** con el original de 41 MB solo arranca solo con ratón; en
+  el teléfono espera un toque. El usuario eligió subir a R2 la versión web
+  (`marketing/app-store/preview/pro-fantasy-app-preview-web.mp4`, 5.4 MB, misma imagen a tamaño de pantalla): al
+  tener su URL, ponerla en `DEMO_VIDEO.src` con `lightweight: true` y el autoplay silenciado vuelve también al
+  teléfono. La barra "Obtener" se esconde mientras el teléfono del video está a la vista (`stage-visible`).
+- `GetAppBar.vue` va por `<Teleport to="body">`: `.app-content` de `App.vue` lleva un `transform` (gesto de volver)
+  y con él un `position: fixed` deja de pegarse a la pantalla. Cualquier elemento fijo nuevo de la landing, igual.
+- Mientras está montada pinta de oscuro el lienzo, `theme-color` y `color-scheme`, y los devuelve al salir.
+  `App.vue` no muestra ahí el banner de instalar la PWA (competiría con la descarga nativa). El prerender agrega el
+  Smart App Banner de Safari (`apple-itunes-app`) solo a `/landingpage`.
+- Cuando Android salga: la celda "Próximamente en Google Play" de `DownloadCluster.vue` pasa a insignia oficial
+  con enlace, y `GetAppBar` deja de ofrecer la web a los Android.
 
 ## Environment variables
 

@@ -1,120 +1,117 @@
 {
   "meta": {
-    "title": "Pro Fantasy — Liga MX gratis: fantasy, quinielas y Survivor",
-    "description": "Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. Premier, LaLiga, Serie A y Bundesliga con Premium."
+    "title": "Pro Fantasy — Descarga la app de fantasy de la Liga MX",
+    "description": "Descarga gratis Pro Fantasy en la App Store: draft en vivo, quinielas y Survivor de la Liga MX con tus amigos. Android, próximamente."
   },
   "brand": "Pro Fantasy",
   "nav": {
-    "features": "Funciones",
-    "how": "Cómo funciona",
+    "label": "Principal",
+    "screens": "Capturas",
+    "video": "Video",
+    "modes": "Modos",
     "login": "Iniciar sesión",
-    "signup": "Crear cuenta"
+    "download": "Descargar"
   },
   "hero": {
-    "badge": "Fantasy · Quiniela · Survivor",
-    "titleLine1": "Vive tu liga.",
-    "titleLine2": "Reta a tus amigos.",
-    "subtitle": "Arma tu equipo fantasy con draft en tiempo real, predice marcadores en quinielas y sobrevive jornada a jornada en Survivor. Toda la Liga MX gratis; las cuatro grandes de Europa con Premium.",
-    "ctaPrimary": "Crear cuenta gratis",
-    "ctaSecondary": "Explorar la app",
-    "note": "Liga MX gratis · Sin tarjeta para empezar · Instálala en tu móvil",
-    "leaguesLabel": "Disponible para"
+    "titleLine1": "Juega fantasy",
+    "titleLine2": "con tus amigos",
+    "subtitle": "Arma tu liga privada, draftea en vivo pick por pick y enfrenta a tus amigos cada jornada de la Liga MX.",
+    "facts": {
+      "price": { "label": "Precio", "value": "Gratis" },
+      "category": { "label": "Categoría", "value": "Deportes" },
+      "devices": { "label": "Funciona en", "value": "iPhone y iPad" }
+    }
+  },
+  "download": {
+    "appStore": "Descárgalo en el App Store",
+    "qrAlt": "Código QR para descargar Pro Fantasy en la App Store",
+    "qrHint": "Escanéalo con la cámara de tu iPhone",
+    "playSoon": "Próximamente en",
+    "web": "¿Sin iPhone? Juega en la web"
+  },
+  "screens": {
+    "title": "Así se ve la app",
+    "label": "Capturas de Pro Fantasy en iPhone",
+    "prev": "Capturas anteriores",
+    "next": "Más capturas",
+    "items": {
+      "draft": "Draftea en vivo, pick por pick: tu turno, el reloj y el board del draft en tiempo real.",
+      "pitch": "Tu once, en la cancha: tu alineación con puntos y posición.",
+      "standings": "Toda la Liga MX, al día: la tabla, la racha y tus equipos destacados.",
+      "table": "Sube en la tabla y presume: tu puesto y tus puntos frente a tu liga.",
+      "matchup": "Cada jornada, un duelo: cara a cara contra otro equipo de tu liga.",
+      "leagues": "Todas tus ligas, de un vistazo: marcadores, pendientes y lo que cierra pronto.",
+      "pools": "Pronostica cada partido: quiniela de marcador exacto, jornada a jornada.",
+      "survivor": "Survivor: elige un equipo por jornada, sin repetir, y sobrevive.",
+      "results": "Sigue a tus equipos: resultados y partidos de la Liga MX."
+    }
   },
   "preview": {
-    "title": "Liga entre amigos",
-    "matchday": "Jornada 12 · Duelo directo",
-    "live": "EN VIVO",
-    "vs": "VS",
-    "starters": "Titulares destacados",
-    "pts": "pts"
-  },
-  "stats": {
-    "leagues": {
-      "value": "5 ligas",
-      "label": "Liga MX, Premier League, LaLiga, Serie A y Bundesliga"
-    },
-    "modes": {
-      "value": "3 modos de juego",
-      "label": "Fantasy, quinielas y Survivor con tus amigos"
-    },
-    "free": {
-      "value": "Liga MX gratis",
-      "label": "Siempre, sin tarjeta. Europa con Premium."
+    "title": "Un draft en vivo, en 30 segundos",
+    "body": "Grabado en un iPhone: el reloj de tu turno, la lista de deseos y el tablero que se llena pick por pick.",
+    "videoLabel": "Video de Pro Fantasy en un iPhone: un draft en vivo",
+    "play": "Reproducir video",
+    "pause": "Pausar video",
+    "unmute": "Activar sonido",
+    "mute": "Silenciar video",
+    "error": "No se pudo cargar el video. Revisa tu conexión e inténtalo de nuevo.",
+    "scenesLabel": "Escenas del video",
+    "scenes": {
+      "league": "Juega fantasy con tus amigos",
+      "draft": "Draftea en vivo, pick por pick",
+      "turn": "Cinco minutos por pick",
+      "wishlist": "Marca favoritos y draftéalos",
+      "board": "Cada pick, en el tablero",
+      "team": "Tu plantilla, pick a pick"
     }
   },
-  "features": {
-    "title": "Todo lo que necesitas para vivir el futbol",
-    "subtitle": "Cinco ligas, tres modos de juego y tu grupo de amigos, en una sola app.",
+  "modes": {
+    "title": "Fantasy, quinielas y Survivor en una sola app",
     "items": {
-      "live": {
-        "title": "Cinco ligas en vivo",
-        "body": "Posiciones, resultados, calendario y estadísticas. Liga MX gratis; Premier, LaLiga, Serie A y Bundesliga con Premium."
-      },
       "fantasy": {
-        "title": "Fantasy con draft en vivo",
-        "body": "Draftea a tus jugadores por turnos y enfrenta a tus amigos cada jornada en duelos cara a cara."
+        "name": "Fantasy con draft en vivo",
+        "body": "Elige a tus jugadores por turnos y con reloj, alinea tu once y enfrenta a otro equipo de tu liga cada jornada."
       },
       "pools": {
-        "title": "Quinielas de marcador exacto",
-        "body": "Predice el marcador de cada partido y suma por resultado exacto, ganador o empate correcto."
+        "name": "Quinielas",
+        "body": "Pronostica el marcador de cada partido y suma por resultado exacto, ganador o empate."
       },
       "survivor": {
-        "title": "Survivor con vidas",
-        "body": "Un pick por jornada, sin repetir equipo. Si tu equipo pierde, pierdes una vida; el último en pie gana."
-      },
-      "versus": {
-        "title": "Compara y analiza",
-        "body": "Enfrenta a dos jugadores cara a cara y descubre quién rinde mejor antes de alinear."
-      },
-      "pwa": {
-        "title": "Instálala como app",
-        "body": "Funciona en tu móvil como una app nativa, con notificaciones de tu draft y tus ligas."
-      },
-      "premium": {
-        "title": "Premium cuando lo quieras",
-        "body": "Las cuatro grandes de Europa, puntuación a tu medida, mock drafts, la calificación de tu plantilla y la temporada completa de cada jugador. Invita a tus amigos aunque ellos no paguen."
+        "name": "Survivor",
+        "body": "Un equipo por jornada, sin repetir. Si pierde, pierdes una vida; el último en pie gana."
       }
-    }
-  },
-  "how": {
-    "title": "Empieza en 3 pasos",
-    "subtitle": "En menos de un minuto ya estás compitiendo.",
-    "steps": {
-      "one": {
-        "title": "Crea tu cuenta",
-        "body": "Regístrate gratis con tu correo o con Google en segundos."
+    },
+    "info": {
+      "title": "Información",
+      "price": { "label": "Precio", "value": "Gratis" },
+      "leagues": {
+        "label": "Ligas",
+        "value": "Liga MX gratis. Premier League, LaLiga, Serie A y Bundesliga con Premium."
       },
-      "two": {
-        "title": "Elige tu liga",
-        "body": "Empieza con la Liga MX sin pagar nada. Cuando quieras Premier, LaLiga, Serie A o Bundesliga, actívalas con Premium."
-      },
-      "three": {
-        "title": "Elige tu modo de juego",
-        "body": "Crea un fantasy, una quiniela o un Survivor e invita a tus amigos con un código."
-      }
+      "compatibility": { "label": "Compatibilidad", "value": "iPhone y iPad con iOS 18.2 o posterior" },
+      "android": { "label": "Android", "value": "Próximamente en Google Play" },
+      "web": { "label": "En la web", "value": "Juega desde tu navegador" }
     }
   },
   "cta": {
-    "title": "¿Listo para jugar?",
-    "subtitle": "Únete gratis y demuestra que sabes más de futbol que tus amigos.",
-    "button": "Crear mi cuenta gratis",
-    "secondary": "Ya tengo cuenta"
+    "titleA": "Crea tu equipo.",
+    "titleB": "Compite.",
+    "titleC": "Gana.",
+    "body": "Descárgala gratis en la App Store y arma tu liga hoy."
+  },
+  "getBar": {
+    "subtitle": "Gratis en la App Store",
+    "action": "Obtener",
+    "androidSubtitle": "Android llega pronto",
+    "androidAction": "Jugar en la web"
   },
   "footer": {
-    "tagline": "Vive tu liga. Reta a tus amigos.",
-    "product": "Producto",
-    "features": "Funciones",
-    "how": "Cómo funciona",
-    "explore": "Explorar la app",
-    "resources": "Recursos",
     "guides": "Guías y reglas",
+    "premium": "Premium y planes",
     "about": "Acerca de",
-    "account": "Cuenta",
-    "login": "Iniciar sesión",
-    "signup": "Crear cuenta",
-    "legal": "Legal",
     "privacy": "Aviso de privacidad",
+    "login": "Iniciar sesión",
     "rights": "Todos los derechos reservados.",
-    "premium": "Premium y planes"
+    "trademarks": "Apple y el logotipo de Apple son marcas comerciales de Apple Inc. App Store es una marca de servicio de Apple Inc. Google Play y el logotipo de Google Play son marcas comerciales de Google LLC."
   }
 }

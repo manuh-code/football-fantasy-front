@@ -1,573 +1,796 @@
 <template>
-  <div class="landing relative min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white overflow-x-clip antialiased">
-    <!-- ───────────────────────── Top nav ───────────────────────── -->
-    <header
-      class="sticky top-0 z-40 border-b border-gray-100/70 dark:border-gray-800/70 bg-white/75 dark:bg-gray-900/75 backdrop-blur-xl"
-    >
-      <nav class="container mx-auto max-w-6xl px-4 h-16 flex items-center justify-between gap-4">
-        <a href="#top" class="flex items-center gap-2 font-bold text-lg tracking-tight">
-          <span class="grid place-items-center w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft">
-            <v-icon name="md-sportssoccer" class="w-5 h-5" />
-          </span>
-          <span>{{ $t('landing.brand') }}</span>
+  <div class="landing">
+    <!-- ───────────────────────── Navegación ───────────────────────── -->
+    <header class="nav" :class="{ 'is-scrolled': scrolled }">
+      <nav class="lp-container nav__inner" :aria-label="t('landing.nav.label')">
+        <a href="#top" class="nav__brand">
+          <img :src="APP_ICON" width="36" height="36" alt="" class="nav__icon" />
+          <span>{{ t('landing.brand') }}</span>
         </a>
 
-        <div class="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600 dark:text-gray-300">
-          <a href="#features" class="hover:text-primary-500 transition-colors">{{ $t('landing.nav.features') }}</a>
-          <a href="#how" class="hover:text-primary-500 transition-colors">{{ $t('landing.nav.how') }}</a>
-        </div>
+        <ul class="nav__links">
+          <li><a href="#capturas">{{ t('landing.nav.screens') }}</a></li>
+          <li><a href="#video">{{ t('landing.nav.video') }}</a></li>
+          <li><a href="#modos">{{ t('landing.nav.modes') }}</a></li>
+        </ul>
 
-        <div class="flex items-center gap-2">
-          <router-link
-            :to="{ name: 'login' }"
-            class="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            {{ $t('landing.nav.login') }}
+        <div class="nav__actions">
+          <router-link :to="{ name: 'login' }" class="nav__login">
+            {{ t('landing.nav.login') }}
           </router-link>
-          <router-link
-            :to="{ name: 'register' }"
-            class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white shadow-soft transition-all"
-          >
-            {{ $t('landing.nav.signup') }}
-          </router-link>
+          <a :href="APP_STORE.link" target="_blank" rel="noopener" class="nav__get">
+            {{ t('landing.nav.download') }}
+          </a>
         </div>
       </nav>
     </header>
 
-    <!-- ───────────────────────── Hero ───────────────────────── -->
-    <section id="top" class="relative isolate overflow-hidden">
-      <!-- Decorative backdrop -->
-      <div
-        class="absolute inset-0 -z-10 bg-gradient-to-b from-primary-50/70 via-white to-white dark:from-primary-900/20 dark:via-gray-900 dark:to-gray-900"
-        aria-hidden="true"
-      />
-      <div class="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
-      <div
-        class="float-slow absolute -top-24 -right-16 -z-10 w-[26rem] h-[26rem] rounded-full bg-primary-300/30 dark:bg-primary-500/10 blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        class="float-slower absolute top-40 -left-24 -z-10 w-80 h-80 rounded-full bg-emerald-300/20 dark:bg-emerald-500/5 blur-3xl"
-        aria-hidden="true"
-      />
+    <main>
+      <!-- ───────────── La ficha: encabezado + capturas ───────────── -->
+      <section id="top" class="hero" aria-labelledby="hero-title">
+        <div class="hero__ground" aria-hidden="true">
+          <!-- El área grande de una cancha, en línea fina: la misma que asoma
+               detrás de las capturas de la tienda. -->
+          <svg class="hero__pitch" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMin meet">
+            <rect x="290" y="-4" width="620" height="236" />
+            <rect x="460" y="-4" width="280" height="92" />
+            <path d="M494 232a124 124 0 0 0 212 0" />
+          </svg>
+        </div>
 
-      <div class="container mx-auto max-w-6xl px-4 pt-14 pb-16 md:pt-20 md:pb-24 grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-        <!-- Copy -->
-        <div class="text-center lg:text-left" data-reveal>
-          <span
-            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 ring-1 ring-primary-200/70 dark:ring-primary-700/40 shadow-soft backdrop-blur"
-          >
-            <v-icon name="hi-solid-sparkles" class="w-3.5 h-3.5" />
-            {{ $t('landing.hero.badge') }}
-          </span>
+        <div class="lp-container hero__head">
+          <div class="hero__identity">
+            <img
+              :src="APP_ICON"
+              width="112"
+              height="112"
+              alt=""
+              class="hero__icon"
+            />
+            <div class="hero__copy">
+              <h1 id="hero-title" class="hero__title">
+                <span class="hero__line">{{ t('landing.hero.titleLine1') }}</span>
+                <span class="hero__line hero__line--lime">{{ t('landing.hero.titleLine2') }}</span>
+              </h1>
+              <p class="hero__sub">{{ t('landing.hero.subtitle') }}</p>
 
-          <h1 class="mt-6 text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05]">
-            {{ $t('landing.hero.titleLine1') }}<br />
-            <span class="bg-gradient-to-r from-primary-600 via-primary-500 to-emerald-400 bg-clip-text text-transparent">
-              {{ $t('landing.hero.titleLine2') }}
-            </span>
-          </h1>
-
-          <p class="mx-auto lg:mx-0 mt-5 max-w-xl text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-            {{ $t('landing.hero.subtitle') }}
-          </p>
-
-          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
-            <router-link
-              :to="{ name: 'register' }"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-base font-semibold bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white shadow-medium hover:shadow-strong hover:-translate-y-0.5 active:translate-y-0 transition-all"
-            >
-              <v-icon name="hi-solid-user-add" class="w-5 h-5" />
-              {{ $t('landing.hero.ctaPrimary') }}
-            </router-link>
-            <router-link
-              :to="{ name: 'home' }"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-base font-semibold bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 ring-1 ring-gray-200 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              {{ $t('landing.hero.ctaSecondary') }}
-              <v-icon name="hi-solid-arrow-right" class="w-5 h-5" />
-            </router-link>
+              <dl class="facts">
+                <div v-for="fact in facts" :key="fact" class="facts__cell">
+                  <dt>{{ t(`landing.hero.facts.${fact}.label`) }}</dt>
+                  <dd>{{ t(`landing.hero.facts.${fact}.value`) }}</dd>
+                </div>
+              </dl>
+            </div>
           </div>
 
-          <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">{{ $t('landing.hero.note') }}</p>
-
-          <!-- League rail: the five competitions the app covers -->
-          <div class="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-2">
-            <span class="w-full lg:w-auto text-2xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 lg:mr-1">
-              {{ $t('landing.hero.leaguesLabel') }}
-            </span>
-            <span
-              v-for="league in leagues"
-              :key="league"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 ring-1 ring-gray-200 dark:ring-gray-700 shadow-soft"
-            >
-              <span class="w-1.5 h-1.5 rounded-full bg-primary-500" aria-hidden="true" />
-              {{ league }}
-            </span>
+          <div ref="heroDownload" class="hero__download">
+            <DownloadCluster />
           </div>
         </div>
 
-        <!-- Product mock: a live head-to-head fantasy matchup -->
-        <div class="relative mx-auto w-full max-w-sm lg:max-w-md" data-reveal style="--reveal-delay: 160ms" aria-hidden="true">
-          <div class="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-to-tr from-primary-400/30 via-primary-300/20 to-transparent blur-3xl" />
-
-          <div
-            class="float-slow relative rounded-[2rem] border border-white/60 dark:border-gray-700/60 bg-white/90 dark:bg-gray-800/90 backdrop-blur shadow-strong ring-1 ring-black/5 p-4 sm:p-5"
-          >
-            <!-- Mock header -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="grid place-items-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft">
-                  <v-icon name="bi-trophy-fill" class="w-4 h-4" />
-                </span>
-                <div class="leading-tight">
-                  <p class="text-sm font-bold">{{ $t('landing.preview.title') }}</p>
-                  <p class="text-2xs text-gray-400">{{ $t('landing.preview.matchday') }}</p>
-                </div>
-              </div>
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 text-rose-500 px-2.5 py-1 text-2xs font-bold">
-                <span class="relative flex h-1.5 w-1.5">
-                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-500 opacity-75" />
-                  <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-rose-500" />
-                </span>
-                {{ $t('landing.preview.live') }}
-              </span>
-            </div>
-
-            <!-- Matchup scoreline -->
-            <div class="mt-4 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 p-4 text-white shadow-medium">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex flex-col items-center gap-1.5 flex-1 min-w-0">
-                  <span class="grid place-items-center w-11 h-11 rounded-full bg-white/15 font-extrabold text-sm">
-                    {{ matchup.home.abbr }}
-                  </span>
-                  <span class="text-2xs font-semibold text-primary-100/90 truncate max-w-full">{{ matchup.home.name }}</span>
-                </div>
-                <div class="text-center px-1 shrink-0">
-                  <div class="text-2xl font-extrabold tracking-tight tabular-nums">
-                    {{ matchup.home.pts }} · {{ matchup.away.pts }}
-                  </div>
-                  <div class="text-2xs font-bold tracking-[0.25em] text-primary-100/70 mt-0.5">
-                    {{ $t('landing.preview.vs') }}
-                  </div>
-                </div>
-                <div class="flex flex-col items-center gap-1.5 flex-1 min-w-0">
-                  <span class="grid place-items-center w-11 h-11 rounded-full bg-white/15 font-extrabold text-sm">
-                    {{ matchup.away.abbr }}
-                  </span>
-                  <span class="text-2xs font-semibold text-primary-100/90 truncate max-w-full">{{ matchup.away.name }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Top starters feed -->
-            <div class="mt-4">
-              <p class="px-1 text-2xs font-semibold uppercase tracking-wide text-gray-400">
-                {{ $t('landing.preview.starters') }}
-              </p>
-              <ul class="mt-2 space-y-1.5">
-                <li
-                  v-for="starter in previewStarters"
-                  :key="starter.abbr"
-                  class="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 px-2.5 py-1.5"
-                >
-                  <span class="grid place-items-center w-7 h-7 rounded-full bg-gradient-to-br from-primary-500 to-emerald-400 text-white text-2xs font-bold shrink-0">
-                    {{ starter.abbr }}
-                  </span>
-                  <span class="text-xs font-semibold truncate">{{ starter.name }}</span>
-                  <span class="ml-auto text-sm font-extrabold tabular-nums text-primary-600 dark:text-primary-400">
-                    +{{ starter.pts }}
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Floating chips -->
-          <div class="float-slower absolute -left-3 sm:-left-6 top-24 rounded-2xl bg-white dark:bg-gray-800 shadow-strong ring-1 ring-black/5 dark:ring-white/10 px-3 py-2 flex items-center gap-2">
-            <span class="grid place-items-center w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
-              <v-icon name="bi-trophy-fill" class="w-4 h-4" />
-            </span>
-            <div class="leading-tight">
-              <p class="text-xs font-extrabold tabular-nums">+12</p>
-              <p class="text-2xs text-gray-400">pts</p>
-            </div>
-          </div>
-          <div class="float-slow absolute -right-3 sm:-right-5 bottom-14 rounded-2xl bg-white dark:bg-gray-800 shadow-strong ring-1 ring-black/5 dark:ring-white/10 px-3 py-2 flex items-center gap-2">
-            <span class="grid place-items-center w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-emerald-400 text-white">
-              <v-icon name="hi-solid-chart-bar" class="w-4 h-4" />
-            </span>
-            <p class="text-sm font-extrabold tabular-nums">#1</p>
-          </div>
+        <div id="capturas" class="hero__screens">
+          <h2 class="sr-only">{{ t('landing.screens.title') }}</h2>
+          <ScreenshotRail />
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ───────────────────────── Stats strip ───────────────────────── -->
-    <section class="border-y border-gray-100 dark:border-gray-800/80 bg-gray-50/60 dark:bg-gray-800/20">
-      <div class="container mx-auto max-w-5xl px-4 py-10">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div
-            v-for="(stat, i) in stats"
-            :key="stat.key"
-            class="flex items-center gap-4 rounded-2xl bg-white dark:bg-gray-800 ring-1 ring-gray-100 dark:ring-gray-700/60 px-5 py-4 shadow-soft"
-            data-reveal
-            :style="{ '--reveal-delay': `${i * 90}ms` }"
-          >
-            <span
-              class="grid place-items-center w-11 h-11 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/15 shrink-0"
-            >
-              <v-icon :name="stat.icon" class="w-5 h-5" />
-            </span>
-            <div>
-              <div class="text-lg md:text-xl font-extrabold leading-tight">
-                {{ $t(`landing.stats.${stat.key}.value`) }}
-              </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400 leading-tight">
-                {{ $t(`landing.stats.${stat.key}.label`) }}
-              </div>
-            </div>
-          </div>
+      <!-- ───────────────────── App Preview ───────────────────── -->
+      <section id="video" class="section section--preview" aria-labelledby="preview-title">
+        <div class="lp-container">
+          <AppPreview @stage-visible="previewInView = $event">
+            <template #intro>
+              <h2 id="preview-title" class="h2">{{ t('landing.preview.title') }}</h2>
+              <p class="lead">{{ t('landing.preview.body') }}</p>
+            </template>
+          </AppPreview>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ───────────────────────── Features ───────────────────────── -->
-    <section id="features" class="container mx-auto max-w-6xl px-4 py-20 md:py-28 scroll-mt-20">
-      <div class="text-center max-w-2xl mx-auto" data-reveal>
-        <span class="text-xs font-bold uppercase tracking-widest text-primary-500">{{ $t('landing.nav.features') }}</span>
-        <h2 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{{ $t('landing.features.title') }}</h2>
-        <p class="mt-4 text-gray-600 dark:text-gray-300">{{ $t('landing.features.subtitle') }}</p>
-      </div>
-
-      <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <article
-          v-for="(feature, i) in features"
-          :key="feature.key"
-          class="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 ring-1 ring-gray-100 dark:ring-gray-700/60 shadow-soft hover:shadow-medium hover:-translate-y-1 transition-all duration-300"
-          data-reveal
-          :style="{ '--reveal-delay': `${(i % 3) * 90}ms` }"
-        >
-          <span
-            class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary-500 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            aria-hidden="true"
-          />
-          <div
-            class="grid place-items-center w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 ring-1 ring-primary-500/15 group-hover:scale-110 transition-transform duration-300"
-          >
-            <v-icon :name="feature.icon" class="w-6 h-6" />
-          </div>
-          <h3 class="mt-5 text-lg font-bold">{{ $t(`landing.features.items.${feature.key}.title`) }}</h3>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-            {{ $t(`landing.features.items.${feature.key}.body`) }}
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <!-- ───────────────────────── How it works ───────────────────────── -->
-    <section id="how" class="relative bg-gray-50 dark:bg-gray-800/40 scroll-mt-20">
-      <div class="container mx-auto max-w-6xl px-4 py-20 md:py-28">
-        <div class="text-center max-w-2xl mx-auto" data-reveal>
-          <span class="text-xs font-bold uppercase tracking-widest text-primary-500">{{ $t('landing.nav.how') }}</span>
-          <h2 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{{ $t('landing.how.title') }}</h2>
-          <p class="mt-4 text-gray-600 dark:text-gray-300">{{ $t('landing.how.subtitle') }}</p>
-        </div>
-
-        <ol class="relative mt-20 grid gap-10 md:gap-6 md:grid-cols-3">
-          <!-- Connector -->
-          <div
-            class="hidden md:block absolute top-0 left-[16.66%] right-[16.66%] h-0.5 bg-gradient-to-r from-primary-200 via-primary-400 to-primary-200 dark:from-primary-800 dark:via-primary-600 dark:to-primary-800"
-            aria-hidden="true"
-          />
-
-          <li v-for="(step, index) in steps" :key="step.key" class="relative" data-reveal :style="{ '--reveal-delay': `${index * 110}ms` }">
-            <span
-              class="absolute -top-6 left-1/2 -translate-x-1/2 z-10 grid place-items-center w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-white text-lg font-extrabold shadow-medium ring-4 ring-gray-50 dark:ring-gray-900"
-            >
-              {{ index + 1 }}
-            </span>
-            <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 px-7 pt-10 pb-7 ring-1 ring-gray-100 dark:ring-gray-700/60 shadow-soft h-full">
-              <span class="pointer-events-none absolute -right-3 -bottom-4 text-8xl font-black text-gray-100 dark:text-gray-700/40 select-none" aria-hidden="true">
-                {{ index + 1 }}
-              </span>
-              <v-icon :name="step.icon" class="relative w-7 h-7 text-primary-500" />
-              <h3 class="relative mt-4 text-lg font-bold">{{ $t(`landing.how.steps.${step.key}.title`) }}</h3>
-              <p class="relative mt-2 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                {{ $t(`landing.how.steps.${step.key}.body`) }}
+      <!-- ─────────────── Descripción e información ─────────────── -->
+      <section id="modos" class="section section--modes" aria-labelledby="modes-title">
+        <div class="lp-container modes">
+          <div class="modes__copy">
+            <h2 id="modes-title" class="h2">{{ t('landing.modes.title') }}</h2>
+            <div class="modes__list">
+              <p v-for="mode in modes" :key="mode" class="modes__item">
+                <strong>{{ t(`landing.modes.items.${mode}.name`) }}.</strong>
+                {{ t(`landing.modes.items.${mode}.body`) }}
               </p>
             </div>
+          </div>
+
+          <div class="modes__info">
+            <h3 class="h3">{{ t('landing.modes.info.title') }}</h3>
+            <dl class="info">
+              <div v-for="row in infoRows" :key="row" class="info__row">
+                <dt>{{ t(`landing.modes.info.${row}.label`) }}</dt>
+                <dd>{{ t(`landing.modes.info.${row}.value`) }}</dd>
+              </div>
+              <div class="info__row">
+                <dt>{{ t('landing.modes.info.web.label') }}</dt>
+                <dd>
+                  <router-link :to="{ name: 'home' }" class="info__link">
+                    {{ t('landing.modes.info.web.value') }}
+                    <LandingIcon name="arrow-right" class="info__arrow" />
+                  </router-link>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- ──────────────────────── Cierre ──────────────────────── -->
+      <section class="closing" aria-labelledby="closing-title">
+        <div class="lp-container closing__inner">
+          <img :src="APP_ICON" width="120" height="120" alt="" class="closing__icon" loading="lazy" />
+          <h2 id="closing-title" class="closing__title">
+            {{ t('landing.cta.titleA') }}
+            <span class="closing__lime">{{ t('landing.cta.titleB') }}</span>
+            {{ t('landing.cta.titleC') }}
+          </h2>
+          <p class="closing__sub">{{ t('landing.cta.body') }}</p>
+          <div ref="closingDownload" class="closing__download">
+            <DownloadCluster align="center" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ──────────────────────── Pie ──────────────────────── -->
+    <footer ref="footer" class="footer">
+      <div class="lp-container footer__inner">
+        <div class="footer__brand">
+          <img :src="APP_ICON" width="32" height="32" alt="" loading="lazy" />
+          <span>{{ t('landing.brand') }}</span>
+        </div>
+        <ul class="footer__links">
+          <li v-for="link in footerLinks" :key="link.key">
+            <router-link :to="{ name: link.route }">{{ t(`landing.footer.${link.key}`) }}</router-link>
           </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ───────────────────────── Final CTA ───────────────────────── -->
-    <section class="container mx-auto max-w-6xl px-4 py-20 md:py-28">
-      <div
-        class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-600 to-primary-800 px-6 py-14 md:py-20 text-center text-white shadow-strong"
-        data-reveal
-      >
-        <div class="cta-grid absolute inset-0 opacity-40" aria-hidden="true" />
-        <div class="float-slow absolute -top-16 -right-16 w-72 h-72 rounded-full bg-white/10 blur-3xl" aria-hidden="true" />
-        <div class="float-slower absolute -bottom-20 -left-10 w-72 h-72 rounded-full bg-black/10 blur-3xl" aria-hidden="true" />
-
-        <h2 class="relative text-3xl md:text-4xl font-extrabold tracking-tight">{{ $t('landing.cta.title') }}</h2>
-        <p class="relative mx-auto mt-4 max-w-xl text-primary-50/90">{{ $t('landing.cta.subtitle') }}</p>
-
-        <div class="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <router-link
-            :to="{ name: 'register' }"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-base font-semibold bg-white text-primary-700 hover:bg-primary-50 shadow-medium hover:-translate-y-0.5 active:translate-y-0 transition-all"
-          >
-            <v-icon name="bi-trophy-fill" class="w-5 h-5" />
-            {{ $t('landing.cta.button') }}
-          </router-link>
-          <router-link
-            :to="{ name: 'login' }"
-            class="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full text-base font-semibold text-white ring-1 ring-white/40 hover:bg-white/10 transition-colors"
-          >
-            {{ $t('landing.cta.secondary') }}
-          </router-link>
-        </div>
-      </div>
-    </section>
-
-    <!-- ───────────────────────── Footer ───────────────────────── -->
-    <footer class="border-t border-gray-100 dark:border-gray-800">
-      <div class="container mx-auto max-w-6xl px-4 py-12">
-        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
-          <div class="md:col-span-1">
-            <div class="flex items-center gap-2 font-bold text-lg">
-              <span class="grid place-items-center w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-soft">
-                <v-icon name="md-sportssoccer" class="w-5 h-5" />
-              </span>
-              <span>{{ $t('landing.brand') }}</span>
-            </div>
-            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">{{ $t('landing.footer.tagline') }}</p>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              {{ $t('landing.footer.product') }}
-            </h4>
-            <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <li><a href="#features" class="hover:text-primary-500 transition-colors">{{ $t('landing.footer.features') }}</a></li>
-              <li><a href="#how" class="hover:text-primary-500 transition-colors">{{ $t('landing.footer.how') }}</a></li>
-              <li>
-                <router-link :to="{ name: 'home' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.explore') }}
-                </router-link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              {{ $t('landing.footer.resources') }}
-            </h4>
-            <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <li>
-                <router-link :to="{ name: 'guides' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.guides') }}
-                </router-link>
-              </li>
-              <li>
-                <router-link :to="{ name: 'premiumPlans' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.premium') }}
-                </router-link>
-              </li>
-              <li>
-                <router-link :to="{ name: 'about' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.about') }}
-                </router-link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              {{ $t('landing.footer.account') }}
-            </h4>
-            <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <li>
-                <router-link :to="{ name: 'login' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.login') }}
-                </router-link>
-              </li>
-              <li>
-                <router-link :to="{ name: 'register' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.signup') }}
-                </router-link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              {{ $t('landing.footer.legal') }}
-            </h4>
-            <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <li>
-                <router-link :to="{ name: 'privacy' }" class="hover:text-primary-500 transition-colors">
-                  {{ $t('landing.footer.privacy') }}
-                </router-link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="mt-10 pt-6 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400">
-          © {{ currentYear }} {{ $t('landing.brand') }}. {{ $t('landing.footer.rights') }}
+        </ul>
+        <div class="footer__legal">
+          <p>© {{ currentYear }} {{ t('landing.brand') }}. {{ t('landing.footer.rights') }}</p>
+          <p>{{ t('landing.footer.trademarks') }}</p>
         </div>
       </div>
     </footer>
+
+    <GetAppBar :visible="showGetBar" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from "vue";
+import './landing-font.css'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import AppPreview from '@/components/landing/AppPreview.vue'
+import DownloadCluster from '@/components/landing/DownloadCluster.vue'
+import GetAppBar from '@/components/landing/GetAppBar.vue'
+import LandingIcon from '@/components/landing/LandingIcon.vue'
+import ScreenshotRail from '@/components/landing/ScreenshotRail.vue'
+import { APP_ICON, APP_STORE } from './landingContent'
 
-const currentYear = new Date().getFullYear();
+const { t } = useI18n()
+const currentYear = new Date().getFullYear()
 
-// The five competitions available in the app. Proper nouns, identical in every
-// locale, so they live here instead of i18n.
-const leagues = ["Liga MX", "Premier League", "LaLiga", "Serie A", "Bundesliga"] as const;
+const facts = ['price', 'category', 'devices'] as const
+const modes = ['fantasy', 'pools', 'survivor'] as const
+const infoRows = ['price', 'leagues', 'compatibility', 'android'] as const
+const footerLinks = [
+  { key: 'guides', route: 'guides' },
+  { key: 'premium', route: 'premiumPlans' },
+  { key: 'about', route: 'about' },
+  { key: 'privacy', route: 'privacy' },
+  { key: 'login', route: 'login' },
+] as const
 
-// Stat cards: icon per key; text comes from landing.stats.<key>.
-const stats = [
-  { key: "leagues", icon: "hi-solid-globe-alt" },
-  { key: "modes", icon: "bi-trophy-fill" },
-  { key: "free", icon: "hi-solid-shield-check" },
-] as const;
+// ── El navegador también se viste de noche ───────────────────────────────
+// Mientras la landing está montada, el lienzo detrás de la página (lo que se
+// ve al estirar el scroll en iOS), la barra del navegador (`theme-color`) y
+// los controles nativos son oscuros; al salir se devuelve lo que había.
+const NIGHT = '#0b0b0b'
+const root = document.documentElement
+const themeMetas = Array.from(document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'))
+const previousChrome = {
+  themes: themeMetas.map((meta) => meta.content),
+  rootBackground: root.style.backgroundColor,
+  bodyBackground: document.body.style.backgroundColor,
+  colorScheme: root.style.colorScheme,
+}
 
-// Feature cards: icon per key; text comes from landing.features.items.<key>.
-const features = [
-  { key: "live", icon: "md-sportssoccer" },
-  { key: "fantasy", icon: "bi-trophy-fill" },
-  { key: "pools", icon: "hi-solid-clipboard-check" },
-  { key: "survivor", icon: "hi-solid-fire" },
-  { key: "versus", icon: "md-comparearrows-round" },
-  { key: "pwa", icon: "hi-solid-download" },
-  // Va al final a propósito: la página vende primero el producto y sólo
-  // después lo que cuesta dinero. Ponerlo arriba convierte la portada en un
-  // muro de pago cuando la Liga MX entera sigue siendo gratis.
-  { key: "premium", icon: "hi-solid-sparkles" },
-] as const;
+// ── Navegación con fondo al bajar ────────────────────────────────────────
+const scrolled = ref(false)
+let scrollFrame = 0
+function onScroll() {
+  if (scrollFrame) return
+  scrollFrame = requestAnimationFrame(() => {
+    scrollFrame = 0
+    scrolled.value = window.scrollY > 8
+  })
+}
 
-// "How it works" steps: text comes from landing.how.steps.<key>.
-const steps = [
-  { key: "one", icon: "hi-solid-user-add" },
-  { key: "two", icon: "hi-solid-globe-alt" },
-  { key: "three", icon: "bi-trophy-fill" },
-] as const;
-
-// Decorative head-to-head matchup shown inside the hero mock. Invented,
-// language-neutral team names; the panel is aria-hidden.
-const matchup = {
-  home: { abbr: "GAL", name: "Los Galácticos", pts: 68 },
-  away: { abbr: "RBV", name: "Rayo Bravo FC", pts: 63 },
-} as const;
-
-const previewStarters = [
-  { abbr: "JH", name: "J. Hernández", pts: 12 },
-  { abbr: "CA", name: "C. Aguirre", pts: 8 },
-  { abbr: "MT", name: "M. Torres", pts: 7 },
-] as const;
-
-// Reveal-on-scroll: elements marked with [data-reveal] fade/slide in once visible.
-let observer: IntersectionObserver | null = null;
+// ── La barra de "Obtener" (solo teléfono y tableta) ──────────────────────
+// Se muestra cuando ninguna de las dos descargas ni el pie están a la vista,
+// solo después de haber pasado la del encabezado, y nunca encima del teléfono
+// del video: en un iPhone el teléfono ocupa casi toda la pantalla y la barra
+// le taparía el rótulo de cada escena.
+const heroDownload = ref<HTMLElement | null>(null)
+const closingDownload = ref<HTMLElement | null>(null)
+const footer = ref<HTMLElement | null>(null)
+const anchorsInView = ref(false)
+const pastHero = ref(false)
+const previewInView = ref(false)
+const showGetBar = computed(() => pastHero.value && !anchorsInView.value && !previewInView.value)
+let barObserver: IntersectionObserver | null = null
+const inView = new Set<Element>()
 
 onMounted(() => {
-  const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
-  if (!("IntersectionObserver" in window)) {
-    els.forEach((el) => el.classList.add("is-visible"));
-    return;
-  }
-  observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-  );
-  els.forEach((el) => observer!.observe(el));
-});
+  themeMetas.forEach((meta) => (meta.content = NIGHT))
+  root.style.backgroundColor = NIGHT
+  document.body.style.backgroundColor = NIGHT
+  root.style.colorScheme = 'dark'
 
-onBeforeUnmount(() => observer?.disconnect());
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  const targets = [heroDownload.value, closingDownload.value, footer.value].filter(
+    (el): el is HTMLElement => el !== null,
+  )
+  if (!('IntersectionObserver' in window) || targets.length === 0) return
+  barObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) inView.add(entry.target)
+      else inView.delete(entry.target)
+    })
+    anchorsInView.value = inView.size > 0
+    pastHero.value = (heroDownload.value?.getBoundingClientRect().bottom ?? 0) < 0
+  })
+  targets.forEach((el) => barObserver!.observe(el))
+})
+
+onBeforeUnmount(() => {
+  themeMetas.forEach((meta, i) => (meta.content = previousChrome.themes[i]))
+  root.style.backgroundColor = previousChrome.rootBackground
+  document.body.style.backgroundColor = previousChrome.bodyBackground
+  root.style.colorScheme = previousChrome.colorScheme
+
+  window.removeEventListener('scroll', onScroll)
+  if (scrollFrame) cancelAnimationFrame(scrollFrame)
+  barObserver?.disconnect()
+})
 </script>
 
 <style scoped>
-/* Subtle grid backdrop behind the hero, faded out toward the edges. */
-.hero-grid {
-  background-image:
-    linear-gradient(to right, rgba(5, 150, 105, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(5, 150, 105, 0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
-  -webkit-mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 35%, transparent 78%);
-  mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 35%, transparent 78%);
+/* ── Tokens del mundo "Noche lima" ────────────────────────────────────────
+   Salen de la guía de marca (Palette en el móvil, Color.kt): la página es
+   siempre oscura, como la app en modo oscuro, sin importar el tema de la web. */
+.landing {
+  --lp-ground: #0b0b0b;
+  --lp-ground-2: #131313;
+  --lp-surface: #212121;
+  --lp-surface-2: #2b2b2b;
+  --lp-line: #2b2b2b;
+  --lp-line-strong: #414141;
+  --lp-ink: #f9f9f9;
+  --lp-ink-2: #d6d6d6;
+  --lp-ink-3: #b1b1b1;
+  --lp-ink-4: #858585;
+  --lp-blue-deep: #0025aa;
+  --lp-blue: #0137d2;
+  --lp-lime: #b4e70e;
+  --lp-lime-ink: #212121;
+  --lp-max: 80rem;
+  --lp-gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --lp-nav: 4rem;
+
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+  color: var(--lp-ink);
+  background: var(--lp-ground);
+  font-family: 'Montserrat Variable', 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 500;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
 }
-/* `.dark .foo` (not `:global(.dark)`) — the build drops scoped :global(.dark) rules. */
-.dark .hero-grid {
-  background-image:
-    linear-gradient(to right, rgba(52, 211, 153, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(52, 211, 153, 0.06) 1px, transparent 1px);
+.landing ::selection {
+  color: var(--lp-lime-ink);
+  background: var(--lp-lime);
+}
+.landing :deep(a),
+.landing :deep(button) {
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Grid texture over the final CTA. */
-.cta-grid {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-  background-size: 36px 36px;
-  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 75%);
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 75%);
+.lp-container {
+  width: 100%;
+  max-width: var(--lp-max);
+  margin-inline: auto;
+  padding-inline: var(--lp-gutter);
 }
 
-/* Gentle floating for decorative blobs, the mock and chips. */
-@keyframes floaty {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
+.h2 {
+  margin: 0;
+  font-size: clamp(2rem, 1.35rem + 2.3vw, 3rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
-@keyframes floaty-alt {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(12px); }
+.h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
-.float-slow {
-  animation: floaty 6s ease-in-out infinite;
-}
-.float-slower {
-  animation: floaty-alt 7.5s ease-in-out infinite;
+.lead {
+  margin: 1.25rem 0 0;
+  max-width: 34rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--lp-ink-2);
+  text-wrap: pretty;
 }
 
-/* Reveal on scroll. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(24px);
+/* ── Navegación ───────────────────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid transparent;
   transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
+    background-color 200ms ease,
+    border-color 200ms ease;
 }
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
+/* Opaca: con cualquier transparencia, los titulares blancos que pasan por
+   debajo se leen como un fantasma detrás de la marca. */
+.nav.is-scrolled {
+  background: var(--lp-ground);
+  border-bottom-color: var(--lp-line);
+}
+.nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: var(--lp-nav);
+}
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--lp-ink);
+}
+.nav__icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.55rem;
+}
+.nav__links {
+  display: none;
+  gap: 2rem;
+  margin: 0 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+.nav__links a,
+.nav__login {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--lp-ink-3);
+  transition: color 160ms ease;
+}
+.nav__links a:hover,
+.nav__login:hover {
+  color: var(--lp-ink);
+}
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-left: auto;
+}
+.nav__get {
+  display: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--lp-lime-ink);
+  background: var(--lp-lime);
+  transition: filter 160ms ease;
+}
+.nav__get:hover {
+  filter: brightness(1.06);
+}
+.nav__brand:focus-visible,
+.nav__links a:focus-visible,
+.nav__login:focus-visible,
+.nav__get:focus-visible {
+  outline: 2px solid var(--lp-lime);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+.nav__get:focus-visible {
+  border-radius: 999px;
+  outline-color: var(--lp-ink);
+}
+
+/* ── La ficha ─────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  isolation: isolate;
+  margin-top: calc(var(--lp-nav) * -1);
+  padding: calc(var(--lp-nav) + 1.75rem) 0 0;
+}
+/* La luz del estadio: entra desde la esquina superior derecha, como en las
+   capturas de la tienda, y alcanza la parte alta del carrusel. */
+.hero__ground {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: min(62rem, 100%);
+  overflow: hidden;
+  background:
+    radial-gradient(66rem 46rem at 90% -14%, rgba(1, 55, 210, 0.66), rgba(0, 37, 170, 0.26) 46%, transparent 76%),
+    radial-gradient(44rem 30rem at 4% -6%, rgba(0, 37, 170, 0.34), transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent);
+  mask-image: linear-gradient(to bottom, #000 68%, transparent);
+}
+.hero__pitch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(100%, 75rem);
+  aspect-ratio: 1200 / 420;
+  transform: translateX(-50%);
+  fill: none;
+  stroke: rgba(249, 249, 249, 0.07);
+  stroke-width: 1.5;
+}
+.hero__pitch * {
+  vector-effect: non-scaling-stroke;
+}
+
+.hero__head {
+  display: grid;
+  gap: 2rem;
+}
+.hero__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.hero__icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 1.05rem;
+  box-shadow: 0 14px 36px -12px rgba(1, 55, 210, 0.75);
+}
+.hero__title {
+  margin: 0;
+  font-size: clamp(2.5rem, 1.15rem + 4.4vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+.hero__line {
+  display: block;
+}
+.hero__line--lime {
+  color: var(--lp-lime);
+}
+.hero__sub {
+  margin: 1.1rem 0 0;
+  max-width: 33rem;
+  font-size: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
+  line-height: 1.6;
+  color: var(--lp-ink-2);
+  text-wrap: pretty;
+}
+
+/* La tira de datos de la ficha (precio, categoría, dispositivos). */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 0;
+}
+.facts__cell {
+  padding: 0 1.1rem;
+  border-left: 1px solid var(--lp-line-strong);
+}
+.facts__cell:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.facts dt {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lp-ink-4);
+}
+.facts dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--lp-ink);
+}
+
+.hero__screens {
+  margin-top: 3rem;
+  scroll-margin-top: calc(var(--lp-nav) + 1rem);
+}
+
+/* ── Secciones ────────────────────────────────────────────────────────── */
+.section {
+  padding-block: clamp(4.5rem, 3rem + 5vw, 7.5rem);
+  scroll-margin-top: var(--lp-nav);
+}
+.section--preview {
+  padding-top: clamp(4rem, 2.75rem + 3.5vw, 6rem);
+}
+.section--modes {
+  background: var(--lp-ground-2);
+  border-block: 1px solid var(--lp-line);
+}
+
+/* ── Descripción + información ────────────────────────────────────────── */
+.modes {
+  display: grid;
+  gap: 3.5rem;
+}
+.modes__list {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  max-width: 38rem;
+}
+.modes__item {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--lp-ink-2);
+  text-wrap: pretty;
+}
+.modes__item strong {
+  font-weight: 800;
+  color: var(--lp-ink);
+}
+.info {
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--lp-line);
+}
+.info__row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--lp-line);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.info dt {
+  font-weight: 600;
+  color: var(--lp-ink-4);
+}
+.info dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--lp-ink);
+}
+.info__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--lp-ink-2);
+  text-decoration: underline;
+  text-decoration-color: var(--lp-line-strong);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.3em;
+  transition:
+    color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+.info__link:hover {
+  color: var(--lp-ink);
+  text-decoration-color: var(--lp-lime);
+}
+.info__arrow {
+  font-size: 1.05rem;
+  color: var(--lp-lime);
+}
+.info__link:focus-visible {
+  outline: 2px solid var(--lp-lime);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+/* ── Cierre ───────────────────────────────────────────────────────────── */
+.closing {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: clamp(5rem, 3.5rem + 6vw, 8.5rem);
+}
+/* Las luces del estadio, ahora desde abajo. */
+.closing::before {
+  content: '';
+  position: absolute;
+  inset: auto -10% -40% -10%;
+  z-index: -1;
+  height: 80%;
+  background: radial-gradient(closest-side, rgba(1, 55, 210, 0.45), rgba(0, 37, 170, 0.15) 55%, transparent);
+  pointer-events: none;
+}
+.closing__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.closing__icon {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 1.4rem;
+  box-shadow: 0 20px 50px -16px rgba(1, 55, 210, 0.8);
+}
+.closing__title {
+  margin: 1.75rem 0 0;
+  font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.closing__lime {
+  color: var(--lp-lime);
+}
+.closing__sub {
+  margin: 1rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--lp-ink-2);
+}
+.closing__download {
+  margin-top: 2.5rem;
+}
+
+/* ── Pie ──────────────────────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--lp-line);
+  padding: 2.5rem 0 calc(2.5rem + env(safe-area-inset-bottom, 0px));
+}
+.footer__inner {
+  display: grid;
+  gap: 1.5rem;
+}
+.footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+}
+.footer__brand img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+}
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.footer__links a {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--lp-ink-3);
+  transition: color 160ms ease;
+}
+.footer__links a:hover {
+  color: var(--lp-ink);
+}
+.footer__links a:focus-visible {
+  outline: 2px solid var(--lp-lime);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+.footer__legal {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--lp-ink-4);
+}
+.footer__legal p {
+  margin: 0;
+  max-width: 60rem;
+}
+
+/* ── Tableta ──────────────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .nav__get {
+    display: inline-flex;
+  }
+  .hero__identity {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  .hero__icon {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 1.35rem;
+  }
+}
+
+/* ── Escritorio ───────────────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .nav__links {
+    display: flex;
+  }
+  .hero {
+    padding-top: calc(var(--lp-nav) + 3rem);
+  }
+  .hero__icon {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 1.6rem;
+  }
+  .hero__identity {
+    gap: 1.75rem;
+  }
+  .modes {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(3rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .modes__info {
+    padding-top: 0.5rem;
+  }
+  .footer__inner {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+  .footer__links {
+    justify-content: flex-end;
+  }
+  .footer__legal {
+    grid-column: 1 / -1;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--lp-line);
+  }
+}
+
+/* La fila de la ficha: identidad a la izquierda, descarga a la derecha. Antes
+   de 1200 px no caben las dos sin partir el titular en tres renglones. */
+@media (min-width: 1200px) {
+  .hero__head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 3rem;
+    align-items: start;
+  }
+  .hero__download {
+    padding-top: 0.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-  .float-slow,
-  .float-slower {
-    animation: none !important;
+  .nav,
+  .nav__links a,
+  .nav__login,
+  .nav__get,
+  .info__link,
+  .footer__links a {
+    transition: none;
   }
 }
 </style>

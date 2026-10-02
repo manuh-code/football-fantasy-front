@@ -63,8 +63,10 @@
     </div>
 
     <!-- PWA: install banner + push opt-in (global, Teleported).
-         La actualización es invisible (usePwaAutoUpdate), sin modal. -->
-    <PwaInstallBanner />
+         La actualización es invisible (usePwaAutoUpdate), sin modal.
+         La landing vende la app nativa: ofrecer ahí "instalar la web" sería
+         una segunda descarga compitiendo con la de la App Store. -->
+    <PwaInstallBanner v-if="!isLandingRoute" />
     <PushPermissionModal />
 
     <!-- Muro de pago. Único en toda la app: lo abre cualquier pantalla con
