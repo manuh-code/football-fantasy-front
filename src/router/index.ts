@@ -108,8 +108,8 @@ const routes: Array<RouteRecordRaw> = [
     // otro al montar la app. Si divergen, Google ve un título antes de ejecutar
     // el JS y otro después.
     meta: {
-      title: 'Pro Fantasy — Liga MX gratis: fantasy, quinielas y Survivor',
-      description: 'Juega fantasy de Liga MX gratis: draft en vivo, quinielas de marcador exacto y Survivor con tus amigos. También Premier, LaLiga, Serie A y Bundesliga.',
+      title: 'Pro Fantasy — Descarga la app de fantasy de la Liga MX',
+      description: 'Descarga gratis Pro Fantasy en la App Store: draft en vivo, quinielas y Survivor de la Liga MX con tus amigos. Android, próximamente.',
       requiresAuth: false
     }
   },

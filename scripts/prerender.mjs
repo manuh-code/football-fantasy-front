@@ -267,29 +267,40 @@ const aboutPage = () => {
   }
 }
 
+// La landing de descarga. Los enlaces repiten APP_STORE de
+// src/views/landing/landingContent.ts (un .mjs no importa .ts): si cambian
+// allá, cambian aquí. `head` agrega el Smart App Banner de Safari: en iPhone,
+// quien entra directo a /landingpage ve arriba el "Obtener"/"Abrir" nativo.
+const APP_STORE_ID = '6806096370'
+const APP_STORE_LINK = 'https://apple.co/3VlHTKi'
+
 const landingPage = () => {
-  const featKeys = ['live', 'fantasy', 'pools', 'survivor', 'versus', 'pwa', 'premium']
-  const stepKeys = ['one', 'two', 'three']
-  const statKeys = ['leagues', 'modes', 'free']
+  const screenKeys = ['draft', 'pitch', 'standings', 'table', 'matchup', 'leagues', 'pools', 'survivor', 'results']
+  const sceneKeys = ['league', 'draft', 'turn', 'wishlist', 'board', 'team']
+  const modeKeys = ['fantasy', 'pools', 'survivor']
+  const infoKeys = ['price', 'leagues', 'compatibility', 'android']
   return {
     path: '/landingpage',
     title: landing.meta.title,
     description: landing.meta.description,
+    head: `<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}" />`,
     body: `
       <h1>${esc(landing.hero.titleLine1)} ${esc(landing.hero.titleLine2)}</h1>
       <p class="pr-lead">${esc(landing.hero.subtitle)}</p>
-      <p>${esc(landing.hero.leaguesLabel)}:</p>
+      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · ${esc(landing.download.playSoon)} Google Play · <a href="/">${esc(landing.download.web)}</a></p>
+      <h2>${esc(landing.screens.title)}</h2>
+      <ul>${screenKeys.map((k) => `<li>${esc(landing.screens.items[k])}</li>`).join('')}</ul>
+      <h2>${esc(landing.preview.title)}</h2>
+      <p>${esc(landing.preview.body)}</p>
+      <ol>${sceneKeys.map((k) => `<li>${esc(landing.preview.scenes[k])}</li>`).join('')}</ol>
+      <h2>${esc(landing.modes.title)}</h2>
+      <ul>${modeKeys.map((k) => `<li><strong>${esc(landing.modes.items[k].name)}</strong> — ${esc(landing.modes.items[k].body)}</li>`).join('')}</ul>
+      <h2>${esc(landing.modes.info.title)}</h2>
+      <ul>${infoKeys.map((k) => `<li><strong>${esc(landing.modes.info[k].label)}</strong> — ${esc(landing.modes.info[k].value)}</li>`).join('')}</ul>
       ${chips()}
-      <ul>${statKeys.map((k) => `<li><strong>${esc(landing.stats[k].value)}</strong> — ${esc(landing.stats[k].label)}</li>`).join('')}</ul>
-      <h2>${esc(landing.features.title)}</h2>
-      <p>${esc(landing.features.subtitle)}</p>
-      <ul>${featKeys.map((k) => `<li><strong>${esc(landing.features.items[k].title)}</strong> — ${esc(landing.features.items[k].body)}</li>`).join('')}</ul>
-      <h2>${esc(landing.how.title)}</h2>
-      <p>${esc(landing.how.subtitle)}</p>
-      <ul>${stepKeys.map((k) => `<li><strong>${esc(landing.how.steps[k].title)}</strong> — ${esc(landing.how.steps[k].body)}</li>`).join('')}</ul>
-      <h2>${esc(landing.cta.title)}</h2>
-      <p>${esc(landing.cta.subtitle)}</p>
-      <p><a href="/register">${esc(landing.cta.button)}</a> · <a href="/login">${esc(landing.cta.secondary)}</a></p>`,
+      <h2>${esc(landing.cta.titleA)} ${esc(landing.cta.titleB)} ${esc(landing.cta.titleC)}</h2>
+      <p>${esc(landing.cta.body)}</p>
+      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · <a href="/">${esc(landing.download.web)}</a></p>`,
   }
 }
 
@@ -390,7 +401,7 @@ const pages = [
 for (const page of pages) {
   const content = `<div class="pr"><main>${NAV}${page.body}${FOOTER}</main></div>`
   const html = withSeo(template, page)
-    .replace('</head>', `${STYLES}\n</head>`)
+    .replace('</head>', `${STYLES}\n${page.head ?? ''}</head>`)
     .replace('<div id="app">', `<div id="app">${content}`)
   const outDir = resolve(dist, `.${page.path}`)
   mkdirSync(outDir, { recursive: true })

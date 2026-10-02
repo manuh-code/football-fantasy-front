@@ -1,120 +1,117 @@
 {
   "meta": {
-    "title": "Pro Fantasy — Free Liga MX fantasy, pools and Survivor",
-    "description": "Play Liga MX fantasy for free: live draft, exact-score pools and Survivor with your friends. Premier League, LaLiga, Serie A and Bundesliga with Premium."
+    "title": "Pro Fantasy — Download the Liga MX fantasy app",
+    "description": "Download Pro Fantasy for free on the App Store: live draft, pools and Survivor for Liga MX with your friends. Android coming soon."
   },
   "brand": "Pro Fantasy",
   "nav": {
-    "features": "Features",
-    "how": "How it works",
+    "label": "Main",
+    "screens": "Screenshots",
+    "video": "Video",
+    "modes": "Modes",
     "login": "Sign in",
-    "signup": "Sign up"
+    "download": "Download"
   },
   "hero": {
-    "badge": "Fantasy · Pools · Survivor",
-    "titleLine1": "Live your league.",
-    "titleLine2": "Challenge your friends.",
-    "subtitle": "Build your fantasy team with a real-time draft, predict scores in pools and survive matchday after matchday in Survivor. All of Liga MX free; Europe's big four with Premium.",
-    "ctaPrimary": "Create free account",
-    "ctaSecondary": "Explore the app",
-    "note": "Liga MX free · No card to start · Install it on your phone",
-    "leaguesLabel": "Available for"
+    "titleLine1": "Play fantasy",
+    "titleLine2": "with your friends",
+    "subtitle": "Set up your private league, draft live pick by pick and take on your friends every Liga MX matchday.",
+    "facts": {
+      "price": { "label": "Price", "value": "Free" },
+      "category": { "label": "Category", "value": "Sports" },
+      "devices": { "label": "Works on", "value": "iPhone and iPad" }
+    }
+  },
+  "download": {
+    "appStore": "Download on the App Store",
+    "qrAlt": "QR code to download Pro Fantasy from the App Store",
+    "qrHint": "Scan it with your iPhone camera",
+    "playSoon": "Coming soon to",
+    "web": "No iPhone? Play on the web"
+  },
+  "screens": {
+    "title": "What the app looks like",
+    "label": "Pro Fantasy screenshots on iPhone",
+    "prev": "Previous screenshots",
+    "next": "More screenshots",
+    "items": {
+      "draft": "Draft live, pick by pick: your turn, the clock and the draft board in real time.",
+      "pitch": "Your eleven, on the pitch: your lineup with points and positions.",
+      "standings": "All of Liga MX, up to date: the table, form and your featured teams.",
+      "table": "Climb the table and brag: your rank and your points against your league.",
+      "matchup": "Every matchday, a duel: head to head against another team in your league.",
+      "leagues": "All your leagues at a glance: scores, pending picks and what closes soon.",
+      "pools": "Predict every match: exact-score pool, matchday by matchday.",
+      "survivor": "Survivor: pick one team per matchday, no repeats, and survive.",
+      "results": "Follow your teams: Liga MX results and fixtures."
+    }
   },
   "preview": {
-    "title": "League of friends",
-    "matchday": "Matchday 12 · Head to head",
-    "live": "LIVE",
-    "vs": "VS",
-    "starters": "Top starters",
-    "pts": "pts"
-  },
-  "stats": {
-    "leagues": {
-      "value": "5 leagues",
-      "label": "Liga MX, Premier League, LaLiga, Serie A and Bundesliga"
-    },
-    "modes": {
-      "value": "3 game modes",
-      "label": "Fantasy, pools and Survivor with your friends"
-    },
-    "free": {
-      "value": "Liga MX free",
-      "label": "Always, no card. Europe with Premium."
+    "title": "A live draft, in 30 seconds",
+    "body": "Recorded on an iPhone: your turn's clock, the wishlist and the board filling up pick by pick.",
+    "videoLabel": "Pro Fantasy video on an iPhone: a live draft",
+    "play": "Play video",
+    "pause": "Pause video",
+    "unmute": "Turn sound on",
+    "mute": "Mute video",
+    "error": "The video couldn't load. Check your connection and try again.",
+    "scenesLabel": "Video scenes",
+    "scenes": {
+      "league": "Play fantasy with your friends",
+      "draft": "Draft live, pick by pick",
+      "turn": "Five minutes per pick",
+      "wishlist": "Star favorites and draft them",
+      "board": "Every pick, on the board",
+      "team": "Your squad, pick by pick"
     }
   },
-  "features": {
-    "title": "Everything you need to live football",
-    "subtitle": "Five leagues, three game modes and your group of friends, in a single app.",
+  "modes": {
+    "title": "Fantasy, pools and Survivor in one app",
     "items": {
-      "live": {
-        "title": "Five leagues live",
-        "body": "Standings, results, fixtures and stats. Liga MX free; Premier League, LaLiga, Serie A and Bundesliga with Premium."
-      },
       "fantasy": {
-        "title": "Fantasy with a live draft",
-        "body": "Draft your players in turns and face your friends every matchday in head-to-head duels."
+        "name": "Fantasy with a live draft",
+        "body": "Pick your players in turns against the clock, set your eleven and face another team in your league every matchday."
       },
       "pools": {
-        "title": "Exact-score pools",
-        "body": "Predict the score of every match and earn points for exact score, correct winner or correct draw."
+        "name": "Pools",
+        "body": "Predict the score of every match and earn points for the exact score, the winner or a draw."
       },
       "survivor": {
-        "title": "Survivor with lives",
-        "body": "One pick per matchday, no repeating teams. If your team loses, you lose a life; the last one standing wins."
-      },
-      "versus": {
-        "title": "Compare and analyze",
-        "body": "Put two players head to head and find out who performs better before setting your lineup."
-      },
-      "pwa": {
-        "title": "Install it as an app",
-        "body": "Works on your phone like a native app, with notifications for your draft and your leagues."
-      },
-      "premium": {
-        "title": "Premium whenever you want",
-        "body": "Europe's big four, custom scoring, mock drafts, your roster grade and every player's full season. Invite your friends even if they don't pay."
+        "name": "Survivor",
+        "body": "One team per matchday, no repeats. If it loses, you lose a life; the last one standing wins."
       }
-    }
-  },
-  "how": {
-    "title": "Start in 3 steps",
-    "subtitle": "You'll be competing in less than a minute.",
-    "steps": {
-      "one": {
-        "title": "Create your account",
-        "body": "Sign up for free with your email or Google in seconds."
+    },
+    "info": {
+      "title": "Information",
+      "price": { "label": "Price", "value": "Free" },
+      "leagues": {
+        "label": "Leagues",
+        "value": "Liga MX for free. Premier League, LaLiga, Serie A and Bundesliga with Premium."
       },
-      "two": {
-        "title": "Pick your league",
-        "body": "Start with Liga MX without paying anything. When you want the Premier League, LaLiga, Serie A or Bundesliga, unlock them with Premium."
-      },
-      "three": {
-        "title": "Pick your game mode",
-        "body": "Create a fantasy league, a pool or a Survivor and invite your friends with a code."
-      }
+      "compatibility": { "label": "Compatibility", "value": "iPhone and iPad with iOS 18.2 or later" },
+      "android": { "label": "Android", "value": "Coming soon to Google Play" },
+      "web": { "label": "On the web", "value": "Play from your browser" }
     }
   },
   "cta": {
-    "title": "Ready to play?",
-    "subtitle": "Join for free and prove you know more football than your friends.",
-    "button": "Create my free account",
-    "secondary": "I already have an account"
+    "titleA": "Build your team.",
+    "titleB": "Compete.",
+    "titleC": "Win.",
+    "body": "Download it for free on the App Store and set up your league today."
+  },
+  "getBar": {
+    "subtitle": "Free on the App Store",
+    "action": "Get",
+    "androidSubtitle": "Android is coming soon",
+    "androidAction": "Play on the web"
   },
   "footer": {
-    "tagline": "Live your league. Challenge your friends.",
-    "product": "Product",
-    "features": "Features",
-    "how": "How it works",
-    "explore": "Explore the app",
-    "resources": "Resources",
     "guides": "Guides & rules",
+    "premium": "Premium and plans",
     "about": "About",
-    "account": "Account",
-    "login": "Sign in",
-    "signup": "Sign up",
-    "legal": "Legal",
     "privacy": "Privacy notice",
+    "login": "Sign in",
     "rights": "All rights reserved.",
-    "premium": "Premium and plans"
+    "trademarks": "Apple and the Apple logo are trademarks of Apple Inc. App Store is a service mark of Apple Inc. Google Play and the Google Play logo are trademarks of Google LLC."
   }
 }
