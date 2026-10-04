@@ -274,6 +274,22 @@ const aboutPage = () => {
 const APP_STORE_ID = '6806096370'
 const APP_STORE_LINK = 'https://apple.co/3VlHTKi'
 
+// La landing viva es siempre oscura; este HTML se ve antes de que monte Vue, y
+// con los estilos genéricos de arriba destellaba claro (y en esmeralda) para
+// quien tiene el sistema en modo claro. Va acotado con :has(.pr-landing): el
+// marcador vive dentro de #app, Vue lo reemplaza al montar y las reglas dejan
+// de aplicar, así que no se cuelan en el resto de la navegación.
+const LANDING_NIGHT = `<style>
+html:has(.pr-landing),html:has(.pr-landing) body{background:#0b0b0b;color-scheme:dark}
+.pr:has(.pr-landing){color:#d6d6d6}
+.pr:has(.pr-landing) h1,.pr:has(.pr-landing) h2,.pr:has(.pr-landing) h3,.pr:has(.pr-landing) .pr-brand{color:#f9f9f9}
+.pr:has(.pr-landing) a{color:#b4e70e}
+.pr:has(.pr-landing) nav a,.pr:has(.pr-landing) .pr-lead,.pr:has(.pr-landing) footer{color:#b1b1b1}
+.pr:has(.pr-landing) header.pr-nav,.pr:has(.pr-landing) footer{border-color:#2b2b2b}
+.pr:has(.pr-landing) .pr-chips li{border-color:#414141}
+.pr:has(.pr-landing) .pr-tier{color:#858585}
+</style>`
+
 const landingPage = () => {
   const screenKeys = ['draft', 'pitch', 'standings', 'table', 'matchup', 'leagues', 'pools', 'survivor', 'results']
   const sceneKeys = ['league', 'draft', 'turn', 'wishlist', 'board', 'team']
@@ -283,8 +299,9 @@ const landingPage = () => {
     path: '/landingpage',
     title: landing.meta.title,
     description: landing.meta.description,
-    head: `<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}" />`,
+    head: `<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}" />\n${LANDING_NIGHT}`,
     body: `
+      <span class="pr-landing" hidden></span>
       <h1>${esc(landing.hero.titleLine1)} ${esc(landing.hero.titleLine2)}</h1>
       <p class="pr-lead">${esc(landing.hero.subtitle)}</p>
       <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · ${esc(landing.download.playSoon)} Google Play · <a href="/">${esc(landing.download.web)}</a></p>

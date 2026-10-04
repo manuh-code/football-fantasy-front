@@ -130,8 +130,9 @@ la misma fuente (torneo en curso, o el anterior si aún no tiene puntos — `sco
 
 Reconstruida el 2026-10-02 para vender la **app de iOS**, no la web. Composición "la ficha viva": se lee como la
 ficha de la App Store (ícono, titular, insignia + QR + Google Play apagado, y el carrusel de capturas ya en la
-primera pantalla), siempre en oscuro con la paleta de marca del móvil y Montserrat. Contrato de diseño en
-`.impeccable/surfaces/src-views-landing-landingview-vue.md`; producto en `PRODUCT.md`.
+primera pantalla), siempre en oscuro con la paleta de marca del móvil y Montserrat. Sistema visual en
+[`DESIGN.md`](DESIGN.md) (solo rige esta página; el resto de la web sigue en el tema de `tailwind.config.js`);
+producto en `PRODUCT.md`. El contrato de dirección de Impeccable vive en `.impeccable/`, que está en `.gitignore`.
 
 - Vista en [`LandingView.vue`](src/views/landing/LandingView.vue) (tokens `--lp-*` en `.landing`, independientes del
   tema claro/oscuro de la web); piezas en `src/components/landing/`. **URLs, archivos y tiempos del video viven en
@@ -152,7 +153,8 @@ primera pantalla), siempre en oscuro con la paleta de marca del móvil y Montser
   y con él un `position: fixed` deja de pegarse a la pantalla. Cualquier elemento fijo nuevo de la landing, igual.
 - Mientras está montada pinta de oscuro el lienzo, `theme-color` y `color-scheme`, y los devuelve al salir.
   `App.vue` no muestra ahí el banner de instalar la PWA (competiría con la descarga nativa). El prerender agrega el
-  Smart App Banner de Safari (`apple-itunes-app`) solo a `/landingpage`.
+  Smart App Banner de Safari (`apple-itunes-app`) solo a `/landingpage`, y pinta ese HTML estático en oscuro
+  (`LANDING_NIGHT`, acotado con `:has(.pr-landing)`) para que no destelle claro antes de montar Vue.
 - Cuando Android salga: la celda "Próximamente en Google Play" de `DownloadCluster.vue` pasa a insignia oficial
   con enlace, y `GetAppBar` deja de ofrecer la web a los Android.
 
