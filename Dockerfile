@@ -52,6 +52,7 @@ RUN npm run build
 
 FROM nginx:stable-alpine AS production
 COPY config/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY config/nginx/snippets /etc/nginx/snippets
 COPY --from=build /var/www/dist /usr/share/nginx/html
 
 EXPOSE 80

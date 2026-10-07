@@ -17,9 +17,9 @@
           {{ isAndroid ? t('landing.getBar.androidSubtitle') : t('landing.getBar.subtitle') }}
         </span>
       </span>
-      <router-link v-if="isAndroid" :to="{ name: 'home' }" class="getbar__action">
+      <a v-if="isAndroid" :href="appUrl()" class="getbar__action">
         {{ t('landing.getBar.androidAction') }}
-      </router-link>
+      </a>
       <a v-else :href="APP_STORE.link" target="_blank" rel="noopener" class="getbar__action">
         {{ t('landing.getBar.action') }}
       </a>
@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { APP_ICON, APP_STORE } from '@/views/landing/landingContent'
+import { appUrl } from '@/config/site'
 
 defineProps<{ visible: boolean }>()
 

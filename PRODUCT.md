@@ -19,7 +19,7 @@ con draft en vivo y duelos cara a cara cada jornada, quinielas de marcador exact
 vidas, sobre datos reales del fútbol. Se usa en la web (fantasymx.cloud) y en la app de iOS; la de
 Android está en camino.
 
-El éxito de la landing (`/landingpage`) se mide en descargas de la app.
+El éxito de la landing (la raíz de fantasymx.cloud) se mide en descargas de la app.
 
 ## Positioning
 

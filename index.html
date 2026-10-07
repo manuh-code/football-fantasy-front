@@ -32,17 +32,19 @@
     <meta name="author" content="Pro Fantasy" />
 
     <!-- Canonical + Open Graph / Twitter.
-         Los valores de aquí son los de la home y actúan como fallback para las
-         rutas de app que no se prerenderizan (nginx sirve este mismo index.html
-         para todas). El router los reescribe en cada navegación (updateSeoTags
-         en src/router/index.ts) y el prerender los sustituye por los de cada
+         Los valores de aquí son los de la home de la APP (game.fantasymx.cloud)
+         y actúan como fallback para las rutas de app que no se prerenderizan
+         (nginx sirve este mismo index.html para todas). La landing, que es la
+         raíz de fantasymx.cloud, trae los suyos desde el prerender. El router
+         los reescribe en cada navegación (updateSeoTags en
+         src/router/index.ts) y el prerender los sustituye por los de cada
          página estática. Deben ser URLs ABSOLUTAS: los scrapers de WhatsApp,
          Facebook y X no resuelven rutas relativas. -->
-    <link rel="canonical" href="https://fantasymx.cloud/" />
+    <link rel="canonical" href="https://game.fantasymx.cloud/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Pro Fantasy" />
     <meta property="og:locale" content="es_MX" />
-    <meta property="og:url" content="https://fantasymx.cloud/" />
+    <meta property="og:url" content="https://game.fantasymx.cloud/" />
     <meta
       property="og:title"
       content="Pro Fantasy — Futbol en vivo, fantasy, quinielas y Survivor"

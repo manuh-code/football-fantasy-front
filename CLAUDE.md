@@ -35,6 +35,10 @@ Services live in `src/services/<domain>/*Service.ts` as classes whose constructo
 - Auth-critical ones use a lazy factory (e.g. `getLoginService()` in [LoginService.ts](src/services/login/LoginService.ts)) so `import.meta.env` and the router are ready first.
 - The router **dynamically imports** `CatalogService` inside the guard rather than at the top level — see the comment in [src/router/index.ts](src/router/index.ts). Preserve these patterns when adding services touched during startup/navigation.
 
+### Two sites, one build
+
+The domain is split in two, served from the **same image** and chosen by host (see [docs/DOMINIOS.md](docs/DOMINIOS.md)): `fantasymx.cloud` is the marketing site (the landing is its **root**, plus the public reading pages: about, guides, privacy, delete-account) and `game.fantasymx.cloud` is the app. [src/config/site.ts](src/config/site.ts) decides the site at runtime from `location.hostname` (no env var — a single image serves both), and says which site each route belongs to (`SHARED_ROUTES` are served on both with the canonical pointing at marketing). The router guard sends any route that belongs to the *other* site there with a full navigation; `localhost`/previews are `dev` and never redirect. nginx does the same with 301s and serves the prerendered landing at `/` ([config/nginx/nginx.conf](config/nginx/nginx.conf)) — the list of marketing paths is duplicated there and in `SHARED_ROUTES`, keep them in sync. Marketing registers no service worker (`src/retirePwa.ts` removes the legacy one) and makes no API calls. Use `appUrl()` for links from marketing pages to the app.
+
 ### Routing & the two gates
 
 [src/router/index.ts](src/router/index.ts) uses lazy-loaded route components and a single `beforeEach` guard that enforces two things:
@@ -126,7 +130,9 @@ la misma fuente (torneo en curso, o el anterior si aún no tiene puntos — `sco
   fila de la comparativa), `billing.subscription.features`, y los textos de `guides.json` (`landing.json` ya no
   lista beneficios de Premium: desde el rediseño de octubre de 2026 solo dice "Europa con Premium").
 
-## Landing de descarga (`/landingpage`)
+## Landing de descarga (raíz de `fantasymx.cloud`)
+
+Desde la separación de dominios la landing es la **raíz de `https://fantasymx.cloud`** (la ruta `landingpage` es `/` ahí). En `game.fantasymx.cloud` no existe: `/landingpage` redirige a `fantasymx.cloud/`; en `localhost` sigue en `/landingpage` para poder trabajarla. El prerender conserva el archivo `dist/landingpage/index.html` (es nombre de carpeta, no URL pública) y nginx lo sirve en `/` con la canónica en `/`.
 
 Reconstruida el 2026-10-02 para vender la **app de iOS**, no la web. Composición "la ficha viva": se lee como la
 ficha de la App Store (ícono, titular, insignia + QR + Google Play apagado, y el carrusel de capturas ya en la
@@ -168,4 +174,4 @@ All client vars are prefixed `VITE_`. See `.env.example`:
 
 ## Deployment
 
-Push to `main` triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml): it builds the multi-stage `Dockerfile` (`production` target = nginx serving `dist/`), pushes the image to Docker Hub, and deploys to the VPS (production: fantasymx.cloud). `VITE_*` values are passed as Docker **build args** — a new env var must be added to both the workflow and the `Dockerfile` `ARG`/`ENV` list to reach the production build. Active development happens on `develop`.
+Push to `main` triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml): it builds the multi-stage `Dockerfile` (`production` target = nginx serving `dist/`), pushes the image to Docker Hub, and deploys to the VPS (production: `game.fantasymx.cloud` for the app, `fantasymx.cloud` for the landing — one container, see [docs/DOMINIOS.md](docs/DOMINIOS.md)). `VITE_*` values are passed as Docker **build args** — a new env var must be added to both the workflow and the `Dockerfile` `ARG`/`ENV` list to reach the production build. Active development happens on `develop`.

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
+import { canonicalOrigin, crossSiteUrl, isMarketingSite } from '@/config/site'
 
 // For anonymous visitors (and search/AdSense crawlers) we auto-select the first
 // league returned by the API so public content is reachable without forcing the
@@ -66,6 +67,32 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
 
 const routes: Array<RouteRecordRaw> = [
   {
+    // Landing pública de descarga (acquisition, anonymous-friendly).
+    //
+    // En `fantasymx.cloud` ES la raíz del sitio, y en `game.fantasymx.cloud` no
+    // existe (el guard manda ahí al otro dominio): ver src/config/site.ts. Va
+    // ANTES de `home` a propósito: las dos son `/` en el sitio de marketing y
+    // vue-router resuelve las rutas de igual path por orden de declaración.
+    // `{ name: 'home' }` sigue resolviendo a su propio registro (la app), que es
+    // lo que quieren los "Jugar" de las páginas públicas: el guard los lleva a
+    // `game.fantasymx.cloud`.
+    path: isMarketingSite ? '/' : '/landingpage',
+    name: 'landingpage',
+    component: () => import(/* webpackChunkName: "landingpage" */ '@/views/landing/LandingView.vue'),
+    // Estos dos valores deben coincidir con `meta` en src/locales/es/landing.json:
+    // el prerender sirve ese texto al crawler y el guard sobrescribe con este
+    // otro al montar la app. Si divergen, Google ve un título antes de ejecutar
+    // el JS y otro después.
+    meta: {
+      title: 'Pro Fantasy — Descarga la app de fantasy de la Liga MX',
+      description: 'Descarga gratis Pro Fantasy en la App Store: draft en vivo, quinielas y Survivor de la Liga MX con tus amigos. Android, próximamente.',
+      requiresAuth: false
+    }
+  },
+  // La URL vieja de la landing: ya publicada y enlazada, ahora es la raíz.
+  // (nginx la redirige con 301; esto cubre la navegación dentro de la SPA.)
+  ...(isMarketingSite ? [{ path: '/landingpage', redirect: '/' } as RouteRecordRaw] : []),
+  {
     path: '/',
     // Hub de modos de juego: fantasy, quinielas y Survivor. La raíz es el
     // producto (jugar), no el consumo de datos — los datos de liga viven en
@@ -95,21 +122,6 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Pro Fantasy — Posiciones, resultados y estadísticas en vivo',
       description: 'Sigue en vivo las posiciones, resultados y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, y juega fantasy, quinielas y Survivor gratis.',
-      requiresAuth: false
-    }
-  },
-  {
-    path: '/landingpage',
-    name: 'landingpage',
-    // Public marketing page aimed at acquiring new users (anonymous-friendly).
-    component: () => import(/* webpackChunkName: "landingpage" */ '@/views/landing/LandingView.vue'),
-    // Estos dos valores deben coincidir con `meta` en src/locales/es/landing.json:
-    // el prerender sirve ese texto al crawler y el guard sobrescribe con este
-    // otro al montar la app. Si divergen, Google ve un título antes de ejecutar
-    // el JS y otro después.
-    meta: {
-      title: 'Pro Fantasy — Descarga la app de fantasy de la Liga MX',
-      description: 'Descarga gratis Pro Fantasy en la App Store: draft en vivo, quinielas y Survivor de la Liga MX con tus amigos. Android, próximamente.',
       requiresAuth: false
     }
   },
@@ -524,9 +536,6 @@ const router = createRouter({
 // stale token fails validation.
 const AUTH_STATE_ROUTES = new Set(['login', 'register'])
 
-/** Origen público del sitio; las URLs de canonical y og:url deben ser absolutas. */
-const SITE_ORIGIN = 'https://fantasymx.cloud'
-
 /**
  * Sincroniza title, description, canonical y Open Graph con la ruta activa.
  *
@@ -540,7 +549,9 @@ function updateSeoTags(to: RouteLocationNormalized) {
   const title = to.meta?.title as string | undefined
   const description = to.meta?.description as string | undefined
   // `to.path`, no `fullPath`: la canónica nunca debe arrastrar query params.
-  const url = `${SITE_ORIGIN}${to.path}`
+  // El origen depende de la ruta, no del host que la sirve: las páginas que
+  // viven en los dos (guías, privacidad…) consolidan siempre en fantasymx.cloud.
+  const url = `${canonicalOrigin(to.name)}${to.path}`
 
   if (title) {
     document.title = title
@@ -564,6 +575,18 @@ function setMeta(attr: 'name' | 'property', key: string, content: string) {
 }
 
 router.beforeEach(async (to, from, next) => {
+  // Separación de dominios (src/config/site.ts): la landing vive en
+  // fantasymx.cloud y la app en game.fantasymx.cloud. Una ruta que pertenece al
+  // OTRO sitio se abre allá con una navegación completa, antes de tocar auth ni
+  // liga. nginx ya hace este mismo redirect con un 301 para quien llega por URL;
+  // esto cubre los clics dentro de la SPA, la PWA vieja que sigue abriendo el
+  // origen anterior y cualquier despliegue donde el proxy no pase el Host.
+  const otherSite = crossSiteUrl(to.name, to.fullPath);
+  if (otherSite) {
+    window.location.replace(otherSite);
+    return next(false);
+  }
+
   const authStore = useAuthStore();
   const needAuth = to.meta.requiresAuth;
   const isAuthenticated =

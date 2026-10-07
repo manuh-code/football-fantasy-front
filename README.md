@@ -203,7 +203,7 @@ Cada push a la rama `main` despliega automáticamente a producción:
 2. Sube la imagen a **GitHub Container Registry**
 3. Conecta al servidor VPS vía SSH
 4. Descarga y despliega con **Docker Compose**
-5. Tu app está en **https://fantasymx.cloud** 🎉
+5. Tu app está en **https://game.fantasymx.cloud** y la landing en **https://fantasymx.cloud** 🎉
 
 ### Configuración rápida
 
