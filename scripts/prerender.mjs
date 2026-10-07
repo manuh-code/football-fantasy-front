@@ -17,16 +17,7 @@
 // Rutas generadas: /landingpage, /about, /guias, /guias/<slug> (todas las
 // guías declaradas en src/views/guides/guides.ts), /privacy y /eliminar-cuenta.
 //
-// El dominio se reparte en dos sitios que sirven este mismo dist/ (ver
-// src/config/site.ts y config/nginx/nginx.conf):
-//   - marketing, https://fantasymx.cloud: la landing es la RAÍZ (nginx sirve
-//     dist/landingpage/index.html en `/`) más las páginas públicas de lectura.
-//   - app, https://game.fantasymx.cloud: la aplicación.
-// Cada página declara en `site` de cuál es, y de ahí salen su URL canónica y el
-// sitemap en el que aparece.
-//
-// Al final también escribe dist/sitemap.xml (marketing) y dist/sitemap-app.xml
-// (app; nginx lo sirve como /sitemap.xml en game.fantasymx.cloud).
+// Al final también escribe dist/sitemap.xml a partir de esas mismas rutas.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
@@ -35,14 +26,8 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = resolve(root, 'dist')
-// Repetidos de src/config/site.ts (un .mjs no importa .ts).
-const ORIGIN = {
-  marketing: 'https://fantasymx.cloud',
-  app: 'https://game.fantasymx.cloud',
-}
-// La imagen social vive siempre en el dominio principal, sea cual sea el sitio
-// de la página: es un archivo estático y la URL no debe cambiar por sitio.
-const OG_IMAGE = `${ORIGIN.marketing}/img/og-cover.png`
+const SITE = 'https://fantasymx.cloud'
+const OG_IMAGE = `${SITE}/img/og-cover.png`
 
 const readJson = (p) => JSON.parse(readFileSync(resolve(root, p), 'utf8'))
 const guides = readJson('src/locales/es/guides.json')
@@ -99,19 +84,15 @@ html.dark .pr footer{border-color:#374151}
 #app-splash{display:none!important}
 </style>`
 
-// Los mismos HTML estáticos se sirven en los dos hosts (las páginas de lectura
-// viven en ambos), así que los enlaces entre sitios son absolutos: uno relativo
-// como `/liga` sería correcto en game.fantasymx.cloud y una redirección en
-// fantasymx.cloud.
 const NAV = `<header class="pr-nav">
-  <a class="pr-brand" href="${ORIGIN.marketing}/">Pro Fantasy</a>
+  <a class="pr-brand" href="/">Pro Fantasy</a>
   <nav aria-label="Secciones">
-    <a href="${ORIGIN.marketing}/">Qué es Pro Fantasy</a>
-    <a href="${ORIGIN.app}/">Jugar</a>
-    <a href="${ORIGIN.app}/liga">Resultados</a>
+    <a href="/">Inicio</a>
+    <a href="/liga">Resultados</a>
     <a href="/guias">Guías y reglas</a>
-    <a href="${ORIGIN.app}/premium/planes">Premium</a>
+    <a href="/premium/planes">Premium</a>
     <a href="/about">Acerca de</a>
+    <a href="/landingpage">Qué es Pro Fantasy</a>
   </nav>
 </header>`
 
@@ -141,7 +122,6 @@ const guidePage = (g) => {
   const related = GUIDES.filter((o) => o.key !== g.key)
   return {
     path: `/guias/${g.slug}`,
-    site: 'marketing',
     title: `${item.title} — Pro Fantasy`,
     description: item.excerpt,
     body: `
@@ -175,7 +155,6 @@ const gamingPage = () => {
   ]
   return {
     path: '/gaming',
-    site: 'app',
     canonical: '/',
     title: 'Juegos — Fantasy, quinielas y Survivor | Pro Fantasy',
     description:
@@ -216,7 +195,6 @@ const premiumPage = () => {
   const includeKeys = ['leagues', 'scoring', 'capacity', 'survivor', 'tools', 'guests']
   return {
     path: '/premium/planes',
-    site: 'app',
     title: premium.meta.title,
     description: premium.meta.description,
     body: `
@@ -249,7 +227,6 @@ const premiumPage = () => {
 
 const guidesHub = () => ({
   path: '/guias',
-  site: 'marketing',
   title: 'Guías y reglas — Pro Fantasy',
   description: guides.hub.subtitle,
   body: `
@@ -268,7 +245,6 @@ const aboutPage = () => {
   const steps = ['step1', 'step2', 'step3']
   return {
     path: '/about',
-    site: 'marketing',
     title: 'Acerca de Pro Fantasy — Fantasy, quinielas y Survivor de 5 grandes ligas',
     description: about.subtitle,
     body: `
@@ -294,11 +270,7 @@ const aboutPage = () => {
 // La landing de descarga. Los enlaces repiten APP_STORE de
 // src/views/landing/landingContent.ts (un .mjs no importa .ts): si cambian
 // allá, cambian aquí. `head` agrega el Smart App Banner de Safari: en iPhone,
-// quien entra directo a la landing ve arriba el "Obtener"/"Abrir" nativo.
-//
-// Es la RAÍZ de fantasymx.cloud: el archivo sigue siendo dist/landingpage/
-// index.html (la ruta es un nombre de carpeta, no la URL pública), nginx lo
-// sirve en `/`, y la canónica es `/`. `/landingpage` redirige a `/` con un 301.
+// quien entra directo a /landingpage ve arriba el "Obtener"/"Abrir" nativo.
 const APP_STORE_ID = '6806096370'
 const APP_STORE_LINK = 'https://apple.co/3VlHTKi'
 
@@ -325,8 +297,6 @@ const landingPage = () => {
   const infoKeys = ['price', 'leagues', 'compatibility', 'android']
   return {
     path: '/landingpage',
-    site: 'marketing',
-    canonical: '/',
     title: landing.meta.title,
     description: landing.meta.description,
     head: `<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}" />\n${LANDING_NIGHT}`,
@@ -334,7 +304,7 @@ const landingPage = () => {
       <span class="pr-landing" hidden></span>
       <h1>${esc(landing.hero.titleLine1)} ${esc(landing.hero.titleLine2)}</h1>
       <p class="pr-lead">${esc(landing.hero.subtitle)}</p>
-      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · ${esc(landing.download.playSoon)} Google Play · <a href="${ORIGIN.app}/">${esc(landing.download.web)}</a></p>
+      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · ${esc(landing.download.playSoon)} Google Play · <a href="/">${esc(landing.download.web)}</a></p>
       <h2>${esc(landing.screens.title)}</h2>
       <ul>${screenKeys.map((k) => `<li>${esc(landing.screens.items[k])}</li>`).join('')}</ul>
       <h2>${esc(landing.preview.title)}</h2>
@@ -347,7 +317,7 @@ const landingPage = () => {
       ${chips()}
       <h2>${esc(landing.cta.titleA)} ${esc(landing.cta.titleB)} ${esc(landing.cta.titleC)}</h2>
       <p>${esc(landing.cta.body)}</p>
-      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · <a href="${ORIGIN.app}/">${esc(landing.download.web)}</a></p>`,
+      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · <a href="/">${esc(landing.download.web)}</a></p>`,
   }
 }
 
@@ -365,7 +335,6 @@ const privacyPage = () => {
   const article = articleMatch[1].replace(/\{\{\s*company\.(\w+)\s*\}\}/g, (_, k) => esc(company[k] ?? ''))
   return {
     path: '/privacy',
-    site: 'marketing',
     title: 'Aviso de Privacidad — Pro Fantasy',
     description: 'Aviso de privacidad de Pro Fantasy conforme a la LFPDPPP: qué datos recabamos, para qué los usamos y cómo ejercer tus derechos ARCO.',
     body: `<h1>Aviso de Privacidad</h1>
@@ -390,12 +359,11 @@ const deleteAccountPage = () => {
   const email = company.contactEmail ?? ''
   return {
     path: '/eliminar-cuenta',
-    site: 'marketing',
     title: 'Borrar tu cuenta — Pro Fantasy',
     description: 'Solicita el borrado de tu cuenta de Pro Fantasy y de los datos asociados: qué se elimina, qué se conserva anonimizado y en qué plazos.',
     body: `<h1>Borrar tu cuenta</h1>
       <p class="pr-lead">Última actualización: ${esc(company.lastUpdated ?? '')}</p>
-      <p><a href="${ORIGIN.app}/settings">Borra tu cuenta desde Ajustes</a> · <a href="mailto:${esc(email)}?subject=Solicitud%20de%20borrado%20de%20cuenta">Solicítalo por correo a ${esc(email)}</a></p>
+      <p><a href="/settings">Borra tu cuenta desde Ajustes</a> · <a href="mailto:${esc(email)}?subject=Solicitud%20de%20borrado%20de%20cuenta">Solicítalo por correo a ${esc(email)}</a></p>
       ${article}`,
   }
 }
@@ -420,11 +388,9 @@ const metaRe = (attr, key) =>
 
 const withSeo = (html, page) => {
   // `canonical` permite que una página se prerenderice en su propia URL pero
-  // consolide sus señales en otra (ver gamingPage y landingPage). Sin él,
-  // canónica = la URL de la propia página, que es el caso normal. El origen sale
-  // del sitio al que pertenece la página.
-  if (!ORIGIN[page.site]) throw new Error(`prerender: ${page.path} sin \`site\` válido`)
-  const url = `${ORIGIN[page.site]}${page.canonical ?? page.path}`
+  // consolide sus señales en otra (ver gamingPage). Sin él, canónica = la URL
+  // de la propia página, que es el caso normal.
+  const url = `${SITE}${page.canonical ?? page.path}`
   let out = html
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(page.title)}</title>`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/, (...m) => `${m[1]}${url}${m[2]}`)
@@ -510,13 +476,12 @@ const leagueContent = sourceStamp([
   'src/locales/es/home.json',
 ])
 
-// En el sitio de marketing `/` es la landing (y por eso `/landingpage` no se
-// lista: es una redirección); en el de la app, `/` es el hub de juego. Las dos
-// raíces comparten la prioridad máxima: la primera capta las búsquedas de
-// descubrimiento ("qué es", "cómo jugar") y la segunda es el producto en sí
-// (jugar). /liga hereda el peso que tenía la raíz cuando servía los datos de
-// liga. Las guías individuales caen al valor por defecto.
+// /landingpage y / comparten la prioridad máxima: la primera capta las
+// búsquedas de descubrimiento ("qué es", "cómo jugar") y la raíz es el producto
+// en sí (jugar). /liga hereda el peso que tenía la raíz cuando servía los datos
+// de liga. Las guías individuales caen al valor por defecto.
 const PRIORITY = {
+  '/landingpage': '1.0',
   '/': '1.0',
   '/guias': '0.9',
   '/liga': '0.9',
@@ -529,56 +494,31 @@ const PRIORITY = {
 // El sello cubre title y description además del body: los tres son contenido
 // indexable, así que reescribir un <title> también debe mover el lastmod.
 //
-// Las páginas con `canonical` propia (hoy /gaming → / en la app) quedan fuera:
-// apuntan a otra URL como preferente, y listar en el sitemap una página
-// canonicalizada es una señal contradictoria para Google. La landing es el caso
-// especial: se prerenderiza como /landingpage pero ES la raíz del sitio de
-// marketing, así que entra a mano como `/`.
-const pageContent = (p) => p.title + p.description + p.body
-const landingEntry = pages.find((p) => p.path === '/landingpage')
+// Las páginas con `canonical` propia (hoy /gaming → /) quedan fuera: apuntan a
+// otra URL como preferente, y listar en el sitemap una página canonicalizada es
+// una señal contradictoria para Google.
+const urls = [
+  { path: '/', content: homeContent },
+  { path: '/liga', content: leagueContent },
+  ...pages
+    .filter((p) => !p.canonical)
+    .map((p) => ({ path: p.path, content: p.title + p.description + p.body })),
+]
 
-// Cada sitio tiene su sitemap: Google solo acepta URLs del mismo host que el
-// sitemap. Las llaves de los sellos del sitio de marketing son la ruta a secas
-// (como siempre); las de la app llevan `app:` para que `/` no choque.
-const SITEMAPS = {
-  marketing: {
-    file: 'sitemap.xml',
-    urls: [
-      { path: '/', content: pageContent(landingEntry) },
-      ...pages
-        .filter((p) => p.site === 'marketing' && !p.canonical)
-        .map((p) => ({ path: p.path, content: pageContent(p) })),
-    ],
-  },
-  app: {
-    file: 'sitemap-app.xml',
-    urls: [
-      { path: '/', content: homeContent },
-      { path: '/liga', content: leagueContent },
-      ...pages
-        .filter((p) => p.site === 'app' && !p.canonical)
-        .map((p) => ({ path: p.path, content: pageContent(p) })),
-    ],
-  },
-}
-
-for (const [site, { file, urls }] of Object.entries(SITEMAPS)) {
-  const stampKey = (path) => (site === 'app' ? `app:${path}` : path)
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
     ({ path, content }) => `  <url>
-    <loc>${ORIGIN[site]}${path}</loc>
-    <lastmod>${lastmodFor(stampKey(path), content)}</lastmod>
+    <loc>${SITE}${path}</loc>
+    <lastmod>${lastmodFor(path, content)}</lastmod>
     <priority>${PRIORITY[path] ?? '0.7'}</priority>
   </url>`
   )
   .join('\n')}
 </urlset>
 `
-  writeFileSync(resolve(dist, file), sitemap)
-  console.log(`sitemap: ${urls.length} URLs → dist/${file}`)
-}
 
+writeFileSync(resolve(dist, 'sitemap.xml'), sitemap)
 writeFileSync(stampsPath, `${JSON.stringify(stamps, null, 2)}\n`)
+console.log(`sitemap: ${urls.length} URLs → dist/sitemap.xml`)

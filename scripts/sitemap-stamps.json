@@ -1,6 +1,10 @@
 {
-  "app:/": {
+  "/": {
     "hash": "54b34f4cc90c6034",
+    "date": "2026-10-02"
+  },
+  "/landingpage": {
+    "hash": "3f7d6bc3c9eee912",
     "date": "2026-10-02"
   },
   "/about": {
@@ -24,8 +28,8 @@
     "date": "2026-08-19"
   },
   "/guias/como-funciona-survivor": {
-    "hash": "58becb34818b16ce",
-    "date": "2026-10-07"
+    "hash": "765ee222b898f4d5",
+    "date": "2026-08-19"
   },
   "/guias/sistema-de-puntos": {
     "hash": "07ece411c575f6e1",
@@ -59,20 +63,16 @@
     "hash": "4f256111fbec16a4",
     "date": "2026-08-03"
   },
-  "app:/liga": {
+  "/liga": {
     "hash": "c3040abf13fc8433",
     "date": "2026-08-07"
   },
-  "app:/premium/planes": {
+  "/premium/planes": {
     "hash": "e813b4d1cf26094b",
     "date": "2026-10-02"
   },
   "/eliminar-cuenta": {
-    "hash": "68d5d661491c24c1",
-    "date": "2026-10-07"
-  },
-  "/": {
-    "hash": "496c4fa22d741274",
-    "date": "2026-10-07"
+    "hash": "5fa73dd6d4c6ade4",
+    "date": "2026-09-23"
   }
 }

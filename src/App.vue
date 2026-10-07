@@ -65,10 +65,8 @@
     <!-- PWA: install banner + push opt-in (global, Teleported).
          La actualización es invisible (usePwaAutoUpdate), sin modal.
          La landing vende la app nativa: ofrecer ahí "instalar la web" sería
-         una segunda descarga compitiendo con la de la App Store. Tampoco en
-         ningún rincón de fantasymx.cloud: la PWA se instala desde la app
-         (game.fantasymx.cloud), no desde el sitio de marketing. -->
-    <PwaInstallBanner v-if="!isLandingRoute && !isMarketingSite" />
+         una segunda descarga compitiendo con la de la App Store. -->
+    <PwaInstallBanner v-if="!isLandingRoute" />
     <PushPermissionModal />
 
     <!-- Muro de pago. Único en toda la app: lo abre cualquier pantalla con
@@ -95,7 +93,6 @@ import AppFooter from "@/components/AppFooter.vue";
 import PremiumUpsellSheet from "@/components/premium/PremiumUpsellSheet.vue";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { usePremiumStore } from "@/store/billing/usePremiumStore";
-import { isMarketingSite } from "@/config/site";
 
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -143,27 +140,9 @@ if (import.meta.env.DEV) {
 onBeforeUnmount(() => cleanupDevShortcut?.());
 
 onMounted(async () => {
+  FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
   // Initialize theme on app mount
   themeStore.initTheme();
-
-  // Va antes del corte de abajo: quien activó el push cuando la app vivía en
-  // fantasymx.cloud sigue recibiéndolo ahí, y su clic debe llegar al router
-  // (que lo manda a game.fantasymx.cloud) en vez de quedarse sin hacer nada.
-  navigator.serviceWorker?.addEventListener("message", (event) => {
-    if (event.data?.type === "NOTIFICATION_CLICK") {
-      const { url } = event.data;
-      if (url) {
-        router.push(url);
-      }
-    }
-  });
-
-  // fantasymx.cloud es el sitio de marketing: landing y páginas de lectura, sin
-  // datos de juego. No hay nada que pedirle al API desde ahí (ni sesión que
-  // revalidar ni push que registrar: eso es de game.fantasymx.cloud).
-  if (isMarketingSite) return;
-
-  FootballFixtureService.getCurrentFixtures(); // Fetch current fixtures on app mount
 
   // Lo desbloqueado no se persiste (un `true` viejo repartiría Premium que el
   // API no respalda), así que al recargar con sesión abierta hay que volver a
@@ -195,6 +174,14 @@ onMounted(async () => {
     if (data.type === "draft_activated") {
       // Opcional: navegar directamente
       // router.push(`/fantasy/league/${data.league_uuid}/draft`)
+    }
+  });
+  navigator.serviceWorker?.addEventListener("message", (event) => {
+    if (event.data?.type === "NOTIFICATION_CLICK") {
+      const { url } = event.data;
+      if (url) {
+        router.push(url);
+      }
     }
   });
 });

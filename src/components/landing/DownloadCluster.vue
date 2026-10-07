@@ -46,10 +46,10 @@
       <figcaption>{{ t('landing.download.qrHint') }}</figcaption>
     </figure>
 
-    <a :href="appUrl()" class="dl__web">
+    <router-link :to="{ name: 'home' }" class="dl__web">
       {{ t('landing.download.web') }}
       <LandingIcon name="arrow-right" class="dl__web-arrow" />
-    </a>
+    </router-link>
   </div>
 </template>
 
@@ -58,7 +58,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import LandingIcon from '@/components/landing/LandingIcon.vue'
 import { APP_STORE, appStoreBadgeSrc } from '@/views/landing/landingContent'
-import { appUrl } from '@/config/site'
 
 withDefaults(defineProps<{ align?: 'start' | 'center' }>(), { align: 'start' })
 

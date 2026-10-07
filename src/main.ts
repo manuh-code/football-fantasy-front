@@ -1,8 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import './registerServiceWorker'
 import router from './router'
-import { isMarketingSite } from './config/site'
-import { retirePwa } from './retirePwa'
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import { iconList } from './icons'
@@ -22,15 +21,6 @@ import { createPinia } from 'pinia';
 
 const app = createApp(App);
 const pinia = createPinia();
-
-// PWA: solo en la app. fantasymx.cloud (landing + páginas de lectura) no
-// registra service worker y retira el que haya dejado la versión anterior;
-// ver src/retirePwa.ts.
-if (isMarketingSite) {
-  void retirePwa()
-} else {
-  void import('./registerServiceWorker')
-}
 
 // Add icons to Oh My Vue Icons
 addIcons(...iconList);

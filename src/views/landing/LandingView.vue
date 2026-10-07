@@ -109,10 +109,10 @@
               <div class="info__row">
                 <dt>{{ t('landing.modes.info.web.label') }}</dt>
                 <dd>
-                  <a :href="appUrl()" class="info__link">
+                  <router-link :to="{ name: 'home' }" class="info__link">
                     {{ t('landing.modes.info.web.value') }}
                     <LandingIcon name="arrow-right" class="info__arrow" />
-                  </a>
+                  </router-link>
                 </dd>
               </div>
             </dl>
@@ -169,7 +169,6 @@ import DownloadCluster from '@/components/landing/DownloadCluster.vue'
 import GetAppBar from '@/components/landing/GetAppBar.vue'
 import LandingIcon from '@/components/landing/LandingIcon.vue'
 import ScreenshotRail from '@/components/landing/ScreenshotRail.vue'
-import { appUrl } from '@/config/site'
 import { APP_ICON, APP_STORE } from './landingContent'
 
 const { t } = useI18n()
