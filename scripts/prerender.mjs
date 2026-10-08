@@ -14,7 +14,7 @@
 // - Los archivos se generan después de que vite-plugin-pwa arma el precache,
 //   así que no engordan el service worker.
 //
-// Rutas generadas: /landingpage, /about, /guias, /guias/<slug> (todas las
+// Rutas generadas: /about, /guias, /guias/<slug> (todas las
 // guías declaradas en src/views/guides/guides.ts), /privacy y /eliminar-cuenta.
 //
 // Al final también escribe dist/sitemap.xml a partir de esas mismas rutas.
@@ -31,7 +31,6 @@ const OG_IMAGE = `${SITE}/img/og-cover.png`
 
 const readJson = (p) => JSON.parse(readFileSync(resolve(root, p), 'utf8'))
 const guides = readJson('src/locales/es/guides.json')
-const landing = readJson('src/locales/es/landing.json')
 const about = readJson('src/locales/es/ui.json').about
 const premium = readJson('src/locales/es/premium.json').landing
 
@@ -92,7 +91,7 @@ const NAV = `<header class="pr-nav">
     <a href="/guias">Guías y reglas</a>
     <a href="/premium/planes">Premium</a>
     <a href="/about">Acerca de</a>
-    <a href="/landingpage">Qué es Pro Fantasy</a>
+    <a href="https://profantasy.mx/landingpage">Descarga la app</a>
   </nav>
 </header>`
 
@@ -267,60 +266,6 @@ const aboutPage = () => {
   }
 }
 
-// La landing de descarga. Los enlaces repiten APP_STORE de
-// src/views/landing/landingContent.ts (un .mjs no importa .ts): si cambian
-// allá, cambian aquí. `head` agrega el Smart App Banner de Safari: en iPhone,
-// quien entra directo a /landingpage ve arriba el "Obtener"/"Abrir" nativo.
-const APP_STORE_ID = '6806096370'
-const APP_STORE_LINK = 'https://apple.co/3VlHTKi'
-
-// La landing viva es siempre oscura; este HTML se ve antes de que monte Vue, y
-// con los estilos genéricos de arriba destellaba claro (y en esmeralda) para
-// quien tiene el sistema en modo claro. Va acotado con :has(.pr-landing): el
-// marcador vive dentro de #app, Vue lo reemplaza al montar y las reglas dejan
-// de aplicar, así que no se cuelan en el resto de la navegación.
-const LANDING_NIGHT = `<style>
-html:has(.pr-landing),html:has(.pr-landing) body{background:#0b0b0b;color-scheme:dark}
-.pr:has(.pr-landing){color:#d6d6d6}
-.pr:has(.pr-landing) h1,.pr:has(.pr-landing) h2,.pr:has(.pr-landing) h3,.pr:has(.pr-landing) .pr-brand{color:#f9f9f9}
-.pr:has(.pr-landing) a{color:#b4e70e}
-.pr:has(.pr-landing) nav a,.pr:has(.pr-landing) .pr-lead,.pr:has(.pr-landing) footer{color:#b1b1b1}
-.pr:has(.pr-landing) header.pr-nav,.pr:has(.pr-landing) footer{border-color:#2b2b2b}
-.pr:has(.pr-landing) .pr-chips li{border-color:#414141}
-.pr:has(.pr-landing) .pr-tier{color:#858585}
-</style>`
-
-const landingPage = () => {
-  const screenKeys = ['draft', 'pitch', 'standings', 'table', 'matchup', 'leagues', 'pools', 'survivor', 'results']
-  const sceneKeys = ['league', 'draft', 'turn', 'wishlist', 'board', 'team']
-  const modeKeys = ['fantasy', 'pools', 'survivor']
-  const infoKeys = ['price', 'leagues', 'compatibility', 'android']
-  return {
-    path: '/landingpage',
-    title: landing.meta.title,
-    description: landing.meta.description,
-    head: `<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}" />\n${LANDING_NIGHT}`,
-    body: `
-      <span class="pr-landing" hidden></span>
-      <h1>${esc(landing.hero.titleLine1)} ${esc(landing.hero.titleLine2)}</h1>
-      <p class="pr-lead">${esc(landing.hero.subtitle)}</p>
-      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · ${esc(landing.download.playSoon)} Google Play · <a href="/">${esc(landing.download.web)}</a></p>
-      <h2>${esc(landing.screens.title)}</h2>
-      <ul>${screenKeys.map((k) => `<li>${esc(landing.screens.items[k])}</li>`).join('')}</ul>
-      <h2>${esc(landing.preview.title)}</h2>
-      <p>${esc(landing.preview.body)}</p>
-      <ol>${sceneKeys.map((k) => `<li>${esc(landing.preview.scenes[k])}</li>`).join('')}</ol>
-      <h2>${esc(landing.modes.title)}</h2>
-      <ul>${modeKeys.map((k) => `<li><strong>${esc(landing.modes.items[k].name)}</strong> — ${esc(landing.modes.items[k].body)}</li>`).join('')}</ul>
-      <h2>${esc(landing.modes.info.title)}</h2>
-      <ul>${infoKeys.map((k) => `<li><strong>${esc(landing.modes.info[k].label)}</strong> — ${esc(landing.modes.info[k].value)}</li>`).join('')}</ul>
-      ${chips()}
-      <h2>${esc(landing.cta.titleA)} ${esc(landing.cta.titleB)} ${esc(landing.cta.titleC)}</h2>
-      <p>${esc(landing.cta.body)}</p>
-      <p><a href="${APP_STORE_LINK}">${esc(landing.download.appStore)}</a> · <a href="/">${esc(landing.download.web)}</a></p>`,
-  }
-}
-
 // El aviso de privacidad vive como HTML plano dentro del SFC: extraemos el
 // <article> y resolvemos las interpolaciones {{ company.* }} con el mismo
 // objeto `company` del componente.
@@ -405,7 +350,6 @@ const withSeo = (html, page) => {
 }
 
 const pages = [
-  landingPage(),
   aboutPage(),
   gamingPage(),
   premiumPage(),
@@ -476,12 +420,11 @@ const leagueContent = sourceStamp([
   'src/locales/es/home.json',
 ])
 
-// /landingpage y / comparten la prioridad máxima: la primera capta las
-// búsquedas de descubrimiento ("qué es", "cómo jugar") y la raíz es el producto
-// en sí (jugar). /liga hereda el peso que tenía la raíz cuando servía los datos
-// de liga. Las guías individuales caen al valor por defecto.
+// La raíz es el producto en sí (jugar) y lleva la prioridad máxima. /liga
+// hereda el peso que tenía la raíz cuando servía los datos de liga. Las guías
+// individuales caen al valor por defecto. La landing de descarga ya no está
+// aquí: vive en profantasy.mx, con su propio sitemap.
 const PRIORITY = {
-  '/landingpage': '1.0',
   '/': '1.0',
   '/guias': '0.9',
   '/liga': '0.9',

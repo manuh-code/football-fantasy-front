@@ -32,9 +32,8 @@
 
     <!-- Header Menu - Fixed at top, outside transform context.
          Hidden on the league overview (renders its own HomeHeaderMenu with the
-         stage switcher) and on the landing page (a standalone marketing page
-         with its own header). -->
-    <HeaderMenu v-if="!isLeagueOverviewRoute && !isLandingRoute" />
+         stage switcher). -->
+    <HeaderMenu v-if="!isLeagueOverviewRoute" />
 
     <!-- Main Content with Swipe Transform -->
     <div
@@ -48,9 +47,7 @@
           : 'transform 0.3s ease-out',
       }"
     >
-      <!-- The landing page is full-bleed: drop the bottom padding and the
-           header-reserved top padding so its hero sits flush at the top. -->
-      <main class="flex-1" :class="isLandingRoute ? '' : 'pb-24 main-content-safe'">
+      <main class="flex-1 pb-24 main-content-safe">
         <router-view />
       </main>
 
@@ -63,10 +60,8 @@
     </div>
 
     <!-- PWA: install banner + push opt-in (global, Teleported).
-         La actualización es invisible (usePwaAutoUpdate), sin modal.
-         La landing vende la app nativa: ofrecer ahí "instalar la web" sería
-         una segunda descarga compitiendo con la de la App Store. -->
-    <PwaInstallBanner v-if="!isLandingRoute" />
+         La actualización es invisible (usePwaAutoUpdate), sin modal. -->
+    <PwaInstallBanner />
     <PushPermissionModal />
 
     <!-- Muro de pago. Único en toda la app: lo abre cualquier pantalla con
@@ -102,13 +97,10 @@ const router = useRouter();
 const isLeagueOverviewRoute = computed(
   () => router.currentRoute.value.name === "leagueOverview"
 );
-// Landing is a standalone marketing page with its own header + footer.
-const isLandingRoute = computed(() => router.currentRoute.value.name === "landingpage");
 
 // Rutas de contenido público: son las que Google indexa y donde el footer
 // aporta navegación real. Se deja fuera del resto (login, dashboard, draft,
 // quinielas…) porque ahí es ruido: son flujos de app, no páginas de lectura.
-// `landingpage` no está porque monta su propio footer.
 const FOOTER_ROUTES = new Set([
   "home",
   "leagueOverview",
