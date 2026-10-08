@@ -143,15 +143,13 @@ export default defineConfig({
         // propio scope (/firebase-cloud-messaging-push-scope). Excluirlo hace que
         // navigator.serviceWorker.register() siempre resuelva contra el archivo
         // estático y lo desacopla del ciclo de vida del SW de la PWA.
-        //
-        // Lo que solo usa la landing de descarga (Montserrat y sus imágenes) tampoco:
-        // es una página de captación, no parte de la app instalada, y precachearlo
-        // haría que cada instalación de la PWA bajara fuentes que nunca pinta.
-        globIgnores: ['firebase-messaging-sw.js', 'img/landing/**', 'assets/montserrat-*'],
+        globIgnores: ['firebase-messaging-sw.js'],
         // Archivos planos de la raíz (ads.txt, app-ads.txt, robots.txt, sitemap.xml…)
         // deben llegar tal cual al navegador: sin esto el NavigationRoute del SW los
         // reemplaza por el index.html del SPA y el router muestra la página 404.
-        navigateFallbackDenylist: [/^\/[^/]+\.(?:txt|xml)$/],
+        // /landingpage tampoco: nginx la redirige (301) a profantasy.mx, y con la
+        // PWA instalada el SW contestaría antes con el SPA, que ya no tiene esa ruta.
+        navigateFallbackDenylist: [/^\/[^/]+\.(?:txt|xml)$/, /^\/landingpage\/?$/],
         // Al activarse un SW nuevo, borra los precaches de versiones anteriores.
         cleanupOutdatedCaches: true
       }

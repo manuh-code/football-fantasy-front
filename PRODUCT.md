@@ -19,7 +19,8 @@ con draft en vivo y duelos cara a cara cada jornada, quinielas de marcador exact
 vidas, sobre datos reales del fútbol. Se usa en la web (fantasymx.cloud) y en la app de iOS; la de
 Android está en camino.
 
-El éxito de la landing (`/landingpage`) se mide en descargas de la app.
+El éxito de la landing de descarga (https://profantasy.mx/landingpage, repo `profantasy`) se mide en
+descargas de la app. `fantasymx.cloud/landingpage` redirige ahí (301).
 
 ## Positioning
 
@@ -43,8 +44,8 @@ El éxito de la landing (`/landingpage`) se mide en descargas de la app.
   (Compose en Android, SwiftUI en iOS).
 - Interfaz en español primero (es-MX) con inglés de respaldo; los textos viven en archivos i18n
   espejados entre web y móvil.
-- La landing es pública e indexable: el prerender sirve su contenido en HTML estático a los
-  crawlers a partir de `src/locales/es/landing.json`.
+- La landing es pública e indexable: es un sitio estático aparte (Nuxt, `nuxt generate`) con su
+  contenido completo en el HTML.
 
 ## Brand Commitments
 
