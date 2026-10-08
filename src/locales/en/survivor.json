@@ -70,7 +70,7 @@
     "goalText": "Survive as many rounds as possible by picking, each round, a team you think will win.",
     "howLabel": "How to play",
     "step1": "Each round, pick one team from the available matches.",
-    "step2": "You can't reuse a team you've already picked earlier in this Survivor — once used, it's \"burned\" for the rest of the competition.",
+    "step2": "You can't reuse a team you've already picked earlier in this Survivor — once used, it's \"burned\". In long leagues, the list resets halfway through the season.",
     "step3": "You may change your pick as many times as you like while the round hasn't started yet.",
     "step4": "Once the first match of the round kicks off, the round locks completely: no more picks or changes are allowed.",
     "endLabel": "End of game",

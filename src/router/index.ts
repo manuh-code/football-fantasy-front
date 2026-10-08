@@ -47,7 +47,6 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   // Es la URL que Google Play publica en la ficha: tiene que abrirse sin
   // sesión y sin liga seleccionada, tal cual, o el revisor ve otra pantalla.
   'deleteAccount',
-  'landingpage',
   'about',
   'guides',
   'guideDetail',
@@ -95,21 +94,6 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Pro Fantasy — Posiciones, resultados y estadísticas en vivo',
       description: 'Sigue en vivo las posiciones, resultados y estadísticas de la Liga MX, Premier League, LaLiga, Serie A y Bundesliga, y juega fantasy, quinielas y Survivor gratis.',
-      requiresAuth: false
-    }
-  },
-  {
-    path: '/landingpage',
-    name: 'landingpage',
-    // Public marketing page aimed at acquiring new users (anonymous-friendly).
-    component: () => import(/* webpackChunkName: "landingpage" */ '@/views/landing/LandingView.vue'),
-    // Estos dos valores deben coincidir con `meta` en src/locales/es/landing.json:
-    // el prerender sirve ese texto al crawler y el guard sobrescribe con este
-    // otro al montar la app. Si divergen, Google ve un título antes de ejecutar
-    // el JS y otro después.
-    meta: {
-      title: 'Pro Fantasy — Descarga la app de fantasy de la Liga MX',
-      description: 'Descarga gratis Pro Fantasy en la App Store: draft en vivo, quinielas y Survivor de la Liga MX con tus amigos. Android, próximamente.',
       requiresAuth: false
     }
   },

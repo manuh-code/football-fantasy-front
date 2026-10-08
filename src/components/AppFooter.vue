@@ -4,16 +4,16 @@
  *
  * Existe por dos razones concretas:
  *
- * 1. SEO. /landingpage era una página huérfana: ningún `router-link` de la app
- *    apuntaba a ella, así que Google la veía sin enlaces internos por mucho que
- *    el sitemap le diera prioridad 1.0. Lo mismo con /guias y /about, que solo
- *    se enlazaban desde el HTML estático de scripts/prerender.mjs — y ese HTML
- *    lo reemplaza Vue en cuanto monta.
+ * 1. SEO. /guias y /about solo se enlazaban desde el HTML estático de
+ *    scripts/prerender.mjs — y ese HTML lo reemplaza Vue en cuanto monta. La
+ *    landing de descarga vive en su propio dominio (profantasy.mx, repo
+ *    profantasy): este enlace es el que le pasa autoridad desde la app.
  * 2. Legal. El aviso de privacidad no era alcanzable navegando; la LFPDPPP
  *    exige tenerlo accesible.
  *
  * Los enlaces son `router-link` reales (no botones con `router.push`) para que
- * salgan como <a href> en el DOM y los rastreadores los sigan. El texto es
+ * salgan como <a href> en el DOM y los rastreadores los sigan; el de la landing
+ * es un <a> normal porque sale del sitio. El texto es
  * descriptivo a propósito: "Qué es Pro Fantasy" transmite más que "Más info".
  */
 import { useI18n } from 'vue-i18n'
@@ -21,7 +21,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 const LINKS = [
-  { key: 'landing', to: { name: 'landingpage' } },
+  { key: 'landing', href: 'https://profantasy.mx/landingpage' },
   { key: 'guides', to: { name: 'guides' } },
   { key: 'about', to: { name: 'about' } },
   { key: 'privacy', to: { name: 'privacy' } },
@@ -29,6 +29,9 @@ const LINKS = [
   // el sitio, no solo desde la ficha de la tienda.
   { key: 'deleteAccount', to: { name: 'deleteAccount' } },
 ] as const
+
+const LINK_CLASS =
+  'rounded text-sm font-medium text-gray-600 transition-colors hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-400 dark:hover:text-primary-400'
 
 const year = new Date().getFullYear()
 </script>
@@ -41,14 +44,14 @@ const year = new Date().getFullYear()
       :aria-label="t('ui.footer.navLabel')"
       class="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3"
     >
-      <router-link
-        v-for="link in LINKS"
-        :key="link.key"
-        :to="link.to"
-        class="rounded text-sm font-medium text-gray-600 transition-colors hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-400 dark:hover:text-primary-400"
-      >
-        {{ t(`ui.footer.links.${link.key}`) }}
-      </router-link>
+      <template v-for="link in LINKS" :key="link.key">
+        <a v-if="'href' in link" :href="link.href" :class="LINK_CLASS">
+          {{ t(`ui.footer.links.${link.key}`) }}
+        </a>
+        <router-link v-else :to="link.to" :class="LINK_CLASS">
+          {{ t(`ui.footer.links.${link.key}`) }}
+        </router-link>
+      </template>
     </nav>
 
     <p class="mt-6 text-center text-xs text-gray-500 dark:text-gray-500">

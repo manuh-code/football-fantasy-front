@@ -19,7 +19,7 @@ npm run lint      # ESLint (--fix) over .vue/.ts/.js
 
 Vue 3 (Composition API, `<script setup>`) + TypeScript + Vite. State via Pinia, i18n via vue-i18n, styling via TailwindCSS 3 + SCSS. Path alias `@/` → `src/`.
 
-The app is organized by **feature domain** — the same domain names recur across `views/`, `components/`, `services/`, `store/`, and `interfaces/`: **fantasy** (leagues, draft, teams), **football** (leagues, teams, players, fixtures), **pool** (quinielas), **survivor**, **user/auth**, plus `dashboard`, `home`, `landing`, `legal`.
+The app is organized by **feature domain** — the same domain names recur across `views/`, `components/`, `services/`, `store/`, and `interfaces/`: **fantasy** (leagues, draft, teams), **football** (leagues, teams, players, fixtures), **pool** (quinielas), **survivor**, **user/auth**, plus `dashboard`, `home`, `legal`.
 
 ### API / service layer — the core pattern
 
@@ -123,40 +123,20 @@ la misma fuente (torneo en curso, o el anterior si aún no tiene puntos — `sco
   siempre llega vacío. El velo del modo oscuro va con `.dark .locked-veil` y no `:global(.dark)`, que en
   `scoped` se come el resto del selector. El beneficio está en las cuatro listas de Premium: hoja de venta
   (`premium.upsell.benefits.season`), landing `/premium/planes` (7.ª tarjeta, a lo ancho para cerrar la rejilla, y
-  fila de la comparativa), `billing.subscription.features`, y los textos de `guides.json` (`landing.json` ya no
-  lista beneficios de Premium: desde el rediseño de octubre de 2026 solo dice "Europa con Premium").
+  fila de la comparativa), `billing.subscription.features`, y los textos de `guides.json` (la landing de
+  profantasy.mx no lista beneficios de Premium: solo dice "con Premium" junto a las ligas de Europa).
 
-## Landing de descarga (`/landingpage`)
+## Landing de descarga
 
-Reconstruida el 2026-10-02 para vender la **app de iOS**, no la web. Composición "la ficha viva": se lee como la
-ficha de la App Store (ícono, titular, insignia + QR + Google Play apagado, y el carrusel de capturas ya en la
-primera pantalla), siempre en oscuro con la paleta de marca del móvil y Montserrat. Sistema visual en
-[`DESIGN.md`](DESIGN.md) (solo rige esta página; el resto de la web sigue en el tema de `tailwind.config.js`);
-producto en `PRODUCT.md`. El contrato de dirección de Impeccable vive en `.impeccable/`, que está en `.gitignore`.
+Vive en su propio proyecto: el repo `profantasy` (Nuxt 3 + Tailwind, sitio estático), publicado en
+**https://profantasy.mx/landingpage**, con su sistema visual (`DESIGN.md`, "Noche lima") y su contexto de producto.
+Aquí solo queda la redirección:
 
-- Vista en [`LandingView.vue`](src/views/landing/LandingView.vue) (tokens `--lp-*` en `.landing`, independientes del
-  tema claro/oscuro de la web); piezas en `src/components/landing/`. **URLs, archivos y tiempos del video viven en
-  [`landingContent.ts`](src/views/landing/landingContent.ts)**, y `scripts/prerender.mjs` repite `APP_STORE.link` y el
-  id de la app (un `.mjs` no importa `.ts`): si cambian, cambian en los dos.
-- Cada enlace a la App Store lleva su campaña (`itsct`): insignia `apps_box_badge`, botones de texto
-  `apps_box_link` (`apple.co/3VlHTKi`), QR `apps_box_qrcode` (`apple.co/4z5qYu2`, va dentro de la imagen).
-- Las nueve capturas son las de la App Store **ya compuestas** (titular, teléfono, lupa): se muestran tal cual,
-  sin otro marco. La página sirve WebP de 600/900 px de `public/img/landing/shots/` y deja el PNG de R2 como el
-  candidato más grande del `srcset`. El video (R2) es la App Preview real; sus escenas (`DEMO_SCENES`) se copian de
-  `SCENES` en `marketing/app-store/fuente/preview-b.html` si se vuelve a montar.
-- **Video en pantallas táctiles (pendiente del usuario):** con el original de 41 MB solo arranca solo con ratón; en
-  el teléfono espera un toque. El usuario eligió subir a R2 la versión web
-  (`marketing/app-store/preview/pro-fantasy-app-preview-web.mp4`, 5.4 MB, misma imagen a tamaño de pantalla): al
-  tener su URL, ponerla en `DEMO_VIDEO.src` con `lightweight: true` y el autoplay silenciado vuelve también al
-  teléfono. La barra "Obtener" se esconde mientras el teléfono del video está a la vista (`stage-visible`).
-- `GetAppBar.vue` va por `<Teleport to="body">`: `.app-content` de `App.vue` lleva un `transform` (gesto de volver)
-  y con él un `position: fixed` deja de pegarse a la pantalla. Cualquier elemento fijo nuevo de la landing, igual.
-- Mientras está montada pinta de oscuro el lienzo, `theme-color` y `color-scheme`, y los devuelve al salir.
-  `App.vue` no muestra ahí el banner de instalar la PWA (competiría con la descarga nativa). El prerender agrega el
-  Smart App Banner de Safari (`apple-itunes-app`) solo a `/landingpage`, y pinta ese HTML estático en oscuro
-  (`LANDING_NIGHT`, acotado con `:has(.pr-landing)`) para que no destelle claro antes de montar Vue.
-- Cuando Android salga: la celda "Próximamente en Google Play" de `DownloadCluster.vue` pasa a insignia oficial
-  con enlace, y `GetAppBar` deja de ofrecer la web a los Android.
+- nginx (`config/nginx/nginx.conf`) responde `/landingpage` con **301** a profantasy.mx y conserva la query (UTM).
+- El service worker no la intercepta (`navigateFallbackDenylist` en `vite.config.ts`): con la PWA instalada, sin
+  eso contestaría el SPA desde caché, que ya no tiene esa ruta.
+- No hay ruta en el router, ni prerender, ni entrada en el sitemap. El footer (`AppFooter.vue`, "Descarga la app")
+  y el nav del HTML prerenderizado (`scripts/prerender.mjs`) enlazan a la URL nueva.
 
 ## Environment variables
 

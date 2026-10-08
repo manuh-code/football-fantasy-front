@@ -70,7 +70,7 @@
     "goalText": "Sobrevive la mayor cantidad de jornadas posible, eligiendo en cada una un equipo que creas que va a ganar.",
     "howLabel": "Cómo se juega",
     "step1": "En cada jornada, elige un equipo de entre los partidos disponibles.",
-    "step2": "No puedes repetir un equipo que ya hayas elegido antes en este Survivor — una vez usado, queda \"quemado\" para el resto del torneo.",
+    "step2": "No puedes repetir un equipo que ya hayas elegido antes en este Survivor — una vez usado, queda \"quemado\". En las ligas largas, la lista se reinicia a mitad de temporada.",
     "step3": "Puedes cambiar tu elección todas las veces que quieras mientras la jornada no haya comenzado.",
     "step4": "En cuanto arranca el primer partido de la jornada, esta se bloquea por completo: ya no puedes elegir ni cambiar tu pick.",
     "endLabel": "Fin del juego",
