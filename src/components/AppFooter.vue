@@ -8,15 +8,17 @@
  *    scripts/prerender.mjs — y ese HTML lo reemplaza Vue en cuanto monta. La
  *    landing de descarga vive en su propio dominio (profantasy.mx, repo
  *    profantasy): este enlace es el que le pasa autoridad desde la app.
- * 2. Legal. El aviso de privacidad no era alcanzable navegando; la LFPDPPP
- *    exige tenerlo accesible.
+ * 2. Legal. El aviso de privacidad tiene que ser alcanzable navegando (la
+ *    LFPDPPP exige tenerlo accesible), y los términos también. Los dos viven
+ *    en profantasy.mx (`@/config/legal`).
  *
- * Los enlaces son `router-link` reales (no botones con `router.push`) para que
- * salgan como <a href> en el DOM y los rastreadores los sigan; el de la landing
- * es un <a> normal porque sale del sitio. El texto es
+ * Los enlaces internos son `router-link` reales (no botones con `router.push`)
+ * para que salgan como <a href> en el DOM y los rastreadores los sigan; los que
+ * salen del sitio son un <a> normal. El texto es
  * descriptivo a propósito: "Qué es Pro Fantasy" transmite más que "Más info".
  */
 import { useI18n } from 'vue-i18n'
+import { LEGAL_URLS } from '@/config/legal'
 
 const { t } = useI18n()
 
@@ -24,7 +26,8 @@ const LINKS = [
   { key: 'landing', href: 'https://profantasy.mx/landingpage' },
   { key: 'guides', to: { name: 'guides' } },
   { key: 'about', to: { name: 'about' } },
-  { key: 'privacy', to: { name: 'privacy' } },
+  { key: 'privacy', href: LEGAL_URLS.privacy },
+  { key: 'terms', href: LEGAL_URLS.terms },
   // Google Play exige que el enlace de borrado de cuenta sea alcanzable desde
   // el sitio, no solo desde la ficha de la tienda.
   { key: 'deleteAccount', to: { name: 'deleteAccount' } },

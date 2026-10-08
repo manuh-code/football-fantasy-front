@@ -138,6 +138,22 @@ Aquí solo queda la redirección:
 - No hay ruta en el router, ni prerender, ni entrada en el sitemap. El footer (`AppFooter.vue`, "Descarga la app")
   y el nav del HTML prerenderizado (`scripts/prerender.mjs`) enlazan a la URL nueva.
 
+## Aviso de privacidad y términos
+
+También viven en el repo `profantasy`: **https://profantasy.mx/privacidad** y **https://profantasy.mx/terminos**, una
+sola versión para la web y las dos apps. Aquí solo quedan sus URLs, en `src/config/legal.ts` (`LEGAL_URLS`):
+
+- nginx responde `/privacy` (la URL que declaran App Store Connect y Play Console) y `/terminos`/`/terms` con **301**
+  hacia allá, y el service worker no las intercepta (`navigateFallbackDenylist`).
+- No hay `PrivacyView` ni ruta `privacy`. Registro (casilla de términos y aviso), login, Ajustes, Acerca de, el footer
+  y el HTML prerenderizado enlazan a `LEGAL_URLS`; los que están dentro de un formulario o de la app abren otra pestaña
+  para no perder lo escrito.
+- `/eliminar-cuenta` (`DeleteAccountView.vue`) sigue aquí porque es la URL que publica Google Play y lleva a Ajustes.
+  No repite el nombre ni el domicilio del Responsable: cita el aviso. Su correo de contacto es el mismo que el del aviso
+  (`admin@profantasy.mx`); si uno cambia, cambian los dos.
+- Si cambia algo que el aviso describe (un SDK, un proveedor, un dato personal nuevo), el aviso se actualiza en
+  `profantasy` en el mismo cambio.
+
 ## Environment variables
 
 All client vars are prefixed `VITE_`. See `.env.example`:

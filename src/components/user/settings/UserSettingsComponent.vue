@@ -106,9 +106,11 @@
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
       </button>
 
-      <!-- Privacy Notice -->
-      <button
-        @click="navigateTo('privacy')"
+      <!-- Privacy Notice (vive en profantasy.mx; otra pestaña para no sacar a nadie de la app) -->
+      <a
+        :href="LEGAL_URLS.privacy"
+        target="_blank"
+        rel="noopener"
         class="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
       >
         <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center flex-shrink-0">
@@ -119,7 +121,7 @@
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('user.settings.menu.privacy.subtitle') }}</p>
         </div>
         <v-icon name="hi-solid-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-      </button>
+      </a>
     </div>
 
     <!-- Favorite teams -->
@@ -227,6 +229,7 @@ import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTe
 import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import TeamNotificationsDrawer from '@/components/football/team/TeamNotificationsDrawer.vue'
 import DeleteAccountSheet from '@/components/user/settings/DeleteAccountSheet.vue'
+import { LEGAL_URLS } from '@/config/legal'
 
 const router = useRouter()
 const { t } = useI18n()
