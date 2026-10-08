@@ -107,7 +107,6 @@ const FOOTER_ROUTES = new Set([
   "guides",
   "guideDetail",
   "about",
-  "privacy",
   "deleteAccount",
 ]);
 const showFooter = computed(() =>

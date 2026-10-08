@@ -18,8 +18,8 @@
   localiza con una expresión regular sobre el archivo entero y engancharía la
   primera aparición, arrastrando medio template dentro del documento.
 
-  ⚠️ PLANTILLA: revisa los valores entre [CORCHETES] del bloque `company` antes
-  de publicar — son los mismos marcadores que PrivacyView.vue.
+  Los datos del Responsable y el resto del aviso de privacidad viven en
+  profantasy.mx/privacidad (repo profantasy); esta página solo lo cita.
 -->
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 md:py-8 pb-16">
@@ -111,10 +111,9 @@
         <p>
           Esta página explica cómo pedir que se eliminen tu cuenta de
           <strong>{{ company.appName }}</strong> y los datos personales asociados a ella, qué se
-          borra, qué se conserva y en qué plazos. El responsable del tratamiento es
-          <strong>{{ company.legalName }}</strong>, cuyo domicilio y datos completos de
-          identificación figuran en el Aviso de Privacidad; el correo de contacto es
-          <strong>{{ company.contactEmail }}</strong>.
+          borra, qué se conserva y en qué plazos. La identidad y el domicilio del responsable del
+          tratamiento figuran en el Aviso de Privacidad, en {{ company.privacyUrl }}; el correo de
+          contacto es <strong>{{ company.contactEmail }}</strong>.
         </p>
 
         <h2 id="borrado-1">1. Cómo solicitar el borrado</h2>
@@ -212,9 +211,9 @@
             <strong>Desde la app:</strong> el borrado es inmediato, en el momento de confirmarlo.
           </li>
           <li>
-            <strong>Por correo:</strong> te responderemos en un máximo de <strong>20 días
-            hábiles</strong> y, de resultar procedente, la eliminación se hará efectiva dentro de los
-            <strong>15 días hábiles</strong> siguientes, conforme a la LFPDPPP.
+            <strong>Por correo:</strong> te responderemos en un máximo de <strong>20 días</strong>
+            y, de resultar procedente, la eliminación se hará efectiva dentro de los
+            <strong>15 días</strong> siguientes, conforme a la LFPDPPP.
           </li>
           <li>
             <strong>Copias de seguridad:</strong> los datos ya eliminados pueden permanecer en
@@ -251,13 +250,13 @@
           Para cualquier duda sobre esta solicitud o sobre el tratamiento de tus datos personales,
           incluido el ejercicio de tus Derechos ARCO, escríbenos a
           <strong>{{ company.contactEmail }}</strong>. Puedes consultar el detalle completo en
-          nuestro Aviso de Privacidad, en {{ company.website }}/privacy.
+          nuestro Aviso de Privacidad, en {{ company.privacyUrl }}.
         </p>
       </article>
 
-      <!-- Enlace al aviso de privacidad -->
-      <router-link
-        :to="{ name: 'privacy' }"
+      <!-- Enlace al aviso de privacidad (vive en profantasy.mx) -->
+      <a
+        :href="company.privacyUrl"
         class="flex items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700/60 dark:bg-gray-800 dark:hover:bg-gray-700/50"
       >
         <span class="flex items-center gap-3">
@@ -267,7 +266,7 @@
           </span>
         </span>
         <v-icon name="hi-solid-chevron-right" class="h-4 w-4 text-gray-400" />
-      </router-link>
+      </a>
     </div>
   </div>
 </template>
@@ -296,22 +295,22 @@ const settingsTarget = computed(() =>
     : { name: "login", query: { redirect: "/settings" } }
 );
 
-// A diferencia de PrivacyView.vue, aquí los valores van sin corchetes: esta URL
-// se declara en Google Play y la abre un revisor, así que no puede enseñar
-// marcadores de plantilla. Solo `legalName` sigue pendiente — es el único dato
-// que no está ya en el código ni en producción.
+// Sin marcadores entre corchetes: esta URL se declara en Google Play y la abre
+// un revisor. El nombre y el domicilio del Responsable no se repiten aquí: los
+// da el aviso de privacidad de profantasy.mx (repo profantasy), la única versión,
+// y esta página lo cita. El correo es el mismo que publica ese aviso.
 //
 // ⚠️ `backupRetention` es el plazo real de rotación de los respaldos: confírmalo
 // con tu proveedor de hosting y ajústalo si no son 30 días. Aquí se está
 // afirmando un compromiso ante la tienda y ante el usuario.
 const company = {
-  legalName: "[Razón social o nombre del Responsable]",
   appName: "Pro Fantasy",
-  contactEmail: "hola@fantasymx.cloud",
+  contactEmail: "admin@profantasy.mx",
   website: "https://fantasymx.cloud",
+  privacyUrl: "https://profantasy.mx/privacidad",
   paymentProvider: "Stripe",
   backupRetention: "30 días",
-  lastUpdated: "8 de septiembre de 2026",
+  lastUpdated: "8 de octubre de 2026",
 };
 
 // Los pasos se repiten dentro del <article> como texto plano: aquí son la guía

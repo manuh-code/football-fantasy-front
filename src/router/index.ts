@@ -43,7 +43,6 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   'FacebookCallback',
   'not-found',
   'footballLeagues',
-  'privacy',
   // Es la URL que Google Play publica en la ficha: tiene que abrirse sin
   // sesión y sin liga seleccionada, tal cual, o el revisor ve otra pantalla.
   'deleteAccount',
@@ -407,17 +406,6 @@ const routes: Array<RouteRecordRaw> = [
       description: 'View detailed statistics for football players',
       // Fantasy-league-scoped tool (needs a fantasyLeagueUuid); not public content.
       requiresAuth: true
-    }
-  },
-  {
-    path: '/privacy',
-    name: 'privacy',
-    // Route level code-splitting for better performance
-    component: () => import(/* webpackChunkName: "privacy" */ '@/views/legal/PrivacyView.vue'),
-    meta: {
-      title: 'Aviso de Privacidad - Pro Fantasy',
-      description: 'Aviso de privacidad de Pro Fantasy conforme a la LFPDPPP',
-      requiresAuth: false
     }
   },
   {
