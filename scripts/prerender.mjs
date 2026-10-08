@@ -15,7 +15,9 @@
 //   así que no engordan el service worker.
 //
 // Rutas generadas: /about, /guias, /guias/<slug> (todas las
-// guías declaradas en src/views/guides/guides.ts), /privacy y /eliminar-cuenta.
+// guías declaradas en src/views/guides/guides.ts) y /eliminar-cuenta. El aviso de
+// privacidad y los términos viven en profantasy.mx (repo profantasy); nginx
+// manda /privacy y /terminos allá.
 //
 // Al final también escribe dist/sitemap.xml a partir de esas mismas rutas.
 
@@ -98,7 +100,7 @@ const NAV = `<header class="pr-nav">
 const FOOTER = `<footer>
   <p>Pro Fantasy — futbol en vivo, fantasy con draft, quinielas y Survivor para
   Liga MX, Premier League, LaLiga, Serie A y Bundesliga. La Liga MX, gratis.</p>
-  <p><a href="/guias">Guías</a> · <a href="/about">Acerca de</a> · <a href="/privacy">Aviso de privacidad</a> · <a href="/eliminar-cuenta">Borrar tu cuenta</a></p>
+  <p><a href="/guias">Guías</a> · <a href="/about">Acerca de</a> · <a href="https://profantasy.mx/privacidad">Aviso de privacidad</a> · <a href="https://profantasy.mx/terminos">Términos y condiciones</a> · <a href="/eliminar-cuenta">Borrar tu cuenta</a></p>
 </footer>`
 
 const chips = () =>
@@ -262,34 +264,13 @@ const aboutPage = () => {
       <ul>${feats.map((f) => `<li><strong>${esc(about.features[f].title)}</strong> — ${esc(about.features[f].desc)}</li>`).join('')}</ul>
       <h2>${esc(about.responsible.heading)}</h2>
       <p>${esc(about.responsible.text)}</p>
-      <p><a href="/guias">Lee nuestras guías y aprende a jugar</a> · <a href="/premium/planes">${esc(about.premiumLink)}</a> · <a href="/privacy">Aviso de privacidad</a></p>`,
+      <p><a href="/guias">Lee nuestras guías y aprende a jugar</a> · <a href="/premium/planes">${esc(about.premiumLink)}</a> · <a href="https://profantasy.mx/privacidad">Aviso de privacidad</a></p>`,
   }
 }
 
-// El aviso de privacidad vive como HTML plano dentro del SFC: extraemos el
-// <article> y resolvemos las interpolaciones {{ company.* }} con el mismo
-// objeto `company` del componente.
-const privacyPage = () => {
-  const sfc = readFileSync(resolve(root, 'src/views/legal/PrivacyView.vue'), 'utf8')
-  const articleMatch = sfc.match(/<article[^>]*>([\s\S]*?)<\/article>/)
-  const companyMatch = sfc.match(/const company = \{([\s\S]*?)\};/)
-  if (!articleMatch || !companyMatch) throw new Error('prerender: no pude extraer el aviso de privacidad')
-  const company = Object.fromEntries(
-    [...companyMatch[1].matchAll(/(\w+):\s*"([^"]*)"/g)].map(([, k, v]) => [k, v])
-  )
-  const article = articleMatch[1].replace(/\{\{\s*company\.(\w+)\s*\}\}/g, (_, k) => esc(company[k] ?? ''))
-  return {
-    path: '/privacy',
-    title: 'Aviso de Privacidad — Pro Fantasy',
-    description: 'Aviso de privacidad de Pro Fantasy conforme a la LFPDPPP: qué datos recabamos, para qué los usamos y cómo ejercer tus derechos ARCO.',
-    body: `<h1>Aviso de Privacidad</h1>
-      <p class="pr-lead">Última actualización: ${esc(company.lastUpdated ?? '')}</p>
-      ${article}`,
-  }
-}
-
-// La página de borrado de cuenta se extrae igual que el aviso de privacidad:
-// mismo <article> de HTML plano y mismo bloque `company`. Se prerenderiza porque
+// La página de borrado de cuenta vive como HTML plano dentro del SFC: se
+// extrae su <article> y se resuelven las interpolaciones {{ company.* }} con el
+// mismo bloque `company` del componente. Se prerenderiza porque
 // es la URL que Google Play publica en la ficha, y el revisor puede abrirla con
 // un cliente que no ejecuta JavaScript: sin esto vería el <div id="app"> vacío.
 const deleteAccountPage = () => {
@@ -355,7 +336,6 @@ const pages = [
   premiumPage(),
   guidesHub(),
   ...GUIDES.map(guidePage),
-  privacyPage(),
   deleteAccountPage(),
 ]
 
@@ -430,7 +410,6 @@ const PRIORITY = {
   '/liga': '0.9',
   '/premium/planes': '0.8',
   '/about': '0.6',
-  '/privacy': '0.3',
   '/eliminar-cuenta': '0.3',
 }
 

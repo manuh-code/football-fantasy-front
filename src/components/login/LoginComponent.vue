@@ -140,12 +140,14 @@
       <!-- Privacy notice -->
       <p class="mt-3 text-center text-2xs text-gray-400 dark:text-gray-500">
         {{ $t('auth.login.privacyPrefix') }}
-        <router-link
-          to="/privacy"
+        <a
+          :href="LEGAL_URLS.privacy"
+          target="_blank"
+          rel="noopener"
           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
           {{ $t('auth.login.privacyLink') }}
-        </router-link>
+        </a>
       </p>
     </div>
   </div>
@@ -156,6 +158,7 @@ import { ref, computed, Ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { FormInput, ButtonComponent } from '@/components/ui'
+import { LEGAL_URLS } from '@/config/legal';
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { LoginPayload } from '@/interfaces/login/LoginPayload';
 

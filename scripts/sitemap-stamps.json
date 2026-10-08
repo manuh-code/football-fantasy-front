@@ -4,8 +4,8 @@
     "date": "2026-10-02"
   },
   "/about": {
-    "hash": "7fb20057a9c0fd78",
-    "date": "2026-08-19"
+    "hash": "9964dc0d4f800094",
+    "date": "2026-10-08"
   },
   "/guias": {
     "hash": "c34b73aa86ab6d8b",
@@ -51,10 +51,6 @@
     "hash": "8338bdac61eea929",
     "date": "2026-10-02"
   },
-  "/privacy": {
-    "hash": "c7610c063f96f588",
-    "date": "2026-09-23"
-  },
   "/gaming": {
     "hash": "4f256111fbec16a4",
     "date": "2026-08-03"
@@ -68,7 +64,7 @@
     "date": "2026-10-02"
   },
   "/eliminar-cuenta": {
-    "hash": "5fa73dd6d4c6ade4",
-    "date": "2026-09-23"
+    "hash": "b0a7d482e2a76f93",
+    "date": "2026-10-08"
   }
 }

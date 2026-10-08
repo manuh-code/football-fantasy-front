@@ -184,13 +184,13 @@
               {{ $t('ui.about.responsible.text') }}
             </p>
             <div class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
-              <router-link
-                :to="{ name: 'privacy' }"
+              <a
+                :href="LEGAL_URLS.privacy"
                 class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline"
               >
                 <v-icon name="hi-solid-document-text" class="w-4 h-4" />
                 {{ $t('ui.about.privacyLink') }}
-              </router-link>
+              </a>
               <router-link
                 :to="{ name: 'premiumPlans' }"
                 class="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 dark:text-amber-400 hover:underline"
@@ -234,6 +234,7 @@
 <script setup lang="ts">
 // About page: original, publicly reachable content describing Pro Fantasy and its
 // game modes. Copy lives in i18n (ui.about.*) for es/en.
+import { LEGAL_URLS } from '@/config/legal'
 
 // Proper nouns, identical in every locale, so they live here instead of i18n.
 const leagues = ['Liga MX', 'Premier League', 'LaLiga', 'Serie A', 'Bundesliga'] as const

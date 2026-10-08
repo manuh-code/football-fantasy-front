@@ -160,9 +160,10 @@
             />
             <span class="text-footnote leading-snug text-gray-600 dark:text-gray-300">
               {{ $t('auth.register.agreePrefix') }}
-              <a href="#" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.termsLink') }}</a>
+              <!-- En otra pestaña: navegar aquí perdería lo que ya se escribió. -->
+              <a :href="LEGAL_URLS.terms" target="_blank" rel="noopener" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.termsLink') }}</a>
               {{ $t('auth.register.agreeAnd') }}
-              <a href="#" @click.prevent="showPrivacyModal = true" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.privacyPolicyLink') }}</a>
+              <a :href="LEGAL_URLS.privacy" target="_blank" rel="noopener" class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">{{ $t('auth.register.privacyPolicyLink') }}</a>
             </span>
           </label>
           <p v-if="errors.terms" class="mt-1.5 text-xs text-red-500 dark:text-red-400">
@@ -196,44 +197,17 @@
       <!-- Privacy notice -->
       <p class="mt-3 text-center text-2xs text-gray-400 dark:text-gray-500">
         {{ $t('auth.register.privacyPrefix') }}
-        <router-link
-          to="/privacy"
+        <a
+          :href="LEGAL_URLS.privacy"
+          target="_blank"
+          rel="noopener"
           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
         >
           {{ $t('auth.login.privacyLink') }}
-        </router-link>
+        </a>
       </p>
     </div>
   </div>
-
-  <!-- Privacy policy modal -->
-  <Teleport to="body">
-    <Transition name="privacy-modal">
-      <div
-        v-if="showPrivacyModal"
-        class="fixed inset-0 z-50 flex flex-col bg-gray-50 dark:bg-gray-900 overflow-y-auto"
-        role="dialog"
-        aria-modal="true"
-      >
-        <!-- Close bar -->
-        <div class="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-          <span class="text-sm font-semibold text-gray-900 dark:text-white">
-            {{ $t('auth.register.privacyPolicyLink') }}
-          </span>
-          <button
-            type="button"
-            @click="showPrivacyModal = false"
-            class="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :aria-label="$t('common.actions.close')"
-          >
-            <v-icon name="hi-solid-x" class="w-4 h-4" />
-          </button>
-        </div>
-
-        <PrivacyView :is-modal="true" />
-      </div>
-    </Transition>
-  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -241,7 +215,7 @@ import { ref, computed, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { FormInput, ButtonComponent } from '@/components/ui';
-import PrivacyView from '@/views/legal/PrivacyView.vue';
+import { LEGAL_URLS } from '@/config/legal';
 import { UserStorePayload } from '@/interfaces/user/store/userStorePayload';
 import { getUserService } from '@/services/user/UserService';
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -280,8 +254,6 @@ const isFacebookLoading: Ref<boolean> = ref(false);
 // Social signup is the primary path; the email form stays collapsed until the
 // user explicitly chooses "Sign up with email".
 const showEmailForm = ref(false);
-
-const showPrivacyModal = ref(false);
 
 // Terms acceptance
 const acceptTerms: Ref<boolean> = ref(false);
@@ -603,19 +575,6 @@ const handleRegister = async () => {
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-/* Privacy policy modal slide-up */
-.privacy-modal-enter-active {
-    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.privacy-modal-leave-active {
-    transition: opacity 0.15s ease, transform 0.2s ease;
-}
-.privacy-modal-enter-from,
-.privacy-modal-leave-to {
-    opacity: 0;
-    transform: translateY(16px);
 }
 
 @media (prefers-reduced-motion: reduce) {

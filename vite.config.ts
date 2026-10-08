@@ -147,9 +147,15 @@ export default defineConfig({
         // Archivos planos de la raíz (ads.txt, app-ads.txt, robots.txt, sitemap.xml…)
         // deben llegar tal cual al navegador: sin esto el NavigationRoute del SW los
         // reemplaza por el index.html del SPA y el router muestra la página 404.
-        // /landingpage tampoco: nginx la redirige (301) a profantasy.mx, y con la
-        // PWA instalada el SW contestaría antes con el SPA, que ya no tiene esa ruta.
-        navigateFallbackDenylist: [/^\/[^/]+\.(?:txt|xml)$/, /^\/landingpage\/?$/],
+        // /landingpage, /privacy y /terminos tampoco: nginx las redirige (301) a
+        // profantasy.mx, y con la PWA instalada el SW contestaría antes con el
+        // SPA, que ya no tiene esas rutas.
+        navigateFallbackDenylist: [
+          /^\/[^/]+\.(?:txt|xml)$/,
+          /^\/landingpage\/?$/,
+          /^\/privacy\/?$/,
+          /^\/(?:terminos|terms)\/?$/,
+        ],
         // Al activarse un SW nuevo, borra los precaches de versiones anteriores.
         cleanupOutdatedCaches: true
       }
