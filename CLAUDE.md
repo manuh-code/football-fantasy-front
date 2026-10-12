@@ -146,10 +146,13 @@ y Google leen por su cuenta:
 
 - `public/.well-known/apple-app-site-association` (JSON **sin extensión**): `LPMGZPFY25.org.profantasy.mobile.football-fantasy-mobile`
   (Team ID + bundle id de iOS, el mismo que `APPSTORE_BUNDLE_ID` del API) con `components: [{ "/": "/invitations/*" }]`.
-- `public/.well-known/assetlinks.json`: paquete `org.profantasy.mobile` y el SHA-256 del **certificado de firma de la app**
-  de Play Console (Firma de apps → "Certificado de la clave de firma de la app", no el de la clave de subida). Un
-  build de depuración o de prueba interna se firma con otra clave: para probar App Links con él hay que **añadir su
-  huella** a `sha256_cert_fingerprints`.
+- `public/.well-known/assetlinks.json`: paquete `org.profantasy.mobile` y dos huellas SHA-256 en
+  `sha256_cert_fingerprints`. La **primera es la del certificado de firma de la app** de Play Console (Firma de apps →
+  "Certificado de la clave de firma de la app"): con Play App Signing, Google vuelve a firmar lo que sube el equipo,
+  así que es la que llevan las instalaciones desde la tienda y **la única que hace falta para ellas**. La segunda es la
+  de la **clave de carga**, que solo cubre un build de release firmado en local. **Poner solo la de carga no verifica
+  nada en Play, y falla sin ningún error**: el enlace sigue abriendo el navegador. Un build de depuración se firma con
+  otra clave: para probar App Links con él hay que **añadir su huella** a la lista.
 
 Solo se reclama `/invitations/*`. El resto de rutas del dominio siguen abriéndose en el navegador; ampliar es añadir
 un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
