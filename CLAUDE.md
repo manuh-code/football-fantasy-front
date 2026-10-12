@@ -138,6 +138,38 @@ Aquí solo queda la redirección:
 - No hay ruta en el router, ni prerender, ni entrada en el sitemap. El footer (`AppFooter.vue`, "Descarga la app")
   y el nav del HTML prerenderizado (`scripts/prerender.mjs`) enlazan a la URL nueva.
 
+## Abrir la app desde un enlace (Universal Links / App Links)
+
+Añadido 2026-10-12. El correo de invitación manda a `https://fantasymx.cloud/invitations/{token}`; para que en un
+teléfono con la app instalada ese mismo enlace la abra, este dominio publica dos archivos de verificación, que Apple
+y Google leen por su cuenta:
+
+- `public/.well-known/apple-app-site-association` (JSON **sin extensión**): `LPMGZPFY25.org.profantasy.mobile.football-fantasy-mobile`
+  (Team ID + bundle id de iOS, el mismo que `APPSTORE_BUNDLE_ID` del API) con `components: [{ "/": "/invitations/*" }]`.
+- `public/.well-known/assetlinks.json`: paquete `org.profantasy.mobile` y el SHA-256 del **certificado de firma de la app**
+  de Play Console (Firma de apps → "Certificado de la clave de firma de la app", no el de la clave de subida). Un
+  build de depuración o de prueba interna se firma con otra clave: para probar App Links con él hay que **añadir su
+  huella** a `sha256_cert_fingerprints`.
+
+Solo se reclama `/invitations/*`. El resto de rutas del dominio siguen abriéndose en el navegador; ampliar es añadir
+un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
+
+**Qué se rompe en silencio**, y por eso el bloque `location ^~ /.well-known/` de nginx:
+
+- Con el fallback SPA (`try_files … /index.html`) un archivo ausente se contesta con el HTML de la app y un **200**, y la
+  verificación falla sin ningún error. Ahí un archivo que no existe es un 404.
+- Apple y Google **no siguen redirecciones** en estos archivos, y el de iOS necesita `Content-Type: application/json`
+  aunque no tenga extensión (`default_type`).
+- El service worker no los intercepta (`navigateFallbackDenylist`), por si alguien los abre en un navegador con la PWA
+  instalada.
+- Vite 8 copia `public/.well-known/` a `dist/` (probado) y `scripts/prerender.mjs` solo añade archivos, no limpia.
+
+**Not verified**: nginx no se ejecutó (la máquina no lo tenía), y nada de esto se ha desplegado. Después de desplegar:
+`curl -sI https://fantasymx.cloud/.well-known/apple-app-site-association` (200, `application/json`, sin redirección),
+`https://app-site-association.cdn-apple.com/a/v1/fantasymx.cloud` (lo que Apple tiene en caché; tarda en actualizarse) y
+`https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://fantasymx.cloud&relation=delegate_permission/common.handle_all_urls`.
+Si hay un CDN o proxy delante de nginx, comprobar que no sirve un desafío o un HTML distinto a esos dos lectores.
+
 ## Aviso de privacidad y términos
 
 También viven en el repo `profantasy`: **https://profantasy.mx/privacidad** y **https://profantasy.mx/terminos**, una
