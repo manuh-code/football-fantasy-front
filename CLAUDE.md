@@ -151,8 +151,11 @@ y Google leen por su cuenta:
   "Certificado de la clave de firma de la app"): con Play App Signing, Google vuelve a firmar lo que sube el equipo,
   así que es la que llevan las instalaciones desde la tienda y **la única que hace falta para ellas**. La segunda es la
   de la **clave de carga**, que solo cubre un build de release firmado en local. **Poner solo la de carga no verifica
-  nada en Play, y falla sin ningún error**: el enlace sigue abriendo el navegador. Un build de depuración se firma con
-  otra clave: para probar App Links con él hay que **añadir su huella** a la lista.
+  nada en Play, y falla sin ningún error**: el enlace sigue abriendo el navegador. Un build de depuración (o cualquier
+  APK firmado en local) lleva otra clave y no verifica. Para probar con él **no hace falta tocar este archivo**: se
+  activa el dominio a mano con `adb shell pm set-app-links-user-selection --user cur --package org.profantasy.mobile true
+  fantasymx.cloud` (ver el `CLAUDE.md` del móvil). Añadir su huella aquí también funciona, pero deja una clave de
+  desarrollo autorizada en producción.
 
 Solo se reclama `/invitations/*`. El resto de rutas del dominio siguen abriéndose en el navegador; ampliar es añadir
 un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
@@ -167,11 +170,21 @@ un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
   instalada.
 - Vite 8 copia `public/.well-known/` a `dist/` (probado) y `scripts/prerender.mjs` solo añade archivos, no limpia.
 
-**Not verified**: nginx no se ejecutó (la máquina no lo tenía), y nada de esto se ha desplegado. Después de desplegar:
+**Estos archivos solo se consultan si el enlace que toca el teléfono es de `fantasymx.cloud`.** Si el proveedor del
+correo reescribe los enlaces para medir clics (Resend, con el seguimiento de clics encendido, los pasa por
+`hello.fantasymx.cloud/CL0/…`), el teléfono ve otro dominio y abre el navegador, sin ningún error y sin que nada de lo
+anterior entre en juego. Ver el `CLAUDE.md` del API, sección Emails.
+
+**Estado (2026-10-12)**: desplegado. La API de Digital Asset Links lista las dos huellas para `fantasymx.cloud` (lo que
+demuestra que Google lee el archivo), y un iPhone resolvió el `apple-app-site-association`: el enlace abre la app, que
+en un build normal solo pasa si Apple lo tiene en su CDN. nginx no se ejecutó en la máquina que escribió el bloque (no lo
+tenía), así que la prueba de que el bloque `/.well-known/` responde como debe es esa, no una ejecución local. Para volver
+a comprobarlo:
 `curl -sI https://fantasymx.cloud/.well-known/apple-app-site-association` (200, `application/json`, sin redirección),
 `https://app-site-association.cdn-apple.com/a/v1/fantasymx.cloud` (lo que Apple tiene en caché; tarda en actualizarse) y
 `https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://fantasymx.cloud&relation=delegate_permission/common.handle_all_urls`.
 Si hay un CDN o proxy delante de nginx, comprobar que no sirve un desafío o un HTML distinto a esos dos lectores.
+**Sin comprobar**: que la verificación automática de Android pase con una instalación de Play (ver el móvil).
 
 ## Aviso de privacidad y términos
 
