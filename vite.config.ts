@@ -155,6 +155,9 @@ export default defineConfig({
           /^\/landingpage\/?$/,
           /^\/privacy\/?$/,
           /^\/(?:terminos|terms)\/?$/,
+          // Archivos de verificación de la app (Universal Links / App Links):
+          // son para el servidor, no rutas del SPA.
+          /^\/\.well-known\//,
         ],
         // Al activarse un SW nuevo, borra los precaches de versiones anteriores.
         cleanupOutdatedCaches: true
