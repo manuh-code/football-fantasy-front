@@ -48,5 +48,23 @@
     "goHome": "Go home",
     "closed": "This league or pool already started, so the invitation may no longer be acceptable.",
     "someone": "whoever invited you"
+  },
+  "join": {
+    "eyebrowFantasy": "Fantasy league invitation",
+    "eyebrowPool": "Pool invitation",
+    "eyebrowSurvivor": "Survivor invitation",
+    "title": "You're invited to play on Pro Fantasy",
+    "bodyMobile": "Join from the app. If you don't have it yet, download it for free and use this code.",
+    "codeLabel": "Access code",
+    "copy": "Copy code",
+    "copied": "Copied",
+    "appStore": "Download on the App Store",
+    "googlePlay": "Get it on Google Play",
+    "openApp": "I already have the app",
+    "steps": "In the app, go to Play › {mode} › Join and paste the code.",
+    "modeFantasy": "Fantasy",
+    "modePool": "Pool",
+    "modeSurvivor": "Survivor",
+    "continueWeb": "Continue on the web"
   }
 }

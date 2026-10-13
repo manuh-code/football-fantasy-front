@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
+import { detectMobilePlatform, isJoinMode, isStandaloneWebApp, webJoinLocation } from '@/utils/joinLink'
 
 // For anonymous visitors (and search/AdSense crawlers) we auto-select the first
 // league returned by the API so public content is reachable without forcing the
@@ -55,6 +56,9 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   // La invitación llega por correo, muchas veces antes de tener cuenta: no
   // puede pasar por la selección de liga antes de dejarse ver.
   'invitation',
+  // El enlace de "Compartir invitación" en un teléfono sin la app: manda a la
+  // tienda, y esperar antes a la API de ligas solo retrasaría eso.
+  'joinLink',
   // El hub de juego (`/`, alias `/gaming`) es indexable y está prerenderizado:
   // no debe depender de que la API de ligas responda. La vista solo lista los
   // tres modos y navega a otras rutas — esas sí piden liga cuando toca.
@@ -258,6 +262,29 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Invitación - Pro Fantasy',
       description: 'Acepta tu invitación a una liga fantasy o quiniela',
+      requiresAuth: false
+    }
+  },
+  {
+    // El enlace de "Compartir invitación" (`src/utils/joinLink.ts`). Con la app
+    // instalada esta ruta no llega a abrirse: la reclaman los Universal Links /
+    // App Links y el sistema abre la app. Si llega aquí:
+    // - en un ordenador, o en la web instalada como PWA, sigue a la hoja de
+    //   unirse de esta web (las rutas `?join=` de siempre), sin pintar nada;
+    // - en un teléfono, `JoinLinkView` manda a la tienda.
+    path: '/join/:mode/:code',
+    name: 'joinLink',
+    component: () => import(/* webpackChunkName: "invitation" */ '@/views/invitation/JoinLinkView.vue'),
+    beforeEnter: (to) => {
+      const mode = String(to.params.mode ?? '').toLowerCase()
+      const code = String(to.params.code ?? '').trim()
+      if (!isJoinMode(mode) || !code) return { name: 'home' }
+      if (!detectMobilePlatform() || isStandaloneWebApp()) return webJoinLocation(mode, code)
+      return true
+    },
+    meta: {
+      title: 'Invitación - Pro Fantasy',
+      description: 'Únete a una liga fantasy, quiniela o survivor de Pro Fantasy',
       requiresAuth: false
     }
   },

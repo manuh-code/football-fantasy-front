@@ -48,5 +48,23 @@
     "goHome": "Ir al inicio",
     "closed": "Esta liga o quiniela ya arrancó, la invitación puede que ya no se pueda aceptar.",
     "someone": "quien te invitó"
+  },
+  "join": {
+    "eyebrowFantasy": "Invitación a liga fantasy",
+    "eyebrowPool": "Invitación a quiniela",
+    "eyebrowSurvivor": "Invitación a survivor",
+    "title": "Te invitaron a jugar en Pro Fantasy",
+    "bodyMobile": "Únete desde la app. Si todavía no la tienes, descárgala gratis y entra con este código.",
+    "codeLabel": "Código de acceso",
+    "copy": "Copiar código",
+    "copied": "Copiado",
+    "appStore": "Descargar en App Store",
+    "googlePlay": "Descargar en Google Play",
+    "openApp": "Ya tengo la app",
+    "steps": "En la app, entra a Jugar › {mode} › Unirse y pega el código.",
+    "modeFantasy": "Fantasy",
+    "modePool": "Quiniela",
+    "modeSurvivor": "Survivor",
+    "continueWeb": "Continuar en la web"
   }
 }
