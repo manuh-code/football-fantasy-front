@@ -152,6 +152,7 @@ import { FootballStageResponse } from "@/interfaces/football/stage/FootballStage
 import { useToast } from "@/composables/useToast";
 import { useI18n } from "vue-i18n";
 import PoolListSkeleton from "@/components/pool/PoolListSkeleton.vue";
+import { buildJoinLink } from "@/utils/joinLink";
 
 const router = useRouter();
 const { t } = useI18n();
@@ -194,10 +195,10 @@ let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 const sharedUuid = ref<string | null>(null);
 let shareResetTimer: ReturnType<typeof setTimeout> | undefined;
 
-// Build the public invite link for a pool. Opening it lands the recipient on the
-// Pools page with the Join sheet pre-filled with this access code (see PoolView).
-const buildInviteLink = (accessCode: string) =>
-  `${window.location.origin}/pools?join=${encodeURIComponent(accessCode)}`;
+// The shared invite link (`/join/pool/{code}`, see utils/joinLink). On a phone with
+// the app it opens the app's Join sheet; without it, the store; on a computer, the
+// Join sheet of this web pre-filled with the code.
+const buildInviteLink = (accessCode: string) => buildJoinLink("pool", accessCode);
 
 // Copy arbitrary text, falling back to a hidden textarea on non-secure contexts
 // or older browsers that lack the async clipboard API.

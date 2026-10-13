@@ -4,7 +4,8 @@
       {
         "appIDs": ["LPMGZPFY25.org.profantasy.mobile.football-fantasy-mobile"],
         "components": [
-          { "/": "/invitations/*", "comment": "Enlace del correo de invitación a liga, quiniela o survivor" }
+          { "/": "/invitations/*", "comment": "Enlace del correo de invitación a liga, quiniela o survivor" },
+          { "/": "/join/*", "comment": "Enlace de Compartir invitación: /join/{fantasy|pool|survivor}/{código}" }
         ]
       }
     ]

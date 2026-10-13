@@ -347,6 +347,7 @@ import PoolMemberPredictionsSheet from "@/components/pool/PoolMemberPredictionsS
 import InviteMemberModal from "@/components/invitation/InviteMemberModal.vue";
 import type { PoolResponse } from "@/interfaces/pool/PoolResponse";
 import type { UserDataInterface } from "@/interfaces/user/userInterface";
+import { buildJoinLink } from "@/utils/joinLink";
 
 const props = withDefaults(
   defineProps<{ poolUuid: string; activeTab?: string }>(),
@@ -376,10 +377,10 @@ let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 const shared = ref(false);
 let shareResetTimer: ReturnType<typeof setTimeout> | undefined;
 
-// Build the public invite link. Opening it lands the recipient on the Pools page
-// with the Join sheet pre-filled with this access code (handled in PoolView).
-const buildInviteLink = (accessCode: string) =>
-  `${window.location.origin}/pools?join=${encodeURIComponent(accessCode)}`;
+// The shared invite link (`/join/pool/{code}`, see utils/joinLink). On a phone with
+// the app it opens the app's Join sheet; without it, the store; on a computer, the
+// Join sheet of this web pre-filled with the code.
+const buildInviteLink = (accessCode: string) => buildJoinLink("pool", accessCode);
 
 // Copy arbitrary text, falling back to a hidden textarea on non-secure contexts
 // or older browsers that lack the async clipboard API.

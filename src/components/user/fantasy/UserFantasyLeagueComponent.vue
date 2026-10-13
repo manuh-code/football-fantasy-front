@@ -158,6 +158,7 @@ import { useUserStore } from "@/store/user/useUserStore";
 import { useToast } from "@/composables/useToast";
 import FantasyLeagueListSkeleton from "@/components/fantasy/FantasyLeagueListSkeleton.vue";
 import type { FantasyLeaguesResponse } from "@/interfaces/fantasy/leagues/FantasyLeaguesResponse";
+import { buildJoinLink } from "@/utils/joinLink";
 
 // Stores and composables
 const userStore = useUserStore();
@@ -225,10 +226,10 @@ const viewLeague = (league: FantasyLeaguesResponse) => {
   router.push({ name: "fantasyLeagueDetail", params: { uuid: league.uuid } });
 };
 
-// Build the public invite link for a league. Opening it lands the recipient on the
-// My Leagues page with the Join sheet pre-filled with this access code (see UserFantasyLeagueView).
-const buildInviteLink = (accessCode: string) =>
-  `${window.location.origin}/my/fantasy/leagues?join=${encodeURIComponent(accessCode)}`;
+// The shared invite link (`/join/fantasy/{code}`, see utils/joinLink). On a phone with
+// the app it opens the app's Join sheet; without it, the store; on a computer, the
+// Join sheet of this web pre-filled with the code.
+const buildInviteLink = (accessCode: string) => buildJoinLink("fantasy", accessCode);
 
 // Copy arbitrary text, falling back to a hidden textarea on non-secure contexts
 // or older browsers that lack the async clipboard API.

@@ -154,8 +154,32 @@ y Google leen por su cuenta:
   nada en Play, y falla sin ningún error**: el enlace sigue abriendo el navegador. Un build de depuración se firma con
   otra clave: para probar App Links con él hay que **añadir su huella** a la lista.
 
-Solo se reclama `/invitations/*`. El resto de rutas del dominio siguen abriéndose en el navegador; ampliar es añadir
-un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
+Se reclaman `/invitations/*` y, desde 2026-10-13, `/join/*`. El resto de rutas del dominio siguen abriéndose en el
+navegador; ampliar es añadir un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
+
+### El enlace de "Compartir invitación": `/join/{modo}/{código}`
+
+Lo que comparten los botones de liga y quiniela (`buildJoinLink` en `src/utils/joinLink.ts`, usado por
+`UserFantasyLeagueComponent`, `PoolComponent` y `PoolGroupComponent`) es `https://fantasymx.cloud/join/fantasy/BR5io`
+(o `pool`/`survivor`), **el mismo enlace byte a byte que arman las apps** (`JoinLink.build` en el móvil). Antes eran
+`/my/fantasy/leagues?join=`, `/pools?join=` y `/survivor?join=`: esas rutas siguen leyendo `?join=` y abriendo la hoja,
+así que los enlaces viejos siguen sirviendo, pero no abren la app.
+
+- **Con la app instalada** el sistema la abre directo (este archivo y el manifiesto reclaman `/join/*`) en el cajón de
+  unirse con el código puesto. La web no se entera.
+- **Sin la app, en un ordenador o en la PWA instalada**: el `beforeEnter` de la ruta `joinLink` redirige a la hoja de
+  unirse de siempre (`webJoinLocation`), sin pintar nada; si no hay sesión, el login vuelve ahí.
+- **Sin la app, en un teléfono**: `JoinLinkView.vue` manda **una vez** a la tienda (App Store o Google Play, en
+  `src/config/appStores.ts`; `sessionStorage` evita el bucle al volver) y deja debajo el código con "Copiar", el botón de
+  la tienda, "Ya tengo la app" y "Continuar en la web". "Ya tengo la app" es un `intent:` con el paquete en Android
+  (casa con el filtro aunque la verificación falle, y sin la app sigue a Google Play) y `profantasy://join/…` en iOS
+  (Safari no abre un Universal Link desde una página de su mismo dominio).
+- A la tienda se manda con la ficha `https` y no con el `intent:`: Chrome puede bloquear un `intent:` sin toque, y si
+  esta página se abrió casi siempre es porque la app no está.
+
+**Desplegar después de publicar las apps.** Una versión de iOS anterior a este cambio también recibe los enlaces `/join/`
+en cuanto el AASA los reclama (el archivo es del servidor), no sabe abrirlos y se queda en el inicio. Detalle y estado de
+verificación en el `CLAUDE.md` del móvil ("Abrir la app desde Compartir invitación").
 
 **Qué se rompe en silencio**, y por eso el bloque `location ^~ /.well-known/` de nginx:
 
