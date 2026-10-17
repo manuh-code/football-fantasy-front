@@ -1,69 +1,61 @@
 <template>
   <Teleport to="#app">
-    <!-- Floating card — mismo slot/estilo que PwaInstallBanner, pero son mutuamente
-         excluyentes (ver App.vue): en móvil se invita a la app nativa en vez de
-         instalar la web como PWA. -->
-    <Transition name="app-download-banner">
+    <!-- Franja fija, siempre presente: sin botón de cerrar y sin descarte en
+         localStorage (decisión de producto — no es un aviso que se quita solo).
+         Reemplaza a PwaInstallBanner (ver App.vue): se invita a la app nativa
+         en vez de instalar la web como PWA. En escritorio se mandan las dos
+         fichas de tienda; en el teléfono, la suya. -->
+    <Transition appear name="app-download-banner">
       <div
-        v-if="shouldShow"
         class="fixed inset-x-0 z-[110] px-3 pointer-events-none flex justify-center"
         :style="bannerStyle"
       >
         <div
-          class="pointer-events-auto w-full max-w-md p-3 rounded-2xl bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl border border-black/[0.05] dark:border-white/10 shadow-lg shadow-black/10 dark:shadow-black/40"
+          class="app-download-glow pointer-events-auto w-full max-w-md p-3.5 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-xl shadow-emerald-900/30 ring-1 ring-white/15"
         >
-          <div class="flex items-start gap-3">
+          <div class="flex items-center gap-3">
             <img
               src="/img/icons/android-chrome-192x192.png"
               alt=""
-              class="shrink-0 w-11 h-11 rounded-xl shadow-md shadow-black/10"
+              class="shrink-0 w-12 h-12 rounded-xl ring-2 ring-white/50 shadow-md shadow-black/20"
             />
 
-            <div class="min-w-0 flex-1 pt-0.5">
-              <p class="text-footnote font-bold text-gray-900 dark:text-white leading-tight">
+            <div class="min-w-0 flex-1">
+              <p class="text-footnote font-extrabold text-white leading-tight">
                 {{ $t('appDownload.banner.title') }}
               </p>
-              <p class="mt-0.5 text-2xs text-gray-500 dark:text-gray-400 leading-snug">
+              <p class="mt-0.5 text-2xs text-emerald-50/90 leading-snug">
                 {{ $t('appDownload.banner.subtitle') }}
               </p>
             </div>
-
-            <button
-              type="button"
-              :aria-label="$t('appDownload.banner.dismiss')"
-              class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-90 transition-all"
-              @click="dismiss"
-            >
-              <v-icon name="hi-solid-x" class="w-4 h-4" />
-            </button>
           </div>
 
-          <a
-            :href="storeUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-3 flex justify-center"
-            @click="dismiss"
-          >
-            <template v-if="platform === 'ios'">
-              <img
-                src="/img/stores/app-store-badge-es-mx-black.svg"
-                :alt="$t('appDownload.banner.badgeAltIos')"
-                class="h-10 w-auto dark:hidden"
-              />
+          <div class="mt-3 flex items-center justify-center gap-3 flex-wrap">
+            <a
+              v-if="platform !== 'android'"
+              :href="APP_STORE_URL"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 src="/img/stores/app-store-badge-es-mx-white.svg"
                 :alt="$t('appDownload.banner.badgeAltIos')"
-                class="hidden h-10 w-auto dark:block"
+                class="h-10 w-auto"
               />
-            </template>
-            <img
-              v-else
-              src="/img/stores/google-play-badge-es-mx.png"
-              :alt="$t('appDownload.banner.badgeAltAndroid')"
-              class="h-10 w-auto"
-            />
-          </a>
+            </a>
+            <a
+              v-if="platform !== 'ios'"
+              :href="PLAY_STORE_URL"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="/img/stores/google-play-badge-es-mx.png"
+                :alt="$t('appDownload.banner.badgeAltAndroid')"
+                class="h-10 w-auto"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </Transition>
@@ -71,13 +63,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { APP_STORE_URL, PLAY_STORE_URL } from '@/config/appStores'
 import { useAppDownloadPrompt } from '@/composables/useAppDownloadPrompt'
 
-const { platform, shouldShow, dismiss } = useAppDownloadPrompt()
-
-const storeUrl = computed(() => (platform.value === 'ios' ? APP_STORE_URL : PLAY_STORE_URL))
+const { platform } = useAppDownloadPrompt()
 
 // Mismo hueco que PwaInstallBanner: arriba de la nav inferior + safe area de iOS.
 const bannerStyle = { bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }
@@ -87,19 +76,35 @@ const bannerStyle = { bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }
 .app-download-banner-enter-active {
   transition: all 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
 }
-.app-download-banner-leave-active {
-  transition: all 0.25s ease-in;
-}
-.app-download-banner-enter-from,
-.app-download-banner-leave-to {
+.app-download-banner-enter-from {
   opacity: 0;
   transform: translateY(16px);
 }
 
+/* Resplandor sutil y continuo para que la franja fija siga llamando la
+   atención sin moverse ni molestar. */
+.app-download-glow {
+  animation: app-download-glow 2.6s ease-in-out infinite;
+}
+
+@keyframes app-download-glow {
+  0%,
+  100% {
+    box-shadow: 0 10px 30px -5px rgba(6, 95, 70, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 10px 30px -5px rgba(6, 95, 70, 0.4),
+      0 0 0 6px rgba(16, 185, 129, 0.15);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .app-download-banner-enter-active,
-  .app-download-banner-leave-active {
+  .app-download-banner-enter-active {
     transition: none !important;
+  }
+  .app-download-glow {
+    animation: none !important;
   }
 }
 </style>
