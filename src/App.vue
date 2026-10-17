@@ -60,8 +60,11 @@
     </div>
 
     <!-- PWA: install banner + push opt-in (global, Teleported).
-         La actualización es invisible (usePwaAutoUpdate), sin modal. -->
-    <PwaInstallBanner />
+         La actualización es invisible (usePwaAutoUpdate), sin modal.
+         En móvil se prioriza invitar a la app nativa (mejor experiencia) sobre
+         instalar la web como PWA; en escritorio no aplica y se mantiene el banner PWA. -->
+    <AppDownloadBanner v-if="appDownload.shouldShow" />
+    <PwaInstallBanner v-else />
     <PushPermissionModal />
 
     <!-- Muro de pago. Único en toda la app: lo abre cualquier pantalla con
@@ -84,6 +87,8 @@ import { usePushNotifications } from "./composables/usePushNotifications";
 import { usePwaAutoUpdate } from "@/composables/usePwaAutoUpdate";
 import PwaInstallBanner from "@/components/pwa/PwaInstallBanner.vue";
 import PushPermissionModal from "@/components/pwa/PushPermissionModal.vue";
+import AppDownloadBanner from "@/components/marketing/AppDownloadBanner.vue";
+import { useAppDownloadPrompt } from "@/composables/useAppDownloadPrompt";
 import AppFooter from "@/components/AppFooter.vue";
 import PremiumUpsellSheet from "@/components/premium/PremiumUpsellSheet.vue";
 import { useAuthStore } from "@/store/auth/useAuthStore";
@@ -91,6 +96,7 @@ import { usePremiumStore } from "@/store/billing/usePremiumStore";
 
 const themeStore = useThemeStore();
 const router = useRouter();
+const appDownload = useAppDownloadPrompt();
 
 // La vista de liga monta su propio header (HomeHeaderMenu, con el selector de
 // etapa); ahí se oculta el global.
