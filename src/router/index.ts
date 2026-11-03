@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized
 import { useAuthStore } from '@/store/auth/useAuthStore'
 import { useFootballLeagueStore } from '@/store/football/league/useFootballLeagueStore'
 import { detectMobilePlatform, isJoinMode, isStandaloneWebApp, webJoinLocation } from '@/utils/joinLink'
+import { openableRoute } from '@/utils/openInApp'
 
 // For anonymous visitors (and search/AdSense crawlers) we auto-select the first
 // league returned by the API so public content is reachable without forcing the
@@ -59,6 +60,9 @@ const LEAGUE_EXEMPT_ROUTES = new Set([
   // El enlace de "Compartir invitación" en un teléfono sin la app: manda a la
   // tienda, y esperar antes a la API de ligas solo retrasaría eso.
   'joinLink',
+  // El botón de los correos que abren la app (`/open/…`) en un teléfono sin
+  // ella: lo mismo, a la tienda sin esperar a la API de ligas.
+  'openInApp',
   // El hub de juego (`/`, alias `/gaming`) es indexable y está prerenderizado:
   // no debe depender de que la API de ligas responda. La vista solo lista los
   // tres modos y navega a otras rutas — esas sí piden liga cuando toca.
@@ -285,6 +289,32 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Invitación - Pro Fantasy',
       description: 'Únete a una liga fantasy, quiniela o survivor de Pro Fantasy',
+      requiresAuth: false
+    }
+  },
+  {
+    // El botón de los correos que tienen que abrir la app, p. ej. «Anotar mis
+    // marcadores» del recordatorio de quiniela (`src/utils/openInApp.ts`):
+    // `/open/pools/{uuid}?tab=predictions`. Igual que `/join/`: con la app
+    // instalada esta ruta no llega a abrirse, la reclaman los Universal Links /
+    // App Links. Si llega aquí:
+    // - en un ordenador, o en la web instalada como PWA, sigue a la misma ruta de
+    //   esta web (lo que el correo abría antes), sin pintar nada;
+    // - en un teléfono, `OpenInAppView` manda a la tienda.
+    path: '/open/:rest(.*)',
+    name: 'openInApp',
+    component: () => import(/* webpackChunkName: "invitation" */ '@/views/invitation/OpenInAppView.vue'),
+    beforeEnter: (to) => {
+      const route = openableRoute(String(to.params.rest ?? ''))
+      if (!route) return { name: 'home' }
+      if (!detectMobilePlatform() || isStandaloneWebApp()) {
+        return { path: route, query: to.query, hash: to.hash, replace: true }
+      }
+      return true
+    },
+    meta: {
+      title: 'Abrir en la app - Pro Fantasy',
+      description: 'Abre tu quiniela, liga o survivor en la app de Pro Fantasy',
       requiresAuth: false
     }
   },

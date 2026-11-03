@@ -160,6 +160,9 @@
       </div>
     </div>
 
+    <!-- Fantasy push notifications (the ones that go to whoever owns the player) -->
+    <FantasyPushPreferences />
+
     <!-- Logout -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <button
@@ -229,6 +232,7 @@ import type { FootballTeamResponse } from '@/interfaces/football/team/FootballTe
 import TeamLogo from '@/components/football/ui/TeamLogo.vue'
 import TeamNotificationsDrawer from '@/components/football/team/TeamNotificationsDrawer.vue'
 import DeleteAccountSheet from '@/components/user/settings/DeleteAccountSheet.vue'
+import FantasyPushPreferences from '@/components/user/settings/FantasyPushPreferences.vue'
 import { LEGAL_URLS } from '@/config/legal'
 
 const router = useRouter()

@@ -66,5 +66,12 @@
     "modePool": "Quiniela",
     "modeSurvivor": "Survivor",
     "continueWeb": "Continuar en la web"
+  },
+  "open": {
+    "eyebrowFantasy": "Liga fantasy",
+    "eyebrowPool": "Quiniela",
+    "eyebrowSurvivor": "Survivor",
+    "title": "Continúa en la app de Pro Fantasy",
+    "bodyMobile": "Esto se juega desde la app. Si todavía no la tienes, descárgala gratis y entra con tu cuenta."
   }
 }
