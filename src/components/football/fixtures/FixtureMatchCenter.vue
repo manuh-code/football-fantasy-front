@@ -234,9 +234,7 @@ const subscribeRealtime = (uuid: string) => {
   // Enter presence on the base channel announcing our timezone, so the backend
   // publishes localized updates on the per-timezone channel below.
   presenceChannel = matchCenterFixtureChannel(uuid);
-  presenceChannel.presence.enter({ timezone: userStore.getTimezone }, (err) => {
-    if (err) console.error("Error entering match center presence:", err);
-  });
+  enterPresence(presenceChannel);
 
   // Subscribe to the localized channel for every live section of the match center.
   liveChannel = matchCenterFixtureLocalizedChannel(uuid);
@@ -248,6 +246,23 @@ const subscribeRealtime = (uuid: string) => {
   liveChannel.subscribe("match-center-comments", onComments);
 };
 
+// Reabrir (o recargar) el mismo partido justo después de soltarlo encuentra el
+// canal todavía en `detaching`, y ably-js rechaza entrar a la presencia en ese
+// estado (error 90001): sin presencia el backend no publica para esta zona y el
+// cajón se queda congelado sin avisar. Se espera a que termine de soltarse.
+const enterPresence = (channel: Types.RealtimeChannelCallbacks) => {
+  const enter = () =>
+    channel.presence.enter({ timezone: userStore.getTimezone }, (err) => {
+      if (err) console.error("Error entering match center presence:", err);
+    });
+  if (channel.state === "detaching") channel.once("detached", enter);
+  else enter();
+};
+
+// Además de dejar de escuchar, suelta los dos canales (`detach`). Desuscribirse
+// no los suelta: seguían enganchados el resto de la sesión, un par por cada
+// partido abierto, y cada uno cuenta contra los canales concurrentes de Ably
+// (200 en el plan Free).
 const unsubscribeRealtime = () => {
   if (liveChannel) {
     liveChannel.unsubscribe("match-center-fixture", onFixtureInfo);
@@ -256,10 +271,12 @@ const unsubscribeRealtime = () => {
     liveChannel.unsubscribe("match-center-statistics", onStatistics);
     liveChannel.unsubscribe("match-center-lineup-stats", onLineupStats);
     liveChannel.unsubscribe("match-center-comments", onComments);
+    liveChannel.detach();
     liveChannel = null;
   }
   if (presenceChannel) {
     presenceChannel.presence.leave();
+    presenceChannel.detach();
     presenceChannel = null;
   }
 };

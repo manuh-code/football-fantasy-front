@@ -156,8 +156,8 @@ y Google leen por su cuenta:
   nada en Play, y falla sin ningún error**: el enlace sigue abriendo el navegador. Un build de depuración se firma con
   otra clave: para probar App Links con él hay que **añadir su huella** a la lista.
 
-Se reclaman `/invitations/*` y, desde 2026-10-13, `/join/*`. El resto de rutas del dominio siguen abriéndose en el
-navegador; ampliar es añadir un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
+Se reclaman `/invitations/*`, desde 2026-10-13 `/join/*` y desde 2026-11-02 `/open/*` (abajo). El resto de rutas del
+dominio siguen abriéndose en el navegador; ampliar es añadir un `components` aquí y un `pathPrefix` en el `AndroidManifest.xml` del móvil.
 
 ### El enlace de "Compartir invitación": `/join/{modo}/{código}`
 
@@ -178,6 +178,21 @@ así que los enlaces viejos siguen sirviendo, pero no abren la app.
   (Safari no abre un Universal Link desde una página de su mismo dominio).
 - A la tienda se manda con la ficha `https` y no con el `intent:`: Chrome puede bloquear un `intent:` sin toque, y si
   esta página se abrió casi siempre es porque la app no está.
+
+### El botón de un correo que abre la app: `/open/{ruta}`
+
+Añadido 2026-11-02 (sin desplegar). El «Anotar mis marcadores» del recordatorio de quiniela manda a
+`https://fantasymx.cloud/open/pools/{uuid}?tab=predictions` (el API lo arma con `PushRoute::openInApp`). Detrás de
+`/open` va **una ruta de esta misma web**, y `src/utils/openInApp.ts` solo acepta las que la app sabe abrir (`pools`,
+`survivor`, `fantasy`, `my`): no es un redireccionador abierto.
+
+- **Con la app** el sistema la abre directo en esa partida y pestaña (AASA `/open/*` y `pathPrefix /open/` del manifiesto).
+- **Sin la app, en un ordenador o en la PWA**: el `beforeEnter` de la ruta `openInApp` sigue (con `replace`, query
+  incluida) a la misma ruta de la web, que es lo que el correo abría antes.
+- **Sin la app, en un teléfono**: `OpenInAppView.vue` manda **una vez** a la tienda, igual que `JoinLinkView`, y deja
+  "Ya tengo la app" (`intent:` en Android, `profantasy://open/…` en iOS) y "Continuar en la web". Sin el código para copiar:
+  aquí no hay código que pegar.
+- Como la tienda no le pasa nada a la app, quien instala desde aquí tiene que volver a tocar el correo.
 
 **Desplegar después de publicar las apps.** Una versión de iOS anterior a este cambio también recibe los enlaces `/join/`
 en cuanto el AASA los reclama (el archivo es del servidor), no sabe abrirlos y se queda en el inicio. Detalle y estado de

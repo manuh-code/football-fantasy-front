@@ -162,8 +162,13 @@ let channelDraft: ReturnType<typeof draftRoomChannel> | null = null;
 // reutiliza esta misma instancia de componente cuando solo cambia el :uuid de
 // la ruta (mismo componente de destino), así que sin esto la suscripción se
 // queda pegada a la liga anterior.
+//
+// Los dos se sueltan con `detach`: desuscribirse no libera el canal, y el de la
+// liga se quedaba enganchado el resto de la sesión contando contra los canales
+// concurrentes de Ably.
 function teardownChannels() {
   channel?.unsubscribe("league.joined");
+  channel?.detach();
   channelDraft?.unsubscribe("draft.activated");
   channelDraft?.detach();
   channel = null;
