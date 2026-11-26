@@ -96,6 +96,8 @@ const eyebrow = computed(() => {
       return t("invitation.open.eyebrowPool");
     case "survivor":
       return t("invitation.open.eyebrowSurvivor");
+    case "invitation":
+      return t("invitation.open.eyebrowInvitation");
     default:
       return t("invitation.open.eyebrowFantasy");
   }
