@@ -24,10 +24,15 @@ import { ANDROID_PACKAGE, APP_LINK_HOST, APP_SCHEME, PLAY_STORE_URL } from '@/co
  * los App Links por la query. Mismo razonamiento que `/join/`.
  */
 
-/** Los primeros tramos que la app sabe abrir y esta web tiene como ruta. */
-const OPENABLE_ROOTS: readonly string[] = ['pools', 'survivor', 'fantasy', 'my']
+/**
+ * Los primeros tramos que la app sabe abrir y esta web tiene como ruta.
+ * `invitations` es el botón del correo de invitación (`/open/invitations/{token}`,
+ * desde 2026-11-26): con la app abre su ventana de invitación, sin ella en un
+ * teléfono manda a la tienda y en un ordenador sigue a `/invitations/{token}`.
+ */
+const OPENABLE_ROOTS: readonly string[] = ['pools', 'survivor', 'fantasy', 'my', 'invitations']
 
-export type OpenRoot = 'pool' | 'survivor' | 'fantasy'
+export type OpenRoot = 'pool' | 'survivor' | 'fantasy' | 'invitation'
 
 /**
  * La ruta de esta web que hay detrás de `/open`, con su barra inicial, o `null`
@@ -46,6 +51,7 @@ export const openRootOf = (route: string): OpenRoot => {
   const root = route.split('/').filter(Boolean)[0]?.toLowerCase()
   if (root === 'pools') return 'pool'
   if (root === 'survivor') return 'survivor'
+  if (root === 'invitations') return 'invitation'
   return 'fantasy'
 }
 
